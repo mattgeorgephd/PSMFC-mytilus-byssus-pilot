@@ -16,3 +16,4 @@
 1. 20210605 - System setup
 2. 20210901 - Experiments Completed
 3. 20220114 - RNA extractions completed
+4. 20220411 - Tag-seq results received
