@@ -12,6 +12,7 @@
 8. [Sam's RNA extraction notebook entries](https://robertslab.github.io/sams-notebook/2022/01/13/Project-Summary-Matt-George-PSMFC-Mytilus-Byssus-Project.html)
 9. [Tagseq dataset](https://docs.google.com/spreadsheets/d/1zZ6L05j-SyYJbzzQI_kBafFaReE4Ysp_9bORdbBu_r8/edit#gid=1302342348)
 10. [Thread strength dataset](https://docs.google.com/spreadsheets/d/1GxLnNJjjjZ8xhBzz8nD-eUdpOwg6UY7yicG7ER5YIOQ/edit?usp=sharing)
+11. [Mussel plaque area](https://docs.google.com/spreadsheets/d/1AaStDX_XVuMl8XxUTYageePXyVtqKqtjcnJR2YDtGM4/edit?usp=sharing)
 
 # Progress
 1. 20210605 - System setup
