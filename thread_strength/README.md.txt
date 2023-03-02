@@ -1,0 +1,1 @@
+Thread strength and size data kept [here](https://docs.google.com/spreadsheets/d/1GxLnNJjjjZ8xhBzz8nD-eUdpOwg6UY7yicG7ER5YIOQ/edit?usp=sharing)
