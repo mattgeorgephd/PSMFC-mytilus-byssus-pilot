@@ -20,3 +20,4 @@
 3. 20220114 - RNA extractions completed
 4. 20220411 - Tag-seq results received
 5. 20220504 - Thread testing
+6. 20230302 - Henry trained on github
