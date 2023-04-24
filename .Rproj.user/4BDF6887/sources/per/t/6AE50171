@@ -1,0 +1,28 @@
+{
+    "id": "6AE50171",
+    "path": "C:/Users/mattg/Dropbox/UW/Postdoc/2021_PSMFC_mytilus_byssus_pilot/PSMFC-mytilus-byssus-pilot/code/1_extract_tensometer_data.Rmd",
+    "project_path": "code/1_extract_tensometer_data.Rmd",
+    "type": "r_markdown",
+    "hash": "1097903592",
+    "contents": "",
+    "dirty": false,
+    "created": 1682373617500.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "315,0",
+        "scrollLine": "308",
+        "last_setup_crc32": "f6db0683bb338d19"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1682378785,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1682378785817,
+    "read_only": false,
+    "read_only_alternatives": []
+}
