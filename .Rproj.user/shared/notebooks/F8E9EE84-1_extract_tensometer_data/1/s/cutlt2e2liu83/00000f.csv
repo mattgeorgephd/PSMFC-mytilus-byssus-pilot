@@ -1,0 +1,7 @@
+"0","write.xlsx(max_force_control, file=""thread_strength/summarized_data/max_force_control.xlsx"", colNames = TRUE)"
+"0","write.xlsx(integral_control, file=""thread_strength/summarized_data/integral_control.xlsx"", colNames = TRUE)"
+"0","print(""done"")"
+"1","[1]"
+"1"," ""done"""
+"1","
+"
