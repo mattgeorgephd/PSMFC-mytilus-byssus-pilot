@@ -1,0 +1,8 @@
+"0","# Define dataset for analysis, factors"
+"0","dat_stat <- thread_plot_OA_repeated"
+"0","test_me  <- dat_stat$adhesion_kpa"
+"0",""
+"0","dat_stat$ID         <- factor(dat_stat$mussel)"
+"0","dat_stat$trt        <- factor(dat_stat$treatment)"
+"0","dat_stat$thread     <- factor(dat_stat$thread)"
+"0","dat_stat$pad        <- factor(dat_stat$pad_area)"
