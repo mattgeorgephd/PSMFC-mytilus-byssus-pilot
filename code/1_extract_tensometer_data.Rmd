@@ -11,6 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Load packages; set ggplot theme
 ```{r message=FALSE, warning=FALSE}
+
+## RUN as part of "PSMFC-mytilus-byssus-pilot.Rproj"
+
+
 ## clear workspace
 rm(list=ls())
 
@@ -221,8 +225,8 @@ for (file_name in txt_files) {
     data_snipped$displacement[is.na(data_snipped$displacement)] <- 0
     data_snipped$force[is.na(data_snipped$force)] <- 0
   
-    # Add a new column called "mussel" that contains the first three characters of the file name
-    data_snipped$mussel <- substr(file_name, start = 1, stop = 3)
+    # Add a new column called "mussel" that contains the first FOUR characters of the file name
+    data_snipped$mussel <- substr(file_name, start = 1, stop = 4)
     
     # Add new column that adds thread run
     data_snipped$thread <- substr(file_name, start = 5, stop = 6)

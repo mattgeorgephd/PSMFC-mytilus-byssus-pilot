@@ -9,16 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Load packages; set ggplot theme
+### LDOd packages; set ggplot theme
 ```{r message=FALSE, warning=FALSE}
 ## clear workspace
 rm(list=ls())
 
-## Load Packages
-load.lib<-c("readxl","tidyverse","bestNormalize","agricolae","nlme","multcomp","rstatix","lme4","lmerTest") # List of required packages
-install.lib <- load.lib[!load.lib %in% installed.packages()] # Select missing packages
+## LDOd Packages
+lDOd.lib<-c("readxl","tidyverse","bestNormalize","agricolae","nlme","multcomp","rstatix","lme4","lmerTest") # List of required packages
+install.lib <- lDOd.lib[!lDOd.lib %in% installed.packages()] # Select missing packages
 for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missing packages + dependencies
-sapply(load.lib,require,character=TRUE) # Load all packages.
+sapply(lDOd.lib,require,character=TRUE) # LDOd all packages.
 
 ## Set ggplot theme
 my_theme <- theme(line              = element_line(size=1.2),
@@ -47,14 +47,14 @@ mkdir analyses/thread_strength
 ```
 
 
-### LOAD data set
+### LDOD data set
 ```{r}
-# Load datasets
+# LDOd datasets
 thread_plot       <- read_excel("thread_strength/summarized_data/summary.xlsx", 
                               sheet = "data", col_names = TRUE)
 # trt_list        <- read_excel("data/respirometry/respirometry.xlsx", 
 #                               sheet = "trt_list", col_names = TRUE)
-thread_plot$treatment  <- factor(thread_plot$treatment,  levels = c("control","OW","OA","DO"), ordered=TRUE)
+thread_plot$treatment  <- factor(thread_plot$treatment,  levels = c("control","OW","DO","DO"), ordered=TRUE)
 thread_plot$mussel     <- factor(thread_plot$mussel)
 thread_plot$thread     <- factor(thread_plot$thread)
 
@@ -186,40 +186,40 @@ ggsave("analyses/thread_strength/BP_OnlyRepeatedMussels_MeanThreads.png",
 
 ```
 
-### linegraph, OA only
+### linegraph, DO only
 ```{r}
 
 # ChatGPT prompts:
-# create a new dataframe called "thread_plot_OA" that is only data from thread_plot when the column "treatment" is control or OA and the same "mussel" ID is represented in both treatments (as noted in the "mussel" column)
-# create a new dataframe called "thread_plot_OA_mean" from "thread_plot" that produces the mean and standard deviation of the columns "max_force", "pad_area", and "adhesion_kpa"  across unique combinations of "mussel" and "treatment".
+# create a new dataframe called "thread_plot_DO" that is only data from thread_plot when the column "treatment" is control or DO and the same "mussel" ID is represented in both treatments (as noted in the "mussel" column)
+# create a new dataframe called "thread_plot_DO_mean" from "thread_plot" that produces the mean and standard deviation of the columns "max_force", "pad_area", and "adhesion_kpa"  across unique combinations of "mussel" and "treatment".
 
 
-# filter the data to only include the control and OA treatment
-thread_plot_OA_all <- thread_plot %>% filter(treatment == "control" | treatment == "OA")
+# filter the data to only include the control and DO treatment
+thread_plot_DO_all <- thread_plot %>% filter(treatment == "control" | treatment == "DO")
 
-# filter the data to only include the control and OA treatments
-thread_plot_OA_repeated <- thread_plot %>%
+# filter the data to only include the control and DO treatments
+thread_plot_DO_repeated <- thread_plot %>%
   group_by(mussel) %>%
-  filter(treatment %in% c("control", "OA")) %>%
+  filter(treatment %in% c("control", "DO")) %>%
   filter(n_distinct(treatment) == 2)
 
-# create a new data frame called thread_plot_OA_mean
+# create a new data frame called thread_plot_DO_mean
 # group the data by mussel
-# filter the data to only include the control and OA treatments
+# filter the data to only include the control and DO treatments
 # group the data by mussel and treatment
 # summarize the data by calculating the mean and sd for max_force, pad_area, and adhesion_kpa
 # rename the columns to include the statistic calculated
-thread_plot_OA_mean <- thread_plot %>%
+thread_plot_DO_mean <- thread_plot %>%
   group_by(mussel) %>%
-  filter(treatment %in% c("control", "OA")) %>%
+  filter(treatment %in% c("control", "DO")) %>%
   group_by(mussel, treatment) %>%
   summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
 
-thread_plot_OA_repeated_mean <- thread_plot %>%
+thread_plot_DO_repeated_mean <- thread_plot %>%
   # group the data by mussel
   group_by(mussel) %>%
-  # filter the data to only include the control and OA treatments
-  filter(treatment %in% c("control", "OA")) %>%
+  # filter the data to only include the control and DO treatments
+  filter(treatment %in% c("control", "DO")) %>%
   # filter the data to only include mussels that have two treatments
   filter(n_distinct(treatment) == 2) %>%
   # group the data by mussel and treatment
@@ -229,45 +229,45 @@ thread_plot_OA_repeated_mean <- thread_plot %>%
 
 
 
-p1 <- ggplot(thread_plot_OA_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
+p1 <- ggplot(thread_plot_DO_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
       geom_point() +
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
 p1
 
-p2 <- ggplot(thread_plot_OA_repeated, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
+p2 <- ggplot(thread_plot_DO_repeated, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
       geom_point() +
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
 p2
 
-p3 <- ggplot(thread_plot_OA_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
+p3 <- ggplot(thread_plot_DO_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
       geom_point() +
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
 p3
 
-p4 <- ggplot(thread_plot_OA_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
+p4 <- ggplot(thread_plot_DO_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
       geom_point() +
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -275,7 +275,7 @@ p4
 
 
 
-ggsave("analyses/thread_strength/LineGraph_OA_AllMussels_MeanThreads.png",
+ggsave("analyses/thread_strength/LineGraph_DO_AllMussels_MeanThreads.png",
        plot   = p3,
        dpi    = 1200,
        device = "png",
@@ -283,7 +283,7 @@ ggsave("analyses/thread_strength/LineGraph_OA_AllMussels_MeanThreads.png",
        height = 4,
        units  = "in")
 
-ggsave("analyses/thread_strength/LineGraph_OA_OnlyRepeatedMussels_MeanThreads.png",
+ggsave("analyses/thread_strength/LineGraph_DO_OnlyRepeatedMussels_MeanThreads.png",
        plot   = p4,
        dpi    = 1200,
        device = "png",
@@ -342,7 +342,7 @@ p1 <- ggplot(thread_plot_OW_all, aes(x=treatment, y=adhesion_kpa, group=as.facto
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -353,7 +353,7 @@ p2 <- ggplot(thread_plot_OW_repeated, aes(x=treatment, y=adhesion_kpa, group=as.
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -364,7 +364,7 @@ p3 <- ggplot(thread_plot_OW_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -375,7 +375,7 @@ p4 <- ggplot(thread_plot_OW_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean,
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -449,7 +449,7 @@ p1 <- ggplot(thread_plot_DO_all, aes(x=treatment, y=adhesion_kpa, group=as.facto
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -460,7 +460,7 @@ p2 <- ggplot(thread_plot_DO_repeated, aes(x=treatment, y=adhesion_kpa, group=as.
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -471,7 +471,7 @@ p3 <- ggplot(thread_plot_DO_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -482,7 +482,7 @@ p4 <- ggplot(thread_plot_DO_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean,
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
@@ -513,13 +513,13 @@ ggsave("analyses/thread_strength/LineGraph_DO_OnlyRepeatedMussels_MeanThreads.pn
 ### Statistical Testing - all
 ```{R}
 # Define dataset for analysis, factors
-dat_stat <- thread_plot
-test_me  <- dat_stat$adhesion_kpa
+dat_stat <- thread_plot_repeated_mean
+test_me  <- dat_stat$adhesion_kpa_mean
 
 dat_stat$ID         <- factor(dat_stat$mussel)
 dat_stat$trt        <- factor(dat_stat$treatment)
-dat_stat$thread     <- factor(dat_stat$thread)
-dat_stat$pad        <- factor(dat_stat$pad_area)
+# dat_stat$thread     <- factor(dat_stat$thread)
+# dat_stat$pad        <- factor(dat_stat$pad_area)
 
 # Test for normality
 qqnorm(test_me) # check linearity of transformed data
@@ -540,8 +540,7 @@ dat_stat$response <- test_me
 
 # Run repeated measures anova using oyster ID has random effect
 # https://www.r-bloggers.com/2015/08/two-way-anova-with-repeated-measures/
-my_test <- aov(response ~ (trt * thread * pad) +
-                       Error(1/ID), # Error(1|(factor(ID)/factor(trt))),
+my_test <- aov(response ~ trt + Error(ID), # Error(1|(factor(ID)/factor(trt))),
                        data = dat_stat)
 
 my_test_summary <- summary(my_test)
@@ -564,7 +563,7 @@ mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ### Statistical Testing - OA
 ```{R}
 # Define dataset for analysis, factors
-dat_stat <- thread_plot_OA_repeated
+dat_stat <- thread_plot_OA_all
 test_me  <- dat_stat$adhesion_kpa
 
 dat_stat$ID         <- factor(dat_stat$mussel)
@@ -575,7 +574,7 @@ dat_stat$pad        <- factor(dat_stat$pad_area)
 # Test for normality
 qqnorm(test_me) # check linearity of transformed data
 qqline(test_me)
-norm_test <- shapiro.test(test_me) # p-value fail = good, don't need transformation
+norm_test <- shapiro.test(test_me) # p-value fail = good, OAn't need transformation
 print(norm_test$p.value)
 
 # Normalize data if normality test failed
@@ -589,11 +588,14 @@ if(norm_test$p.value<0.05)     {
 
 dat_stat$response <- test_me
 
-# Run repeated measures anova using oyster ID has random effect
-# https://www.r-bloggers.com/2015/08/two-way-anova-with-repeated-measures/
-my_test <- aov(response ~ trt +
-                       Error(ID/trt), # Error(1|(factor(ID)/factor(trt))),
-                       data = dat_stat)
+
+# ChatGPT prompt:
+# All data is in the "thread_plot_OA_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov funtion.# All data is in the "thread_plot_OA_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov function.
+
+
+# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as ranOAm grouping factors.
+# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
+my_test <- aov(response ~ trt + Error(ID/thread), data = dat_stat)
 
 my_test_summary <- summary(my_test)
 summary(my_test)
@@ -613,7 +615,7 @@ mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ### Statistical Testing - OW
 ```{R}
 # Define dataset for analysis, factors
-dat_stat <- thread_plot_OW_repeated
+dat_stat <- thread_plot_OW_all
 test_me  <- dat_stat$adhesion_kpa
 
 dat_stat$ID         <- factor(dat_stat$mussel)
@@ -638,11 +640,14 @@ if(norm_test$p.value<0.05)     {
 
 dat_stat$response <- test_me
 
-# Run repeated measures anova using oyster ID has random effect
-# https://www.r-bloggers.com/2015/08/two-way-anova-with-repeated-measures/
-my_test <- aov(response ~ trt +
-                       Error(ID/trt), # Error(1|(factor(ID)/factor(trt))),
-                       data = dat_stat)
+
+# ChatGPT prompt:
+# All data is in the "thread_plot_OW_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov funtion.# All data is in the "thread_plot_OW_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov function.
+
+
+# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as random grouping factors.
+# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
+my_test <- aov(response ~ trt + Error(ID/thread), data = dat_stat)
 
 my_test_summary <- summary(my_test)
 summary(my_test)
@@ -661,7 +666,7 @@ mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ### Statistical Testing - DO
 ```{R}
 # Define dataset for analysis, factors
-dat_stat <- thread_plot_DO
+dat_stat <- thread_plot_DO_all
 test_me  <- dat_stat$adhesion_kpa
 
 dat_stat$ID         <- factor(dat_stat$mussel)
@@ -686,11 +691,14 @@ if(norm_test$p.value<0.05)     {
 
 dat_stat$response <- test_me
 
-# Run repeated measures anova using oyster ID has random effect
-# https://www.r-bloggers.com/2015/08/two-way-anova-with-repeated-measures/
-my_test <- aov(response ~ trt +
-                       Error(ID/trt), # Error(1|(factor(ID)/factor(trt))),
-                       data = dat_stat)
+
+# ChatGPT prompt:
+# All data is in the "thread_plot_DO_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov funtion.# All data is in the "thread_plot_DO_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov function.
+
+
+# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as random grouping factors.
+# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
+my_test <- aov(response ~ trt + Error(ID/thread), data = dat_stat)
 
 my_test_summary <- summary(my_test)
 summary(my_test)
