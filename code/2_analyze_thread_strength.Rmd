@@ -40,6 +40,13 @@ my_theme <- theme(line              = element_line(size=1.2),
                   ) 
 ```
 
+```{bash}
+mkdir analyses
+mkdir analyses/thread_strength
+
+```
+
+
 ### LOAD data set
 ```{r}
 # Load datasets
@@ -86,21 +93,26 @@ thread_plot_repeated <- thread_plot %>%
   group_by(mussel) %>%
   filter(n_distinct(treatment) == 2)
 
-# average across thread for each mussel * treatment combination
+# create a new dataframe that groups the data by mussel and treatment and then summarizes the data by calculating the mean and standard deviation of the max_force, pad_area, and adhesion_kpa columns
 thread_plot_all_mean <- thread_plot %>%
   group_by(mussel, treatment) %>% 
   summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
 
-
-# average across thread for each mussel * treatment combination
+# average across thread for each mussel * treatment combination, only mussels with repeated measurements
+# create a new dataframe called thread_plot_repeated_mean
 thread_plot_repeated_mean <- thread_plot %>%
+  # group the data by mussel
   group_by(mussel) %>%
+  # filter the data to only include mussels that have two treatments
   filter(n_distinct(treatment) == 2) %>%
+  # group the data by mussel and treatment
   group_by(mussel, treatment) %>% 
+  # summarize the data by calculating the mean and sd of max_force, pad_area, and adhesion_kpa
   summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
 
 
 
+# Plot all data
 p1 <- ggplot(thread_plot, aes(x=treatment, y=adhesion_kpa)) +
        geom_boxplot(colour = "black", size = 0.8,outlier.colour="black", outlier.shape = 16,
                            outlier.size=1, notch=FALSE, varwidth = TRUE, alpha = 0.8) +
@@ -111,6 +123,7 @@ p1 <- ggplot(thread_plot, aes(x=treatment, y=adhesion_kpa)) +
 p1
 
 
+# plot only mussels with repeated measurements
 p2 <- ggplot(thread_plot_repeated, aes(x=treatment, y=adhesion_kpa)) +
        geom_boxplot(colour = "black", size = 0.8,outlier.colour="black", outlier.shape = 16,
                            outlier.size=1, notch=FALSE, varwidth = TRUE, alpha = 0.8) +
@@ -119,6 +132,8 @@ p2 <- ggplot(thread_plot_repeated, aes(x=treatment, y=adhesion_kpa)) +
 
 p2
 
+
+# plot data from all mussels, averaging across threads produced by the mussel at each timepoint
 p3 <- ggplot(thread_plot_all_mean, aes(x=treatment, y=adhesion_kpa_mean)) +
        geom_boxplot(colour = "black", size = 0.8,outlier.colour="black", outlier.shape = 16,
                            outlier.size=1, notch=FALSE, varwidth = TRUE, alpha = 0.8) +
@@ -127,6 +142,7 @@ p3 <- ggplot(thread_plot_all_mean, aes(x=treatment, y=adhesion_kpa_mean)) +
 
 p3
 
+# plot only mussels with repeated measures, averaging across threads produced by the mussel at each timepoint
 p4 <- ggplot(thread_plot_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean)) +
        geom_boxplot(colour = "black", size = 0.8,outlier.colour="black", outlier.shape = 16,
                            outlier.size=1, notch=FALSE, varwidth = TRUE, alpha = 0.8) +
@@ -136,13 +152,37 @@ p4 <- ggplot(thread_plot_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean)) +
 p4
 
 
-# ggsave("analyses/respiration/line_respiration_diploids.png",
-#        plot   = p1,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
+ggsave("analyses/thread_strength/BP_AllMussels_AllThreads.png",
+       plot   = p1,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
+ggsave("analyses/thread_strength/BP_OnlyRepeatedMussels_AllThreads.png",
+       plot   = p2,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
+ggsave("analyses/thread_strength/BP_AllMussels_MeanThreads.png",
+       plot   = p3,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
+ggsave("analyses/thread_strength/BP_OnlyRepeatedMussels_MeanThreads.png",
+       plot   = p4,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
 
 ```
 
@@ -159,15 +199,34 @@ thread_plot_OA_all <- thread_plot %>% filter(treatment == "control" | treatment 
 
 # filter the data to only include the control and OA treatments
 thread_plot_OA_repeated <- thread_plot %>%
-  filter(treatment %in% c("control", "OA")) %>%
   group_by(mussel) %>%
+  filter(treatment %in% c("control", "OA")) %>%
   filter(n_distinct(treatment) == 2)
 
-# Create a new dataframe called "thread_plot_OA_mean" using the "group_by" and "summarize" functions in "dplyr"
+# create a new data frame called thread_plot_OA_mean
+# group the data by mussel
+# filter the data to only include the control and OA treatments
+# group the data by mussel and treatment
+# summarize the data by calculating the mean and sd for max_force, pad_area, and adhesion_kpa
+# rename the columns to include the statistic calculated
 thread_plot_OA_mean <- thread_plot %>%
+  group_by(mussel) %>%
   filter(treatment %in% c("control", "OA")) %>%
-  group_by(mussel, treatment) %>% 
+  group_by(mussel, treatment) %>%
   summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+
+thread_plot_OA_repeated_mean <- thread_plot %>%
+  # group the data by mussel
+  group_by(mussel) %>%
+  # filter the data to only include the control and OA treatments
+  filter(treatment %in% c("control", "OA")) %>%
+  # filter the data to only include mussels that have two treatments
+  filter(n_distinct(treatment) == 2) %>%
+  # group the data by mussel and treatment
+  group_by(mussel, treatment) %>% 
+  # summarize the data by calculating the mean and sd of max_force, pad_area, and adhesion_kpa
+  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+
 
 
 p1 <- ggplot(thread_plot_OA_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
@@ -203,34 +262,79 @@ p3 <- ggplot(thread_plot_OA_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as
 
 p3
 
+p4 <- ggplot(thread_plot_OA_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
+      geom_point() +
+      geom_line(linewidth=1, alpha = 1) +
+      # facet_wrap(~ID) +
+      # scale_color_manual(values=c("royalblue4","royalblue1")) +
+      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
+      xlab(NULL) + ylab(NULL) + my_theme
 
-# ggsave("analyses/respiration/line_respiration_diploids.png",
-#        plot   = p1,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
+p4
+
+
+
+ggsave("analyses/thread_strength/LineGraph_OA_AllMussels_MeanThreads.png",
+       plot   = p3,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
+ggsave("analyses/thread_strength/LineGraph_OA_OnlyRepeatedMussels_MeanThreads.png",
+       plot   = p4,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
 
 ```
 
 ### linegraph, OW only
 ```{r}
 
+# ChatGPT prompts:
+# create a new dataframe called "thread_plot_OW" that is only data from thread_plot when the column "treatment" is control or OW and the same "mussel" ID is represented in both treatments (as noted in the "mussel" column)
+# create a new dataframe called "thread_plot_OW_mean" from "thread_plot" that produces the mean and standard deviation of the columns "max_force", "pad_area", and "adhesion_kpa"  across unique combinations of "mussel" and "treatment".
+
+
 # filter the data to only include the control and OW treatment
 thread_plot_OW_all <- thread_plot %>% filter(treatment == "control" | treatment == "OW")
 
 # filter the data to only include the control and OW treatments
 thread_plot_OW_repeated <- thread_plot %>%
-  filter(treatment %in% c("control", "OW")) %>%
   group_by(mussel) %>%
+  filter(treatment %in% c("control", "OW")) %>%
   filter(n_distinct(treatment) == 2)
 
-# Create a new dataframe called "thread_plot_OW_mean" using the "group_by" and "summarize" functions in "dplyr"
+# create a new data frame called thread_plot_OW_mean
+# group the data by mussel
+# filter the data to only include the control and OW treatments
+# group the data by mussel and treatment
+# summarize the data by calculating the mean and sd for max_force, pad_area, and adhesion_kpa
+# rename the columns to include the statistic calculated
 thread_plot_OW_mean <- thread_plot %>%
+  group_by(mussel) %>%
   filter(treatment %in% c("control", "OW")) %>%
-  group_by(mussel, treatment) %>% 
+  group_by(mussel, treatment) %>%
   summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+
+thread_plot_OW_repeated_mean <- thread_plot %>%
+  # group the data by mussel
+  group_by(mussel) %>%
+  # filter the data to only include the control and OW treatments
+  filter(treatment %in% c("control", "OW")) %>%
+  # filter the data to only include mussels that have two treatments
+  filter(n_distinct(treatment) == 2) %>%
+  # group the data by mussel and treatment
+  group_by(mussel, treatment) %>% 
+  # summarize the data by calculating the mean and sd of max_force, pad_area, and adhesion_kpa
+  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+
 
 
 p1 <- ggplot(thread_plot_OW_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
@@ -266,35 +370,78 @@ p3 <- ggplot(thread_plot_OW_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as
 
 p3
 
+p4 <- ggplot(thread_plot_OW_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
+      geom_point() +
+      geom_line(linewidth=1, alpha = 1) +
+      # facet_wrap(~ID) +
+      # scale_color_manual(values=c("royalblue4","royalblue1")) +
+      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
+      xlab(NULL) + ylab(NULL) + my_theme
 
-# ggsave("analyses/respiration/line_respiration_diploids.png",
-#        plot   = p1,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
+p4
+
+
+
+ggsave("analyses/thread_strength/LineGraph_OW_AllMussels_MeanThreads.png",
+       plot   = p3,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
+ggsave("analyses/thread_strength/LineGraph_OW_OnlyRepeatedMussels_MeanThreads.png",
+       plot   = p4,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
 
 ```
-
-
 ### linegraph, DO only
 ```{r}
+
+# ChatGPT prompts:
+# create a new dataframe called "thread_plot_DO" that is only data from thread_plot when the column "treatment" is control or DO and the same "mussel" ID is represented in both treatments (as noted in the "mussel" column)
+# create a new dataframe called "thread_plot_DO_mean" from "thread_plot" that produces the mean and standard deviation of the columns "max_force", "pad_area", and "adhesion_kpa"  across unique combinations of "mussel" and "treatment".
+
 
 # filter the data to only include the control and DO treatment
 thread_plot_DO_all <- thread_plot %>% filter(treatment == "control" | treatment == "DO")
 
 # filter the data to only include the control and DO treatments
 thread_plot_DO_repeated <- thread_plot %>%
-  filter(treatment %in% c("control", "DO")) %>%
   group_by(mussel) %>%
+  filter(treatment %in% c("control", "DO")) %>%
   filter(n_distinct(treatment) == 2)
 
-# Create a new dataframe called "thread_plot_DO_mean" using the "group_by" and "summarize" functions in "dplyr"
+# create a new data frame called thread_plot_DO_mean
+# group the data by mussel
+# filter the data to only include the control and DO treatments
+# group the data by mussel and treatment
+# summarize the data by calculating the mean and sd for max_force, pad_area, and adhesion_kpa
+# rename the columns to include the statistic calculated
 thread_plot_DO_mean <- thread_plot %>%
+  group_by(mussel) %>%
   filter(treatment %in% c("control", "DO")) %>%
-  group_by(mussel, treatment) %>% 
+  group_by(mussel, treatment) %>%
   summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+
+thread_plot_DO_repeated_mean <- thread_plot %>%
+  # group the data by mussel
+  group_by(mussel) %>%
+  # filter the data to only include the control and DO treatments
+  filter(treatment %in% c("control", "DO")) %>%
+  # filter the data to only include mussels that have two treatments
+  filter(n_distinct(treatment) == 2) %>%
+  # group the data by mussel and treatment
+  group_by(mussel, treatment) %>% 
+  # summarize the data by calculating the mean and sd of max_force, pad_area, and adhesion_kpa
+  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
+
 
 
 p1 <- ggplot(thread_plot_DO_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
@@ -330,14 +477,35 @@ p3 <- ggplot(thread_plot_DO_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as
 
 p3
 
+p4 <- ggplot(thread_plot_DO_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
+      geom_point() +
+      geom_line(linewidth=1, alpha = 1) +
+      # facet_wrap(~ID) +
+      # scale_color_manual(values=c("royalblue4","royalblue1")) +
+      #   scale_y_continuous(breaks = seq(0, 2.5, 0.5), limits = c(0, 2.7)) +
+      # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
+      xlab(NULL) + ylab(NULL) + my_theme
 
-# ggsave("analyses/respiration/line_respiration_diploids.png",
-#        plot   = p1,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
+p4
+
+
+
+ggsave("analyses/thread_strength/LineGraph_DO_AllMussels_MeanThreads.png",
+       plot   = p3,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
+ggsave("analyses/thread_strength/LineGraph_DO_OnlyRepeatedMussels_MeanThreads.png",
+       plot   = p4,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 4,
+       units  = "in")
+
 
 ```
 
