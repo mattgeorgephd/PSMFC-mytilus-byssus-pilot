@@ -1,8 +1,0 @@
-"0",""
-"0",""
-"0","p2 <- ggplot(thread_plot_repeated, aes(x=treatment, y=adhesion_kpa)) +"
-"0","       geom_boxplot(colour = ""black"", size = 0.8,outlier.colour=""black"", outlier.shape = 16,"
-"0","                           outlier.size=1, notch=FALSE, varwidth = TRUE, alpha = 0.8) +"
-"0","      xlab(NULL) + ylab(NULL) + my_theme"
-"0",""
-"0","p2"
