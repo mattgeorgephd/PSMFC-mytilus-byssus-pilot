@@ -17,10 +17,12 @@
 13. [Thread testing tutorial](https://monicaklopp.github.io/Thread-Testing-01-Notebook-Post/)
 
 # Progress
-1. 20210605 - System setup
-2. 20210901 - Experiments Completed
-3. 20220114 - RNA extractions completed
-4. 20220411 - Tag-seq results received
-5. 20220504 - Thread testing
+1. 20210605 - System setup.
+2. 20210901 - Experiments Completed; see semi-annual report for summary.
+3. 20220114 - RNA extractions completed; submitted to UT-Austin for Tag-seq.
+4. 20220411 - Tag-seq results received. QC, trimming, performed. Poor alignment with publicly available SRA data.
+5. 20221215 - Pooled gill and foot samples submitted to UWPacBio for Iso-seq.
 6. 20230302 - Henry trained on github/thread testing
 7. 20230408 - Eric trained on github/thread testing
+8. 20230601 - Thread testing completed
+9. 20230612 - Iso-seq resutls received.
