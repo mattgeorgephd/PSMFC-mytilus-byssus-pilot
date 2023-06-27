@@ -15,6 +15,7 @@
 11. [Mussel plaque area](https://docs.google.com/spreadsheets/d/1AaStDX_XVuMl8XxUTYageePXyVtqKqtjcnJR2YDtGM4/edit?usp=sharing)
 12. [Mussel qPCR musings](https://docs.google.com/spreadsheets/d/1-BqoD61wa1P5QbTdN6qaLXa9tnb_gKvf47h5KVIY_UE/edit?usp=sharing)
 13. [Thread testing tutorial](https://monicaklopp.github.io/Thread-Testing-01-Notebook-Post/)
+14. [Iso-seq analysis github issue](https://github.com/RobertsLab/resources/issues/1662)
 
 # Progress
 1. 20210605 - System setup.
