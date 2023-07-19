@@ -1,0 +1,71 @@
+---
+title: "05-IsoSeq-transcriptome-check"
+author: Steven Roberts
+date: "`r format(Sys.time(), '%d %B, %Y')`" 
+output: 
+  github_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    html_preview: true
+  html_document:
+    theme: readable
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: true
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(DESeq2)
+library(pheatmap)
+library(RColorBrewer)
+library(data.table)
+library(DT)
+library(Biostrings)
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = FALSE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 6,       # Set plot width in inches
+  fig.height = 4,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+```
+
+Lets take look at Isoseq fasta
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+# Load the sequences from a fasta file
+fasta_path <- "path_to_your_fasta_file.fasta" # Change to your FASTA file path
+dna_sequences <- readDNAStringSet(fasta_path)
+
+# Calculate the lengths of the sequences
+sequence_lengths <- width(dna_sequences)
+
+# Convert to a data frame for ggplot
+df <- data.frame(Length = sequence_lengths)
+
+# Plot the length distribution
+ggplot(df, aes(x = Length)) + 
+  geom_histogram(color = "black", fill = "white", bins = 30) +
+  theme_minimal() +
+  labs(title = "Sequence Length Distribution",
+       x = "Sequence Length",
+       y = "Count")
+```
