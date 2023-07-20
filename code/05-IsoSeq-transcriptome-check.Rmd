@@ -43,16 +43,18 @@ knitr::opts_chunk$set(
 Lets take look at Isoseq fasta
 
 
-```{r}
+```{bash}
+cd ../data/
 
+curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_transcripts.fasta
 ```
 
 
 
-```{r}
+```{r, eval=TRUE}
 
 # Load the sequences from a fasta file
-fasta_path <- "path_to_your_fasta_file.fasta" # Change to your FASTA file path
+fasta_path <- "../data/Mtros-hq_transcripts.fasta" # Change to your FASTA file path
 dna_sequences <- readDNAStringSet(fasta_path)
 
 # Calculate the lengths of the sequences
@@ -68,4 +70,17 @@ ggplot(df, aes(x = Length)) +
   labs(title = "Sequence Length Distribution",
        x = "Sequence Length",
        y = "Count")
+
+# Number of sequences shorter than 500 bp
+short_sequences <- sum(sequence_lengths < 500)
+print(short_sequences)
+
+
+
+really_short_sequences <- sum(sequence_lengths < 200)
+print(really_short_sequences)
 ```
+
+
+
+

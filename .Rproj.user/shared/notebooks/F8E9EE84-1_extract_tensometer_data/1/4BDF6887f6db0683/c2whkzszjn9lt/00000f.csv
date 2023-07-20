@@ -1,7 +1,0 @@
-"0","write.xlsx(max_force_treatment, file=""thread_strength/summarized_data/max_force_treatment.xlsx"", colNames = TRUE)"
-"0","write.xlsx(integral_treatment, file=""thread_strength/summarized_data/integral_treatment.xlsx"", colNames = TRUE)"
-"0","print(""done"")"
-"1","[1]"
-"1"," ""done"""
-"1","
-"
