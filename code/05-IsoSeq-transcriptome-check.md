@@ -1,7 +1,7 @@
 05-IsoSeq-transcriptome-check
 ================
 Steven Roberts
-19 July, 2023
+20 July, 2023
 
 Lets take look at Isoseq fasta
 
