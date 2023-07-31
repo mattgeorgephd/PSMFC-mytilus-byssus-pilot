@@ -1,0 +1,614 @@
+---
+title: "7_group-gene-plots"
+author: "Matt George"
+date: "2023-05-29"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE, warning = TRUE, message = FALSE, cache = TRUE)
+```
+
+```{bash, engine.opts='-l'}
+echo $PATH
+```
+
+### Load libraries
+```{r load_libraries, inlcude = TRUE}
+
+## clear
+rm(list=ls())
+
+# List of packages we want to install (run every time)
+load.lib<-c("tidyverse", "readxl", "gptstudio", "plotly", "ggbreak", "patchwork")
+
+# Select only the packages that aren't currently installed (run every time)
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+
+# And finally we install the missing packages, including their dependency.
+for(lib in install.lib) install.packages(lib,dependencies=TRUE)
+# After the installation process completes, we load all packages.
+sapply(load.lib,require,character=TRUE)
+                        
+```
+
+#Set ggplot theme
+```{r ggplot_theme, include=FALSE}
+
+my_theme <- theme(line              = element_line(linewidth=1.5),
+                  rect              = element_rect(linewidth=1.5),
+                  text              = element_text(size=14,color="black"),
+                  panel.background  = element_blank(),
+                  panel.grid.major  = element_blank(), 
+                  panel.grid.minor  = element_blank(),
+                  axis.text.x       = element_text(size=16,color="black"),
+                  axis.text.y       = element_text(size=16,color="black"),
+                  axis.title.x      = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y      = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x      = element_line(color="black"),
+                  axis.ticks.y      = element_line(color="black"),
+                  # axis.line         = element_line(color = "black", size = 0.1),
+                  panel.border      = element_rect(color = "black", fill=NA, linewidth=1.5),
+                  legend.key        = element_blank()) # removes background of legend bullets
+```
+
+### Load data
+```{r}
+
+chaperones_2n        <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "MC_list_2n", col_names = TRUE)
+chaperones_2n$trt    <- factor(chaperones_2n$trt, levels = c("ctrl","SS","MS"))
+chaperones_2n$group  <- factor(chaperones_2n$group)
+
+chaperones_3n        <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "MC_list_3n", col_names = TRUE)
+chaperones_3n$trt    <- factor(chaperones_3n$trt, levels = c("ctrl","SS","MS"))
+chaperones_3n$group  <- factor(chaperones_3n$group)
+
+
+chaperones_2n_limited <- chaperones_2n %>% filter(group == "HSP 27" | group == "HSP 60" | group == "HSP 68" | group == "HSP 70" | group == "HSP 83" | group == "HSP 90" | group == "Bag3")
+chaperones_3n_limited <- chaperones_3n %>% filter(group == "HSP 27" | group == "HSP 60" | group == "HSP 68" | group == "HSP 70" | group == "HSP 83" | group == "HSP 90" | group == "Bag3")
+
+
+```
+
+### Graph
+```{r}
+library("RColorBrewer")
+# create a line plot using the "chaperones" data frame. Plot L2FC as a function of trt, grouped by ploidy, for each transcript. Color lines according to the values in group. 
+
+
+
+grey_scale <- c("#323232","#404040","#4f4f4f","#5e5e5e","#5e5e5f","#69696a","#747475","#7f7f80","#8a8a8b","#959596","#a0a0a1")
+
+
+# create line plot
+p1 <- ggplot(chaperones_2n, aes(x = trt, y = L2FC, group = transcript, col = group)) + 
+      geom_line(linewidth=1) + 
+      labs(x = "trt", y = "L2FC") +
+      scale_color_manual(values=c("grey","#f3eb3c",rep("grey",4),"#ff9a01","grey","#4ac159","#ef5754",rep("grey",5),"#028dd8")) +
+      scale_y_continuous(breaks = seq(-2,10,2),limits = c(-3, 11)) +
+      scale_x_discrete(expand=c(0,1)) +
+      my_theme
+
+p1
+
+
+p2 <- ggplot(chaperones_3n, aes(x = trt, y = L2FC, group = transcript, col = group)) + 
+      geom_line(linewidth=1) + 
+      labs(x = "trt", y = "L2FC") +
+      scale_color_manual(values=c("grey","#f3eb3c",rep("grey",4),"#ff9a01","grey","#4ac159","#ef5754",rep("grey",5),"#028dd8")) +
+      scale_y_continuous(breaks = seq(-2,10,2),limits = c(-3, 11)) +
+      scale_x_discrete(expand=c(0,1)) +
+      my_theme
+
+p2
+
+
+ggsave("analyses/chaperones/LINE_chaperones-2n.png",
+       plot   = p1,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 4,
+       units  = "in")
+
+ggsave("analyses/chaperones/LINE_chaperones-3n.png",
+       plot   = p2,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 4,
+       units  = "in")
+
+
+```
+
+### Load data
+```{r}
+
+IAP_2n        <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "IAP_list_2n", col_names = TRUE)
+IAP_2n$trt    <- factor(IAP_2n$trt, levels = c("ctrl","SS","MS"))
+IAP_2n$group  <- factor(IAP_2n$group)
+
+IAP_3n        <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "IAP_list_3n", col_names = TRUE)
+IAP_3n$trt    <- factor(IAP_3n$trt, levels = c("ctrl","SS","MS"))
+IAP_3n$group  <- factor(IAP_3n$group)
+
+
+# IAP_2n_limited <- IAP_2n %>% filter(group == "HSP 27" | group == "HSP 60" | group == "HSP 68" | group == "HSP 70" | group == "HSP 83" | group == "HSP 90" | group == "Bag3")
+# IAP_3n_limited <- IAP_3n %>% filter(group == "HSP 27" | group == "HSP 60" | group == "HSP 68" | group == "HSP 70" | group == "HSP 83" | group == "HSP 90" | group == "Bag3")
+
+
+```
+
+### Graph
+```{r}
+library("RColorBrewer")
+# create a line plot using the "chaperones" data frame. Plot L2FC as a function of trt, grouped by ploidy, for each transcript. Color lines according to the values in group. 
+
+
+
+grey_scale <- c("#323232","#404040","#4f4f4f","#5e5e5e","#5e5e5f","#69696a","#747475","#7f7f80","#8a8a8b","#959596","#a0a0a1")
+
+
+# create line plot
+p1 <- ggplot(IAP_2n, aes(x = trt, y = L2FC, group = transcript, col = group)) + 
+      geom_line(linewidth=1) + 
+      labs(x = "trt", y = "L2FC") +
+      # scale_color_manual(values=c("grey","#f3eb3c",rep("grey",4),"#ff9a01","grey","#4ac159","#ef5754",rep("grey",5),"#028dd8")) +
+      scale_y_continuous(breaks = seq(-2,10,2),limits = c(-2.3, 6)) +
+      scale_x_discrete(expand=c(0,1)) +
+      my_theme
+
+p1
+
+
+p2 <- ggplot(IAP_3n, aes(x = trt, y = L2FC, group = transcript, col = group)) + 
+      geom_line(linewidth=1) + 
+      labs(x = "trt", y = "L2FC") +
+      # scale_color_manual(values=c("grey","#f3eb3c",rep("grey",4),"#ff9a01","grey","#4ac159","#ef5754",rep("grey",5),"#028dd8")) +
+      scale_y_continuous(breaks = seq(-2,10,2),limits = c(-2.3, 6)) +
+      scale_x_discrete(expand=c(0,1)) +
+      my_theme
+
+p2
+
+
+ggsave("analyses/IAP/LINE_IAP-2n.png",
+       plot   = p1,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 4,
+       units  = "in")
+
+ggsave("analyses/IAP/LINE_IAP-3n.png",
+       plot   = p2,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 4,
+       units  = "in")
+
+
+```
+
+
+
+
+
+
+
+
+
+
+### Compare the top 50 (characterized) genes (25 up / 25 down regulated) in each ploidy following SS and MS exposure
+### Load data
+```{r}
+
+# load dataset and gene codes
+TOP_C        <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "top_C", col_names = TRUE)
+TOP_SS       <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "top_SS", col_names = TRUE)
+TOP_MS       <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "top_MS", col_names = TRUE)
+TOP_C_list   <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "top_C_list", col_names = TRUE)
+TOP_SS_list  <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "top_SS_list", col_names = TRUE)
+TOP_MS_list  <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "top_MS_list", col_names = TRUE)
+TOP_color    <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "top_color", col_names = TRUE)
+
+# filter by ploidy
+TOP_SS_2n  <- TOP_SS %>% filter(ploidy == "diploid")
+TOP_SS_3n  <- TOP_SS %>% filter(ploidy == "triploid")
+TOP_MS_2n  <- TOP_MS %>% filter(ploidy == "diploid")
+TOP_MS_3n  <- TOP_MS %>% filter(ploidy == "triploid")
+
+# factor gene codes so x axis is in the right order
+TOP_C$code     <- factor(TOP_C$code,     levels = TOP_C_list$code, ordered = TRUE)
+TOP_SS_2n$code <- factor(TOP_SS_2n$code, levels = TOP_SS_list$diploid, ordered = TRUE)
+TOP_SS_3n$code <- factor(TOP_SS_3n$code, levels = TOP_SS_list$triploid, ordered = TRUE)
+TOP_MS_2n$code <- factor(TOP_MS_2n$code, levels = TOP_MS_list$diploid, ordered = TRUE)
+TOP_MS_3n$code <- factor(TOP_MS_3n$code, levels = TOP_MS_list$triploid, ordered = TRUE)
+
+TOP_C$category     <- factor(TOP_C$category,     levels = TOP_color$category, ordered = TRUE)
+TOP_SS_2n$category <- factor(TOP_SS_2n$category, levels = TOP_color$category, ordered = TRUE)
+TOP_SS_3n$category <- factor(TOP_SS_3n$category, levels = TOP_color$category, ordered = TRUE)
+TOP_MS_2n$category <- factor(TOP_MS_2n$category, levels = TOP_color$category, ordered = TRUE)
+TOP_MS_3n$category <- factor(TOP_MS_3n$category, levels = TOP_color$category, ordered = TRUE)
+
+```
+
+#Set ggplot theme
+```{r ggplot_theme, include=FALSE}
+
+TOP_theme <- theme(line          = element_line(linewidth=1.5),
+                  rect              = element_rect(linewidth=1.5),
+                  text              = element_text(size=12,color="black"),
+                  panel.background  = element_blank(),
+                  panel.grid.major  = element_blank(), 
+                  panel.grid.minor  = element_blank(),
+                  axis.text.x       = element_text(size=10,color="black"),
+                  axis.text.y       = element_text(size=6,color="black"),
+                  axis.title.x      = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y      = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x      = element_line(color="black", linewidth = 0.5),
+                  axis.ticks.y      = element_line(color="black", linewidth = 0.5),
+                  # axis.line         = element_line(color = "black", size = 0.1),
+                  panel.border      = element_rect(color = "black", fill=NA, linewidth=1.5),
+                  legend.key        = element_blank()) # removes background of legend bullets
+```
+
+### Graph
+```{r}
+
+g0 <- ggplot(TOP_C, aes(x = code, y = L2FC, fill = category)) +
+      geom_bar(stat = "identity") +
+      scale_fill_manual(values = TOP_color$color) +
+      scale_x_discrete(expand = c(0,1)) +
+      # scale_y_continuous(limits = c(-3,3), breaks = seq(-3,3,1)) +
+      coord_flip() +  
+      TOP_theme 
+
+g0
+
+
+g1 <- ggplot(TOP_SS_2n, aes(x = code, y = L2FC, fill = category)) +
+      geom_bar(stat = "identity") +
+      scale_fill_manual(values = TOP_color$color) +
+      scale_x_discrete(expand = c(0,1)) +
+      # scale_y_continuous(limits = c(-3,3), breaks = seq(-3,3,1)) +
+      coord_flip() +  
+      TOP_theme
+
+g1
+
+g2 <- ggplot(TOP_SS_3n, aes(x = code, y = L2FC, fill = category)) +
+      geom_bar(stat = "identity") +
+      scale_fill_manual(values = TOP_color$color) +
+      scale_x_discrete(expand = c(0,1)) +
+      # scale_y_continuous(limits = c(-3,3), breaks = seq(-3,3,1)) +
+      coord_flip() +  
+      TOP_theme
+
+g2
+
+g3 <- ggplot(TOP_MS_2n, aes(x = code, y = L2FC, fill = category)) +
+      geom_bar(stat = "identity") +
+      scale_fill_manual(values = TOP_color$color) +
+      scale_x_discrete(expand = c(0,1)) +
+      scale_y_continuous(limits = c(-3.5,9), breaks = seq(-2,10,2)) +
+      # scale_y_break(c(3,4.5),scales = 0.2) +
+      coord_flip() +  
+      TOP_theme
+
+g3
+
+g4 <- ggplot(TOP_MS_3n, aes(x = code, y = L2FC, fill = category)) +
+      geom_bar(stat = "identity") +
+      scale_fill_manual(values = TOP_color$color) +
+      scale_x_discrete(expand = c(0,1)) +
+      scale_y_continuous(limits = c(-6,9), breaks = seq(-4,10,2)) +
+      # scale_y_break(c(3,4.5),scales = 0.2) +
+      coord_flip() +  
+      TOP_theme
+
+g4
+
+
+ggsave("analyses/TOP/BAR_top_C.png",
+       plot   = g0,
+       dpi    = 1200,
+       device = "png",
+       width  = 5.5,
+       height = 5,
+       units  = "in")
+
+
+ggsave("analyses/TOP/BAR_top_SS_2n.png",
+       plot   = g1,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 5,
+       units  = "in")
+
+ggsave("analyses/TOP/BAR_top_SS_3n.png",
+       plot   = g2,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 5,
+       units  = "in")
+
+ggsave("analyses/TOP/BAR_top_MS_2n_full.png",
+       plot   = g3,
+       dpi    = 1200,
+       device = "png",
+       width  = 5.5,
+       height = 5,
+       units  = "in")
+
+ggsave("analyses/TOP/BAR_top_MS_3n_full.png",
+       plot   = g4,
+       dpi    = 1200,
+       device = "png",
+       width  = 5.5,
+       height = 5,
+       units  = "in")
+
+```
+
+
+#### IMMUNE
+### Compare (characterized) immune genes with >1 LFC difference between 2n/3n; only significant DEG included (diploid control used as consistent standard)
+### Load data
+```{r}
+
+# Single stressor
+IMMUNE_SS         <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "immune_SS_diff", col_names = TRUE)
+IMMUNE_SS_list    <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "immune_SS_diff_list", col_names = TRUE)
+IMMUNE_SS$ploidy  <- factor(IMMUNE_SS$ploidy)
+IMMUNE_SS$code    <- factor(IMMUNE_SS$code, levels = IMMUNE_SS_list$code, ordered = TRUE)
+
+# Multiple stressors
+IMMUNE_MS         <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "immune_MS_diff", col_names = TRUE)
+IMMUNE_MS_list    <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "immune_MS_diff_list", col_names = TRUE)
+IMMUNE_MS$ploidy  <- factor(IMMUNE_MS$ploidy)
+IMMUNE_MS$code    <- factor(IMMUNE_MS$code, levels = IMMUNE_MS_list$code, ordered = TRUE)
+
+
+#Set ggplot theme
+
+immune_theme <- theme(line          = element_line(linewidth=1.5),
+                  rect              = element_rect(linewidth=1.5),
+                  text              = element_text(size=12,color="black"),
+                  panel.background  = element_blank(),
+                  panel.grid.major  = element_blank(), 
+                  panel.grid.minor  = element_blank(),
+                  axis.text.x       = element_text(size=10,color="black"),
+                  axis.text.y       = element_text(size=6,color="black"),
+                  axis.title.x      = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y      = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x      = element_line(color="black", linewidth = 0.5),
+                  axis.ticks.y      = element_line(color="black", linewidth = 0.5),
+                  # axis.line         = element_line(color = "black", size = 0.1),
+                  panel.border      = element_rect(color = "black", fill=NA, linewidth=1.5),
+                  legend.key        = element_blank()) # removes background of legend bullets
+
+
+# Graph
+
+g1 <- ggplot(IMMUNE_SS, aes(x = code, y = L2FC, color = ploidy)) +
+     geom_line(aes(group = code), color = "black", linewidth = 1) +
+     geom_point(size=2) +
+     scale_color_manual(values = c("skyblue4", "orangered2")) +
+     scale_x_discrete(expand = c(0,1)) +
+     scale_y_continuous(limits = c(-4,4), breaks = seq(-4,10,2)) +
+     coord_flip() +  
+     immune_theme
+
+ggplotly(g1)
+
+g1
+
+
+g2 <- ggplot(IMMUNE_MS, aes(x = code, y = L2FC, color = ploidy)) +
+      geom_line(aes(group = code), color = "black", linewidth = 1) +
+      geom_point(size=2) +
+      scale_color_manual(values = c("skyblue4", "orangered2")) +
+      scale_x_discrete(expand = c(0,1)) +
+      # scale_y_continuous(limits = c(-4.5,4), breaks = seq(-2,10,2)) +
+      coord_flip() + 
+      immune_theme
+
+ggplotly(g2)
+
+g2
+
+ggsave("analyses/immune/LINE_immune_SS.png",
+       plot   = g1,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 5,
+       units  = "in")
+
+ggsave("analyses/immune/LINE_immune_MS.png",
+       plot   = g2,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 5,
+       units  = "in")
+
+
+```
+#### STRESS
+### Compare (characterized) stress genes with >1 LFC difference between 2n/3n; only significant DEG included (diploid control used as consistent standard)
+### Load data
+```{r}
+
+# Single stressor
+STRESS_SS         <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "stress_SS_diff", col_names = TRUE)
+STRESS_SS_list    <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "stress_SS_diff_list", col_names = TRUE)
+STRESS_SS$ploidy  <- factor(STRESS_SS$ploidy)
+STRESS_SS$code    <- factor(STRESS_SS$code, levels = STRESS_SS_list$code, ordered = TRUE)
+
+# Multiple stressors
+STRESS_MS         <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "stress_MS_diff", col_names = TRUE)
+STRESS_MS_list    <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "stress_MS_diff_list", col_names = TRUE)
+STRESS_MS$ploidy  <- factor(STRESS_MS$ploidy)
+STRESS_MS$code    <- factor(STRESS_MS$code, levels = STRESS_MS_list$code, ordered = TRUE)
+
+
+#Set ggplot theme
+
+STRESS_theme <- theme(line          = element_line(linewidth=1.5),
+                  rect              = element_rect(linewidth=1.5),
+                  text              = element_text(size=12,color="black"),
+                  panel.background  = element_blank(),
+                  panel.grid.major  = element_blank(), 
+                  panel.grid.minor  = element_blank(),
+                  axis.text.x       = element_text(size=10,color="black"),
+                  axis.text.y       = element_text(size=6,color="black"),
+                  axis.title.x      = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y      = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x      = element_line(color="black", linewidth = 0.5),
+                  axis.ticks.y      = element_line(color="black", linewidth = 0.5),
+                  # axis.line         = element_line(color = "black", size = 0.1),
+                  panel.border      = element_rect(color = "black", fill=NA, linewidth=1.5),
+                  legend.key        = element_blank()) # removes background of legend bullets
+
+
+# Graph
+
+g1 <- ggplot(STRESS_SS, aes(x = code, y = L2FC, color = ploidy)) +
+      geom_line(aes(group = code), color = "black", linewidth = 1) +
+      geom_point(size=2) +
+      scale_color_manual(values = c("skyblue4", "orangered2")) +
+      scale_x_discrete(expand = c(0,1)) +
+      scale_y_continuous(limits = c(-3,3.5), breaks = seq(-2,10,2)) +
+      coord_flip() +  
+      STRESS_theme
+
+ggplotly(g1)
+
+g1
+
+
+g2 <- ggplot(STRESS_MS, aes(x = code, y = L2FC, color = ploidy)) +
+      geom_line(aes(group = code), color = "black", linewidth = 1) +
+      geom_point(size=2) +
+      scale_color_manual(values = c("skyblue4", "orangered2")) +
+      scale_x_discrete(expand = c(0,1)) +
+      scale_y_continuous(limits = c(-3,10), breaks = seq(-2,10,2)) +
+      # scale_y_break(c(3,3.5),scales = 0.5) +
+      coord_flip() +  
+      STRESS_theme
+
+ggplotly(g2)
+
+g2
+
+ggsave("analyses/stress/LINE_stress_SS.png",
+       plot   = g1,
+       dpi    = 1200,
+       device = "png",
+       width  = 5,
+       height = 5,
+       units  = "in")
+
+ggsave("analyses/stress/LINE_stress_MS.png",
+       plot   = g2,
+       dpi    = 1200,
+       device = "png",
+       width  = 4,
+       height = 5,
+       units  = "in")
+
+
+```
+
+
+#### Metabolism
+### Compare (characterized) metabolic genes with >1 LFC difference between 2n/3n; only significant DEG included (diploid control used as consistent standard)
+### Load data
+```{r}
+
+# Single metaor
+META_SS         <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "meta_SS_diff", col_names = TRUE)
+META_SS_list    <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "meta_SS_diff_list", col_names = TRUE)
+META_SS$ploidy  <- factor(META_SS$ploidy)
+META_SS$code    <- factor(META_SS$code, levels = META_SS_list$code, ordered = TRUE)
+
+# Multiple metaors
+META_MS         <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "meta_MS_diff", col_names = TRUE)
+META_MS_list    <- read_excel("data/gene_lists-diploid-control.xlsx", sheet = "meta_MS_diff_list", col_names = TRUE)
+META_MS$ploidy  <- factor(META_MS$ploidy)
+META_MS$code    <- factor(META_MS$code, levels = META_MS_list$code, ordered = TRUE)
+
+
+#Set ggplot theme
+
+META_theme <- theme(line          = element_line(linewidth=1.5),
+                  rect              = element_rect(linewidth=1.5),
+                  text              = element_text(size=12,color="black"),
+                  panel.background  = element_blank(),
+                  panel.grid.major  = element_blank(), 
+                  panel.grid.minor  = element_blank(),
+                  axis.text.x       = element_text(size=10,color="black"),
+                  axis.text.y       = element_text(size=6,color="black"),
+                  axis.title.x      = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y      = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x      = element_line(color="black", linewidth = 0.5),
+                  axis.ticks.y      = element_line(color="black", linewidth = 0.5),
+                  # axis.line         = element_line(color = "black", size = 0.1),
+                  panel.border      = element_rect(color = "black", fill=NA, linewidth=1.5),
+                  legend.key        = element_blank()) # removes background of legend bullets
+
+
+# Graph
+
+g1 <- ggplot(META_SS, aes(x = code, y = L2FC, color = ploidy)) +
+      geom_line(aes(group = code), color = "black", linewidth = 1) +
+      geom_point(size=2) +
+      scale_color_manual(values = c("skyblue4", "orangered2")) +
+      scale_x_discrete(expand = c(0,1)) +
+      scale_y_continuous(limits = c(-2.5,2.5), breaks = seq(-2,10,1)) +
+      coord_flip() +  
+      META_theme
+
+ggplotly(g1)
+
+g1
+
+
+g2 <- ggplot(META_MS, aes(x = code, y = L2FC, color = ploidy)) +
+      geom_line(aes(group = code), color = "black", linewidth = 1) +
+      geom_point(size=2) +
+      scale_color_manual(values = c("skyblue4", "orangered2")) +
+      scale_x_discrete(expand = c(0,1)) +
+      scale_y_continuous(limits = c(-2.5,2.5), breaks = seq(-2,10,1)) +
+      # scale_y_break(c(3,3.5),scales = 0.5) +
+      coord_flip() +  
+      META_theme
+
+ggplotly(g2)
+
+g2
+
+ggsave("analyses/meta/LINE_meta_SS.png",
+       plot   = g1,
+       dpi    = 1200,
+       device = "png",
+       width  = 4.5,
+       height = 5,
+       units  = "in")
+
+ggsave("analyses/meta/LINE_meta_MS.png",
+       plot   = g2,
+       dpi    = 1200,
+       device = "png",
+       width  = 4.5,
+       height = 5,
+       units  = "in")
+
+
+```
