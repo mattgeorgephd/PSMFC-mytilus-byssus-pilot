@@ -3,11 +3,11 @@ title: "Annotation"
 author: Steven Roberts
 date: "`r format(Sys.time(), '%d %B, %Y')`" 
 output: 
-  # github_document:
-  #   toc: true
-  #   toc_depth: 3
-  #   number_sections: true
-  #   html_preview: true
+  github_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    html_preview: true
   html_document:
     theme: readable
     highlight: zenburn
