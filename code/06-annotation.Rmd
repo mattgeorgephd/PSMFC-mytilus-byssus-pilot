@@ -91,6 +91,12 @@ head -2 ../analyses/blast/Mtros-hq-uniprot_blastx.tab
 blast <- read.csv("../analyses/blast/Mtros-hq-uniprot_blastx.tab", sep = '\t', header = FALSE)
 ```
 
+```{r eval=TRUE}
+blastsp <- blast %>%
+  mutate(SPID = str_extract(V2, "(?<=\\|)[^\\|]*(?=\\|)"))
+```
+
+
 Now lets just write out SPIDs.
 
 ```{r, eval=TRUE}
@@ -109,35 +115,29 @@ With a list of matching Swiss-Prot IDs, (technically UniProt Accession number) w
 python3 uniprot-retrieval.py ../analyses/blast/SPID.txt
 ```
 
+```{r engine='bash'}
+mv uniprot-retrieval.tsv.gz ../analyses/blast/uniprot-retrieval.tsv.gz
 
-
-**Using Web**
-
-Using ID Mapping
-
-![id](http://gannet.fish.washington.edu/seashell/snaps/Monosnap_RetrieveID_mapping__UniProt_2023-07-10_10-03-33.png)
-
-Now will customize columns to get GO IDs.
-
-![custcol](http://gannet.fish.washington.edu/seashell/snaps/Monosnap_RetrieveID_mapping_results__UniProtKB__UniProt_2023-07-10_10-07-05.png)
-
-```{r engine='bash', eval=TRUE}
-head -2 ../analyses/blast/idmapping_2023_08_07.tsv
+gunzip ../analyses/blast/uniprot-retrieval.tsv.gz
 ```
 
-Finally we can join table to get "LOCIDs" the notation for our DEGs, with GO terms.
+
+Web
 
 ```{r, eval=TRUE}
-go <- read.csv("DRAFT_Funct_Enrich/annot/uniprotGO.tab", sep = '\t', header = TRUE, row.names=NULL)
+idmap <- read.csv("../analyses/blast/idmapping_2023_08_07.tsv", sep = '\t', header = TRUE, row.names=NULL)
 ```
 
+Joining 
+
+
 ```{r, eval=TRUE}
-left_join(g.spid, go, by = c("SPID" = "Entry")) %>%
-  select(gene,Gene.Ontology.IDs) %>%
-  write.table(file = "DRAFT_Funct_Enrich/annot/geneGO.txt", sep = "\t", row.names = FALSE, quote = FALSE
+left_join(blastsp, idmap, by = c("SPID" = "Entry")) %>%
+  select(V1, V2, V11, Protein.names, Gene.Ontology..biological.process., Gene.Ontology.IDs) %>%
+write.table(file = "../analyses/blast/Mtros_GO.txt", sep = #"\t", row.names = FALSE, quote = FALSE
   )
 ```
 
 ```{r engine='bash', eval=TRUE}
-head DRAFT_Funct_Enrich/annot/geneGO.txt
+head ../analyses/blast/Mtros_GO.txt
 ```
