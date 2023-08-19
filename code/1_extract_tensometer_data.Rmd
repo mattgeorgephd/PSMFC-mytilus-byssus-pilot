@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 Load packages; set ggplot theme
-```{r message=FALSE, warning=FALSE}
+```{r message=TRUE, warning=TRUE}
 
 ## RUN as part of "PSMFC-mytilus-byssus-pilot.Rproj"
 
@@ -53,7 +53,7 @@ my_theme <- theme(line              = element_line(size=1.2),
 # extract data from all .txt files in a folder located at thread_strength/tensometer_output/control/ and add it to a nested list object
 # the data has three column headers: Time, displacement, force. 
 # Add a third data column called "mussel" that is the first three characters of the file name.
-
+getwd()
 # Set the working directory to the folder containing the txt files
 setwd("thread_strength/tensometer_output/control/")
 
@@ -88,11 +88,12 @@ for (file_name in txt_files) {
     data_snipped$displacement[is.na(data_snipped$displacement)] <- 0
     data_snipped$force[is.na(data_snipped$force)] <- 0
   
-    # Add a new column called "mussel" that contains the first three characters of the file name
-    data_snipped$mussel <- substr(file_name, start = 1, stop = 3)
-    
-    # Add new column that adds thread run
-    data_snipped$thread <- substr(file_name, start = 5, stop = 6)
+    # Extract mussel ID & thread test
+    split_1 <- str_split(file_name, "_") # Split file name by _
+    split_2 <- split_1[[1]][[2]] # Save thread test & .txt
+    split_3 <- str_split(split_2, "\\.") # Split thread test and .txt
+    data_snipped$mussel <- split_1[[1]][[1]] # Saving mussel ID
+    data_snipped$thread <- split_3[[1]][[1]] # Saving thread number
   
     # Add the data to the nested list using the file name as the list name
     nested_list[[file_name]] <- data_snipped
@@ -141,7 +142,7 @@ require(stats)
 setwd("thread_strength/QC_plots/control/")
 
 # create a data frame with three columns: mussel, thread, and max_force
-integral <- data.frame(mussel = numeric(),
+integral_control <- data.frame(mussel = numeric(),
                         thread = numeric(),
                         auc = numeric())
 
@@ -167,7 +168,7 @@ for(i in seq_along(nested_list)){
   thread_first_val <- nested_list[[i]]$thread[1]
   
   # create a dataframe to store the results, and save the variables to the corresponding columns in the dataframe
-  integral_control <- rbind(integral, data.frame(mussel = nested_list[[i]]$mussel[1],
+  integral_control <- rbind(integral_control, data.frame(mussel = nested_list[[i]]$mussel[1],
                                            thread = nested_list[[i]]$thread[1],
                                            auc = auc))
 }
