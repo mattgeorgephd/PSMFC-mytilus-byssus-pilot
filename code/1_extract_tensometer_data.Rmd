@@ -19,7 +19,7 @@ Load packages; set ggplot theme
 rm(list=ls())
 
 ## Load Packages
-load.lib<-c("readxl","tidyverse","openxlsx") # List of required packages
+load.lib<-c("readxl","tidyverse","openxlsx","EnvStats") # List of required packages
 install.lib <- load.lib[!load.lib %in% installed.packages()] # Select missing packages
 for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missing packages + dependencies
 sapply(load.lib,require,character=TRUE) # Load all packages.
@@ -175,6 +175,26 @@ for(i in seq_along(nested_list)){
 
 
 ```
+
+```{r}
+library(ggplot2)
+hist(max_force_control$max_force)
+max_force_control$ID <- paste(max_force_control$mussel, max_force_control$thread)
+  ggplot(data=max_force_control, aes(x=1, y=max_force, label = ID))+
+  geom_boxplot(width=.5)+
+  # jittered text with geom_text
+  geom_text(check_overlap = TRUE,
+            position=position_jitter(width=0.15))+
+  theme(legend.position="none")
+```
+```{r}
+library(EnvStats)
+test <- rosnerTest(max_force_control$max_force,
+  k = 5
+)
+test
+```
+
 ```{r}
 write.xlsx(max_force_control, file="thread_strength/summarized_data/max_force_control.xlsx", colNames = TRUE)
 write.xlsx(integral_control, file="thread_strength/summarized_data/integral_control.xlsx", colNames = TRUE)
@@ -230,7 +250,7 @@ for (file_name in txt_files) {
     data_snipped$mussel <- substr(file_name, start = 1, stop = 4)
     
     # Add new column that adds thread run
-    data_snipped$thread <- substr(file_name, start = 5, stop = 6)
+    data_snipped$thread <- substr(file_name, start = 6, stop = 7)
   
     # Add the data to the nested list using the file name as the list name
     nested_list[[file_name]] <- data_snipped
@@ -279,6 +299,11 @@ require(stats)
 setwd("thread_strength/QC_plots/treatment/")
 
 # create a data frame with three columns: mussel, thread, and max_force
+integral <- data.frame(mussel = numeric(),
+                        thread = numeric(),
+                        auc = numeric())
+
+# create a data frame with three columns: mussel, thread, and max_force
 integral_treatment <- data.frame(mussel = numeric(),
                         thread = numeric(),
                         auc = numeric())
@@ -305,7 +330,7 @@ for(i in seq_along(nested_list)){
   thread_first_val <- nested_list[[i]]$thread[1]
   
   # create a dataframe to store the results, and save the variables to the corresponding columns in the dataframe
-  integral_treatment <- rbind(integral, data.frame(mussel = nested_list[[i]]$mussel[1],
+  integral_treatment <- rbind(integral_treatment, data.frame(mussel = nested_list[[i]]$mussel[1],
                                            thread = nested_list[[i]]$thread[1],
                                            auc = auc))
 }
@@ -313,6 +338,25 @@ for(i in seq_along(nested_list)){
 
 ```
 
+```{r}
+library(ggplot2)
+hist(max_force_treatment$max_force)
+max_force_treatment$ID <- paste(max_force_treatment$mussel, max_force_treatment$thread)
+  ggplot(data=max_force_treatment, aes(x=1, y=max_force, label = ID))+
+  geom_boxplot(width=.5)+
+  # jittered text with geom_text
+  geom_text(check_overlap = TRUE,
+            position=position_jitter(width=0.15))+
+  theme(legend.position="none")
+```
+
+```{r}
+library(EnvStats)
+test <- rosnerTest(max_force_treatment$max_force,
+  k = 5
+)
+test
+```
 
 ```{r}
 write.xlsx(max_force_treatment, file="thread_strength/summarized_data/max_force_treatment.xlsx", colNames = TRUE)
