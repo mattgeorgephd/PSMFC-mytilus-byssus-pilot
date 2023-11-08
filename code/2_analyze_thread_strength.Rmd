@@ -47,14 +47,14 @@ mkdir analyses/thread_strength
 ```
 
 
-### LDOD data set
+### LOAD data set
 ```{r}
-# LDOd datasets
+# Load datasets
 thread_plot       <- read_excel("thread_strength/summarized_data/summary.xlsx", 
                               sheet = "data", col_names = TRUE)
 # trt_list        <- read_excel("data/respirometry/respirometry.xlsx", 
 #                               sheet = "trt_list", col_names = TRUE)
-thread_plot$treatment  <- factor(thread_plot$treatment,  levels = c("control","OW","DO","DO"), ordered=TRUE)
+thread_plot$treatment  <- factor(thread_plot$treatment,  levels = c("control","OW","OA","DO"), ordered=TRUE)
 thread_plot$mussel     <- factor(thread_plot$mussel)
 thread_plot$thread     <- factor(thread_plot$thread)
 
