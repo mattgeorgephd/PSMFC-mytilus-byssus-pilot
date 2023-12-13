@@ -41,103 +41,84 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this following chunk where the fasta file is downloaded the [release](https://www.uniprot.org/help/release-statistics) is noted and the file name is modified accordingly.
 
-```{r engine='bash', eval=FALSE}
+# Download tag-seq data
+```{bash}
+wget -r \
+--no-directories --no-parent \
+-P ../data \
+-A .fastq.gz https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/ \
+--no-check-certificate
+
+```
+
+unzip .fastq.gz files
+```{bash}
+
+#gunzip ../data/*.fastq.gz
+
+```
+
+
+# get transcriptome
+
+```{r, engine='bash'}
 cd ../data
-
-curl -O https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
-
-mv uniprot_sprot.fasta.gz uniprot_sprot_r2023_02.fasta.gz
-gunzip -k uniprot_sprot_r2023_02.fasta.gz
-```
-
-A protein blast database is then made.
-
-```{r engine='bash', eval=FALSE}
-/home/shared/ncbi-blast-2.11.0+/bin/makeblastdb \
--in ../data/uniprot_sprot_r2023_02.fasta \
--dbtype prot \
--out ../analyses/blast/uniprot_sprot_r2023_02
-```
-
-```{r engine='bash', eval=TRUE}
-head -4 ../data/Mtros-hq_transcripts.fasta
-
-
-grep ">" ../data/Mtros-hq_transcripts.fasta | head
-
-```
-
-```{r engine='bash', eval=FALSE}
-/home/shared/ncbi-blast-2.11.0+/bin/blastx \
--query ../data/Mtros-hq_transcripts.fasta \
--db ../analyses/blast/uniprot_sprot_r2023_02 \
--out ../analyses/blast/Mtros-hq-uniprot_blastx.tab \
--evalue 1E-20 \
--num_threads 40 \
--max_target_seqs 1 \
--max_hsps 1 \
--outfmt 6
-```
-
-Here is what the output file looks like, and at this point we want to get the UniProt Accession number for each gene
-
-```{r engine='bash', eval=TRUE}
-head -2 ../analyses/blast/Mtros-hq-uniprot_blastx.tab
-```
-
-```{r eval=TRUE}
-blast <- read.csv("../analyses/blast/Mtros-hq-uniprot_blastx.tab", sep = '\t', header = FALSE)
-```
-
-```{r eval=TRUE}
-blastsp <- blast %>%
-  mutate(SPID = str_extract(V2, "(?<=\\|)[^\\|]*(?=\\|)"))
+curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_transcripts.fasta
 ```
 
 
-Now lets just write out SPIDs.
-
-```{r, eval=TRUE}
-blast %>%
-  mutate(SPID = str_extract(V2, "(?<=\\|)[^\\|]*(?=\\|)")) %>%
-  distinct(V1, SPID, .keep_all = TRUE) %>%
-  select(SPID) %>%
-  write.table(file = "../analyses/blast/SPID.txt", sep = "\t", row.names = FALSE, quote = FALSE
-) 
-```
-
-With a list of matching Swiss-Prot IDs, (technically UniProt Accession number) we can go back to <https://www.uniprot.org> and grab corresponding GO terms. This can be done via a web or using Python API.
 
 
-```{r engine='bash'}
-python3 uniprot-retrieval.py ../analyses/blast/SPID.txt
-```
+# Create indices for transcriptome with Kallisto
+```{bash}
+# Build index
+/home/shared/kallisto/kallisto \
+index -i ../data/Mtros-hq_transcripts.index \
+../data/Mtros-hq_transcripts.fasta
+  
 
-```{r engine='bash'}
-mv uniprot-retrieval.tsv.gz ../analyses/blast/uniprot-retrieval.tsv.gz
-
-gunzip ../analyses/blast/uniprot-retrieval.tsv.gz
 ```
 
 
-Web
+```{bash}
+# Set the paths
+DATA_DIRECTORY="../data"
+KALLISTO_INDEX="../data/Mtros-hq_transcripts.index"
+OUTPUT_DIRECTORY="../analyses/07-kallisto"
 
-```{r, eval=TRUE}
-idmap <- read.csv("../analyses/blast/idmapping_2023_08_07.tsv", sep = '\t', header = TRUE, row.names=NULL)
+
+# Iterate over all .fq.gz files in the data directory
+for FILE in "$DATA_DIRECTORY"/*.fastq.gz; do
+    # Extract the base name of the file for naming the output folder
+    BASENAME=$(basename "$FILE" _R1_001.fastq.gz)
+
+    # Create output directory for this sample
+    SAMPLE_OUTPUT="$OUTPUT_DIRECTORY/$BASENAME"
+    mkdir -p "$SAMPLE_OUTPUT"
+
+    # Run Kallisto quantification
+    kallisto quant -i "$KALLISTO_INDEX" -o "$SAMPLE_OUTPUT" \
+        --single -t 20 -l 65 -s 2 "$FILE"
+done
+
+echo "Kallisto quantification complete."
 ```
 
-Joining 
 
 
-```{r, eval=TRUE}
-left_join(blastsp, idmap, by = c("SPID" = "Entry")) %>%
-  select(V1, V2, V11, Protein.names, Gene.Ontology..biological.process., Gene.Ontology.IDs) %>%
-write.table(file = "../analyses/blast/Mtros_GO.txt", sep = #"\t", row.names = FALSE, quote = FALSE
-  )
-```
 
-```{r engine='bash', eval=TRUE}
-head ../analyses/blast/Mtros_GO.txt
+# Quantify indices with Kallisto
+```{bash}
+# Quantify indices
+/home/shared/kallisto/kallisto quant \
+-i ../data/Mtros-hq_transcripts.index \
+--single \
+-l 40 \
+-s 1 \
+-o ../output/02/ \
+-t 40 \
+../data/*.fastq.gz \
+2> ../output/02/out.txt
+
 ```
