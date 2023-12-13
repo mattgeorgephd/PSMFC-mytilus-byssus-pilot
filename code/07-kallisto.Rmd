@@ -107,6 +107,31 @@ done
 echo "Kallisto quantification complete."
 ```
 
+```{bash}
+# Directory where your input files are located
+BASE_DIR="/path/to/your/directories"
+
+# Output directory for the results
+OUTPUT_DIR="/path/to/output"
+
+# Loop through each sub-directory
+for dir in $BASE_DIR/*; do
+    if [ -d "$dir" ]; then
+        # Extract the directory name
+        DIR_NAME=$(basename "$dir")
+
+        # Define input files. Modify this according to your file naming scheme
+        # e.g., assuming files end with '.txt'
+        INPUT_FILES="$dir/*.txt"
+
+        # Define the output file name based on the directory name
+        OUTPUT_FILE="$OUTPUT_DIR/${DIR_NAME}_output.txt"
+
+        # Run the Perl script
+        abundance_estimates_to_matrix.pl --est_method RSEM --out_prefix $OUTPUT_FILE $INPUT_FILES
+    fi
+done
+```
 
 
 
