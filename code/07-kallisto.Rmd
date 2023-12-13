@@ -73,8 +73,10 @@ curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_tran
 # Create indices for transcriptome with Kallisto
 ```{bash}
 # Build index
-/home/shared/kallisto/kallisto \
-index -i ../data/Mtros-hq_transcripts.index \
+/home/shared/kallisto_linux-v0.50.1/kallisto \
+index \
+-t 20 \
+-i ../data/Mtros-hq_transcripts.index \
 ../data/Mtros-hq_transcripts.fasta
   
 
@@ -98,7 +100,7 @@ for FILE in "$DATA_DIRECTORY"/*.fastq.gz; do
     mkdir -p "$SAMPLE_OUTPUT"
 
     # Run Kallisto quantification
-    kallisto quant -i "$KALLISTO_INDEX" -o "$SAMPLE_OUTPUT" \
+    /home/shared/kallisto_linux-v0.50.1/kallisto quant -i "$KALLISTO_INDEX" -o "$SAMPLE_OUTPUT" \
         --single -t 20 -l 65 -s 2 "$FILE"
 done
 
