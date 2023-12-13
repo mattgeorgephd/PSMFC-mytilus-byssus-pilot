@@ -41,103 +41,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this following chunk where the fasta file is downloaded the [release](https://www.uniprot.org/help/release-statistics) is noted and the file name is modified accordingly.
 
-```{r engine='bash', eval=FALSE}
-cd ../data
+Running kallisto 
 
-curl -O https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
+trimmed files are at https://gsafjobs.icmb.utexas.edu/tagseq_prep/JA22078_SA22060/fq.trim/A1-T001F_S100_L099_R1_cmb.trim.fastq.gz
 
-mv uniprot_sprot.fasta.gz uniprot_sprot_r2023_02.fasta.gz
-gunzip -k uniprot_sprot_r2023_02.fasta.gz
-```
-
-A protein blast database is then made.
-
-```{r engine='bash', eval=FALSE}
-/home/shared/ncbi-blast-2.11.0+/bin/makeblastdb \
--in ../data/uniprot_sprot_r2023_02.fasta \
--dbtype prot \
--out ../analyses/blast/uniprot_sprot_r2023_02
-```
-
-```{r engine='bash', eval=TRUE}
-head -4 ../data/Mtros-hq_transcripts.fasta
-
-
-grep ">" ../data/Mtros-hq_transcripts.fasta | head
-
-```
-
-```{r engine='bash', eval=FALSE}
-/home/shared/ncbi-blast-2.11.0+/bin/blastx \
--query ../data/Mtros-hq_transcripts.fasta \
--db ../analyses/blast/uniprot_sprot_r2023_02 \
--out ../analyses/blast/Mtros-hq-uniprot_blastx.tab \
--evalue 1E-20 \
--num_threads 40 \
--max_target_seqs 1 \
--max_hsps 1 \
--outfmt 6
-```
-
-Here is what the output file looks like, and at this point we want to get the UniProt Accession number for each gene
-
-```{r engine='bash', eval=TRUE}
-head -2 ../analyses/blast/Mtros-hq-uniprot_blastx.tab
-```
-
-```{r eval=TRUE}
-blast <- read.csv("../analyses/blast/Mtros-hq-uniprot_blastx.tab", sep = '\t', header = FALSE)
-```
-
-```{r eval=TRUE}
-blastsp <- blast %>%
-  mutate(SPID = str_extract(V2, "(?<=\\|)[^\\|]*(?=\\|)"))
+```{bash}
+wget -r \
+--no-directories --no-parent \
+--password JA22078 \
+-P ../data \
+-A "*.fastq.gz" https://gsafjobs.icmb.utexas.edu/tagseq_prep/JA22078_SA22060/fq.trim/
 ```
 
 
-Now lets just write out SPIDs.
-
-```{r, eval=TRUE}
-blast %>%
-  mutate(SPID = str_extract(V2, "(?<=\\|)[^\\|]*(?=\\|)")) %>%
-  distinct(V1, SPID, .keep_all = TRUE) %>%
-  select(SPID) %>%
-  write.table(file = "../analyses/blast/SPID.txt", sep = "\t", row.names = FALSE, quote = FALSE
-) 
-```
-
-With a list of matching Swiss-Prot IDs, (technically UniProt Accession number) we can go back to <https://www.uniprot.org> and grab corresponding GO terms. This can be done via a web or using Python API.
 
 
-```{r engine='bash'}
-python3 uniprot-retrieval.py ../analyses/blast/SPID.txt
-```
-
-```{r engine='bash'}
-mv uniprot-retrieval.tsv.gz ../analyses/blast/uniprot-retrieval.tsv.gz
-
-gunzip ../analyses/blast/uniprot-retrieval.tsv.gz
-```
-
-
-Web
-
-```{r, eval=TRUE}
-idmap <- read.csv("../analyses/blast/idmapping_2023_08_07.tsv", sep = '\t', header = TRUE, row.names=NULL)
-```
-
-Joining 
-
-
-```{r, eval=TRUE}
-left_join(blastsp, idmap, by = c("SPID" = "Entry")) %>%
-  select(V1, V2, V11, Protein.names, Gene.Ontology..biological.process., Gene.Ontology.IDs) %>%
-write.table(file = "../analyses/blast/Mtros_GO.txt", sep = #"\t", row.names = FALSE, quote = FALSE
-  )
-```
-
-```{r engine='bash', eval=TRUE}
-head ../analyses/blast/Mtros_GO.txt
-```
