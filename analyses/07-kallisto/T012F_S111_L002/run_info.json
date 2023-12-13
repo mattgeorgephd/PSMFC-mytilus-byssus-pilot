@@ -1,0 +1,13 @@
+{
+	"n_targets": 411251,
+	"n_bootstraps": 0,
+	"n_processed": 3632571,
+	"n_pseudoaligned": 2224642,
+	"n_unique": 527515,
+	"p_pseudoaligned": 61.2,
+	"p_unique": 14.5,
+	"kallisto_version": "0.50.1",
+	"index_version": 13,
+	"start_time": "Wed Dec 13 12:45:26 2023",
+	"call": "/home/shared/kallisto_linux-v0.50.1/kallisto quant -i ../data/Mtros-hq_transcripts.index -o ../analyses/07-kallisto/T012F_S111_L002 --single -t 20 -l 65 -s 2 ../data/T012F_S111_L002_R1_001.fastq.gz"
+}
