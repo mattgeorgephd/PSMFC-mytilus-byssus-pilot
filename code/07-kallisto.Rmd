@@ -110,6 +110,20 @@ echo "Kallisto quantification complete."
 
 
 
+
+
+
+```{bash}
+perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
+--est_method kallisto \
+    --gene_trans_map none \
+    --out_prefix ../analyses/07-kallisto \
+    --name_sample_by_basedir \
+     ../analyses/07-kallisto/T*
+```
+
+
+
 # Quantify indices with Kallisto
 ```{bash}
 # Quantify indices

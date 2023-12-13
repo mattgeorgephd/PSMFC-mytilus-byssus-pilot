@@ -1,0 +1,99 @@
+Annotation
+================
+Steven Roberts
+13 December, 2023
+
+- <a href="#1-download-tag-seq-data" id="toc-1-download-tag-seq-data">1
+  Download tag-seq data</a>
+- <a href="#2-get-transcriptome" id="toc-2-get-transcriptome">2 get
+  transcriptome</a>
+- <a href="#3-create-indices-for-transcriptome-with-kallisto"
+  id="toc-3-create-indices-for-transcriptome-with-kallisto">3 Create
+  indices for transcriptome with Kallisto</a>
+- <a href="#4-quantify-indices-with-kallisto"
+  id="toc-4-quantify-indices-with-kallisto">4 Quantify indices with
+  Kallisto</a>
+
+# 1 Download tag-seq data
+
+``` bash
+wget -r \
+--no-directories --no-parent \
+-P ../data \
+-A .fastq.gz https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/ \
+--no-check-certificate
+```
+
+unzip .fastq.gz files
+
+``` bash
+
+#gunzip ../data/*.fastq.gz
+```
+
+# 2 get transcriptome
+
+``` bash
+cd ../data
+curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_transcripts.fasta
+```
+
+# 3 Create indices for transcriptome with Kallisto
+
+``` bash
+# Build index
+/home/shared/kallisto_linux-v0.50.1/kallisto \
+index \
+-t 20 \
+-i ../data/Mtros-hq_transcripts.index \
+../data/Mtros-hq_transcripts.fasta
+  
+```
+
+``` bash
+# Set the paths
+DATA_DIRECTORY="../data"
+KALLISTO_INDEX="../data/Mtros-hq_transcripts.index"
+OUTPUT_DIRECTORY="../analyses/07-kallisto"
+
+
+# Iterate over all .fq.gz files in the data directory
+for FILE in "$DATA_DIRECTORY"/*.fastq.gz; do
+    # Extract the base name of the file for naming the output folder
+    BASENAME=$(basename "$FILE" _R1_001.fastq.gz)
+
+    # Create output directory for this sample
+    SAMPLE_OUTPUT="$OUTPUT_DIRECTORY/$BASENAME"
+    mkdir -p "$SAMPLE_OUTPUT"
+
+    # Run Kallisto quantification
+    /home/shared/kallisto_linux-v0.50.1/kallisto quant -i "$KALLISTO_INDEX" -o "$SAMPLE_OUTPUT" \
+        --single -t 20 -l 65 -s 2 "$FILE"
+done
+
+echo "Kallisto quantification complete."
+```
+
+``` bash
+perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
+--est_method kallisto \
+    --gene_trans_map none \
+    --out_prefix ../analyses/07-kallisto \
+    --name_sample_by_basedir \
+     ../analyses/07-kallisto/T*
+```
+
+# 4 Quantify indices with Kallisto
+
+``` bash
+# Quantify indices
+/home/shared/kallisto/kallisto quant \
+-i ../data/Mtros-hq_transcripts.index \
+--single \
+-l 40 \
+-s 1 \
+-o ../output/02/ \
+-t 40 \
+../data/*.fastq.gz \
+2> ../output/02/out.txt
+```
