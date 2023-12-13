@@ -1,5 +1,5 @@
 ---
-title: "Annotation"
+title: "Kallisto Pseudo-alignment"
 author: Steven Roberts
 date: "`r format(Sys.time(), '%d %B, %Y')`" 
 output: 
@@ -107,33 +107,6 @@ done
 echo "Kallisto quantification complete."
 ```
 
-```{bash}
-# Directory where your input files are located
-BASE_DIR="../analyses/07-kallisto"
-
-# Output directory for the results
-OUTPUT_DIR="../analyses/07-kallisto/out"
-
-# Loop through each sub-directory
-for dir in $BASE_DIR/*; do
-    if [ -d "$dir" ]; then
-        # Extract the directory name
-        DIR_NAME=$(basename "$dir")
-
-        # Define input files. Modify this according to your file naming scheme
-        # e.g., assuming files end with '.txt'
-        INPUT_FILES="$dir/*.txt"
-
-        # Define the output file name based on the directory name
-        OUTPUT_FILE="$OUTPUT_DIR/${DIR_NAME}_output.txt"
-
-        # Run the Perl script
-        abundance_estimates_to_matrix.pl --est_method kallisto \
--gene_trans_map none \
---out_prefix $OUTPUT_FILE $INPUT_FILES
-    fi
-done
-```
 
 
 ```{bash}
@@ -146,17 +119,7 @@ perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
 ```
 
 
-
-```{bash}
-perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
---est_method kallisto \
-    --gene_trans_map none \
-    --out_prefix ../analyses/07-kallisto/test \
-    --name_sample_by_basedir \
-     ../analyses/07-kallisto/T001F_S100_L001/abundance.tsv \
-     ../analyses/07-kallisto/T001FX_S219_L001/abundance.tsv
-```
-```{bash}
+```{r, engine='bash'}
 head ../analyses/07-kallisto/test.isoform.counts.matrix
 ```
 

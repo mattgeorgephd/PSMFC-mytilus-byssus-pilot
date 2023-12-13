@@ -1,4 +1,4 @@
-Annotation
+Kallisto Pseudo-alignment
 ================
 Steven Roberts
 13 December, 2023
@@ -10,9 +10,6 @@ Steven Roberts
 - <a href="#3-create-indices-for-transcriptome-with-kallisto"
   id="toc-3-create-indices-for-transcriptome-with-kallisto">3 Create
   indices for transcriptome with Kallisto</a>
-- <a href="#4-quantify-indices-with-kallisto"
-  id="toc-4-quantify-indices-with-kallisto">4 Quantify indices with
-  Kallisto</a>
 
 # 1 Download tag-seq data
 
@@ -78,22 +75,11 @@ echo "Kallisto quantification complete."
 perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
 --est_method kallisto \
     --gene_trans_map none \
-    --out_prefix ../analyses/07-kallisto \
+    --out_prefix ../analyses/07-kallisto/test \
     --name_sample_by_basedir \
-     ../analyses/07-kallisto/T*
+     ../analyses/07-kallisto/*/abundance.tsv
 ```
 
-# 4 Quantify indices with Kallisto
-
 ``` bash
-# Quantify indices
-/home/shared/kallisto/kallisto quant \
--i ../data/Mtros-hq_transcripts.index \
---single \
--l 40 \
--s 1 \
--o ../output/02/ \
--t 40 \
-../data/*.fastq.gz \
-2> ../output/02/out.txt
+head ../analyses/07-kallisto/test.isoform.counts.matrix
 ```
