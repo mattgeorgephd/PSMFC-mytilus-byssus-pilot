@@ -136,14 +136,16 @@ deseq2.dds <- DESeqDataSetFromMatrix(countData = countmatrix,
                                      design = ~ condition)
 ```
 
-```{r}
+```{r, eval=TRUE, cache=TRUE}
 deseq2.dds <- DESeq(deseq2.dds)
 deseq2.res <- results(deseq2.dds)
 deseq2.res <- deseq2.res[order(rownames(deseq2.res)), ]
 ```
 
 
-```{r}
+### Note sample treatments are not correct. 
+
+```{r, eval=FALSE}
 vsd <- vst(deseq2.dds, blind = FALSE)
 plotPCA(vsd, intgroup = "condition")
 ```
