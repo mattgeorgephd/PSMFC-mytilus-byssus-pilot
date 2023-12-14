@@ -52,13 +52,6 @@ wget -r \
 
 ```
 
-unzip .fastq.gz files
-```{bash}
-
-#gunzip ../data/*.fastq.gz
-
-```
-
 
 # get transcriptome
 
@@ -82,6 +75,7 @@ index \
 
 ```
 
+# Kallisto quantification
 
 ```{bash}
 # Set the paths
@@ -107,7 +101,7 @@ done
 echo "Kallisto quantification complete."
 ```
 
-
+# creating count matrix
 
 ```{bash}
 perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
@@ -119,7 +113,7 @@ perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
 ```
 
 
-```{r, engine='bash'}
+```{r, engine='bash', eval=TRUE}
 head ../analyses/07-kallisto/test.isoform.counts.matrix
 ```
 
