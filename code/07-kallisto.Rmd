@@ -116,6 +116,38 @@ perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
 ```{r, engine='bash', eval=TRUE}
 head ../analyses/07-kallisto/test.isoform.counts.matrix
 ```
+```{r, eval=TRUE}
+countmatrix <- read.delim("../analyses/07-kallisto/test.isoform.counts.matrix", header = TRUE, sep = '\t')
+rownames(countmatrix) <- countmatrix$X
+countmatrix <- countmatrix[,-1]
+head(countmatrix)
+```
+```{r, eval=TRUE}
+countmatrix <- round(countmatrix, 0)
+str(countmatrix)
+```
+
+```{r, eval=TRUE}
+deseq2.colData <- data.frame(condition=factor(c(rep("control", 34), rep("desicated", 34))), 
+                             type=factor(rep("single-read", 68)))
+rownames(deseq2.colData) <- colnames(data)
+deseq2.dds <- DESeqDataSetFromMatrix(countData = countmatrix,
+                                     colData = deseq2.colData, 
+                                     design = ~ condition)
+```
+
+```{r}
+deseq2.dds <- DESeq(deseq2.dds)
+deseq2.res <- results(deseq2.dds)
+deseq2.res <- deseq2.res[order(rownames(deseq2.res)), ]
+```
+
+
+```{r}
+vsd <- vst(deseq2.dds, blind = FALSE)
+plotPCA(vsd, intgroup = "condition")
+```
+
 
 
 
