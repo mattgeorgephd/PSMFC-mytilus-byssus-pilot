@@ -87,7 +87,7 @@ thread_plot$thread     <- factor(thread_plot$thread)
 
 ### boxplot, all
 ```{r}
-
+thread_plot$adhesion_kpa <- thread_plot$max_force/thread_plot$pad_area*1000
 # filter the data to only include the mussels w/ repeated observations
 thread_plot_repeated <- thread_plot %>%
   group_by(mussel) %>%
