@@ -125,9 +125,12 @@ p1
 
 # plot only mussels with repeated measurements
 p2 <- ggplot(thread_plot_repeated, aes(x=treatment, y=adhesion_kpa)) +
-       geom_boxplot(colour = "black", size = 0.8,outlier.colour="black", outlier.shape = 16,
-                           outlier.size=1, notch=FALSE, varwidth = TRUE, alpha = 0.8) +
-      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
+       geom_violin(aes(fill = treatment, fill = after_scale(colorspace::lighten(fill, .5))), size = 1.2, bw = 12) +
+       geom_boxplot(colour = "black", size = 0.8, outlier.colour="black", outlier.shape = NA, width = 0.2,
+                           outlier.size=1, notch=FALSE, varwidth = FALSE, alpha = 0.8, coef = 0) +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5, alpha = .3) +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5, stroke = .7, shape = 1, color = "black") +
+      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 200)) +
       xlab(NULL) + ylab(NULL) + my_theme
 
 p2
@@ -186,7 +189,7 @@ ggsave("analyses/thread_strength/BP_OnlyRepeatedMussels_MeanThreads.png",
 
 ```
 
-### linegraph, DO only
+### linegraph, OA only
 ```{r}
 
 # ChatGPT prompts:
@@ -195,31 +198,31 @@ ggsave("analyses/thread_strength/BP_OnlyRepeatedMussels_MeanThreads.png",
 
 
 # filter the data to only include the control and DO treatment
-thread_plot_DO_all <- thread_plot %>% filter(treatment == "control" | treatment == "DO")
+thread_plot_OA_all <- thread_plot %>% filter(treatment == "control" | treatment == "OA")
 
 # filter the data to only include the control and DO treatments
-thread_plot_DO_repeated <- thread_plot %>%
+thread_plot_OA_repeated <- thread_plot %>%
   group_by(mussel) %>%
-  filter(treatment %in% c("control", "DO")) %>%
+  filter(treatment %in% c("control", "OA")) %>%
   filter(n_distinct(treatment) == 2)
 
-# create a new data frame called thread_plot_DO_mean
+# create a new data frame called thread_plot_OA_mean
 # group the data by mussel
-# filter the data to only include the control and DO treatments
+# filter the data to only include the control and OA treatments
 # group the data by mussel and treatment
 # summarize the data by calculating the mean and sd for max_force, pad_area, and adhesion_kpa
 # rename the columns to include the statistic calculated
-thread_plot_DO_mean <- thread_plot %>%
+thread_plot_OA_mean <- thread_plot %>%
   group_by(mussel) %>%
-  filter(treatment %in% c("control", "DO")) %>%
+  filter(treatment %in% c("control", "OA")) %>%
   group_by(mussel, treatment) %>%
   summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd), .names = "{.col}_{.fn}"))
 
-thread_plot_DO_repeated_mean <- thread_plot %>%
+thread_plot_OA_repeated_mean <- thread_plot %>%
   # group the data by mussel
   group_by(mussel) %>%
-  # filter the data to only include the control and DO treatments
-  filter(treatment %in% c("control", "DO")) %>%
+  # filter the data to only include the control and OA treatments
+  filter(treatment %in% c("control", "OA")) %>%
   # filter the data to only include mussels that have two treatments
   filter(n_distinct(treatment) == 2) %>%
   # group the data by mussel and treatment
@@ -229,7 +232,7 @@ thread_plot_DO_repeated_mean <- thread_plot %>%
 
 
 
-p1 <- ggplot(thread_plot_DO_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
+p1 <- ggplot(thread_plot_OA_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
       geom_point() +
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
@@ -240,7 +243,7 @@ p1 <- ggplot(thread_plot_DO_all, aes(x=treatment, y=adhesion_kpa, group=as.facto
 
 p1
 
-p2 <- ggplot(thread_plot_DO_repeated, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
+p2 <- ggplot(thread_plot_OA_repeated, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
       geom_point() +
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
@@ -251,7 +254,7 @@ p2 <- ggplot(thread_plot_DO_repeated, aes(x=treatment, y=adhesion_kpa, group=as.
 
 p2
 
-p3 <- ggplot(thread_plot_DO_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
+p3 <- ggplot(thread_plot_OA_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
       geom_point() +
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
@@ -262,7 +265,7 @@ p3 <- ggplot(thread_plot_DO_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as
 
 p3
 
-p4 <- ggplot(thread_plot_DO_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
+p4 <- ggplot(thread_plot_OA_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
       geom_point() +
       geom_line(linewidth=1, alpha = 1) +
       # facet_wrap(~ID) +
@@ -275,7 +278,7 @@ p4
 
 
 
-ggsave("analyses/thread_strength/LineGraph_DO_AllMussels_MeanThreads.png",
+ggsave("analyses/thread_strength/LineGraph_OA_AllMussels_MeanThreads.png",
        plot   = p3,
        dpi    = 1200,
        device = "png",
@@ -283,7 +286,7 @@ ggsave("analyses/thread_strength/LineGraph_DO_AllMussels_MeanThreads.png",
        height = 4,
        units  = "in")
 
-ggsave("analyses/thread_strength/LineGraph_DO_OnlyRepeatedMussels_MeanThreads.png",
+ggsave("analyses/thread_strength/LineGraph_OA_OnlyRepeatedMussels_MeanThreads.png",
        plot   = p4,
        dpi    = 1200,
        device = "png",
@@ -509,164 +512,10 @@ ggsave("analyses/thread_strength/LineGraph_DO_OnlyRepeatedMussels_MeanThreads.pn
 
 ```
 
-
-### Statistical Testing - all
+### Statistical Testing - all treatments, repeated measures only, all threads
 ```{R}
 # Define dataset for analysis, factors
-dat_stat <- thread_plot_repeated_mean
-test_me  <- dat_stat$adhesion_kpa_mean
-
-dat_stat$ID         <- factor(dat_stat$mussel)
-dat_stat$trt        <- factor(dat_stat$treatment)
-# dat_stat$thread     <- factor(dat_stat$thread)
-# dat_stat$pad        <- factor(dat_stat$pad_area)
-
-# Test for normality
-qqnorm(test_me) # check linearity of transformed data
-qqline(test_me)
-norm_test <- shapiro.test(test_me) # p-value fail = good, don't need transformation
-print(norm_test$p.value)
-
-# Normalize data if normality test failed
-if(norm_test$p.value<0.05)     {
-        normalized <- bestNormalize(test_me)
-        test_me <- normalized$x.t # overwrite
-        qqnorm(test_me) # check linearity of transformed data
-        qqline(test_me)
-        print(shapiro.test(test_me))
-        print("transformed!",quote=FALSE)}
-
-dat_stat$response <- test_me
-
-# Run repeated measures anova using oyster ID has random effect
-# https://www.r-bloggers.com/2015/08/two-way-anova-with-repeated-measures/
-my_test <- aov(response ~ trt + Error(ID), # Error(1|(factor(ID)/factor(trt))),
-                       data = dat_stat)
-
-my_test_summary <- summary(my_test)
-summary(my_test)
-
-# Significant interaction observed between timepoint:trt:ploidy. Proceed with HSD test.
-tx <- with(dat_stat, interaction(trt))
-amod <- aov(response ~ tx, data = dat_stat)
-mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
-# 
-# # save output
-# write.table(my_test_summary$`Error: Within`[[1]], file = "stats/respirometry/AOV_respirometry.csv",      row.names = TRUE)
-# write.table(mult_comp$groups,                     file = "stats/respirometry/HSD_test_respirometry.csv", row.names = TRUE)
-
-
-```
-
-
-
-### Statistical Testing - OA
-```{R}
-# Define dataset for analysis, factors
-dat_stat <- thread_plot_OA_all
-test_me  <- dat_stat$adhesion_kpa
-
-dat_stat$ID         <- factor(dat_stat$mussel)
-dat_stat$trt        <- factor(dat_stat$treatment)
-dat_stat$thread     <- factor(dat_stat$thread)
-dat_stat$pad        <- factor(dat_stat$pad_area)
-
-# Test for normality
-qqnorm(test_me) # check linearity of transformed data
-qqline(test_me)
-norm_test <- shapiro.test(test_me) # p-value fail = good, OAn't need transformation
-print(norm_test$p.value)
-
-# Normalize data if normality test failed
-if(norm_test$p.value<0.05)     {
-        normalized <- bestNormalize(test_me)
-        test_me <- normalized$x.t # overwrite
-        qqnorm(test_me) # check linearity of transformed data
-        qqline(test_me)
-        print(shapiro.test(test_me))
-        print("transformed!",quote=FALSE)}
-
-dat_stat$response <- test_me
-
-
-# ChatGPT prompt:
-# All data is in the "thread_plot_OA_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov funtion.# All data is in the "thread_plot_OA_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov function.
-
-
-# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as ranOAm grouping factors.
-# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
-my_test <- aov(response ~ trt + Error(ID/thread), data = dat_stat)
-
-my_test_summary <- summary(my_test)
-summary(my_test)
-
-# Significant interaction observed between timepoint:trt:ploidy. Proceed with HSD test.
-tx <- with(dat_stat, interaction(trt))
-amod <- aov(response ~ tx, data = dat_stat)
-mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
-# 
-# # save output
-# write.table(my_test_summary$`Error: Within`[[1]], file = "stats/respirometry/AOV_respirometry.csv",      row.names = TRUE)
-# write.table(mult_comp$groups,                     file = "stats/respirometry/HSD_test_respirometry.csv", row.names = TRUE)
-
-```
-
-
-### Statistical Testing - OW
-```{R}
-# Define dataset for analysis, factors
-dat_stat <- thread_plot_OW_all
-test_me  <- dat_stat$adhesion_kpa
-
-dat_stat$ID         <- factor(dat_stat$mussel)
-dat_stat$trt        <- factor(dat_stat$treatment)
-dat_stat$thread     <- factor(dat_stat$thread)
-dat_stat$pad        <- factor(dat_stat$pad_area)
-
-# Test for normality
-qqnorm(test_me) # check linearity of transformed data
-qqline(test_me)
-norm_test <- shapiro.test(test_me) # p-value fail = good, don't need transformation
-print(norm_test$p.value)
-
-# Normalize data if normality test failed
-if(norm_test$p.value<0.05)     {
-        normalized <- bestNormalize(test_me)
-        test_me <- normalized$x.t # overwrite
-        qqnorm(test_me) # check linearity of transformed data
-        qqline(test_me)
-        print(shapiro.test(test_me))
-        print("transformed!",quote=FALSE)}
-
-dat_stat$response <- test_me
-
-
-# ChatGPT prompt:
-# All data is in the "thread_plot_OW_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov funtion.# All data is in the "thread_plot_OW_all" dataframe. Multiple mussels were repeatedly sampled. Mussels were given a unique ID, reported in the "mussel" column. Each Mussel produced multiple threads before and after exposure to a "treatment". Each thread is unique and given a label in the "thread" column. The strength of threads were tested and reported as "adhesion_kpa". Generate a repeated measures anova that tests the impact of "treatment" on "adhesion_kpa". Use the aov function.
-
-
-# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as random grouping factors.
-# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
-my_test <- aov(response ~ trt + Error(ID/thread), data = dat_stat)
-
-my_test_summary <- summary(my_test)
-summary(my_test)
-
-# Significant interaction observed between timepoint:trt:ploidy. Proceed with HSD test.
-tx <- with(dat_stat, interaction(trt))
-amod <- aov(response ~ tx, data = dat_stat)
-mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
-# 
-# # save output
-# write.table(my_test_summary$`Error: Within`[[1]], file = "stats/respirometry/AOV_respirometry.csv",      row.names = TRUE)
-# write.table(mult_comp$groups,                     file = "stats/respirometry/HSD_test_respirometry.csv", row.names = TRUE)
-
-```
-
-### Statistical Testing - DO
-```{R}
-# Define dataset for analysis, factors
-dat_stat <- thread_plot_DO_all
+dat_stat <- thread_plot_repeated
 test_me  <- dat_stat$adhesion_kpa
 
 dat_stat$ID         <- factor(dat_stat$mussel)
