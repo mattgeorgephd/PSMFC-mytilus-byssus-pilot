@@ -1,0 +1,137 @@
+---
+title: "18-ortholog-lists"
+output: html_document
+date: "2025-04-09"
+---
+
+```{r}
+# Required packages
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(stringr)
+library(purrr)
+library(RCurl)
+library(BiocManager)
+library(rentrez)
+```
+
+
+```{r cars}
+
+
+# Step 1: Get the list of Mollusca species from OrthoDB
+species_url <- "https://data.orthodb.org/current/download/odb12v1_species.tab.gz"
+dest_file <- "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/ortho_species.tab.gz"
+
+# Download the file
+download.file(species_url, destfile = dest_file, mode = "wb")
+
+# Read the gzipped tab-delimited file
+species_df <- read.delim(gzfile(dest_file), header = FALSE, sep = "\t")
+species_df <- species_df[, 1:4]
+
+# Filter for Mollusca species
+mollusca_species <- c(6500, 370345, 6526, 112525,55810, 100452, 6565, 29159, 558553, 45954,188477,1093978, 80821, 2589376, 703304, 1735272, 6454,36100,356393, 225164, 6596, 6573, 6604,6549,6550, 29158, 42192, 37653, 2607531, 37623, 6465, 87960, 88005, 6579, 109671, 259542, 400727, 158019, 31201, 220873, 80829, 80833)
+mollusca_species <- as.integer(mollusca_species)
+mollusca_species <- as.data.frame(mollusca_species)
+colnames(mollusca_species) <- c("orthodb_id")
+
+mollusca_taxids <- left_join(mollusca_species, species_df, by = "orthodb_id")
+
+bivalve_species <- c(6565, 29159, 558553, 45954, 80821, 2589376, 356393, 6596, 6573, 6604,6549,6550, 29158, 42192, 37623, 6579, 31201, 220873, 80829, 80833)
+bivalve_species <- as.integer(bivalve_species)
+bivalve_species <- as.data.frame(bivalve_species)
+colnames(bivalve_species) <- c("orthodb_id")
+
+bivalve_taxids <- left_join(bivalve_species, mollusca_taxids, by = "orthodb_id")
+
+```
+
+
+```{r}
+get_orthologs_for_uniprot <- function(topgene_summs, bivalve_taxids){
+  uniprot_ids <- topgene_summs$UniProt_ID
+  topgene_summs$bivalve_validation <- NA  # Initialize new column
+
+  for (i in seq_along(uniprot_ids)){
+    tryCatch({
+
+      # OrthoDB search
+      gene_URL <- paste0("https://data.orthodb.org/v12/search?query=", uniprot_ids[i], "&take=10000&level=33208")
+      ortho_group <- GET(gene_URL)
+      if (ortho_group$status_code != 200) next
+
+      ortho_json <- content(ortho_group, as = "text", encoding = "UTF-8")
+      ortho <- fromJSON(ortho_json, flatten = TRUE)
+      if (length(ortho$data) == 0) next
+      groupID <- ortho$data[[1]]
+
+      # Get orthologs
+      group_url <- paste0("https://data.orthodb.org/v12/orthologs?id=", groupID)
+      print(group_url)
+      group_response <- GET(group_url)
+      if (group_response$status_code != 200) next
+
+      group_json <- content(group_response, as = "text", encoding = "UTF-8")
+      group_data <- fromJSON(group_json, flatten = TRUE)
+      group_data <- as.data.frame(group_data)
+
+      # Filter for bivalves
+      mollusc_list <- bivalve_taxids[bivalve_taxids$orthodb_key %in% group_data$data.organism.id, c("orthodb_key", "species_name")]
+      mollusc_listicle <- as.list(mollusc_list$species_name)
+      topgene_summs$bivalve_validation[i] <- paste(mollusc_listicle, collapse = ", ")
+    }, error = function(e) {
+      message(sprintf("Error on UniProt ID '%s': %s", uniprot_ids[i], e$message))
+      next  # Continue to next ID
+    })
+  }
+
+  return(topgene_summs)
+}
+
+
+
+  
+  
+```
+
+```{r}
+# Replace this with your actual vector of UniProt IDs
+top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOW_topgene_summs.csv")
+GOW_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
+write.csv(GOW_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOW_topgene_summs_ortho.csv")
+```
+
+```{r}
+top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOA_topgene_summs.csv")
+
+GOA_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
+write.csv(GOA_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOA_topgene_summs_ortho.csv")
+```
+
+```{r}
+top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GDO_topgene_summs.csv")
+
+GDO_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
+write.csv(GDO_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GDO_topgene_summs_ortho.csv")
+```
+```{r}
+top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOW_topgene_summs.csv")
+
+FOW_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
+write.csv(FOW_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOW_topgene_summs_ortho.csv")
+```
+```{r}
+top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOA_topgene_summs.csv")
+
+FOA_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
+write.csv(FOA_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOA_topgene_summs_ortho.csv")
+```
+
+```{r}
+top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FDO_topgene_summs.csv")
+
+FDO_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
+write.csv(FDO_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FDO_topgene_summs_ortho.csv")
+```

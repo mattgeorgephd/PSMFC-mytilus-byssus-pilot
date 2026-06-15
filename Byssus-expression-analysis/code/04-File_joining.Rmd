@@ -1,0 +1,290 @@
+---
+title: "Comparing gene tables"
+output: html_document
+date: "2024-02-20"
+---
+
+### Load libraries
+```{r load_libraries, inlcude = TRUE}
+## clear
+rm(list=ls())
+# List of packages we want to install (run every time)
+load.lib<-c("RColorBrewer","readxl","ggpubr","tidyverse","tibble","stringr","beepr","gplots")
+# Select only the packages that aren't currently installed (run every time)
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+# And finally we install the missing packages, including their dependency.
+for(lib in install.lib) install.packages(lib,dependencies=TRUE)
+# After the installation process completes, we load all packages.
+sapply(load.lib,require,character=TRUE)
+
+#invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), detach, character.only=TRUE, unload=TRUE))
+
+library(tidyverse)
+library(dplyr)
+```
+```{r}
+library(tidyr)
+# Load output of blastx, uniprot, and GO into a single masterID table
+masterID <- read.delim("output/LOC_GO_list.txt", sep= "\t", header = TRUE)
+#Cut out extras
+masterID <- masterID[, -((ncol(masterID)-2):ncol(masterID))]
+
+# Rename remaining columns
+
+colnames(masterID)  <- c("transcript", "database","uniprot_accession","geneID","species", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "reviewed", "entryname", "protein_name", "gene_name", "organism", "prot_length", "GO_ID", "GO_BP", "GO_MF", "GO_CC", "Genename_orderedlocus", "Induction", "Pathwaycommons", "Reactome", "Unipathway", "Interacts_with", "LOC_ID")
+
+```
+
+
+
+### FDO merge 
+```{r}
+#FDO_LC_siggene <- read.delim("output/DEG_lists/Foot/FDO_LC_siggene.csv", sep = " ", header = TRUE)
+FDO_TC_siggenes_apeglm <- read.delim("output/DEG_lists/Foot/FDO_TC_siggene_apeglm.csv", sep = " ", header = TRUE)
+
+FDO_TC_siggenes_apeglm <- FDO_TC_siggenes_apeglm %>%
+  mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
+
+# FDO_sigs <- inner_join(FDO_TC_siggene, FDO_LC_siggene, by = 'gene')
+# #basemean x is TC, basemean y is LC
+# 
+# FDO_sigs$log2FoldChange <- FDO_sigs$log2FoldChange.x-FDO_sigs$log2FoldChange.y
+# FDO_sigs_inter <- FDO_sigs[,c(1,12)]
+# 
+# # Merge dataframes based on the shared column 'ID' and replace values from df2 into df1
+# FDO_sigs_merged <- merge(FDO_TC_siggene, FDO_sigs_inter, by = "gene", all.x = TRUE)
+# 
+# # Replace values in df_y with values from df_x based on a condition
+# FDO_sigs_merged$log2FoldChange.x <- ifelse(!is.na(FDO_sigs_merged$log2FoldChange.y) , FDO_sigs_merged$log2FoldChange.y, FDO_sigs_merged$log2FoldChange.x)
+# 
+# # Drop the extra column "Value_x" if needed
+# FDO_sigs_merged <- FDO_sigs_merged[, !(names(FDO_sigs_merged) %in% c("log2FoldChange.y"))]
+# # change gene column to be called transcript
+# colnames(FDO_sigs_merged)  <- c("transcript", "baseMean", "log2FoldChange","lfcSE","pvalue", "padj")
+
+FDO_TC_siggene <- left_join(FDO_TC_siggenes_apeglm, masterID, by = "LOC_ID")
+
+FDO_sigs_unID <- FDO_TC_siggene[is.na(FDO_TC_siggene$geneID), ]
+FDO_sigs_ID <- FDO_TC_siggene[!is.na(FDO_TC_siggene$geneID), ]
+nrow(FDO_sigs_ID) # 361 id'ed genes
+nrow(FDO_sigs_unID) # 99 unID'd genes
+# 460 total expressed 
+
+#Write file of merged files
+write_csv(FDO_TC_siggene, file = "output/DEG_lists/GOterms_genome/FDO_sigs_merged.csv")
+
+write_csv(FDO_sigs_unID, file = "output/DEG_lists/GOterms_genome/FDO_sigs_unID.csv")
+write_csv(FDO_sigs_ID, file = "output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv")
+
+
+```
+
+### GDO merge
+```{r}
+#GDO_LC_siggene <- read.delim("output/DEG_lists/Gill/GDO_LC_siggene.csv", sep = " ", header = TRUE)
+GDO_TC_siggene <- read.delim("output/DEG_lists/Gill/GDO_TC_siggene_apeglm.csv", sep = " ", header = TRUE)
+GDO_TC_siggene <- GDO_TC_siggene %>%
+  mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
+
+# GDO_sigs <- inner_join(GDO_TC_siggene, GDO_LC_siggene, by = 'gene')
+# #basemean x is TC, basemean y is LC
+# 
+# GDO_sigs$log2FoldChange <- GDO_sigs$log2FoldChange.x-GDO_sigs$log2FoldChange.y
+# GDO_sigs_inter <- GDO_sigs[,c(1,12)]
+# 
+# # Merge dataframes based on the shared column 'ID' and replace values from df2 into df1
+# GDO_sigs_merged <- merge(GDO_TC_siggene, GDO_sigs_inter, by = "gene", all.x = TRUE)
+# 
+# # Replace values in df_y with values from df_x based on a condition
+# GDO_sigs_merged$log2FoldChange.x <- ifelse(!is.na(GDO_sigs_merged$log2FoldChange.y) , GDO_sigs_merged$log2FoldChange.y, GDO_sigs_merged$log2FoldChange.x)
+# 
+# # Drop the extra column "Value_x" if needed
+# GDO_sigs_merged <- GDO_sigs_merged[, !(names(GDO_sigs_merged) %in% c("log2FoldChange.y"))]
+# 
+# # change gene column to be called transcript
+# colnames(GDO_sigs_merged)  <- c("transcript", "baseMean", "log2FoldChange","lfcSE","pvalue", "padj")
+
+GDO_sigs_merged <- left_join(GDO_TC_siggene, masterID, by = "LOC_ID")
+
+GDO_sigs_unID <- GDO_sigs_merged[is.na(GDO_sigs_merged$geneID), ]
+GDO_sigs_ID <- GDO_sigs_merged[!is.na(GDO_sigs_merged$geneID), ]
+nrow(GDO_sigs_ID) # 301 id'ed genes
+nrow(GDO_sigs_unID) # 108 unID'd genes
+# 409 genes total diff expressed between GDO and GTC
+
+#Write file of merged files
+write_csv(GDO_sigs_merged, file = "output/DEG_lists/GOterms_genome/GDO_sigs_merged.csv")
+write_csv(GDO_sigs_unID, file = "output/DEG_lists/GOterms_genome/GDO_sigs_unID.csv")
+write_csv(GDO_sigs_ID, file = "output/DEG_lists/GOterms_genome/GDO_sigs_ID.csv")
+
+```
+
+### FOA merge
+```{r}
+#FOA_LC_siggene <- read.delim("output/DEG_lists/Foot/FOA_LC_siggene.csv", sep = " ", header = TRUE)
+FOA_TC_siggene <- read.delim("output/DEG_lists/Foot/FOA_TC_siggene.csv", sep = " ", header = TRUE)
+FOA_TC_siggene <- FOA_TC_siggene %>%
+  mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
+
+# FOA_sigs <- inner_join(FOA_TC_siggene, FOA_LC_siggene, by = 'gene')
+# #basemean x is TC, basemean y is LC
+# 
+# FOA_sigs$log2FoldChange <- FOA_sigs$log2FoldChange.x-FOA_sigs$log2FoldChange.y
+# FOA_sigs_inter <- FOA_sigs[,c(1,12)]
+# 
+# # Merge dataframes based on the shared column 'ID' and replace values from df2 into df1
+# FOA_sigs_merged <- merge(FOA_TC_siggene, FOA_sigs_inter, by = "gene", all.x = TRUE)
+# 
+# # Replace values in df_y with values from df_x based on a condition
+# FOA_sigs_merged$log2FoldChange.x <- ifelse(!is.na(FOA_sigs_merged$log2FoldChange.y) , FOA_sigs_merged$log2FoldChange.y, FOA_sigs_merged$log2FoldChange.x)
+# 
+# # Drop the extra column "Value_y" if needed
+# FOA_sigs_merged <- FOA_sigs_merged[, !(names(FOA_sigs_merged) %in% c("log2FoldChange.y"))]
+# 
+# # change gene column to be called transcript
+# colnames(FOA_sigs_merged)  <- c("transcript", "baseMean", "log2FoldChange","lfcSE","pvalue", "padj")
+
+FOA_sigs_merged <- left_join(FOA_TC_siggene, masterID, by = "LOC_ID")
+
+FOA_sigs_unID <- FOA_sigs_merged[is.na(FOA_sigs_merged$geneID), ]
+FOA_sigs_ID <- FOA_sigs_merged[!is.na(FOA_sigs_merged$geneID), ]
+nrow(FOA_sigs_ID) # 72 id'ed genes
+nrow(FOA_sigs_unID) # 20 unID'd genes
+#92 genes total diff expressed between FOA and FTC
+
+#Write file of merged files
+write_csv(FOA_sigs_merged, file = "output/DEG_lists/GOterms_genome/FOA_sigs_merged.csv")
+write_csv(FOA_sigs_unID, file = "output/DEG_lists/GOterms_genome/FOA_sigs_unID.csv")
+write_csv(FOA_sigs_ID, file = "output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv")
+
+
+```
+
+### GOA merge
+
+```{r}
+#GOA_LC_siggene <- read.delim("output/DEG_lists/Gill/GOA_LC_siggene.csv", sep = " ", header = TRUE)
+GOA_TC_siggene <- read.delim("output/DEG_lists/Gill/GOA_TC_siggene.csv", sep = " ", header = TRUE)
+
+GOA_TC_siggene <- GOA_TC_siggene %>%
+  mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
+
+#GOA_sigs <- inner_join(GOA_TC_siggene, GOA_LC_siggene, by = 'gene')
+#basemean x is TC, basemean y is LC
+# 
+# GOA_sigs$log2FoldChange <- GOA_sigs$log2FoldChange.x-GOA_sigs$log2FoldChange.y
+# GOA_sigs_inter <- GOA_sigs[,c(1,12)]
+# 
+# # Merge dataframes based on the shared column 'ID' and replace values from df2 into df1
+# GOA_sigs_merged <- merge(GOA_TC_siggene, GOA_sigs_inter, by = "gene", all.x = TRUE)
+# 
+# # Replace values in df_y with values from df_x based on a condition
+# GOA_sigs_merged$log2FoldChange.x <- ifelse(!is.na(GOA_sigs_merged$log2FoldChange.y) , GOA_sigs_merged$log2FoldChange.y, GOA_sigs_merged$log2FoldChange.x)
+# 
+# # Drop the extra column "Value_y" if needed
+# GOA_sigs_merged <- GOA_sigs_merged[, !(names(GOA_sigs_merged) %in% c("log2FoldChange.y"))]
+# 
+# # change gene column to be called transcript
+# colnames(GOA_sigs_merged)  <- c("transcript", "baseMean", "log2FoldChange","lfcSE","pvalue", "padj")
+# 
+
+GOA_TC_siggene <- GOA_TC_siggene %>%
+  filter(!is.na(LOC_ID)) 
+GOA_sigs_merged <- left_join(GOA_TC_siggene, masterID, by = "LOC_ID")
+
+GOA_sigs_unID <- GOA_sigs_merged[is.na(GOA_sigs_merged$geneID), ]
+GOA_sigs_ID <- GOA_sigs_merged[!is.na(GOA_sigs_merged$geneID), ]
+nrow(GOA_sigs_ID) # 592 id'ed genes
+nrow(GOA_sigs_unID) # 248 unID'd genes
+# 830 genes total diff expressed between GOA and GTC
+
+#Write file of merged files
+write_csv(GOA_sigs_merged, file = "output/DEG_lists/GOterms_genome/GOA_sigs_merged.csv")
+write_csv(GOA_sigs_unID, file = "output/DEG_lists/GOterms_genome/GOA_sigs_unID.csv")
+write_csv(GOA_sigs_ID, file = "output/DEG_lists/GOterms_genome/GOA_sigs_ID.csv")
+
+```
+
+### FOW merge
+```{r}
+# FOW_LC_siggene <- read.delim("output/DEG_lists/Foot/FOW_LC_siggene.csv", sep = " ", header = TRUE)
+FOW_TC_siggene <- read.delim("output/DEG_lists/Foot/FOW_TC_siggene.csv", sep = " ", header = TRUE)
+FOW_TC_siggene <- FOW_TC_siggene %>%
+  mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
+# 
+# FOW_sigs <- inner_join(FOW_TC_siggene, FOW_LC_siggene, by = 'gene')
+# #basemean x is TC, basemean y is LC
+# 
+# FOW_sigs$log2FoldChange <- FOW_sigs$log2FoldChange.x-FOW_sigs$log2FoldChange.y
+# FOW_sigs_inter <- FOW_sigs[,c(1,12)]
+# 
+# # Merge dataframes based on the shared column 'ID' and replace values from df2 into df1
+# FOW_sigs_merged <- merge(FOW_TC_siggene, FOW_sigs_inter, by = "gene", all.x = TRUE)
+# 
+# # Replace values in df_y with values from df_x based on a condition
+# FOW_sigs_merged$log2FoldChange.x <- ifelse(!is.na(FOW_sigs_merged$log2FoldChange.y) , FOW_sigs_merged$log2FoldChange.y, FOW_sigs_merged$log2FoldChange.x)
+# 
+# # Drop the extra column "Value_y" if needed
+# FOW_sigs_merged <- FOW_sigs_merged[, !(names(FOW_sigs_merged) %in% c("log2FoldChange.y"))]
+# 
+# # change gene column to be called transcript
+# colnames(FOW_sigs_merged)  <- c("transcript", "baseMean", "log2FoldChange","lfcSE","pvalue", "padj")
+
+FOW_sigs_merged <- left_join(FOW_TC_siggene, masterID, by = "LOC_ID")
+
+FOW_sigs_unID <- FOW_sigs_merged[is.na(FOW_sigs_merged$geneID), ]
+FOW_sigs_ID <- FOW_sigs_merged[!is.na(FOW_sigs_merged$geneID), ]
+nrow(FOW_sigs_ID) # 152 id'ed genes
+nrow(FOW_sigs_unID) # 49 unID'd genes
+# 201 genes total diff expressed between FOW and FTC
+
+#Write file of merged files
+write_csv(FOW_sigs_merged, file = "output/DEG_lists/GOterms_genome/FOW_sigs_merged.csv")
+write_csv(FOW_sigs_unID, file = "output/DEG_lists/GOterms_genome/FOW_sigs_unID.csv")
+write_csv(FOW_sigs_ID, file = "output/DEG_lists/GOterms_genome/FOW_sigs_ID.csv")
+
+```
+
+### GOW merge
+
+```{r}
+#GOW_LC_siggene <- read.delim("output/DEG_lists/Gill/GOW_LC_siggene.csv", sep = " ", header = TRUE)
+GOW_TC_siggene <- read.delim("output/DEG_lists/Gill/GOW_TC_siggene_apeglm.csv", sep = " ", header = TRUE)
+GOW_TC_siggene <- GOW_TC_siggene %>%
+  mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
+
+# GOW_sigs <- inner_join(GOW_TC_siggene, GOW_LC_siggene, by = 'gene')
+# #basemean x is TC, basemean y is LC
+# 
+# GOW_sigs$log2FoldChange <- GOW_sigs$log2FoldChange.x-GOW_sigs$log2FoldChange.y
+# GOW_sigs_inter <- GOW_sigs[,c(1,12)]
+# 
+# # Merge dataframes based on the shared column 'ID' and replace values from df2 into df1
+# GOW_sigs_merged <- merge(GOW_TC_siggene, GOW_sigs_inter, by = "gene", all.x = TRUE)
+# 
+# # Replace values in df_y with values from df_x based on a condition
+# GOW_sigs_merged$log2FoldChange.x <- ifelse(!is.na(GOW_sigs_merged$log2FoldChange.y) , GOW_sigs_merged$log2FoldChange.y, GOW_sigs_merged$log2FoldChange.x)
+# 
+# # Drop the extra column "Value_y" if needed
+# GOW_sigs_merged <- GOW_sigs_merged[, !(names(GOW_sigs_merged) %in% c("log2FoldChange.y"))]
+# 
+# # change gene column to be called transcript
+# colnames(GOW_sigs_merged)  <- c("transcript", "baseMean", "log2FoldChange","lfcSE","pvalue", "padj")
+
+GOW_sigs_merged <- left_join(GOW_TC_siggene, masterID, by = "LOC_ID")
+
+GOW_sigs_unID <- GOW_sigs_merged[is.na(GOW_sigs_merged$geneID), ]
+GOW_sigs_ID <- GOW_sigs_merged[!is.na(GOW_sigs_merged$geneID), ]
+nrow(GOW_sigs_ID) # 198 id'ed genes
+nrow(GOW_sigs_unID) # 53 unID'd genes
+# 251 genes total diff expressed between GOW and GTC
+
+#Write file of merged files
+write_csv(GOW_sigs_merged, file = "output/DEG_lists/GOterms_genome/GOW_sigs_merged.csv")
+write_csv(GOW_sigs_unID, file = "output/DEG_lists/GOterms_genome/GOW_sigs_unID.csv")
+write_csv(GOW_sigs_ID, file = "output/DEG_lists/GOterms_genome/GOW_sigs_ID.csv")
+
+```
+
+
+

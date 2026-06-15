@@ -1,0 +1,173 @@
+---
+title: "17-uniprot_summaries"
+output: html_document
+date: "2025-04-02"
+---
+
+```{r}
+Sys.setenv(ENTREZ_KEY = "8f817031916b3cfee7ec443b712c426d9a08")
+install.packages("rentrez")
+library(rentrez)
+```
+
+
+```{r}
+
+
+fetch_ncbi_summary <- function(uniprot_ids, email) {
+  entrez_db <- "gene"
+  summaries <- list()
+  
+  for (uniprot_id in uniprot_ids) {
+    tryCatch({
+      print("hello")
+      # Search for the UniProt ID in NCBI Protein database
+      search_results <- entrez_search(db = entrez_db, term = uniprot_id, retmax = 1, api_key="8f817031916b3cfee7ec443b712c426d9a08")
+      print(search_results)
+      if (length(search_results$ids) > 0) {
+        ncbi_id <- search_results$ids[1]
+        print(ncbi_id)
+        # Fetch the summary for the retrieved NCBI ID
+        summary_results <- entrez_summary(db = entrez_db, id = ncbi_id, api_key="8f817031916b3cfee7ec443b712c426d9a08")
+        print(summary_results$summary)
+        summaries[[uniprot_id]] <- summary_results$summary
+      } else {
+        summaries[[uniprot_id]] <- "No match found"
+      }
+    }, error = function(e) {
+      summaries[[uniprot_id]] <- paste("Error:", e$message)
+    })
+  }
+  
+  return(summaries)
+}
+
+
+```
+
+### GOW
+```{r}
+
+top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GOW_topgenes.csv")
+# Example usage
+uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
+email <- "sgleuch@uw.edu"  # Replace with your email
+
+# Set email for NCBI API
+set_entrez_key(email)
+
+GOW_summaries <- fetch_ncbi_summary(uniprot_ids, email)
+
+GOW_topgene_summs <- data.frame(UniProt_ID = names(GOW_summaries), Summary = unlist(GOW_summaries), stringsAsFactors = FALSE)
+
+# Write to CSV
+write.csv(GOW_topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOW_topgene_summs.csv", row.names = FALSE)
+```
+
+### FOW
+```{r}
+
+top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FOW_topgenes.csv")
+# Example usage
+uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
+email <- "sgleuch@uw.edu"  # Replace with your email
+
+# Set email for NCBI API
+set_entrez_key(email)
+
+summaries <- fetch_ncbi_summary(uniprot_ids, email)
+
+topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
+
+# Write to CSV
+write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOW_topgene_summs.csv", row.names = FALSE)
+```
+### GOA
+```{r}
+
+top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GOA_topgenes.csv")
+# Example usage
+uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
+email <- "sgleuch@uw.edu"  # Replace with your email
+
+# Set email for NCBI API
+set_entrez_key(email)
+
+summaries <- fetch_ncbi_summary(uniprot_ids, email)
+
+topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
+
+# Write to CSV
+write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOA_topgene_summs.csv", row.names = FALSE)
+```
+### FOA
+```{r}
+
+top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FOA_topgenes.csv")
+# Example usage
+uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
+email <- "sgleuch@uw.edu"  # Replace with your email
+
+# Set email for NCBI API
+set_entrez_key(email)
+
+summaries <- fetch_ncbi_summary(uniprot_ids, email)
+
+topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
+
+# Write to CSV
+write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOA_topgene_summs.csv", row.names = FALSE)
+```
+
+### GDO
+```{r}
+
+top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GDO_topgenes.csv")
+# Example usage
+uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
+email <- "sgleuch@uw.edu"  # Replace with your email
+
+# Set email for NCBI API
+set_entrez_key(email)
+
+summaries <- fetch_ncbi_summary(uniprot_ids, email)
+
+topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
+
+# Write to CSV
+write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GDO_topgene_summs.csv", row.names = FALSE)
+```
+### FDO
+```{r}
+
+top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FDO_topgenes.csv")
+# Example usage
+uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
+email <- "sgleuch@uw.edu"  # Replace with your email
+
+# Set email for NCBI API
+set_entrez_key(email)
+
+summaries <- fetch_ncbi_summary(uniprot_ids, email)
+
+topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
+
+# Write to CSV
+write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FDO_topgene_summs.csv", row.names = FALSE)
+```
+
+
+```{r}
+test_result <- entrez_search(db="gene", term="Q9WVR6", retmax=1, api_key="8f817031916b3cfee7ec443b712c426d9a08")
+print(test_result$ids) 
+
+
+```
+
+```{r}
+summary_results <- entrez_summary(db = "gene", id = "84551", api_key="8f817031916b3cfee7ec443b712c426d9a08")
+```
+
+
+
+

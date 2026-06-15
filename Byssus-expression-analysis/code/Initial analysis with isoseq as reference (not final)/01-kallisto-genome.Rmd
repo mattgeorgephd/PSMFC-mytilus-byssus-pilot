@@ -1,0 +1,123 @@
+---
+title: "Kallisto redo"
+output: html_document
+date: "2024-06-04"
+---
+
+## get genome
+
+```{r, engine='bash'}
+cd ../data
+curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_transcripts.fasta
+```
+
+
+## Create indices for transcriptome with Kallisto
+```{bash}
+
+cp /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fna /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fasta
+# Execute the Kallisto tool located at the specified path
+```
+
+```{bash}
+/home/shared/kallisto_linux-v0.50.1/kallisto \
+index \
+-t 20 \
+-i /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-hq_transcripts_cds.index \
+/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fasta
+```
+
+# Quantify the indices
+```{bash}
+# Set the paths
+DATA_DIRECTORY="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/"
+KALLISTO_INDEX="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-hq_transcripts_cds.index"
+OUTPUT_DIRECTORY="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/kallisto-quant-cds/"
+
+
+# Iterate over all .fq.gz files in the data directory
+for FILE in "$DATA_DIRECTORY"/*.fastq.gz; do
+    # Extract the base name of the file for naming the output folder
+    BASENAME=$(basename "$FILE" _L099_R1_cmb.trim.fastq.gz)
+
+    # Create output directory for this sample
+    SAMPLE_OUTPUT="$OUTPUT_DIRECTORY/$BASENAME"
+    mkdir -p "$SAMPLE_OUTPUT"
+
+    # Run Kallisto quantification
+    /home/shared/kallisto_linux-v0.50.1/kallisto quant -i "$KALLISTO_INDEX" -o "$SAMPLE_OUTPUT" \
+        --single -t 20 -l 65 -s 2 "$FILE"
+done
+
+echo "Kallisto quantification complete."
+```
+# Run Kallisto on rna.fna file 
+
+## Create indices for transcriptome with Kallisto
+```{bash}
+
+cp /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/rna.fna /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/rna.fasta
+# Execute the Kallisto tool located at the specified path
+```
+
+# create index
+```{bash}
+/home/shared/kallisto_linux-v0.50.1/kallisto \
+index \
+-t 20 \
+-i /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-hq_transcripts_rna.index \
+/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/rna.fasta
+```
+
+# Quantify the indices
+```{bash}
+# Set the paths
+DATA_DIRECTORY="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/"
+KALLISTO_INDEX="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-hq_transcripts_rna.index"
+OUTPUT_DIRECTORY="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/kallisto-quant-rna/"
+
+
+# Iterate over all .fq.gz files in the data directory
+for FILE in "$DATA_DIRECTORY"/*.fastq.gz; do
+    # Extract the base name of the file for naming the output folder
+    BASENAME=$(basename "$FILE" _L099_R1_cmb.trim.fastq.gz)
+
+    # Create output directory for this sample
+    SAMPLE_OUTPUT="$OUTPUT_DIRECTORY/$BASENAME"
+    mkdir -p "$SAMPLE_OUTPUT"
+
+    # Run Kallisto quantification
+    /home/shared/kallisto_linux-v0.50.1/kallisto quant -i "$KALLISTO_INDEX" -o "$SAMPLE_OUTPUT" \
+        --single -t 20 -l 65 -s 2 "$FILE"
+done
+
+echo "Kallisto quantification complete."
+```
+
+
+# Count matrices
+
+## Generate count matrices
+```{bash}
+     
+perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
+--est_method kallisto \
+--gene_trans_map 'none' \
+--out_prefix /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/kallisto-quant-cds/abundance-matrices \
+--name_sample_by_basedir \
+/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/kallisto-quant-cds/*/abundance.tsv 
+
+```
+## View abundance matrix
+```{bash}
+head output/kallisto-quant/abundance-matrices.isoform.counts.matrix
+```
+## Make counts matrix
+```{r, eval = TRUE}
+countmatrix <- read.delim("output/kallisto-quant/abundance-matrices.isoform.counts.matrix", header = TRUE, sep = '\t')
+rownames(countmatrix) <- countmatrix$X
+countmatrix <- countmatrix[,-1]
+head(countmatrix)
+```
+
+

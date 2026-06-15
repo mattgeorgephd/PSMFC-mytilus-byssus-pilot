@@ -1,0 +1,118 @@
+---
+title: "12-DEG_venn"
+output: html_document
+date: "2025-03-21"
+---
+### Load libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github("yanlinlin82/ggvenn")
+library(ggvenn)
+```
+
+### Load DEGS
+```{r}
+# Gill (TC)
+
+GOW_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_merged.csv")
+GOA_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_merged.csv")
+GDO_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_merged.csv")
+
+# Foot (TC)
+FOW_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_merged.csv")
+FOA_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_merged.csv")
+FDO_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_merged.csv")
+
+# Select only unique identifiers
+GOW_sigs_venn <- unique(GOW_sigs)
+GOA_sigs <- unique(GOA_sigs)
+GDO_sigs <- unique(GDO_sigs)
+
+FOW_sigs <- unique(FOW_sigs)
+FOA_sigs <- unique(FOA_sigs)
+FDO_sigs_venn <- unique(FDO_sigs)
+
+
+```
+
+### Make lists for venn diagram
+```{r}
+G_list <- list(
+  "Ocean warming" = GOW_sigs$gene, 
+  "Ocean acidification" = GOA_sigs$gene, 
+  "Hypoxia" = GDO_sigs$gene
+  )
+
+F_list <- list(
+  "Ocean warming" = FOW_sigs$gene, 
+  "Ocean acidification" = FOA_sigs$gene, 
+  "Hypoxia" = FDO_sigs$gene
+)
+```
+
+### Gill tissue venn diagram all treatments
+```{r}
+ggvenn(
+  G_list, 
+  fill_color = c("orange", "red", "green"),
+  stroke_size = 0.5, set_name_size =10,text_size = 13,show_percentage = FALSE
+  )+
+  theme(aspect.ratio = 1,
+        element_text(size = 20))
+```
+### Foot tissue venn all treatments
+```{r}
+ggvenn(
+  F_list, 
+  fill_color = c("orange", "red", "green"),
+  stroke_size = 0.5, set_name_size = 10,text_size = 13,show_percentage = FALSE
+  )+
+  theme(aspect.ratio = 1)
+```
+### Make lists for tissue comparison within treatments
+```{r}
+DO_list <- list(
+  Foot = FDO_sigs$`"gene"`,
+  Gill = GDO_sigs$`"gene"`
+)
+
+OW_list <- list(
+  Foot = FOW_sigs$`"gene"`,
+  Gill = GOW_sigs$`"gene"`
+)
+
+OA_list <- list(
+  Foot = FOA_sigs$`"gene"`,
+  Gill = GOA_sigs$`"gene"`
+)
+```
+
+### DO
+```{r}
+
+ggvenn(
+  DO_list, 
+  fill_color = c("pink", "purple"),
+  stroke_size = 0.5, set_name_size = 7
+  )
+```
+## OA
+```{r}
+
+ggvenn(
+  OA_list, 
+  fill_color = c("pink", "purple"),
+  stroke_size = 0.5, set_name_size = 7
+  )
+```
+## OW
+```{r}
+
+ggvenn(
+  OW_list, 
+  fill_color = c("pink", "purple"),
+  stroke_size = 0.5, set_name_size = 7
+  )
+```

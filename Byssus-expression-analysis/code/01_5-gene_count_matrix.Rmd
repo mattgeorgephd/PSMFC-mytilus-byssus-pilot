@@ -1,0 +1,100 @@
+---
+title: "02-foot_TC_DGE_viz_genome"
+output: html_document
+date: "2024-06-05"
+---
+## Make genome counts matrix
+```{r, eval = TRUE}
+gene_count_matrix1 <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/gene_count_matrix.csv")
+gene_count_matrix1 <- data.frame(gene_count_matrix)
+
+```
+## Load in treatment info for DESeq
+```{r}
+#Load in the metadata
+library(dplyr)
+treatmentinfo.2 <- read.csv("data/PSMFC-mytilus-byssus-pilot-RNA-tagseq_raw.csv", header = TRUE, sep = ",")
+treatmentinfo.2
+
+### NEED TO ADD IN CODE FROM OTHER CODE FILE TO CLEAN UP THIS FILE
+```
+
+## Clean up genome countmatrix
+```{r}
+#Put transcript names as rownames for tibble
+rownames(gene_count_matrix) <- gene_count_matrix$gene_id
+rownames <- rownames(gene_count_matrix)
+gene_count_matrix <- gene_count_matrix[,-1]
+rownames(gene_count_matrix) <- rownames
+
+#Change column names in count matrix to adjust to sample name in treatment info
+new_column_names <- substr(names(gene_count_matrix), 4, nchar(names(gene_count_matrix)) - 5)
+names(gene_count_matrix) <- new_column_names
+
+#Remove remaining periods that are at the front of column names
+remove_dash <- function(col_name) {
+  if (grepl("^\\-", col_name)) {
+    # Remove period from the beginning of the column name
+    return(sub("^\\-", "", col_name))
+  } else {
+    # Keep the column name unchanged
+    return(col_name)
+  }
+}
+
+# Apply the function to all column names
+new_column_names <- sapply(names(gene_count_matrix), remove_dash)
+
+# Assign the modified column names to the data frame
+names(gene_count_matrix) <- new_column_names
+
+remove_periods <- function(col_name) {
+  if (grepl("^\\.", col_name)) {
+    # Remove period from the beginning of the column name
+    return(sub("^\\.", "", col_name))
+  } else {
+    # Keep the column name unchanged
+    return(col_name)
+  }
+}
+
+# Apply the function to all column names
+new_column_names <- sapply(names(gene_count_matrix), remove_periods)
+
+# Assign the modified column names to the data frame
+names(gene_count_matrix) <- new_column_names
+
+#clean up data, get rid of NA's and blank cells, and put samples in order 
+gene_count_matrix <- gene_count_matrix[, order(names(gene_count_matrix))]
+treatmentinfo.2 <- treatmentinfo.2[order(treatmentinfo.2),]
+treatmentinfo.2 <- treatmentinfo.2[complete.cases(treatmentinfo.2), ]
+
+#Remove sample IDS that match the FX samples
+# gene_count_matrix <- gene_count_matrix[, !names(gene_count_matrix) %in% fX_ids, drop = FALSE]
+# treatmentinfo.2 <- treatmentinfo.2 %>%
+#   filter(!sample.1 %in% fX_ids)
+
+rownames(treatmentinfo.2) <- treatmentinfo.2$sample.1
+
+#Removing T047 from treatment info because there isn't data for that, and T051 because of QC
+removal <- which(rownames(treatmentinfo.2) %in% c("T047F", "T051F", "T051G"))
+treatmentinfo.2 <- treatmentinfo.2[-removal,]
+removal2 <- which(names(gene_count_matrix) %in% c("T051F", "T051G"))
+gene_count_matrix <- gene_count_matrix[,-removal2]
+
+#remove loc identifier temporarily
+gene_count_matrix3 <- subset(gene_count_matrix, select=-(loc_id))
+
+#Check that columns and row names match
+all(rownames(treatmentinfo.2) == colnames(gene_count_matrix3))
+
+# Write gene count matrix files
+write.csv(gene_count_matrix3, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/gene_count_matrix_clean.csv", row.names = TRUE)
+write.csv(treatmentinfo.2, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/treatmentinfo_clean.csv", row.names = TRUE)
+```
+
+
+```{r}
+list <- c(treatmentinfo.2$sample.1, colnames(gene_count_matrix)) 
+```
+

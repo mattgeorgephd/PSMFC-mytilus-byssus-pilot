@@ -1,0 +1,141 @@
+---
+title: "12-Volcano_plots"
+output: html_document
+date: "2025-03-21"
+---
+
+### Load libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+```
+
+
+### Load DEGS
+```{r}
+# Gill (TC)
+GOW_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_merged.csv")
+GOA_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_merged.csv")
+GDO_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_merged.csv")
+
+# Foot (TC)
+FOW_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_merged.csv")
+FOA_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_merged.csv")
+FDO_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_merged.csv")
+
+# Select only unique identifiers
+GOW_sigs <- unique(GOW_sigs)
+GOA_sigs <- unique(GOA_sigs)
+GDO_sigs <- unique(GDO_sigs)
+
+FOW_sigs <- unique(FOW_sigs)
+FOA_sigs <- unique(FOA_sigs)
+FDO_sigs <- unique(FDO_sigs)
+
+
+```
+
+
+```{r}
+my_theme <- theme_classic()+
+    theme(axis.text.x = element_text(color="black",angle = 0, hjust = 0.5, size = 18),
+        axis.title.x = element_text(color="black",size = 20),
+        axis.title.y = element_text(color="black",size = 20),      
+        axis.text.y = element_text(color="black",size = 18),
+       legend.text = element_text(color="black",size = 18),      # Change legend text size
+    legend.title = element_text(color="black",size = 20),
+    legend.position = "none",
+    panel.border = element_rect(colour = "black", fill=NA, linewidth=1))+
+  theme(aspect.ratio = 1)
+```
+
+```{r}
+FDO_volcano <- ggplot(FDO_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
+    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+    scale_color_manual(values=c("red", "blue")) +
+    labs(x=expression(Log["2"]*" fold change") , 
+         y=NULL) +
+    theme(plot.title = element_text(hjust = 0.5))+
+  my_theme +
+  xlim(-6,6)+
+  ylim(1,20)
+    
+
+FDO_volcano
+```
+```{r}
+GDO_volcano <- ggplot(GDO_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
+    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+    scale_color_manual(values=c("red", "blue")) +
+    labs(x=expression(Log["2"]*" fold change") , 
+         y=NULL) +
+    theme(plot.title = element_text(hjust = 0.5))+
+  my_theme +
+  xlim(-6,6)+
+  ylim(1,20)
+  
+GDO_volcano
+
+```
+```{r}
+FOW_volcano <- ggplot(FOW_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
+    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+    scale_color_manual(values=c("red", "blue")) +
+    labs(x=expression(Log["2"]*" fold change") , 
+         y=NULL) +
+    theme(plot.title = element_text(hjust = 0.5))+
+  my_theme +
+  xlim(-6,6)+
+  ylim(1,20)  
+
+FOW_volcano
+```
+```{r}
+GOW_volcano <- ggplot(GOW_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
+    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+    scale_color_manual(values=c("red", "blue")) +
+    labs(x=expression(Log["2"]*" fold change"), 
+         y=NULL) +
+    theme(plot.title = element_text(hjust = 0.5))+
+  my_theme+
+  xlim(-6,6)+
+  ylim(1,20)  
+
+GOW_volcano 
+```
+```{r}
+
+FOA_volcano <- ggplot(FOA_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
+    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+    scale_color_manual(values=c("red", "blue")) +
+    labs(x=expression(Log["2"]*" fold change") , 
+         y=NULL) +
+    theme(plot.title = element_text(hjust = 0.5))+
+  my_theme +
+  xlim(-6,6)+
+  ylim(1,20) 
+
+FOA_volcano
+
+```
+```{r}
+GOA_volcano <- ggplot(GOA_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
+    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+    scale_color_manual(values=c("red", "blue")) +
+    labs(x=expression(Log["2"]*" fold change") , 
+         y=NULL) +
+    theme(plot.title = element_text(hjust = 0.5))+
+    my_theme+ 
+  xlim(-6,6)+
+  ylim(1,20)  
+
+GOA_volcano
+```
+```{r}
+grid.arrange(GOA_volcano, GOW_volcano, GDO_volcano,nrow = 1)
+```
+```{r}
+grid.arrange(FOA_volcano, FOW_volcano, FDO_volcano,nrow = 1)
+```
+

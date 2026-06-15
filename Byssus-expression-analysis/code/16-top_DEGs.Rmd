@@ -1,0 +1,241 @@
+---
+title: "16-top_DEGs"
+output: html_document
+date: "2025-03-28"
+---
+
+### Load libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+```
+
+### Load DEGS
+```{r}
+# Gill (TC)
+GOW_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_ID.csv")
+GOA_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_ID.csv")
+GDO_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_ID.csv")
+
+# Foot (TC)
+FOW_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_ID.csv")
+FOA_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv")
+FDO_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv")
+
+# Select only unique identifiers
+GOW_sigs_ID<- unique(GOW_sigs_ID)
+GOA_sigs_ID<- unique(GOA_sigs_ID)
+GDO_sigs_ID<- unique(GDO_sigs_ID)
+
+FOW_sigs_ID<- unique(FOW_sigs_ID)
+FOA_sigs_ID<- unique(FOA_sigs_ID)
+FDO_sigs_ID<- unique(FDO_sigs_ID)
+
+
+```
+
+```{r}
+my_theme <- theme_classic()+
+    theme(axis.text.x = element_text(color="black",angle = 0, hjust = 0.5, size = 16),
+        axis.title.x = element_text(color="black",size = 20),
+        axis.title.y = element_text(color="black",size = 20),      
+        axis.text.y = element_text(color="black",size = 16),
+       legend.text = element_text(color="black",size = 18),      # Change legend text size
+    legend.title = element_text(color="black",size = 20),
+    legend.position = "none",
+    panel.border = element_rect(colour = "black", fill=NA, linewidth=1))
+```
+# GOW 
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+GOW_top <- GOW_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes
+top_up <- GOW_top %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- GOW_top %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+
+write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GOW_topgenes.csv", row.names = FALSE)
+
+gene_labels <- setNames(top_genes$geneID, top_genes$gene)
+
+# Create the plot
+ggplot(top_genes, aes(x = gene, y = log2FoldChange, fill = log2FoldChange > 0)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("red", "blue"), labels = c("Downregulated", "Upregulated")) +
+  coord_flip() +
+  scale_x_discrete(labels = gene_labels) +  # Change labels to another column
+  labs(x = "DEG", y = expression(Log["2"]*" fold change"), fill = "Regulation") +
+  my_theme
+```
+
+# FOW 
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+FOW_top <- FOW_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes
+top_up <- FOW_top %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- FOW_top %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FOW_topgenes.csv", row.names = FALSE)
+
+gene_labels <- setNames(top_genes$geneID, top_genes$gene)
+
+# Create the plot
+ggplot(top_genes, aes(x = gene, y = log2FoldChange, fill = log2FoldChange > 0)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("red", "blue"), labels = c("Downregulated", "Upregulated")) +
+  coord_flip() +
+  scale_x_discrete(labels = gene_labels) +  # Change labels to another column
+  labs(x = "DEG", y = expression(Log["2"]*" fold change"), fill = "Regulation") +
+  my_theme
+```
+# GDO
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+GDO_top <- GDO_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes
+top_up <- GDO_top %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- GDO_top %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GDO_topgenes.csv", row.names = FALSE)
+
+gene_labels <- setNames(top_genes$geneID, top_genes$gene)
+
+# Create the plot
+ggplot(top_genes, aes(x = gene, y = log2FoldChange, fill = log2FoldChange > 0)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("red", "blue"), labels = c("Downregulated", "Upregulated")) +
+  coord_flip() +
+  scale_x_discrete(labels = gene_labels) +  # Change labels to another column
+  labs(x = "DEG", y = expression(Log["2"]*" fold change"), fill = "Regulation") +
+  my_theme
+```
+
+
+# FDO
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+FDO_top <- FDO_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes
+top_up <- FDO_top %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- FDO_top %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FDO_topgenes.csv", row.names = FALSE)
+
+
+gene_labels <- setNames(top_genes$geneID, top_genes$gene)
+
+# Create the plot
+ggplot(top_genes, aes(x = gene, y = log2FoldChange, fill = log2FoldChange > 0)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("red", "blue"), labels = c("Downregulated", "Upregulated")) +
+  coord_flip() +
+  scale_x_discrete(labels = gene_labels) +  # Change labels to another column
+  labs(x = "DEG", y = expression(Log["2"]*" fold change"), fill = "Regulation") +
+  my_theme
+```
+
+# GOA
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+GOA_top <- GOA_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes
+top_up <- GOA_top %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- GOA_top %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GOA_topgenes.csv", row.names = FALSE)
+
+gene_labels <- setNames(top_genes$geneID, top_genes$gene)
+
+
+# Create the plot
+ggplot(top_genes, aes(x = gene, y = log2FoldChange, fill = log2FoldChange > 0)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("red", "blue"), labels = c("Downregulated", "Upregulated")) +
+  coord_flip() +
+  scale_x_discrete(labels = gene_labels) +  # Change labels to another column
+  labs(x = "DEG", y = expression(Log["2"]*" fold change"), fill = "Regulation") +
+  my_theme
+```
+
+# FOA
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+FOA_top <- FOA_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes
+top_up <- FOA_top %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- FOA_top %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FOA_topgenes.csv", row.names = FALSE)
+
+gene_labels <- setNames(top_genes$geneID, top_genes$gene)
+# Create the plot
+ggplot(top_genes, aes(x = gene, y = log2FoldChange, fill = log2FoldChange > 0)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("red", "blue"), labels = c("Downregulated", "Upregulated")) +
+  coord_flip() +
+  scale_x_discrete(labels = gene_labels) +  # Change labels to another column
+  labs(x = "DEG", y = expression(Log["2"]*" fold change"), fill = "Regulation") +
+  my_theme
+```

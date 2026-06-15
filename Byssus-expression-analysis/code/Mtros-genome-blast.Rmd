@@ -1,0 +1,106 @@
+---
+title: "genome_blast"
+output: html_document
+date: "2024-06-30"
+---
+
+### Download swissprot database
+
+```{bash}
+curl -o uniprotkb_mytilus_foot.fasta "https://rest.uniprot.org/uniprotkb/stream?format=fasta&query=%28mytilus+foot%29"
+```
+
+
+```{bash}
+
+cd ../data
+curl -O https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
+mv uniprot_sprot.fasta.gz uniprot_sprot_r2024_01.fasta.gz
+gunzip uniprot_sprot_r2024_01.fasta.gz
+
+```
+
+### Combine fasta's
+```{bash}
+cat /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/uniprot_sprot_r2024_01.fasta /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/uniprotkb_mytilus_foot.fasta > swissprot_n_mytilusfoot.fasta
+
+```
+
+
+
+### Make blastdb
+```{bash}
+/home/shared/ncbi-blast-2.15.0+/bin/makeblastdb \
+-in /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/swissprot_n_mytilusfoot.fasta \
+-dbtype prot \
+-out /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/swissprot_n_mytilusfoot_db
+
+
+```
+
+```{bash}
+/home/shared/ncbi-blast-2.15.0+/bin/blastx \
+-query /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fasta \
+-db /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/swissprot_n_mytilusfoot_db \
+-out /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/genome_n_foot_blastx.tab \
+-evalue 1E-20 \
+-num_threads 20 \
+-max_target_seqs 1 \
+-outfmt 6
+```
+# Uniprot info download
+```{bash}
+curl -o uniprot2024.tsv -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgene_oln%2Ccc_interaction%2Ccc_induction%2Cgo_p%2Cgo_c%2Cgo_f%2Cgo_id%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway&format=tsv&query=%28*%29+AND+%28reviewed%3Atrue%29"
+```
+# Uniprot mytfoot download
+```{bash}
+# searched mytilus foot in uniprot kb, took Trembl results
+curl -o trembl_foot_info.tsv -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_id%2Cgo_p%2Cgo_f%2Cgo_c%2Cgo%2Cgene_oln%2Ccc_induction%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway%2Ccc_interaction&format=tsv&query=%28mytilus+foot%29"
+```
+
+```{r}
+mytfoot_uniprot_info <- read.delim("data/trembl_foot_info.tsv", sep= "\t", header = TRUE)
+uniprot_info <- read.delim("data/uniprot2024.tsv", sep= "\t", header = TRUE)
+```
+
+```{r}
+mytilus_foot_uniprot_info <- subset(mytilus_foot_uniprot_info, select = -Gene.Ontology..GO.)
+total_uniprot_info <- rbind(mytilus_foot_uniprot_info, uniprot_info)
+total_uniprot_info <- total_uniprot_info %>% rename(uniprot_accession = Entry)
+
+full_blast <- left_join(masterID, total_uniprot_info, by = "uniprot_accession")
+```
+
+```{bash}
+perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \
+/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fasta > /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.tab
+```
+
+```{r}
+cdsftab <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.tab", sep = '\t', header = FALSE, row.names=NULL)
+
+blast <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/genome_n_foot_blastx.tab", sep = '\t', header = FALSE, row.names=NULL)
+```
+
+
+```{r}
+g.spid <- left_join(blast, cdsftab, by = "V1") %>%
+  mutate(gene = str_extract(V2.y, "(?<=\\[gene=)\\w+")) %>%
+  select(gene, V11, V2.x, V1) %>%
+  mutate(uniprot_accession = str_extract(V2.x, "(?<=\\|)[^\\|]*(?=\\|)")) %>%
+  distinct(gene, uniprot_accession, .keep_all = TRUE)
+
+colnames(g.spid)[4] <- "transcript"
+```
+
+
+```{r}
+LOC_GO_blast <- left_join(full_blast, g.spid, by = "transcript")
+
+write.table(LOC_GO_blast, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/LOC_GO_list.txt",sep = "\t", row.names = FALSE, quote = TRUE)
+
+write.table(g.spid, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/g.spid.txt",sep = "\t", row.names = FALSE, quote = TRUE)
+```
+
+
+

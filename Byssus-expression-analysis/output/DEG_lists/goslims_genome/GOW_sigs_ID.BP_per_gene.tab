@@ -1,0 +1,23 @@
+Genes	GOslim.BP	Term
+ACT2	GO:0000910	cytokinesis
+CCR4	GO:0023052	signaling
+CDC42	GO:0022414	reproductive process
+ETV6	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
+HMG2	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
+HR3	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
+IF2G	GO:0065003	protein-containing complex assembly
+LAT2	GO:0055085	transmembrane transport
+MXI1	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
+PTBP1	GO:0016071	mRNA metabolic process
+RL15	GO:0002181	cytoplasmic translation
+ROAA	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
+SPDEF	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
+SRBP1	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
+SRR55	GO:0016071	mRNA metabolic process
+SRSF4	GO:0002376;GO:0030154	immune system process;cell differentiation
+TBB	GO:0000278;GO:0007010	mitotic cell cycle;cytoskeleton organization
+TBB2	GO:0000278;GO:0007010	mitotic cell cycle;cytoskeleton organization
+TSR1	GO:0042254	ribosome biogenesis
+UBCD1	GO:0000278	mitotic cell cycle
+XBP1	GO:0048856	anatomical structure development
+NA	GO:0003012;GO:0003013;GO:0003014;GO:0003016;GO:0005975;GO:0006091;GO:0006260;GO:0006281;GO:0006310;GO:0006325;GO:0006399;GO:0006457;GO:0006486;GO:0006520;GO:0006575;GO:0006629;GO:0006766;GO:0006790;GO:0006886;GO:0006913;GO:0006914;GO:0006954;GO:0007005;GO:0007018;GO:0007031;GO:0007040;GO:0007059;GO:0007155;GO:0007163;GO:0012501;GO:0015979;GO:0016073;GO:0016192;GO:0022600;GO:0030163;GO:0030198;GO:0031047;GO:0032200;GO:0034330;GO:0042060;GO:0044782;GO:0048870;GO:0050877;GO:0050886;GO:0051604;GO:0055086;GO:0061007;GO:0061024;GO:0071554;GO:0071941;GO:0072659;GO:0098542;GO:0098754;GO:0140013;GO:0140014;GO:0140053;GO:1901135	muscle system process;circulatory system process;renal system process;respiratory system process;carbohydrate metabolic process;generation of precursor metabolites and energy;DNA replication;DNA repair;DNA recombination;chromatin organization;tRNA metabolic process;protein folding;protein glycosylation;cellular amino acid metabolic process;cellular modified amino acid metabolic process;lipid metabolic process;vitamin metabolic process;sulfur compound metabolic process;intracellular protein transport;nucleocytoplasmic transport;autophagy;inflammatory response;mitochondrion organization;microtubule-based movement;peroxisome organization;lysosome organization;chromosome segregation;cell adhesion;establishment or maintenance of cell polarity;programmed cell death;photosynthesis;snRNA metabolic process;vesicle-mediated transport;digestive system process;protein catabolic process;extracellular matrix organization;gene silencing by RNA;telomere organization;cell junction organization;wound healing;cilium organization;cell motility;nervous system process;endocrine process;protein maturation;nucleobase-containing small molecule metabolic process;hepaticobiliary system process;membrane organization;cell wall organization or biogenesis;nitrogen cycle metabolic process;protein localization to plasma membrane;defense response to other organism;detoxification;meiotic nuclear division;mitotic nuclear division;mitochondrial gene expression;carbohydrate derivative metabolic process

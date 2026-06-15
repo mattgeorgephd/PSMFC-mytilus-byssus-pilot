@@ -1,0 +1,142 @@
+---
+title: "GOenrichment_listcreationforDAVID"
+output: html_document
+date: "2024-10-18"
+---
+### Library loading
+```{r}
+library(BiocManager)
+library(tidyverse)
+```
+
+### Load files
+```{r}
+gene_count_matrix1 <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/gene_count_matrix_clean.csv")
+g.spid <- read.table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/g.spid.txt", header = TRUE)
+colnames(g.spid) <- c("LOC_ID", "evalue", "uniprot_output", "transcript", "uniprot_acc")
+```
+
+### Filter for genes that have counts of at least 10 in >= 1/3 of gene count matrix
+```{r}
+nrow(gene_count_matrix1) #47806
+filteredGCM <- gene_count_matrix1[rowSums(gene_count_matrix1 >= 10) >= ceiling(ncol(gene_count_matrix1)/ 3),]
+nrow(filteredGCM) #9476
+                                  
+```
+
+### Extract LOC_ID from rownames
+```{r}
+filteredGCM1 <- filteredGCM %>%
+  # Mutate to add the new column with part after the pipe (|) and place it after row names
+  mutate(LOC_ID = str_extract(...1, "(?<=\\|).+")) %>%
+  # Reorder columns to make the new column the first one after row names
+  select(...1, LOC_ID, everything())
+nrow(filteredGCM1)#9476
+```
+
+### left join g.spid file mapping LOC ID's to Uniprot accession ID's to filtered gene count matrix
+```{r}
+filteredGCM2 <- filteredGCM1 %>%
+  left_join(g.spid %>% select(LOC_ID, uniprot_acc), by = "LOC_ID") %>%
+  select(LOC_ID, uniprot_acc, everything())
+nrow(filteredGCM2) #9964
+
+filteredGCM2_unique <- filteredGCM2 %>%
+  distinct(...1, .keep_all = TRUE)
+nrow(filteredGCM2_unique) #9476
+```
+
+### Create BG for DAVID
+```{r}
+uniprot_BG_DAVID <- na.omit(filteredGCM2_unique$uniprot_acc)
+head(uniprot_BG_DAVID)
+length(uniprot_BG_DAVID) #6413 with UNIPROT id's 
+uniprot_BG_DAVID_unique <- unique(uniprot_BG_DAVID)
+length(uniprot_BG_DAVID_unique) #5581
+writeLines(unlist(uniprot_BG_DAVID_unique), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/DAVID_lists/uniprot_BG_DAVID.txt")
+```
+
+### FOA list
+```{r}
+FOA_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv",
+                      sep = " ")
+FOA_sigs_uniprot <- na.omit(FOA_sigs_ID$uniprot_accession)
+head(FOA_sigs_uniprot) 
+length(FOA_sigs_uniprot) #72
+FOA_sigs_uniprot_unique <- unique(FOA_sigs_uniprot)
+length(FOA_sigs_uniprot_unique) #61
+writeLines(unlist(FOA_sigs_uniprot_unique), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/DAVID_lists/FOA_ID_uniprot_DAVID.txt")
+
+
+```
+
+
+### GOA list
+```{r}
+
+
+GOA_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_ID.csv",
+                      sep = " "
+                      )
+GOA_sigs_uniprot <- na.omit(GOA_sigs_ID$uniprot_accession)
+head(GOA_sigs_uniprot)
+length(GOA_sigs_uniprot) # 582
+GOA_sigs_uniprot_unique <- unique(GOA_sigs_uniprot)
+length(GOA_sigs_uniprot_unique) #364
+writeLines(unlist(GOA_sigs_uniprot_unique), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/DAVID_lists/GOA_ID_uniprot_DAVID.txt")
+```
+
+
+### FOW list
+```{r}
+FOW_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_ID.csv",
+                      sep = " "
+                      )
+FOW_sigs_uniprot <- na.omit(FOW_sigs_ID$uniprot_accession)
+head(FOW_sigs_uniprot)
+length(FOW_sigs_uniprot) # 152
+FOW_sigs_uniprot_unique <- unique(FOW_sigs_uniprot)
+length(FOW_sigs_uniprot_unique) #113
+writeLines(unlist(FOW_sigs_uniprot_unique), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/DAVID_lists/FOW_ID_uniprot_DAVID.txt")
+```
+
+
+### GOW list
+```{r}
+GOW_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_ID.csv",
+                      sep = " "
+                      )
+GOW_sigs_uniprot <- na.omit(GOW_sigs_ID$uniprot_accession)
+head(GOW_sigs_uniprot)
+length(GOW_sigs_uniprot) # 198
+GOW_sigs_uniprot_unique <- unique(GOW_sigs_uniprot)
+length(GOW_sigs_uniprot_unique) #139
+writeLines(unlist(GOW_sigs_uniprot_unique), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/DAVID_lists/GOW_ID_uniprot_DAVID.txt")
+```
+
+
+### FDO list
+```{r}
+FDO_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv")
+FDO_sigs_uniprot <- na.omit(FDO_sigs_ID$uniprot_accession)
+head(FDO_sigs_uniprot)
+length(FDO_sigs_uniprot) # 361
+FDO_sigs_uniprot_unique <- unique(FDO_sigs_uniprot)
+length(FDO_sigs_uniprot_unique) #275
+writeLines(unlist(FDO_sigs_uniprot_unique), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/DAVID_lists/FDO_ID_uniprot_DAVID.txt")
+```
+
+
+### GDO list
+```{r}
+# Read in tab-delimited file
+GDO_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_ID.csv")
+GDO_sigs_uniprot <- na.omit(GDO_sigs_ID$uniprot_accession)
+head(GDO_sigs_uniprot)
+length(GDO_sigs_uniprot) # 301
+GDO_sigs_uniprot_unique <- unique(GDO_sigs_uniprot)
+length(GDO_sigs_uniprot_unique) #217
+writeLines(unlist(GDO_sigs_uniprot_unique), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/DAVID_lists/GDO_ID_uniprot_DAVID.txt")
+```
+
+

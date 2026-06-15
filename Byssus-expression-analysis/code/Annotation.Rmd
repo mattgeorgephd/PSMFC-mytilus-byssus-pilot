@@ -1,0 +1,61 @@
+---
+title: "Annotation"
+output: html_document
+date: "2024-07-02"
+---
+### Libraries
+```{r}
+library(kableExtra)
+library(tidyverse)
+```
+
+
+### check out uniprot blast output
+```{bash}
+head -2 /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-genome-uniprot_blastx.tab
+#lcl|NC_086373.1_cds_XP_063416577.1_1	sp|Q5RA75|F135A_PONAB	67.901	243	73	4	2587	3309	785	1024	1.01e-86	313
+#lcl|NC_086373.1_cds_XP_063416577.1_1	sp|Q5RA75|F135A_PONAB	39.858	424	229	7	1	1215	1	417	2.54e-86	311
+wc -l /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-genome-uniprot_blastx.tab
+#41340
+```
+### Test out pipe replacement
+```{bash}
+tr '|' '\t' < /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-genome-uniprot_blastx.tab | head -2
+```
+### Replace pipes
+```{bash}
+
+tr '|' '\t'< /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-genome-uniprot_blastx.tab > /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-genome-uniprot_blastx_sep.tab
+
+```
+
+### Did the pipe separation work
+```{bash}
+head -2 /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-genome-uniprot_blastx_sep.tab
+```
+
+### Check out the Uniprot table output
+```{bash}
+head /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/Uniprot_table
+
+```
+
+### Download annotation table from Uniprot
+```{bash}
+curl -O -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_p%2Cgo%2Cgo_c%2Cgo_f%2Cgo_id%2Ccc_interaction%2Cec&format=tsv&query=%28*%29+AND+%28reviewed%3Atrue%29" 
+```
+
+### Unzip annotation table
+```{bash}
+gzip -dc "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_p%2Cgo%2Cgo_c%2Cgo_f%2Cgo_id%2Ccc_interaction%2Cec&format=tsv&query=%28*%29+AND+%28reviewed%3Atrue%29"  > "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/uniprot_proteins.tsv"
+
+head "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/uniprot_proteins.tsv"
+```
+
+
+```{r}
+bltabl <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Mtros-genome-uniprot_blastx_sep.tab", sep = '\t', header = FALSE)
+spgo <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/uniprot_proteins.tsv", sep = '\t', header = TRUE)
+str(spgo)
+```
+

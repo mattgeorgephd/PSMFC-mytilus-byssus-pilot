@@ -1,0 +1,149 @@
+---
+title: "09-GOenrichment_listcreation_REVIGO"
+output: html_document
+date: "2024-10-29"
+---
+
+### Library loading
+```{r}
+library(BiocManager)
+library(tidyverse)
+```
+
+### Load files
+```{r}
+gene_count_matrix1 <- read.table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/gene_count_matrix_clean",row.names = 1 )
+masterID <- read.delim("output/LOC_GO_list.txt", sep= "\t", header = TRUE)
+#Cut out extras
+masterID <- masterID[, -((ncol(masterID)-2):ncol(masterID))]
+
+# Rename remaining columns
+
+colnames(masterID)  <- c("transcript", "database","uniprot_accession","geneID","species", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "reviewed", "entryname", "protein_name", "gene_name", "organism", "prot_length", "GO_ID", "GO_BP", "GO_MF", "GO_CC", "Genename_orderedlocus", "Induction", "Pathwaycommons", "Reactome", "Unipathway", "Interacts_with", "LOC_column")
+```
+
+### Filter for genes that have counts of at least 10 in >= 1/3 of gene count matrix
+```{r}
+nrow(gene_count_matrix1) #47806
+filteredGCM <- gene_count_matrix1[rowSums(gene_count_matrix1 >= 10) >= ceiling(ncol(gene_count_matrix1)/ 3),]
+nrow(filteredGCM) #9386
+                                  
+```
+
+### Extract LOC_ID from rownames
+```{r}
+filteredGCM1 <- filteredGCM %>%
+  rownames_to_column(var = "row_name") %>%
+  # Mutate to add the new column with part after the pipe (|) and place it after row names
+  mutate(LOC_ID = str_extract(row_name, "(?<=\\|).+")) %>%
+  # Reorder columns to make the new column the first one after row names
+  select(row_name, LOC_ID, everything())
+nrow(filteredGCM1)#9386
+```
+
+### left join masterID file mapping LOC ID's to GO ID's to filtered gene count matrix
+```{r}
+filteredGCM2 <- filteredGCM1 %>%
+  left_join(masterID %>% select(LOC_ID,GO_ID ), by = "LOC_ID") %>%
+  select(LOC_ID, GO_ID, everything())
+nrow(filteredGCM2) #9873
+
+filteredGCM3 <- separate_rows(filteredGCM2, GO_ID, sep = ";")
+filteredGCM3$GO_ID <- trimws(filteredGCM3$GO_ID)
+
+filteredGCM3_unique <- filteredGCM3 %>%
+  distinct(GO_ID, .keep_all = TRUE)
+nrow(filteredGCM2_unique) #9386
+```
+
+### Create BG for DAVID
+```{r}
+uniprot_BG_REVIGO <- na.omit(filteredGCM3$GO_ID)
+head(uniprot_BG_REVIGO)
+length(uniprot_BG_REVIGO ) #2342567 GO id's (not all unique) 
+writeLines(unlist(uniprot_BG_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/uniprot_BG_REVIGO.txt")
+```
+
+### FOA list
+```{r}
+FOA_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv",
+                      sep = " ")
+FOA_sigs_ID <- separate_rows(FOA_sigs_ID, GO_ID, sep = ";")
+FOA_sigs_ID$GO_ID <- trimws(FOA_sigs_ID$GO_ID)
+FOA_sigs_REVIGO <- na.omit(FOA_sigs_ID$GO_ID)
+head(FOA_sigs_REVIGO) 
+length(FOA_sigs_REVIGO) #995
+writeLines(unlist(FOA_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/FOA_ID_REVIGO.txt")
+
+
+```
+
+
+### GOA list
+```{r}
+
+
+GOA_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_ID.csv",
+                      sep = " ")
+GOA_sigs_ID <- separate_rows(GOA_sigs_ID, GO_ID, sep = ";")
+GOA_sigs_ID$GO_ID <- trimws(GOA_sigs_ID$GO_ID)
+GOA_sigs_REVIGO <- na.omit(GOA_sigs_ID$GO_ID)
+head(GOA_sigs_REVIGO) 
+length(GOA_sigs_REVIGO) #7379
+writeLines(unlist(GOA_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/GOA_ID_REVIGO.txt")
+
+```
+
+
+### FOW list
+```{r}
+FOW_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_ID.csv",
+                      sep = " ")
+FOW_sigs_ID <- separate_rows(FOW_sigs_ID, GO_ID, sep = ";")
+FOW_sigs_ID$GO_ID <- trimws(FOW_sigs_ID$GO_ID)
+FOW_sigs_REVIGO <- na.omit(FOW_sigs_ID$GO_ID)
+head(FOW_sigs_REVIGO) 
+length(FOW_sigs_REVIGO) #1920
+writeLines(unlist(FOW_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/FOW_ID_REVIGO.txt")
+```
+
+
+### GOW list
+```{r}
+GOW_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_ID.csv",
+                      sep = " ")
+GOW_sigs_ID <- separate_rows(GOW_sigs_ID, GO_ID, sep = ";")
+GOW_sigs_ID$GO_ID <- trimws(GOW_sigs_ID$GO_ID)
+GOW_sigs_REVIGO <- na.omit(GOW_sigs_ID$GO_ID)
+head(GOW_sigs_REVIGO) 
+length(GOW_sigs_REVIGO) #3180
+writeLines(unlist(GOW_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/GOW_ID_REVIGO.txt")
+```
+
+
+### FDO list
+```{r}
+FDO_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv",
+                      sep = " ")
+FDO_sigs_ID <- separate_rows(FDO_sigs_ID, GO_ID, sep = ";")
+FDO_sigs_ID$GO_ID <- trimws(FDO_sigs_ID$GO_ID)
+FDO_sigs_REVIGO <- na.omit(FDO_sigs_ID$GO_ID)
+head(FDO_sigs_REVIGO) 
+length(FDO_sigs_REVIGO) #3462
+writeLines(unlist(FDO_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/FDO_ID_REVIGO.txt")
+```
+
+
+### GDO list
+```{r}
+GDO_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_ID.csv",
+                      sep = " ")
+GDO_sigs_ID <- separate_rows(GDO_sigs_ID, GO_ID, sep = ";")
+GDO_sigs_ID$GO_ID <- trimws(GDO_sigs_ID$GO_ID)
+GDO_sigs_REVIGO <- na.omit(GDO_sigs_ID$GO_ID)
+head(GDO_sigs_REVIGO) 
+length(GDO_sigs_REVIGO) #2460
+writeLines(unlist(GDO_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/GDO_ID_REVIGO.txt")
+```
+
+

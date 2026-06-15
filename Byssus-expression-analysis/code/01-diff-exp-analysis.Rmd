@@ -1,0 +1,265 @@
+---
+title: "01-diff-exp-analysis"
+output: html_document
+date: "2023-12-12"
+---
+
+```{bash, engine.opts='-l'}
+echo $PATH
+```
+
+```{r load libraries}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.16")
+
+BiocManager::install("DESeq2")
+library("DESeq2") # Bioconductor
+library("tidyverse")
+library("dplyr")
+library("pheatmap")
+library("RColorBrewer")
+library("genefilter") # Bioconductor
+library("ggplot2")
+library("gplots")
+library("limma") # Bioconductor
+library("spdep") 
+library("adegenet")
+library("tximport") # Bioconductor
+BiocManager::install("vsn")
+BiocManager::install("tidybulk")
+BiocManager::install("goseq")
+BiocManager::install("affycoretools")
+BiocManager::install("EnhancedVolcano")
+BiocManager::install("pcaExplorer")
+BiocManager::install("apeglm")
+BiocManager::install("PCAtools")
+BiocManager::install("DESeq2PCA")
+library(pcaExplorer)
+library(PCAtools)
+package.version("DESeq2")
+```
+
+## Bring tag-seq data in from gannet
+```{bash}
+mkdir ~/Github/byssus-exp-analysis/data/raw-data/
+cd ~/Github/byssus-exp-analysis/data/raw-data/
+
+wget -r \
+--no-directories --no-parent \
+-P . \
+-A .fastq.gz https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/ \
+--no-check-certificate
+```
+
+## Run fastqc on untrimmed files
+```{bash}
+mkdir ../output/fastqc/untrimmed/
+
+/home/shared/FastQC-0.12.1/fastqc \
+../data/raw-data/*.fastq.gz \
+--outdir ../output/fastqc/untrimmed/ \
+--quiet
+
+```
+
+## Run multiqc on untrimmed fastqc files
+```{bash}
+
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+
+cd ~/Github/byssus-exp-analysis/output/fastqc/untrimmed/
+
+multiqc .
+
+```
+## Download trimmed files
+```{bash}
+mkdir ../data/raw-trimmed/
+wget -e robots=off -np --input-file=../data/download.txt -P ../data/raw-trimmed/
+```
+
+
+## Run fastqc on trimmed files
+```{bash}
+mkdir ../output/fastqc/trimmed/
+/home/shared/FastQC-0.12.1/fastqc \
+../data/raw-trimmed/*.fastq.gz \
+--outdir ../output/fastqc/trimmed/ \
+--quiet
+
+```
+
+## Run multiqc on trimmed fastqc files
+```{bash}
+
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+
+cd ../output/fastqc/trimmed/
+
+multiqc .
+
+```
+
+## get transcriptome
+
+```{r, engine='bash'}
+cd ../data
+curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_transcripts.fasta
+
+```
+
+
+## Create indices for transcriptome with Kallisto
+```{bash}
+# Build index
+
+# Execute the Kallisto tool located at the specified path
+/home/shared/kallisto_linux-v0.50.1/kallisto \
+index \
+-t 20 \
+-i ../output/Mtros-hq_transcripts.index \
+../data/Mtros-hq_transcripts.fasta
+```
+
+# Quantify the indices
+```{bash}
+# Set the paths
+DATA_DIRECTORY="../data/raw-trimmed/"
+KALLISTO_INDEX="../output/Mtros-hq_transcripts.index"
+OUTPUT_DIRECTORY="../output/kallisto-quant"
+
+
+# Iterate over all .fq.gz files in the data directory
+for FILE in "$DATA_DIRECTORY"/*.fastq.gz; do
+    # Extract the base name of the file for naming the output folder
+    BASENAME=$(basename "$FILE" _L099_R1_cmb.trim.fastq.gz)
+
+    # Create output directory for this sample
+    SAMPLE_OUTPUT="$OUTPUT_DIRECTORY/$BASENAME"
+    mkdir -p "$SAMPLE_OUTPUT"
+
+    # Run Kallisto quantification
+    /home/shared/kallisto_linux-v0.50.1/kallisto quant -i "$KALLISTO_INDEX" -o "$SAMPLE_OUTPUT" \
+        --single -t 20 -l 65 -s 2 "$FILE"
+done
+
+echo "Kallisto quantification complete."
+```
+## Generate count matrices
+```{bash}
+     
+perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
+--est_method kallisto \
+--gene_trans_map 'none' \
+--out_prefix ../output/kallisto-quant/abundance-matrices \
+--name_sample_by_basedir \
+../output/kallisto-quant/*/abundance.tsv 
+
+```
+## View abundance matrix
+```{bash}
+head output/kallisto-quant/abundance-matrices.isoform.counts.matrix
+```
+## Make counts matrix
+```{r, eval = TRUE}
+countmatrix <- read.delim("output/kallisto-quant/abundance-matrices.isoform.counts.matrix", header = TRUE, sep = '\t')
+rownames(countmatrix) <- countmatrix$X
+countmatrix <- countmatrix[,-1]
+head(countmatrix)
+```
+
+## Make count matrix into integers
+```{r, eval=TRUE}
+countmatrix <- round(countmatrix, 0)
+str(countmatrix)
+```
+
+## Load in treatment info for DESeq
+```{r}
+#Load in the metadata
+library(dplyr)
+treatmentinfo <- read.csv("data/PSMFC-mytilus-byssus-pilot-RNA-tagseq_raw.csv", header = TRUE, sep = ",")
+treatmentinfo
+
+```
+
+
+## Make file for sample, treatment ID, day, and tissue (to be plugged into DESeq)
+```{r}
+# Get the tissue ID from the sample name, extract last character of sample ID
+treatmentinfo$tissue <- substr(treatmentinfo$sample.1, nchar(treatmentinfo$sample.1) - 0, nchar(treatmentinfo$sample.1))
+
+#extract last character of treatment ID to get day of treatment
+treatmentinfo$day <- substr(treatmentinfo$trt, nchar(treatmentinfo$trt) - 0, nchar(treatmentinfo$trt))
+
+#Extract treatment from treatment column
+## Split each entry based on underscores
+split_entries <- strsplit(treatmentinfo$trt, "_")
+
+## Extract the middle part (assuming there is a middle part)
+middle_parts <- sapply(split_entries, function(x) if(length(x) >= 3) x[2] else NA)
+
+## Assign the extracted middle parts to a new column named "middle"
+treatmentinfo$treatment <- middle_parts
+
+#Make subset of sample ID, treatment, tissue harvested, day
+treatmentinfo.2 <- treatmentinfo[, c("sample.1","tissue", "treatment", "day")]
+# 
+# #specify FX samples for removal later
+# FXsamples <- treatmentinfo.2 %>%
+#   filter(treatmentinfo.2$tissue == "X") %>%
+#   select(sample.1)
+# 
+# #Convert sample ID to character vector
+# fX_ids <- as.vector(as.character(FXsamples$sample.1))
+
+#Change column names in count matrix to adjust to sample name in treatment info
+countmatrix_2 <- countmatrix
+new_column_names <- substr(names(countmatrix_2), 4, nchar(names(countmatrix_2)) - 5)
+names(countmatrix_2) <- new_column_names
+
+#Remove remaining periods that are at the front of column names
+remove_periods <- function(col_name) {
+  if (grepl("^\\.", col_name)) {
+    # Remove period from the beginning of the column name
+    return(sub("^\\.", "", col_name))
+  } else {
+    # Keep the column name unchanged
+    return(col_name)
+  }
+}
+
+# Apply the function to all column names
+new_column_names <- sapply(names(countmatrix_2), remove_periods)
+
+# Assign the modified column names to the data frame
+names(countmatrix_2) <- new_column_names
+
+#clean up data, get rid of NA's and blank cells, and put samples in order 
+countmatrix_2 <- countmatrix_2[ , order(names(countmatrix_2))]
+treatmentinfo.2 <- treatmentinfo.2[order(treatmentinfo.2),]
+treatmentinfo.2 <- treatmentinfo.2[complete.cases(treatmentinfo.2), ]
+
+#Remove sample IDS that match the FX samples
+# countmatrix_2 <- countmatrix_2 %>%
+#   select(-all_of(fX_ids))
+# treatmentinfo.2 <- treatmentinfo.2 %>%
+#   filter(!sample.1 %in% fX_ids)
+
+rownames(treatmentinfo.2) <- treatmentinfo.2$sample.1
+
+#Removing T047 from treatment info because there isn't data for that
+removal <- which(rownames(treatmentinfo.2)%in% "T047F")
+treatmentinfo.2 <- treatmentinfo.2[-removal,]
+
+#Check that columns and row names match
+all(rownames(treatmentinfo.2) == colnames(countmatrix_2))
+
+write.table(countmatrix_2, file = "output/kallisto-quant/cleanedup_countmatrix", row.names = FALSE)
+write.table()
+```
+
+

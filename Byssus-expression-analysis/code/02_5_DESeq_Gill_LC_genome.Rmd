@@ -1,0 +1,246 @@
+---
+title: "02_5_DESeq_Gill_LC_genome"
+output: html_document
+date: "2024-06-14"
+---
+
+```{r load libraries}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.16")
+
+BiocManager::install("DESeq2")
+library("DESeq2") # Bioconductor
+library("tidyverse")
+library("dplyr")
+library("pheatmap")
+library("RColorBrewer")
+library("genefilter") # Bioconductor
+library("ggplot2")
+library("gplots")
+library("limma") # Bioconductor
+install.packages("spdep")
+library("spdep") 
+library("adegenet")
+library("tximport") # Bioconductor
+BiocManager::install("vsn")
+BiocManager::install("tidybulk")
+BiocManager::install("goseq")
+BiocManager::install("affycoretools")
+BiocManager::install("EnhancedVolcano")
+BiocManager::install("pcaExplorer")
+BiocManager::install("apeglm")
+BiocManager::install("PCAtools")
+BiocManager::install("DESeq2PCA")
+library(pcaExplorer)
+library(PCAtools)
+```
+
+### Load and clean up treatment info and gene count matrix 
+```{r}
+treatmentinfo <- read_csv("output/treatmentinfo_clean.csv")
+gene_count_matrix_clean_og <- read_delim("output/gene_count_matrix_clean.csv", delim = ",")
+
+# make transcripts the rownames
+rownames <- gene_count_matrix_clean$...1
+gene_count_matrix_clean <- subset(gene_count_matrix_clean, select = -c(...1))
+rownames(gene_count_matrix_clean) <- rownames
+
+# make gene count matrix into a matrix
+gene_count_matrix_clean <- data.matrix(gene_count_matrix_clean)
+```
+
+### Gill, all treatments
+```{r}
+# read in treatment info and GCM file
+treatmentinfo <- read_delim("output/treatmentinfo_clean.csv", delim = " ")
+gene_count_matrix_clean <- read_delim("output/gene_count_matrix_clean.csv", delim = ",")
+
+# filter for lab control and gill tissue only
+G_LC_treatmentinfo <- treatmentinfo %>% filter(tissue == "G") %>%
+  filter(!(treatment == "control" & day == 3)) 
+write.table(G_LC_treatmentinfo, file = "output/DEG_lists/Gill/G_LC_treatmentinfo.csv", row.names = FALSE)
+
+# subset count matrix
+G_LC_countmatrix <- subset(gene_count_matrix_clean, select=(G_LC_treatmentinfo$sample.1))
+G_LC_countmatrix <- data.frame(G_LC_countmatrix)
+write.table(G_LC_countmatrix, file = "output/DEG_lists/Gill/G_LC_countmatrix.csv")
+
+# Run DESeq
+dds28 <- DESeqDataSetFromMatrix(countData = G_LC_countmatrix,
+                              colData = G_LC_treatmentinfo,
+                              design = ~ treatment)
+
+dds28 <- DESeq(dds28)
+resultsNames(dds28) # lists the coefficients
+
+# Graph dds results
+PCAdata <- plotPCA(vst(dds28), intgroup = c("treatment"), returnData=TRUE)
+percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
+ggplot(PCAdata, aes(PC1, PC2, color=treatment)) + 
+  geom_point(size=4, alpha = 5/10, shape = "triangle") +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+
+  stat_ellipse(level = 0.95)+
+  theme_classic()+
+  scale_color_manual(labels = c("Laboratory control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("blue", "green", "red", "orange"))+
+  guides(color=guide_legend("Treatment"))+
+  theme(axis.text = element_text(size =18, color = "black"))+
+  theme(axis.title = element_text(size =20, color = "black"))+
+  theme(legend.text = element_text(size =18, color = "black"))+
+  theme(legend.title = element_text(size =20, color = "black"))+
+  theme(aspect.ratio = 1)
+```
+
+
+
+### OA vs lab control
+```{r}
+# Read in gill ocean acidification treatment info with lab control samples
+GOA_LC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GOA_LC_countmatrix.csv", delim = " ")
+
+# subset count matrix
+GOA_LC_countmatrix <- subset(gene_count_matrix, select=(GOA_LC_treatmentinfo$sample.1))
+GOA_LC_countmatrix <- data.frame(GOA_LC_countmatrix)
+write.table(GOA_LC_countmatrix, file = "output/DEG_lists/Gill/GOA_LC_countmatrix.csv")
+
+# Calculate DESeq object
+dds1 <- DESeqDataSetFromMatrix(countData = GOA_LC_countmatrix,
+                              colData = GOA_LC_treatmentinfo,
+                              design = ~ treatment)
+
+dds1 <- DESeq(dds1)
+resultsNames(dds1) # lists the coefficients
+
+# graph dds results
+PCAdata <- plotPCA(vst(dds1), intgroup = c("treatment"), returnData=TRUE)
+percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
+ggplot(PCAdata, aes(PC1, PC2, color=treatment)) + 
+  geom_point(size=4, alpha = 5/10) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+
+  stat_ellipse(level = 0.95)+
+  theme_classic()+
+  scale_color_manual(labels = c("Lab control", "Ocean acidification"), values = c("lightblue", "pink"))+
+  guides(color=guide_legend("Treatment"))
+
+# Filtering: keep genes that have at least 10 counts across 1/3 of the samples - https://support.bioconductor.org/p/110307/
+keep <- rowSums(DESeq2::counts(dds1) >= 10) >= ncol(GOA_LC_countmatrix)/3
+dds1_filt <- dds1[keep,]
+
+```
+
+### OW vs lab control
+```{r}
+# read in gill ocean warming treatment info with lab control samples
+GOW_LC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GOW_LC_treatmentinfo.csv", delim = " ")
+
+# subset count matrix                                                                                                      
+GOW_LC_countmatrix <- subset(gene_count_matrix, select=(GOW_LC_treatmentinfo$sample.1))
+write.table(GOW_LC_countmatrix, file = "output/DEG_lists/Gill/GOW_LC_countmatrix.csv")
+#Doesn't work still
+
+# Calculate DESeq object
+dds2 <- DESeqDataSetFromMatrix(countData = GOW_LC_countmatrix,
+                              colData = GOW_LC_treatmentinfo,
+                              design = ~ treatment)
+
+dds2 <- DESeq(dds2)
+resultsNames(dds2) # lists the coefficients
+
+# graph dds results
+PCAdata <- plotPCA(vst(dds2), intgroup = c("treatment"), returnData=TRUE)
+percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
+ggplot(PCAdata, aes(PC1, PC2, color=treatment)) + 
+  geom_point(size=4, alpha = 5/10) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+
+  stat_ellipse(level=0.95)+
+  theme_classic()+
+  scale_color_manual(labels = c("Lab control", "Ocean warming"), values = c("lightblue", "sandybrown"))+
+  guides(color=guide_legend("Treatment"))
+
+
+# Filtering: keep genes that have at least 10 counts across 1/3 of the samples - https://support.bioconductor.org/p/110307/
+keep <- rowSums(DESeq2::counts(dds2) >= 10) >= ncol(GOW_LC_countmatrix)/3
+dds2_filt <- dds2[keep,]
+
+```
+
+### DO vs lab control
+```{r}
+# read in gill hypoxia treatment info file with lab control samples
+GDO_LC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GDO_LC_treatmentinfo.csv", delim = " ")
+
+# subset count matrix                                                                                                
+GDO_LC_countmatrix <- subset(gene_count_matrix_clean, select=(GDO_LC_treatmentinfo$sample.1))
+write.csv(GDO_LC_countmatrix, file = "output/DEG_lists/Gill/GDO_LC_countmatrix.csv", row.names = TRUE)
+
+# Calculate DESeq object
+dds3 <- DESeqDataSetFromMatrix(countData = GDO_LC_countmatrix,
+                              colData = GDO_LC_treatmentinfo,
+                              design = ~ treatment)
+
+dds3 <- DESeq(dds3)
+resultsNames(dds3) # lists the coefficients
+
+# graph dds results
+PCAdata <- plotPCA(vst(dds3), intgroup = c("treatment"), returnData=TRUE)
+percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
+ggplot(PCAdata, aes(PC1, PC2, color=treatment)) + 
+  geom_point(size=4, alpha = 5/10) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+
+  stat_ellipse(level=0.95)+
+  theme_classic()+
+  scale_color_manual(labels = c("Lab control", "Hypoxia"), values = c("lightblue", "lightgreen"))+
+  guides(color=guide_legend("Treatment"))
+
+# Filtering: keep genes that have at least 10 counts across 1/3 of the samples - https://support.bioconductor.org/p/110307/
+keep <- rowSums(DESeq2::counts(dds3) >= 10) >= ncol(GDO_LC_countmatrix)/3
+dds3_filt <- dds3[keep,]
+
+```
+
+
+### treatment control vs lab control
+```{r}
+# Filter data
+GTC_LC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GTC_LC_treatmentinfo.csv", delim = " ")
+         
+#subset count matrix                                                                        
+GTC_LC_countmatrix <- subset(gene_count_matrix, select=(GTC_LC_treatmentinfo$sample.1))
+write.table(GTC_LC_countmatrix, file = "output/DEG_lists/Gill/GTC_LC_countmatrix.csv")    
+GTC_LC_treatmentinfo$day <- as.factor(GTC_LC_treatmentinfo$day)
+
+# Calculate DESeq object
+dds8 <- DESeqDataSetFromMatrix(countData = GTC_LC_countmatrix,
+                              colData = GTC_LC_treatmentinfo,
+                              design = ~ day)
+
+dds8 <- DESeq(dds8)
+resultsNames(dds8) # lists the coefficients
+
+# graph dds results
+
+PCAdata <- plotPCA(vst(dds8), intgroup = c("day"), returnData=TRUE)
+percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
+ggplot(PCAdata, aes(PC1, PC2, color=day)) + 
+  geom_point(size=4, alpha = 5/10) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+
+  stat_ellipse(level=0.95)+
+  theme_classic()+
+  scale_color_manual(labels = c("Lab control", "Treatment control"), values = c("lightblue", "lavender"))+
+  guides(color=guide_legend("Treatment"))
+
+# Filtering: keep genes that have at least 10 counts across 1/3 of the samples - https://support.bioconductor.org/p/110307/
+keep <-  rowSums(DESeq2::counts(dds8) >= 10) >= ncol(GTC_LC_countmatrix)/3
+dds8_filt <- dds8[keep,]
+
+```

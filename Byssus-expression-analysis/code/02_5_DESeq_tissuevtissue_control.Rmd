@@ -1,0 +1,128 @@
+---
+title: "02_5_DESeq_tissuevtissue_control"
+output: html_document
+date: "2025-07-18"
+---
+
+```{r}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.16")
+
+BiocManager::install("DESeq2")
+library("DESeq2") # Bioconductor
+library("tidyverse")
+library("dplyr")
+library("pheatmap")
+library("RColorBrewer")
+library("genefilter") # Bioconductor
+library("ggplot2")
+library("gplots")
+library("limma") # Bioconductor
+install.packages("spdep")
+library("spdep") 
+library("adegenet")
+library("tximport") # Bioconductor
+BiocManager::install("vsn")
+BiocManager::install("tidybulk")
+BiocManager::install("goseq")
+BiocManager::install("affycoretools")
+BiocManager::install("EnhancedVolcano")
+BiocManager::install("pcaExplorer")
+BiocManager::install("apeglm")
+BiocManager::install("PCAtools")
+BiocManager::install("DESeq2PCA")
+library(pcaExplorer)
+library(PCAtools)
+```
+
+
+```{r}
+### Load and clean up treatment info and gene count matrix 
+treatmentinfo <- read_csv("output/treatmentinfo_clean.csv")
+gene_count_matrix_clean_og <- read_csv("output/gene_count_matrix_clean.csv")
+
+rownames(gene_count_matrix_clean_og) <- gene_count_matrix_clean_og$...1
+rownames <- gene_count_matrix_clean_og$...1
+gene_count_matrix_clean_og <- gene_count_matrix_clean_og[,-1]
+rownames(gene_count_matrix_clean_og) <- rownames
+gene_count_matrix_clean <- data.matrix(gene_count_matrix_clean_og)
+```
+
+### Foot treatment control vs gill treatment control
+```{r}
+FG_TC_treatmentinfo <- treatmentinfo %>%
+  filter( treatment %in% c("control")) %>%
+  filter(!(treatment == "control" & day == 0))
+
+write.table(FG_TC_treatmentinfo, file = "output/DEG_lists/Foot/FG_TC_treatmentinfo.csv", row.names = FALSE)
+
+FG_TC_countmatrix <- subset(gene_count_matrix_clean, select=(FG_TC_treatmentinfo$sample.1))
+FG_TC_countmatrix <- data.frame(FG_TC_countmatrix)
+write.table(FG_TC_countmatrix, file = "output/DEG_lists/FG_TC_countmatrix.csv")
+#doesn't save correctly, need to figure this out
+
+# CaTCulate DESeq object
+dds30 <- DESeqDataSetFromMatrix(countData = FG_TC_countmatrix,
+                              colData = FG_TC_treatmentinfo,
+                              design = ~ tissue)
+
+dds30 <- DESeq(dds30)
+resultsNames(dds30) # lists the coefficients
+
+PCAdata <- plotPCA(vst(dds30), intgroup = c("tissue"), returnData=TRUE)
+percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
+ggplot(PCAdata, aes(PC1, PC2, shape=tissue)) + 
+  geom_point(size=4, alpha = 5/10, color = "purple") +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+
+  stat_ellipse(level = 0.95, color = "purple")+
+  theme_classic()+
+  guides(shape=guide_legend("Tissue"))+
+  theme(axis.text = element_text(size =18, color = "black"))+
+  theme(axis.title = element_text(size =20, color = "black"))+
+  theme(legend.text = element_text(size =18, color = "black"))+
+  theme(legend.title = element_text(size =20, color = "black"))+
+  theme(aspect.ratio = 1)
+
+```
+### Foot lab control vs gill lab control
+```{r}
+FG_LC_treatmentinfo <- treatmentinfo %>%
+  filter( treatment %in% c("control")) %>%
+  filter(!(treatment == "control" & day == 3))%>%
+  filter(!(tissue == "X"))
+
+write.table(FG_LC_treatmentinfo, file = "output/DEG_lists/Foot/FG_LC_treatmentinfo.csv", row.names = FALSE)
+
+FG_LC_countmatrix <- subset(gene_count_matrix_clean, select=(FG_LC_treatmentinfo$sample.1))
+FG_LC_countmatrix <- data.frame(FG_LC_countmatrix)
+write.table(FG_LC_countmatrix, file = "output/DEG_lists/FG_LC_countmatrix.csv")
+#doesn't save correctly, need to figure this out
+
+# CaTCulate DESeq object
+dds31 <- DESeqDataSetFromMatrix(countData = FG_LC_countmatrix,
+                              colData = FG_LC_treatmentinfo,
+                              design = ~ tissue)
+
+dds31 <- DESeq(dds31)
+resultsNames(dds31) # lists the coefficients
+
+PCAdata <- plotPCA(vst(dds31), intgroup = c("tissue"), returnData=TRUE)
+percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
+ggplot(PCAdata, aes(PC1, PC2, shape=tissue)) + 
+  geom_point(size=4, alpha = 5/10, color = "blue") +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+
+  stat_ellipse(level = 0.95, color = "blue")+
+  theme_classic()+
+  guides(shape=guide_legend("Tissue"))+
+  theme(axis.text = element_text(size =18, color = "black"))+
+  theme(axis.title = element_text(size =20, color = "black"))+
+  theme(legend.text = element_text(size =18, color = "black"))+
+  theme(legend.title = element_text(size =20, color = "black"))+
+  theme(aspect.ratio = 1)
+
+```

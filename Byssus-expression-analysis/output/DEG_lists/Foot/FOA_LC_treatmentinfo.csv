@@ -1,0 +1,25 @@
+"sample.1" "tissue" "treatment" "day"
+"1" "T001F" FALSE "control" 0
+"2" "T002F" FALSE "control" 0
+"3" "T003F" FALSE "control" 0
+"4" "T004F" FALSE "control" 0
+"5" "T005F" FALSE "control" 0
+"6" "T006F" FALSE "control" 0
+"7" "T007F" FALSE "control" 0
+"8" "T008F" FALSE "control" 0
+"9" "T009F" FALSE "control" 0
+"10" "T010F" FALSE "control" 0
+"11" "T011F" FALSE "control" 0
+"12" "T012F" FALSE "control" 0
+"13" "T014F" FALSE "OA" 3
+"14" "T015F" FALSE "OA" 3
+"15" "T016F" FALSE "OA" 3
+"16" "T017F" FALSE "OA" 3
+"17" "T019F" FALSE "OA" 3
+"18" "T021F" FALSE "OA" 3
+"19" "T023F" FALSE "OA" 3
+"20" "T025F" FALSE "OA" 3
+"21" "T026F" FALSE "OA" 3
+"22" "T027F" FALSE "OA" 3
+"23" "T118F" FALSE "OA" 3
+"24" "T119F" FALSE "OA" 3

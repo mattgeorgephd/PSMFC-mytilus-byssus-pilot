@@ -1,0 +1,100 @@
+---
+title: "number_DEGS"
+output: html_document
+date: "2025-03-26"
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+install.packages("ggpattern")
+remotes::install_github("coolbutuseless/ggpattern")
+library(ggpattern)
+```
+
+### Load DEGS
+```{r}
+# Gill (TC)
+GOW_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_merged.csv")
+GOA_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_merged.csv")
+GDO_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_merged.csv")
+
+# Foot (TC)
+FOW_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_merged.csv")
+FOA_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_merged.csv")
+FDO_sigs <- read_table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_merged.csv")
+
+# Select only unique identifiers
+GOW_sigs <- unique(GOW_sigs)
+GOA_sigs <- unique(GOA_sigs)
+GDO_sigs <- unique(GDO_sigs)
+
+FOW_sigs <- unique(FOW_sigs)
+FOA_sigs <- unique(FOA_sigs)
+FDO_sigs <- unique(FDO_sigs)
+
+
+```
+
+# Filtering positive and negatively different transcripts
+```{r}
+GOW_pos<- nrow(filter(GOW_sigs, `"log2FoldChange"` > 0))
+GOW_neg<- nrow(filter(GOW_sigs, `"log2FoldChange"` < 0))
+
+FOW_pos<- nrow(filter(FOW_sigs, `"log2FoldChange"` > 0))
+FOW_neg<- nrow(filter(FOW_sigs, `"log2FoldChange"` < 0))
+
+GOA_pos<- nrow(filter(GOA_sigs, `"log2FoldChange"` > 0))
+GOA_neg<- nrow(filter(GOA_sigs, `"log2FoldChange"` < 0))
+
+FOA_pos<- nrow(filter(FOA_sigs, `"log2FoldChange"` > 0))
+FOA_neg<- nrow(filter(FOA_sigs, `"log2FoldChange"` < 0))
+
+GDO_pos<- nrow(filter(GDO_sigs, `"log2FoldChange"` > 0))
+GDO_neg<- nrow(filter(GDO_sigs, `"log2FoldChange"` < 0))
+
+FDO_pos<- nrow(filter(FDO_sigs, `"log2FoldChange"` > 0))
+FDO_neg<- nrow(filter(FDO_sigs, `"log2FoldChange"` < 0))
+
+
+```
+
+
+# Putting gene count numbers in a data frame
+```{r}
+DEG_num <- data_frame(
+  tissue = c("Foot", "Foot","Foot","Foot","Foot","Foot","Gill","Gill","Gill","Gill","Gill","Gill"),
+  treatment = c("Ocean Warming", "Ocean Warming", "Ocean Acidification", "Ocean Acidification", "Hypoxia", "Hypoxia", "Ocean Warming", "Ocean Warming", "Ocean Acidification", "Ocean Acidification", "Hypoxia", "Hypoxia"),
+  updown = c("up", "down","up", "down","up", "down","up", "down","up", "down","up", "down" ),
+  num_genes = c(FOW_pos, FOW_neg, FOA_pos, FOA_neg, FDO_pos, FDO_neg, GOW_pos, GOW_neg,GOA_pos, GOA_neg, GDO_pos, GDO_neg )
+)
+```
+
+# Setting a graph theme
+```{r}
+my_theme <- theme_classic()+
+    theme(axis.text.x = element_text(color="black",angle = 45, vjust = 1, hjust = 1, size = 18),
+        axis.title.x = element_text(color="black",size = 20),
+        axis.title.y = element_text(color="black",size = 20),      
+        axis.text.y = element_text(color="black",size = 18),
+       legend.text = element_text(color="black",size = 18),      # Change legend text size
+    legend.title = element_blank(),
+    panel.border = element_rect(colour = "black", fill=NA, linewidth=1))
+```
+
+# Graphing numbers of DEGS within each treatment
+```{r}
+DEG_num %>%
+  mutate(treatment = fct_relevel(treatment, c("Ocean Acidification", "Ocean Warming", "Hypoxia"))) %>% 
+  ggplot(aes(x=tissue, y = num_genes, fill=updown))+
+  geom_bar(stat= "identity", position = "dodge")+
+  facet_wrap(~treatment)+
+  scale_fill_manual(labels= c("Decreased", "Increased"), values = c("red", "blue"))+
+  labs(x = "Treatment", y = "Number of DEG")+
+  theme(panel.spacing = unit(2, "lines"))+
+  my_theme
+
+  
+  
+```
+

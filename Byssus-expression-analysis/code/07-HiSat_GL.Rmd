@@ -1,0 +1,254 @@
+---
+title: "HiSat_GL"
+output: html_document
+date: "2024-06-03"
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(DT)
+library(Biostrings)
+library(tm)
+library(pheatmap)
+library(DESeq2)
+```
+
+# Differentially Expressed Genes
+ 
+# Reads
+
+```{r, engine='bash', eval=TRUE}
+ls /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/
+```
+
+
+# Genome
+
+
+```{bash}
+cd /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data
+
+/home/shared/datasets download genome accession GCF_036588685.1 --include gff3,gtf,rna,cds,protein,genome,seq-report
+```
+
+```{bash}
+cd /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data
+unzip ncbi_dataset.zip
+```
+
+```{r, engine='bash', eval=TRUE}
+ls ../data/ncbi_dataset/data/GCF_036588685.1
+
+```
+
+
+# Hisat
+
+```{bash}
+/home/shared/hisat2-2.2.1/hisat2_extract_exons.py \
+/home/shared/analyses/12-fix-gff/mod_augustus.gtf \
+> /home/shared/analyses/13-hisat-deseq2/m_exon.tab
+```
+
+```{r, engine='bash'}
+/home/shared/hisat2-2.2.1/hisat2_extract_splice_sites.py \
+../analyses/12-fix-gff/mod_augustus.gtf \
+> ../analyses/13-hisat-deseq2/m_spice_sites.tab
+```
+
+```{r, engine='bash'}
+echo "13-hisat-deseq2/GCF*" >> ../analyses/.gitignore
+echo "13-hisat-deseq2/GCF**fastq" >> ../analyses/.gitignore
+```
+
+```{r, engine='bash'}
+/home/shared/hisat2-2.2.1/hisat2-build \
+../data/ncbi_dataset/data/GCA_032158295.1/GCA_032158295.1_ASM3215829v1_genomic.fna \
+../analyses/13-hisat-deseq2/GCA_032158295.index \
+--exon ../analyses/13-hisat-deseq2/m_exon.tab \
+--ss ../analyses/13-hisat-deseq2/m_spice_sites.tab \
+-p 20 \
+../analyses/12-fix-gff/mod_augustus.gtf \
+2> ../analyses/13-hisat-deseq2/hisat2-build_stats.txt
+```
+
+```{r, engine='bash'}
+echo "13-hisat-deseq2/*sam" >> ../analyses/.gitignore
+```
+
+
+
+```{r, engine='bash', eval=TRUE}
+find /home/shared/8TB_HDD_02/graceac9/data/pycno2021/*_R1_001.fastq.gz.fastp-trim.20220810.fq.gz | xargs basename -s _R1_001.fastq.gz.fastp-trim.20220810.fq.gz | xargs -I{} echo {}
+```
+
+
+
+
+
+keeping unmapped reads 
+```{r, engine='bash'}
+find /home/shared/8TB_HDD_02/graceac9/data/pycno2021/*_R1_001.fastq.gz.fastp-trim.20220810.fq.gz \
+| xargs -I{} basename -s _R1_001.fastq.gz.fastp-trim.20220810.fq.gz {} \
+| xargs -I{} sh -c '/home/shared/hisat2-2.2.1/hisat2 \
+-x ../analyses/13-hisat-deseq2/GCA_032158295.index \
+--dta \
+-p 32 \
+-1 /home/shared/8TB_HDD_02/graceac9/data/pycno2021/{}_R1_001.fastq.gz.fastp-trim.20220810.fq.gz \
+-2 /home/shared/8TB_HDD_02/graceac9/data/pycno2021/{}_R2_001.fastq.gz.fastp-trim.20220810.fq.gz \
+-S ../analyses/13-hisat-deseq2/{}_03.sam \
+--un-conc ../analyses/13-hisat-deseq2/{}_unmapped_reads.fastq \
+> ../analyses/13-hisat-deseq2/{}_hisat03.stdout 2> ../analyses/13-hisat-deseq2/{}_hisat03.stderr'
+```
+
+
+
+
+
+
+
+Explanation
+xargs -I{}: This option allows you to replace {} in the command with the output from the previous command (i.e., basename). It's used twice: first, to strip the suffix from the filenames, and second, to construct and execute the hisat2 command.
+
+sh -c: This is used to execute a complex command within xargs. It's necessary because the output redirection (>, 2>) is shell functionality, and without sh -c, xargs wouldn't handle it correctly.
+
+Output Redirection:
+
+> ../analyses/13-hisat-deseq2/{}_hisat.stdout: Redirects the standard output to a unique file for each sample.
+2> ../analyses/13-hisat-deseq2/{}_hisat.stderr: Redirects the standard error to a different unique file for each sample.
+This setup ensures that the output from each sample's alignment process is neatly organized into separate files, making it easier to manage and debug individual runs.
+
+
+
+
+```{r, engine='bash'}
+echo "13-hisat-deseq2/*bam" >> ../analyses/.gitignore
+echo "13-hisat-deseq2/*bam*" >> ../analyses/.gitignore
+```
+
+```{r, engine='bash'}
+for samfile in ../analyses/13-hisat-deseq2/*.sam; do
+  bamfile="${samfile%.sam}.bam"
+  sorted_bamfile="${samfile%.sam}.sorted.bam"
+  /home/shared/samtools-1.12/samtools view -bS -@ 20 "$samfile" > "$bamfile"
+  /home/shared/samtools-1.12/samtools sort -@ 20 "$bamfile" -o "$sorted_bamfile"
+  /home/shared/samtools-1.12/samtools index -@ 20 "$sorted_bamfile"
+done
+```
+
+,
+```{r, engine='bash'}
+rm ../analyses/13-hisat-deseq2/*sam
+```
+
+
+```{r, engine='bash'}
+ls ../analyses/13-hisat-deseq2/*sorted.bam | wc -l
+```
+
+
+
+
+# Stringtie
+
+```{r, engine='bash'}
+echo "13-hisat-deseq2/*gtf" >> ../analyses/.gitignore
+```
+
+
+```{bash}
+/home/shared/gffread-0.12.7.Linux_x86_64/gffread \
+../analyses/12-fix-gff/mod_augustus.gtf \
+-T \
+-o ../analyses/13-hisat-deseq2/mod_augustus.gff
+
+```
+
+
+
+```{r, engine='bash'}
+find ../analyses/13-hisat-deseq2/*sorted.bam \
+| xargs basename -s .sorted.bam | xargs -I{} \
+sh -c '/home/shared/stringtie-2.2.1.Linux_x86_64/stringtie \
+-p 36 \
+-eB \
+-G ../analyses/13-hisat-deseq2/mod_augustus.gff \
+-o ../analyses/13-hisat-deseq2/{}.gtf \
+../analyses/13-hisat-deseq2/{}.sorted.bam'
+```
+
+
+```{bash}
+#!/bin/bash
+
+# Directory to search
+directory="/home/shared/8TB_HDD_03/sr320/github/grace-L-byssus/output/13-Hisat"
+
+# File extension to look for (e.g., .gtf)
+extension="gtf"
+
+# Output file
+output_file="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/13-Hisat/output.txt"
+
+# Ensure the directory exists
+if [ ! -d "$directory" ]; then
+    echo "The directory $directory does not exist."
+    exit 1
+fi
+
+# Find files with the specified extension and store them in an array
+shopt -s nullglob
+files=("$directory"/*."$extension")
+shopt -u nullglob
+
+# Check if array is empty
+if [ ${#files[@]} -eq 0 ]; then
+    echo "No files found with the extension .$extension in the directory $directory."
+    exit 1
+fi
+
+# Create a new array with filenames without extensions
+output=()
+for file in "${files[@]}"; do
+    # Extract filename without the extension
+    filename=$(basename "$file" ."$extension")
+    # Append the filename without extension and the full path to the output array
+    output+=("$filename $file")
+done
+
+# Write only the array contents to the text file
+for item in "${output[@]}"; do
+    echo "$item"
+done > "$output_file"
+
+echo "Output written to $output_file"
+
+
+```
+
+```{bash}
+head /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/13-Hisat/output.txt
+```
+
+
+
+```{bash}
+python /home/shared/stringtie-2.2.1.Linux_x86_64/prepDE.py \
+-i /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/13-Hisat/output.txt \
+-g /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/13-Hisat/gene_count_matrix.csv 
+```
+
+```{bash}
+head  /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/13-Hisat/gene_count_matrix.csv 
+
+```
+
+
+
+
+
+
+

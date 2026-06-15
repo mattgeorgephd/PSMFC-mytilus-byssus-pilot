@@ -1,0 +1,202 @@
+---
+title: "08-func_enrichment_DAVID_visual"
+output: html_document
+date: "2024-10-24"
+---
+
+# Load required packages
+```{r}
+
+library(ggplot2)
+library(readxl)  # Or use read.csv() if it's a CSV file
+
+
+```
+
+# FDO 
+```{r}
+### Updated DAVID with just GOBP: 155/215 not used 
+
+# Load your data (adjust the path and function based on file type)
+FDO_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/FDO_DAVID_chart.xlsx")
+
+colnames(FDO_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
+
+FDO_DAVID_select <- FDO_DAVID %>%
+  arrange(fdr)
+
+# Select top enriched terms
+top_terms <- head(FDO_DAVID_select, 10)  # 25 significantly enriched terms
+
+# Create the bar plot
+ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) +
+  geom_segment(aes(xend = term, yend = 0), color = "grey") +  # Draw lines
+  geom_point(aes(size = count, fill = fdr), shape = 21) +  # Draw circles with size mapped to gene count
+  coord_flip() +  # Flip coordinates to make it horizontal
+  scale_fill_gradient(low = "#7333a4", high = "lavender") +  # Color gradient for FDR
+  labs(title = "Foot: Top Enriched GO/Pathway Terms",
+       x = "Enriched Terms",
+       y = "Fold Enrichment",
+       size = "Gene Count",
+       fill = "False Discovery Rate (FDR)") +
+  theme_classic() +
+  theme(legend.position = "right")
+```
+# GDO
+```{r}
+
+# GOBP update: 73/119 not used
+
+# Load your data (adjust the path and function based on file type)
+GDO_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/GDO_DAVID_chart.xlsx")
+
+colnames(GDO_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
+
+GDO_DAVID_select <- GDO_DAVID %>%
+  arrange(fdr)
+
+# Select top enriched terms
+top_terms <- head(GDO_DAVID_select, 10)  # 25 significantly enriched terms
+
+top_terms$term <- str_wrap(top_terms$term, width = 30)
+
+# Create the bar plot
+ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment, fill = fdr)) +
+  geom_segment(aes(xend = term, yend = 0)) +  # Draw lines
+  geom_point(aes(size = count), shape = 21) +  # Draw circles with size mapped to gene count
+  coord_flip() +  # Flip coordinates to make it horizontal
+  scale_fill_gradient(low = "#7333a4", high = "lavender") +  # Color gradient for FDR
+  labs(title = "Gill: Top Enriched GO/Pathway Terms",
+       x = "Enriched Terms",
+       y = "Fold Enrichment",
+       size = "Gene Count",
+       fill = "False Discovery Rate (FDR)") +
+  theme_classic() +
+  theme(legend.position = "right")
+```
+# FOA
+```{r}
+# GOBP update: 36/60 not used 
+
+# Load your data (adjust the path and function based on file type)
+FOA_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/FOA_DAVID_chart.xlsx")
+
+colnames(FOA_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
+
+FOA_DAVID_select <- FOA_DAVID %>%
+  arrange(fdr)
+
+# Select top enriched terms
+top_terms <- head(FOA_DAVID_select, 10)  # 25 significantly enriched terms
+
+top_terms$term <- str_wrap(top_terms$term, width = 30)
+
+# Create the bar plot
+ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) +
+  geom_segment(aes(xend = term, yend = 0), color = "grey") +  # Draw lines
+  geom_point(aes(size = count, fill = fdr), shape = 21) +  # Draw circles with size mapped to gene count
+  coord_flip() +  # Flip coordinates to make it horizontal
+  scale_fill_gradient(low = "#6cac44", high = "#bcd8a8") +  # Color gradient for FDR
+  labs(title = "Foot: Top Enriched GO/Pathway Terms",
+       x = "Enriched Terms",
+       y = "Fold Enrichment",
+       size = "Gene Count",
+       fill = "False Discovery Rate (FDR)") +
+  theme_classic() +
+  theme(legend.position = "right")
+```
+# GOA
+```{r}
+## GOBP update: 237/329 not used
+
+# Load your data (adjust the path and function based on file type)
+GOA_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/GOA_DAVID_chart.xlsx")
+
+colnames(GOA_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
+
+GOA_DAVID_select <- GOA_DAVID %>%
+  arrange(fdr)
+
+# Select top enriched terms
+top_terms <- head(GOA_DAVID_select, 10)  # 25 significantly enriched terms
+
+top_terms$term <- str_wrap(top_terms$term, width = 30)
+
+# Create the bar plot
+ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) +
+  geom_segment(aes(xend = term, yend = 0), color = "grey") +  # Draw lines
+  geom_point(aes(size = count, fill = fdr), shape = 21) +  # Draw circles with size mapped to gene count
+  coord_flip() +  # Flip coordinates to make it horizontal
+  scale_fill_gradient(low = "#6cac44", high = "#bcd8a8") +  # Color gradient for FDR
+  labs(title = "Gill: Top Enriched GO/Pathway Terms",
+       x = "Enriched Terms",
+       y = "Fold Enrichment",
+       size = "Gene Count",
+       fill = "False Discovery Rate (FDR)") +
+  theme_classic() +
+  theme(legend.position = "right")
+```
+
+# FOW
+```{r}
+## GOBP update: 65/110 not used
+
+# Load your data (adjust the path and function based on file type)
+FOW_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/FOW_DAVID_chart.xlsx")
+
+colnames(FOW_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
+
+FOW_DAVID_select <- FOW_DAVID %>%
+  arrange(fdr)
+
+# Select top enriched terms
+top_terms <- head(FOW_DAVID_select, 10)  # 25 significantly enriched terms
+
+top_terms$term <- str_wrap(top_terms$term, width = 30)
+
+# Create the bar plot
+ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) +
+  geom_segment(aes(xend = term, yend = 0), color = "grey") +  # Draw lines
+  geom_point(aes(size = count, fill = fdr), shape = 21) +  # Draw circles with size mapped to gene count
+  coord_flip() +  # Flip coordinates to make it horizontal
+  scale_fill_gradient(low = "#ec7c34", high = "#f4c49c") +  # Color gradient for FDR
+  labs(title = "Foot: Top Enriched GO/Pathway Terms",
+       x = "Enriched Terms",
+       y = "Fold Enrichment",
+       size = "Gene Count",
+       fill = "False Discovery Rate (FDR)") +
+  theme_classic() +
+  theme(legend.position = "right")
+```
+
+# GOW
+```{r}
+## GOBP update: 81/136 not included 
+
+# Load your data (adjust the path and function based on file type)
+GOW_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/GOW_DAVID_chart.xlsx")
+
+colnames(GOW_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
+
+GOW_DAVID_select <- GOW_DAVID %>%
+  arrange(fdr)
+
+# Select top enriched terms
+top_terms <- head(GOW_DAVID_select, 10)  # 25 significantly enriched terms
+
+top_terms$term <- str_wrap(top_terms$term, width = 30)
+
+# Create the bar plot
+ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) +
+  geom_segment(aes(xend = term, yend = 0), color = "grey") +  # Draw lines
+  geom_point(aes(size = count, fill = fdr), shape = 21) +  # Draw circles with size mapped to gene count
+  coord_flip() +  # Flip coordinates to make it horizontal
+  scale_fill_gradient(low = "#ec7c34", high = "#f4c49c") +  # Color gradient for FDR
+  labs(title = "Gill: Top Enriched GO/Pathway Terms",
+       x = "Enriched Terms",
+       y = "Fold Enrichment",
+       size = "Gene Count",
+       fill = "False Discovery Rate (FDR)") +
+  theme_classic() +
+  theme(legend.position = "right")
+```
