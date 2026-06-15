@@ -1,0 +1,447 @@
+---
+title: "20 - Gene expression x byssal thread mechanics correlation (paired samples)"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 6)
+```
+
+# Purpose
+
+A subset of *M. trossulus* that were mechanically tested for byssal plaque attachment
+were also sampled for Tag-seq. This script links those two datasets at the level of the
+individual animal and asks: **does foot (or gill) gene expression at day 3 of stress
+covary with plaque attachment performance?**
+
+It produces:
+
+1. A paired-sample manifest (exactly which animals/samples were used).
+2. Per-gene association statistics (expression vs. each mechanical metric), controlling
+   for treatment, with multiple-testing correction.
+3. Two gene universes: a biologically motivated **candidate set** (byssal / collagen /
+   HSP / HIF / peroxidase / aminoacyl-tRNA-synthetase genes) and the **data-driven DEG
+   union** (genes already found to respond to any stressor).
+4. Diagnostic plots (top-hit scatterplots, candidate-gene correlation heatmap).
+
+> **READ THIS FIRST - power.** The paired set is small: n = 31 animals (OA = 12, OW = 12,
+> DO = 7). Within any single treatment n is 7-12. This analysis is **exploratory and
+> hypothesis-generating, not confirmatory.** Treat raw p-values as ranking signals, expect
+> few or no hits to survive FDR correction, and do not write causal language from it.
+> Tag-seq sampling was destructive (foot/gill removed), so expression and the *post-stress*
+> threads come from the same animal at the same timepoint; this is association, not a
+> demonstrated mechanism.
+
+---
+
+# 0. Configuration
+
+Set these two paths to wherever the repos live on your machine. The script reads thread
+data from the **main** repo and expression data from the **expression** repo.
+
+```{r config}
+## ---- paths (EDIT THESE) -------------------------------------------------------------
+# Main data repo: github.com/mattgeorgephd/PSMFC-mytilus-byssus-pilot
+MAIN_REPO <- "PSMFC-mytilus-byssus-pilot"
+# Expression repo: github.com/graceleuchtenberger/Byssus-expression-analysis
+#   (if you run this from within that repo's code/ dir, "../" points at its root)
+EXPR_REPO <- "Byssus-expression-analysis"
+
+## ---- analysis options ---------------------------------------------------------------
+TISSUE        <- "F"          # "F" = foot (byssus-producing organ; default), "G" = gill
+MIN_COUNT     <- 5            # gene kept if count > MIN_COUNT in >= 1/3 of paired samples
+FDR_ALPHA     <- 0.10         # BH threshold for flagging
+ADJUST_FOR_BASELINE <- FALSE  # TRUE = add each animal's pre-stress thread metric as a
+                              #        covariate (n drops to animals with baseline threads)
+
+OUT_DIR <- "../output/gene_mechanics"   # where result tables/plots are written
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+
+## ---- candidate gene keywords (regex, case-insensitive) ------------------------------
+## Grouped by biology; edit freely. Matched against UniProt "protein_name".
+CANDIDATE_KEYWORDS <- paste(
+  # byssal structural / adhesive proteins
+  "byss", "foot protein", "Mefp", "adhesive plaque", "polyphenolic",
+  # collagens / preCols (byssal thread core)
+  "collagen",
+  # plaque-curing / cross-linking enzymes
+  "tyrosinase", "peroxidase", "amine oxidase", "catechol oxidase", "lysyl oxidase",
+  # proteostasis / heat-shock
+  "heat shock", "Hsp", "stress-70", "BiP", "chaperone",
+  "endoplasmic reticulum chaperone", "hypoxia up-regulated",
+  # hypoxia signalling
+  "hypoxia-inducible", "Egl nine", "prolyl 4-hydroxylase", "prolyl hydroxylase",
+  # translational machinery (foot-OA enrichment signal)
+  "--tRNA", "tRNA ligase", "aminoacyl",
+  # oxidative stress / detox
+  "superoxide", "glutathione", "catalase", "peroxiredoxin", "dual oxidase",
+  sep = "|"
+)
+```
+
+
+```{r}
+# Get the correct Bioconductor repository link for your R version
+bioc_version <- BiocManager::version()
+bioc_repo <- paste0("https://bioconductor.org/packages/", bioc_version, "/bioc")
+
+# Install DESeq2 directly as a standard package 
+install.packages("DESeq2", repos = c(Bioc = bioc_repo, CRAN = "https://cloud.r-project.org"))
+
+```
+
+
+
+
+```{r libs}
+## Load Packages
+load.lib <- c("dbplyr","tidyverse","readxl","openxlsx","lubridate","DESeq2")
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+for(lib in install.lib) install.packages(lib, dependencies = TRUE)
+sapply(load.lib, require, character = TRUE)
+
+
+`%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
+```
+
+---
+
+# 1. Build the paired-sample table
+
+Thread metrics are averaged per animal across its 3-5 post-stress plaques. The Tag-seq
+treatment assignment (the authoritative one) comes from the foot `treatmentinfo` file;
+control animals (day 0 and day 3) are not part of the correlation because they were not
+stressed.
+
+```{r paired}
+## ---- thread mechanics: per-animal post-stress means ---------------------------------
+thread_path <- file.path("thread_strength/summarized_data/summary.xlsx")
+thr_raw <- read_excel(thread_path, sheet = "data")
+
+post_stress <- thr_raw %>%
+  filter(treatment %in% c("OA", "OW", "DO")) %>%
+  group_by(mussel, treatment) %>%
+  summarise(
+    n_plaques    = n(),
+    max_force    = mean(max_force,    na.rm = TRUE),  # N, absolute holding force
+    adhesion_kpa = mean(adhesion_kpa, na.rm = TRUE),  # kPa, force / plaque area
+    pad_area     = mean(pad_area,     na.rm = TRUE),  # mm^2, plaque size
+    .groups = "drop"
+  )
+
+## pre-stress ("control" rows are the same animals' baseline threads) - optional covariate
+baseline <- thr_raw %>%
+  filter(treatment == "control") %>%
+  group_by(mussel) %>%
+  summarise(
+    base_max_force    = mean(max_force,    na.rm = TRUE),
+    base_adhesion_kpa = mean(adhesion_kpa, na.rm = TRUE),
+    base_pad_area     = mean(pad_area,     na.rm = TRUE),
+    .groups = "drop"
+  )
+
+## ---- Tag-seq treatment assignment (definitive) --------------------------------------
+fti <- read.table(file.path(EXPR_REPO, "output/DEG_lists/Foot/F_treatmentinfo.csv"),
+                  header = TRUE, sep = " ", stringsAsFactors = FALSE)
+names(fti)[1] <- "sample_id"
+fti <- fti %>%
+  mutate(mussel = sub("F$", "", sample_id)) %>%
+  filter(day == 3, treatment != "control") %>%        # day-3 stressor animals only
+  distinct(mussel, treatment)
+
+## ---- assemble paired table ----------------------------------------------------------
+paired <- post_stress %>%
+  inner_join(fti, by = c("mussel", "treatment")) %>%
+  left_join(baseline, by = "mussel") %>%
+  mutate(sample = paste0(mussel, TISSUE),            # expression column name for chosen tissue
+         treatment = factor(treatment, levels = c("OA", "OW", "DO")))
+
+cat("Paired animals:", nrow(paired), "\n")
+print(table(paired$treatment))
+write_csv(paired, file.path(OUT_DIR, "paired_sample_manifest.csv"))
+```
+
+---
+
+# 2. Load counts and VST-normalise
+
+Variance-stabilising transformation is estimated across **all** samples of the chosen
+tissue (more stable dispersion estimates), then we subset to the paired animals. Gene IDs
+in the matrix look like `gene-LOC134696364|LOC134696364`; we key on the `LOC######` id.
+
+```{r counts}
+cm <- read.csv(file.path(EXPR_REPO, "output/gene_count_matrix_clean.csv"),
+               row.names = 1, check.names = FALSE)
+
+## keep only columns for the chosen tissue (F = ...F, but NOT ...FX; G = ...G)
+tissue_cols <- if (TISSUE == "F") {
+  grep("F$", colnames(cm), value = TRUE)        # excludes FX (ends in X) and G
+} else {
+  grep("G$", colnames(cm), value = TRUE)
+}
+cm_tissue <- cm[, tissue_cols, drop = FALSE]
+
+## minimal colData (treatment per sample, for dispersion modelling)
+mussel_of  <- sub(paste0(TISSUE, "$"), "", colnames(cm_tissue))
+all_meta <- read.table(file.path(EXPR_REPO, "output/DEG_lists/Foot/F_treatmentinfo.csv"),
+                        header = TRUE, sep = " ", stringsAsFactors = FALSE)
+names(all_meta)[1] <- "sample_id"
+all_meta <- all_meta %>% mutate(mussel = sub("F$", "", sample_id))
+coldata <- data.frame(mussel = mussel_of) %>%
+  left_join(all_meta %>% distinct(mussel, treatment, day), by = "mussel") %>%
+  mutate(grp = ifelse(is.na(treatment), "unk", paste0(treatment, "_d", day)))
+rownames(coldata) <- colnames(cm_tissue)
+coldata$grp <- factor(coldata$grp)
+
+## DESeq2 + VST
+dds <- DESeqDataSetFromMatrix(round(as.matrix(cm_tissue)), coldata, design = ~ 1)
+dds <- dds[rowSums(counts(dds)) > 0, ]
+vsd <- vst(dds, blind = TRUE)
+vmat <- assay(vsd)                       # genes x samples (VST)
+rownames(vmat) <- sub(".*\\|", "", sub("^gene-", "", rownames(vmat)))  # -> LOC id (or gene-... if no pipe)
+rownames(vmat) <- sub("^gene-", "", rownames(vmat))
+vmat <- vmat[!duplicated(rownames(vmat)), ]   # safety: keep one row per LOC key
+
+## subset to paired samples; filter low-expression genes within the paired set
+stopifnot(all(paired$sample %in% colnames(vmat)))
+vp <- vmat[, paired$sample, drop = FALSE]
+counts_p <- counts(dds)[, paired$sample, drop = FALSE]
+keep <- rowSums(counts_p > MIN_COUNT) >= ceiling(nrow(paired) / 3)
+vp <- vp[keep, ]
+cat("Genes tested (after expression filter):", nrow(vp), "\n")
+```
+
+---
+
+# 3. Annotation map (portable LOC -> protein name)
+
+Built from the genome-based annotated DEG files (`GOterms_genome/*_sigs_ID.csv`), which
+carry both the `LOC_ID` and the UniProt `protein_name`. This covers stress-responsive
+genes; unannotated genes are kept in the DEG-wide test but cannot be keyword-filtered.
+
+```{r annot}
+sig_files <- list.files(file.path(EXPR_REPO, "output/DEG_lists/GOterms_genome"),
+                        pattern = "_sigs_ID\\.csv$", full.names = TRUE)
+annot <- map_dfr(sig_files, ~ {
+  d <- tryCatch(read.csv(.x, stringsAsFactors = FALSE), error = function(e) NULL)
+  if (is.null(d) || !all(c("LOC_ID", "protein_name") %in% names(d))) return(NULL)
+  d %>% select(LOC_ID, protein_name)
+}) %>% distinct(LOC_ID, .keep_all = TRUE)
+
+cat("Annotated LOCs:", nrow(annot), "\n")
+
+## candidate gene set = annotated genes whose protein name matches the keyword list
+candidates <- annot %>%
+  filter(grepl(CANDIDATE_KEYWORDS, protein_name, ignore.case = TRUE)) %>%
+  filter(LOC_ID %in% rownames(vp))
+cat("Candidate (byssal/stress) genes present & expressed:", nrow(candidates), "\n")
+print(candidates, n = nrow(candidates))
+```
+
+---
+
+# 4. DEG union (data-driven gene universe)
+
+Union of significant genes from all stressor contrasts for this tissue (treatment-control
+baseline). These are genes that already responded to stress; the question is whether,
+among the paired animals, their expression *level* tracks attachment.
+
+```{r deg_union}
+deg_dir <- file.path(EXPR_REPO, "output/DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"))
+deg_files <- list.files(deg_dir, pattern = "_TC_siggene.*\\.csv$", full.names = TRUE)
+deg_union <- map(deg_files, ~ {
+  d <- tryCatch(read.table(.x, header = TRUE, sep = " ", stringsAsFactors = FALSE),
+                error = function(e) NULL)
+  if (is.null(d)) return(character(0))
+  g <- d[[grep("gene", names(d), ignore.case = TRUE)[1]]]
+  sub(".*\\|", "", sub("^gene-", "", g))
+}) %>% unlist() %>% unique()
+deg_union <- intersect(deg_union, rownames(vp))
+cat("DEG-union genes present & expressed:", length(deg_union), "\n")
+```
+
+---
+
+# 5. Association testing
+
+For every gene we fit, controlling for treatment:
+
+* **Parametric:** `lm(metric ~ expression + treatment)` -> slope, t-test p-value.
+* **Robust:** partial Spearman correlation of expression vs metric, treatment partialled
+  out (rank-residualisation). Reported as `rho_partial`.
+
+Run across three mechanical metrics (`max_force`, `adhesion_kpa`, `pad_area`). BH
+correction is applied **within each gene set x metric** combination.
+
+```{r assoc_fns}
+metrics <- c("max_force", "adhesion_kpa", "pad_area")
+
+# design matrix for treatment (used to residualise)
+trtX <- model.matrix(~ treatment, data = paired)
+
+partial_spearman <- function(x, y) {
+  # rank-based partial correlation, treatment partialled out
+  rx <- residuals(lm(rank(x) ~ trtX - 1))
+  ry <- residuals(lm(rank(y) ~ trtX - 1))
+  suppressWarnings(cor(rx, ry, method = "pearson"))   # corr of ranks' residuals
+}
+
+test_gene <- function(loc, metric) {
+  x <- as.numeric(vp[loc, paired$sample])
+  y <- paired[[metric]]
+  dat <- data.frame(y = y, x = x, treatment = paired$treatment)
+  if (ADJUST_FOR_BASELINE) {
+    bcol <- paste0("base_", metric)
+    dat$base <- paired[[bcol]]
+    dat <- dat[stats::complete.cases(dat), ]
+    fm <- tryCatch(lm(y ~ x + treatment + base, data = dat), error = function(e) NULL)
+  } else {
+    fm <- tryCatch(lm(y ~ x + treatment, data = dat), error = function(e) NULL)
+  }
+  if (is.null(fm)) return(NULL)
+  co <- summary(fm)$coefficients
+  if (!"x" %in% rownames(co)) return(NULL)
+  tibble(
+    LOC_ID     = loc,
+    metric     = metric,
+    n          = nrow(dat),
+    slope      = co["x", "Estimate"],
+    p_lm       = co["x", "Pr(>|t|)"],
+    rho_partial = partial_spearman(x, y)
+  )
+}
+
+run_set <- function(loci, set_name) {
+  res <- map_dfr(metrics, function(mt) {
+    map_dfr(loci, ~ test_gene(.x, mt))
+  })
+  res %>%
+    group_by(metric) %>%
+    mutate(q_lm = p.adjust(p_lm, "BH")) %>%
+    ungroup() %>%
+    left_join(annot, by = "LOC_ID") %>%
+    mutate(gene_set = set_name) %>%
+    arrange(metric, p_lm)
+}
+```
+
+```{r run}
+res_cand <- run_set(candidates$LOC_ID, "candidate")
+res_deg  <- run_set(deg_union,        "DEG_union")
+
+write_csv(res_cand, file.path(OUT_DIR, sprintf("assoc_candidate_%s.csv", TISSUE)))
+write_csv(res_deg,  file.path(OUT_DIR, sprintf("assoc_DEGunion_%s.csv",  TISSUE)))
+
+cat("\n================ CANDIDATE GENES: top associations per metric ================\n")
+res_cand %>%
+  group_by(metric) %>% slice_min(p_lm, n = 8) %>% ungroup() %>%
+  mutate(across(c(slope, rho_partial), ~round(., 3)),
+         p_lm = signif(p_lm, 2), q_lm = signif(q_lm, 2)) %>%
+  select(metric, LOC_ID, protein_name, slope, p_lm, q_lm, rho_partial) %>%
+  print(n = 24)
+
+cat("\n================ DEG-UNION: genes passing BH <", FDR_ALPHA, "================\n")
+hits <- res_deg %>% filter(q_lm < FDR_ALPHA) %>% arrange(metric, p_lm)
+if (nrow(hits) == 0) {
+  cat("None survive FDR at this sample size (expected). Inspect raw-p ranking below.\n")
+  res_deg %>% group_by(metric) %>% slice_min(p_lm, n = 5) %>% ungroup() %>%
+    mutate(p_lm = signif(p_lm, 2)) %>%
+    select(metric, LOC_ID, protein_name, slope, p_lm, rho_partial) %>% print(n = 15)
+} else {
+  print(hits, n = nrow(hits))
+}
+```
+
+---
+
+# 6. Plots
+
+## 6.1 Candidate-gene correlation heatmap
+
+Partial Spearman (treatment-controlled) of every candidate gene against each metric.
+
+```{r heatmap, fig.height=7}
+hm <- res_cand %>%
+  mutate(label = paste0(substr(protein_name, 1, 34), " (", LOC_ID, ")")) %>%
+  select(label, metric, rho_partial) %>%
+  pivot_wider(names_from = metric, values_from = rho_partial) %>%
+  arrange(desc(abs(max_force)))
+
+hm_long <- hm %>% pivot_longer(-label, names_to = "metric", values_to = "rho")
+ggplot(hm_long, aes(metric, factor(label, levels = rev(hm$label)), fill = rho)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = sprintf("%.2f", rho)), size = 3) +
+  scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
+                       midpoint = 0, limits = c(-1, 1)) +
+  labs(x = NULL, y = NULL, fill = "partial\nSpearman",
+       title = sprintf("Candidate gene expression vs plaque mechanics (%s, n=%d)",
+                       ifelse(TISSUE=="F","foot","gill"), nrow(paired))) +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.y = element_text(size = 8))
+ggsave(file.path(OUT_DIR, sprintf("candidate_heatmap_%s.png", TISSUE)),
+       width = 7, height = 8, dpi = 150)
+```
+
+## 6.2 Scatterplots for the strongest candidate hits (vs max force)
+
+```{r scatter, fig.height=8}
+top_loci <- res_cand %>% filter(metric == "max_force") %>%
+  slice_min(p_lm, n = 6) %>% pull(LOC_ID)
+
+plot_df <- map_dfr(top_loci, function(loc) {
+  tibble(LOC_ID = loc,
+         protein = annot$protein_name[match(loc, annot$LOC_ID)],
+         expr = as.numeric(vp[loc, paired$sample]),
+         max_force = paired$max_force,
+         treatment = paired$treatment)
+}) %>% mutate(facet = paste0(substr(protein, 1, 30), "\n", LOC_ID))
+
+ggplot(plot_df, aes(expr, max_force)) +
+  geom_smooth(method = "lm", se = TRUE, color = "grey40", linewidth = 0.6) +
+  geom_point(aes(color = treatment), size = 2) +
+  facet_wrap(~ facet, scales = "free_x") +
+  labs(x = "VST expression", y = "Plaque max force (N)",
+       title = "Top candidate genes vs attachment force (line = pooled fit)") +
+  theme_bw(base_size = 11)
+ggsave(file.path(OUT_DIR, sprintf("top_candidate_scatter_%s.png", TISSUE)),
+       width = 9, height = 7, dpi = 150)
+```
+
+---
+
+# 7. Session info & interpretation notes
+
+```{r notes, echo=FALSE, results='asis'}
+cat("
+**How to read the outputs**
+
+- `assoc_candidate_*.csv` / `assoc_DEGunion_*.csv`: one row per gene x metric. `slope` is
+  the change in the mechanical metric per unit VST expression (treatment held constant);
+  `p_lm`/`q_lm` are the raw and BH-adjusted p-values for that slope; `rho_partial` is the
+  treatment-controlled Spearman rank correlation.
+- A negative slope/rho means higher expression goes with *weaker* attachment.
+
+**Caveats baked into the design (do not skip in the manuscript):**
+
+1. n = 31 (OA 12 / OW 12 / DO 7). Within-treatment correlations are not interpretable on
+   their own; the pooled-with-covariate model borrows strength across treatments but
+   confounds treatment-level expression shifts with attachment differences.
+2. Multiple testing: the candidate set (~tens of genes) is the defensible test; the
+   DEG-union (hundreds) is screening only.
+3. Destructive sampling: expression and post-stress threads are the same animal/timepoint,
+   so this is contemporaneous association, not a predictive or causal link.
+4. `pad_area` and `max_force` move together; `adhesion_kpa` (area-normalised) is the
+   stricter material-strength readout and tends to show weaker associations - that pattern
+   is itself informative (stress acts more on plaque size than on intrinsic strength).
+5. Set `ADJUST_FOR_BASELINE <- TRUE` to re-run using each animal's pre-stress thread
+   strength as a covariate (tests whether expression tracks the *change* in attachment);
+   this drops the few animals lacking baseline threads.
+")
+sessionInfo()
+```
