@@ -12,14 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 Load packages; set ggplot theme
 ```{r message=TRUE, warning=TRUE}
 
-## RUN as part of "PSMFC-mytilus-byssus-pilot.Rproj"
-
+## Run within "thread-strength.Rproj" so here::here() resolves to the analysis root.
 
 ## clear workspace
 rm(list=ls())
 
 ## Load Packages
-load.lib<-c("readxl","tidyverse","openxlsx","EnvStats") # List of required packages
+load.lib<-c("readxl","tidyverse","openxlsx","EnvStats","here") # List of required packages
 install.lib <- load.lib[!load.lib %in% installed.packages()] # Select missing packages
 for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missing packages + dependencies
 sapply(load.lib,require,character=TRUE) # Load all packages.
@@ -50,23 +49,22 @@ my_theme <- theme(line              = element_line(size=1.2),
 
 ```{r warning=FALSE}
 
-# extract data from all .txt files in a folder located at thread_strength/tensometer_output/control/ and add it to a nested list object
+# extract data from all .txt files in a folder located at 02_data/tensometer_output/control/ and add it to a nested list object
 # the data has three column headers: Time, displacement, force. 
 # Add a third data column called "mussel" that is the first three characters of the file name.
-getwd()
-# Set the working directory to the folder containing the txt files
-setwd("thread_strength/tensometer_output/control/")
+# Folder with the control .txt traces, relative to the project root
+control_dir <- here::here("02_data", "tensometer_output", "control")
 
 # Create an empty list to hold the data
 nested_list <- list()
 
 # Get a vector of the names of all the txt files in the directory
-txt_files <- list.files(pattern = "\\.txt$")
+txt_files <- list.files(control_dir, pattern = "\\.txt$")
 
 # Loop through each txt file, extract the data, and add it to the nested list
 for (file_name in txt_files) {
     # Read in the data from the txt file
-    data <- read.delim(file_name, 
+    data <- read.delim(file.path(control_dir, file_name),
                        header = FALSE,
                        sep = "\t", # how is the data separated?
                        dec = ".")
@@ -138,8 +136,9 @@ require(stats)
 # calculate area under the curve and save in dataframe, along with the first values in the "mussel" column and "thread" column from "nested_list"
 # use a for loop to iterate through the nested list object "nested_list"
 
-# Set the working directory to the folder containing the txt files
-setwd("thread_strength/QC_plots/control/")
+# Output folder for control QC plots (created if needed)
+qc_dir <- here::here("03_analyses", "extract-tensometer-data", "QC_plots", "control")
+dir.create(qc_dir, recursive = TRUE, showWarnings = FALSE)
 
 # create a data frame with three columns: mussel, thread, and max_force
 integral_control <- data.frame(mussel = numeric(),
@@ -154,7 +153,7 @@ for(i in seq_along(nested_list)){
   current_loess <- loess(force ~ time, data = current_df)
   
   # plot the loess function with the corresponding time and force data points
-  jpeg(paste(nested_list[[i]]$mussel[1],"_",nested_list[[i]]$thread[1],".jpg",sep=""))
+  jpeg(file.path(qc_dir, paste0(nested_list[[i]]$mussel[1], "_", nested_list[[i]]$thread[1], ".jpg")))
   plot(current_df$time, current_df$force, main= "Force over Time Plot with Loess Function", 
        xlab = "Time", ylab = "Force", col = "blue")
   lines(current_loess, col = "red") # add the loess function to the plot in red
@@ -196,8 +195,10 @@ test
 ```
 
 ```{r}
-write.xlsx(max_force_control, file="thread_strength/summarized_data/max_force_control.xlsx", colNames = TRUE)
-write.xlsx(integral_control, file="thread_strength/summarized_data/integral_control.xlsx", colNames = TRUE)
+sum_dir <- here::here("03_analyses", "extract-tensometer-data", "summarized_data")
+dir.create(sum_dir, recursive = TRUE, showWarnings = FALSE)
+write.xlsx(max_force_control, file = file.path(sum_dir, "max_force_control.xlsx"), colNames = TRUE)
+write.xlsx(integral_control,  file = file.path(sum_dir, "integral_control.xlsx"),  colNames = TRUE)
 print("done")
 ```
 
@@ -208,23 +209,23 @@ print("done")
 
 ```{r warning=FALSE}
 
-# extract data from all .txt files in a folder located at thread_strength/tensometer_output/control/ and add it to a nested list object
+# extract data from all .txt files in a folder located at 02_data/tensometer_output/control/ and add it to a nested list object
 # the data has three column headers: Time, displacement, force. 
 # Add a third data column called "mussel" that is the first three characters of the file name.
 
-# Set the working directory to the folder containing the txt files
-setwd("thread_strength/tensometer_output/treatment/")
+# Folder with the treatment .txt traces, relative to the project root
+treatment_dir <- here::here("02_data", "tensometer_output", "treatment")
 
 # Create an empty list to hold the data
 nested_list <- list()
 
 # Get a vector of the names of all the txt files in the directory
-txt_files <- list.files()
+txt_files <- list.files(treatment_dir, pattern = "\\.txt$")
 
 # Loop through each txt file, extract the data, and add it to the nested list
 for (file_name in txt_files) {
     # Read in the data from the txt file
-    data <- read.delim(file_name, 
+    data <- read.delim(file.path(treatment_dir, file_name),
                        header = FALSE,
                        sep = "\t", # how is the data separated?
                        dec = ".")
@@ -295,8 +296,9 @@ require(stats)
 # calculate area under the curve and save in dataframe, along with the first values in the "mussel" column and "thread" column from "nested_list"
 # use a for loop to iterate through the nested list object "nested_list"
 
-# Set the working directory to the folder containing the txt files
-setwd("thread_strength/QC_plots/treatment/")
+# Output folder for treatment QC plots (created if needed)
+qc_dir <- here::here("03_analyses", "extract-tensometer-data", "QC_plots", "treatment")
+dir.create(qc_dir, recursive = TRUE, showWarnings = FALSE)
 
 # create a data frame with three columns: mussel, thread, and max_force
 integral <- data.frame(mussel = numeric(),
@@ -316,7 +318,7 @@ for(i in seq_along(nested_list)){
   current_loess <- loess(force ~ time, data = current_df)
   
   # plot the loess function with the corresponding time and force data points
-  jpeg(paste(nested_list[[i]]$mussel[1],"_",nested_list[[i]]$thread[1],".jpg",sep=""))
+  jpeg(file.path(qc_dir, paste0(nested_list[[i]]$mussel[1], "_", nested_list[[i]]$thread[1], ".jpg")))
   plot(current_df$time, current_df$force, main= "Force over Time Plot with Loess Function", 
        xlab = "Time", ylab = "Force", col = "blue")
   lines(current_loess, col = "red") # add the loess function to the plot in red
@@ -359,7 +361,9 @@ test
 ```
 
 ```{r}
-write.xlsx(max_force_treatment, file="thread_strength/summarized_data/max_force_treatment.xlsx", colNames = TRUE)
-write.xlsx(integral_treatment, file="thread_strength/summarized_data/integral_treatment.xlsx", colNames = TRUE)
+sum_dir <- here::here("03_analyses", "extract-tensometer-data", "summarized_data")
+dir.create(sum_dir, recursive = TRUE, showWarnings = FALSE)
+write.xlsx(max_force_treatment, file = file.path(sum_dir, "max_force_treatment.xlsx"), colNames = TRUE)
+write.xlsx(integral_treatment,  file = file.path(sum_dir, "integral_treatment.xlsx"),  colNames = TRUE)
 print("done")
 ```
