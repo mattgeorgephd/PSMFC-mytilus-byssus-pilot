@@ -4,6 +4,10 @@ output: html_document
 date: "2025-04-09"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ```{r}
 # Required packages
 library(httr)
@@ -22,7 +26,7 @@ library(rentrez)
 
 # Step 1: Get the list of Mollusca species from OrthoDB
 species_url <- "https://data.orthodb.org/current/download/odb12v1_species.tab.gz"
-dest_file <- "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/ortho_species.tab.gz"
+dest_file <- file.path(topgenes, "ortho_species.tab.gz")
 
 # Download the file
 download.file(species_url, destfile = dest_file, mode = "wb")
@@ -98,40 +102,40 @@ get_orthologs_for_uniprot <- function(topgene_summs, bivalve_taxids){
 
 ```{r}
 # Replace this with your actual vector of UniProt IDs
-top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOW_topgene_summs.csv")
+top_genes_summs <- read.csv(file.path(topgenes, "GOW_topgene_summs.csv"))
 GOW_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(GOW_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOW_topgene_summs_ortho.csv")
+write.csv(GOW_topgene_summs_biv, file.path(topgenes, "GOW_topgene_summs_ortho.csv"))
 ```
 
 ```{r}
-top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOA_topgene_summs.csv")
+top_genes_summs <- read.csv(file.path(topgenes, "GOA_topgene_summs.csv"))
 
 GOA_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(GOA_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOA_topgene_summs_ortho.csv")
+write.csv(GOA_topgene_summs_biv, file.path(topgenes, "GOA_topgene_summs_ortho.csv"))
 ```
 
 ```{r}
-top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GDO_topgene_summs.csv")
+top_genes_summs <- read.csv(file.path(topgenes, "GDO_topgene_summs.csv"))
 
 GDO_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(GDO_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GDO_topgene_summs_ortho.csv")
+write.csv(GDO_topgene_summs_biv, file.path(topgenes, "GDO_topgene_summs_ortho.csv"))
 ```
 ```{r}
-top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOW_topgene_summs.csv")
+top_genes_summs <- read.csv(file.path(topgenes, "FOW_topgene_summs.csv"))
 
 FOW_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(FOW_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOW_topgene_summs_ortho.csv")
+write.csv(FOW_topgene_summs_biv, file.path(topgenes, "FOW_topgene_summs_ortho.csv"))
 ```
 ```{r}
-top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOA_topgene_summs.csv")
+top_genes_summs <- read.csv(file.path(topgenes, "FOA_topgene_summs.csv"))
 
 FOA_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(FOA_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOA_topgene_summs_ortho.csv")
+write.csv(FOA_topgene_summs_biv, file.path(topgenes, "FOA_topgene_summs_ortho.csv"))
 ```
 
 ```{r}
-top_genes_summs <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FDO_topgene_summs.csv")
+top_genes_summs <- read.csv(file.path(topgenes, "FDO_topgene_summs.csv"))
 
 FDO_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(FDO_topgene_summs_biv, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FDO_topgene_summs_ortho.csv")
+write.csv(FDO_topgene_summs_biv, file.path(topgenes, "FDO_topgene_summs_ortho.csv"))
 ```

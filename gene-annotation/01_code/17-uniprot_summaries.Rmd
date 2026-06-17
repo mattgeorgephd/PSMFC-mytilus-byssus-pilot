@@ -4,6 +4,10 @@ output: html_document
 date: "2025-04-02"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ```{r}
 Sys.setenv(ENTREZ_KEY = "8f817031916b3cfee7ec443b712c426d9a08")
 install.packages("rentrez")
@@ -48,7 +52,7 @@ fetch_ncbi_summary <- function(uniprot_ids, email) {
 ### GOW
 ```{r}
 
-top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GOW_topgenes.csv")
+top_genes <- read.csv(file.path(topgenes, "Top_50_genes/GOW_topgenes.csv"))
 # Example usage
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
@@ -61,13 +65,13 @@ GOW_summaries <- fetch_ncbi_summary(uniprot_ids, email)
 GOW_topgene_summs <- data.frame(UniProt_ID = names(GOW_summaries), Summary = unlist(GOW_summaries), stringsAsFactors = FALSE)
 
 # Write to CSV
-write.csv(GOW_topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOW_topgene_summs.csv", row.names = FALSE)
+write.csv(GOW_topgene_summs, file.path(topgenes, "GOW_topgene_summs.csv"), row.names = FALSE)
 ```
 
 ### FOW
 ```{r}
 
-top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FOW_topgenes.csv")
+top_genes <- read.csv(file.path(topgenes, "Top_50_genes/FOW_topgenes.csv"))
 # Example usage
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
@@ -80,12 +84,12 @@ summaries <- fetch_ncbi_summary(uniprot_ids, email)
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
 
 # Write to CSV
-write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOW_topgene_summs.csv", row.names = FALSE)
+write.csv(topgene_summs, file.path(topgenes, "FOW_topgene_summs.csv"), row.names = FALSE)
 ```
 ### GOA
 ```{r}
 
-top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GOA_topgenes.csv")
+top_genes <- read.csv(file.path(topgenes, "Top_50_genes/GOA_topgenes.csv"))
 # Example usage
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
@@ -98,12 +102,12 @@ summaries <- fetch_ncbi_summary(uniprot_ids, email)
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
 
 # Write to CSV
-write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GOA_topgene_summs.csv", row.names = FALSE)
+write.csv(topgene_summs, file.path(topgenes, "GOA_topgene_summs.csv"), row.names = FALSE)
 ```
 ### FOA
 ```{r}
 
-top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FOA_topgenes.csv")
+top_genes <- read.csv(file.path(topgenes, "Top_50_genes/FOA_topgenes.csv"))
 # Example usage
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
@@ -116,13 +120,13 @@ summaries <- fetch_ncbi_summary(uniprot_ids, email)
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
 
 # Write to CSV
-write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FOA_topgene_summs.csv", row.names = FALSE)
+write.csv(topgene_summs, file.path(topgenes, "FOA_topgene_summs.csv"), row.names = FALSE)
 ```
 
 ### GDO
 ```{r}
 
-top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GDO_topgenes.csv")
+top_genes <- read.csv(file.path(topgenes, "Top_50_genes/GDO_topgenes.csv"))
 # Example usage
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
@@ -135,12 +139,12 @@ summaries <- fetch_ncbi_summary(uniprot_ids, email)
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
 
 # Write to CSV
-write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/GDO_topgene_summs.csv", row.names = FALSE)
+write.csv(topgene_summs, file.path(topgenes, "GDO_topgene_summs.csv"), row.names = FALSE)
 ```
 ### FDO
 ```{r}
 
-top_genes <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FDO_topgenes.csv")
+top_genes <- read.csv(file.path(topgenes, "Top_50_genes/FDO_topgenes.csv"))
 # Example usage
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
@@ -153,7 +157,7 @@ summaries <- fetch_ncbi_summary(uniprot_ids, email)
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
 
 # Write to CSV
-write.csv(topgene_summs, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/FDO_topgene_summs.csv", row.names = FALSE)
+write.csv(topgene_summs, file.path(topgenes, "FDO_topgene_summs.csv"), row.names = FALSE)
 ```
 
 

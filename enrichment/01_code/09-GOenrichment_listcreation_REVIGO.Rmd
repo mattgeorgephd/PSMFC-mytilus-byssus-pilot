@@ -4,6 +4,10 @@ output: html_document
 date: "2024-10-29"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ### Library loading
 ```{r}
 library(BiocManager)
@@ -12,8 +16,8 @@ library(tidyverse)
 
 ### Load files
 ```{r}
-gene_count_matrix1 <- read.table("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/gene_count_matrix_clean",row.names = 1 )
-masterID <- read.delim("output/LOC_GO_list.txt", sep= "\t", header = TRUE)
+gene_count_matrix1 <- read.table(file.path(dat, "gene_count_matrix_clean"),row.names = 1 )
+masterID <- read.delim(file.path(blast_go, "LOC_GO_list.txt"), sep= "\t", header = TRUE)
 #Cut out extras
 masterID <- masterID[, -((ncol(masterID)-2):ncol(masterID))]
 
@@ -61,19 +65,19 @@ nrow(filteredGCM2_unique) #9386
 uniprot_BG_REVIGO <- na.omit(filteredGCM3$GO_ID)
 head(uniprot_BG_REVIGO)
 length(uniprot_BG_REVIGO ) #2342567 GO id's (not all unique) 
-writeLines(unlist(uniprot_BG_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/uniprot_BG_REVIGO.txt")
+writeLines(unlist(uniprot_BG_REVIGO), file.path(deg, "REVIGO_lists/uniprot_BG_REVIGO.txt"))
 ```
 
 ### FOA list
 ```{r}
-FOA_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv",
+FOA_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"),
                       sep = " ")
 FOA_sigs_ID <- separate_rows(FOA_sigs_ID, GO_ID, sep = ";")
 FOA_sigs_ID$GO_ID <- trimws(FOA_sigs_ID$GO_ID)
 FOA_sigs_REVIGO <- na.omit(FOA_sigs_ID$GO_ID)
 head(FOA_sigs_REVIGO) 
 length(FOA_sigs_REVIGO) #995
-writeLines(unlist(FOA_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/FOA_ID_REVIGO.txt")
+writeLines(unlist(FOA_sigs_REVIGO), file.path(deg, "REVIGO_lists/FOA_ID_REVIGO.txt"))
 
 
 ```
@@ -83,67 +87,67 @@ writeLines(unlist(FOA_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger
 ```{r}
 
 
-GOA_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_ID.csv",
+GOA_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"),
                       sep = " ")
 GOA_sigs_ID <- separate_rows(GOA_sigs_ID, GO_ID, sep = ";")
 GOA_sigs_ID$GO_ID <- trimws(GOA_sigs_ID$GO_ID)
 GOA_sigs_REVIGO <- na.omit(GOA_sigs_ID$GO_ID)
 head(GOA_sigs_REVIGO) 
 length(GOA_sigs_REVIGO) #7379
-writeLines(unlist(GOA_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/GOA_ID_REVIGO.txt")
+writeLines(unlist(GOA_sigs_REVIGO), file.path(deg, "REVIGO_lists/GOA_ID_REVIGO.txt"))
 
 ```
 
 
 ### FOW list
 ```{r}
-FOW_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_ID.csv",
+FOW_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"),
                       sep = " ")
 FOW_sigs_ID <- separate_rows(FOW_sigs_ID, GO_ID, sep = ";")
 FOW_sigs_ID$GO_ID <- trimws(FOW_sigs_ID$GO_ID)
 FOW_sigs_REVIGO <- na.omit(FOW_sigs_ID$GO_ID)
 head(FOW_sigs_REVIGO) 
 length(FOW_sigs_REVIGO) #1920
-writeLines(unlist(FOW_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/FOW_ID_REVIGO.txt")
+writeLines(unlist(FOW_sigs_REVIGO), file.path(deg, "REVIGO_lists/FOW_ID_REVIGO.txt"))
 ```
 
 
 ### GOW list
 ```{r}
-GOW_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_ID.csv",
+GOW_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"),
                       sep = " ")
 GOW_sigs_ID <- separate_rows(GOW_sigs_ID, GO_ID, sep = ";")
 GOW_sigs_ID$GO_ID <- trimws(GOW_sigs_ID$GO_ID)
 GOW_sigs_REVIGO <- na.omit(GOW_sigs_ID$GO_ID)
 head(GOW_sigs_REVIGO) 
 length(GOW_sigs_REVIGO) #3180
-writeLines(unlist(GOW_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/GOW_ID_REVIGO.txt")
+writeLines(unlist(GOW_sigs_REVIGO), file.path(deg, "REVIGO_lists/GOW_ID_REVIGO.txt"))
 ```
 
 
 ### FDO list
 ```{r}
-FDO_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv",
+FDO_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"),
                       sep = " ")
 FDO_sigs_ID <- separate_rows(FDO_sigs_ID, GO_ID, sep = ";")
 FDO_sigs_ID$GO_ID <- trimws(FDO_sigs_ID$GO_ID)
 FDO_sigs_REVIGO <- na.omit(FDO_sigs_ID$GO_ID)
 head(FDO_sigs_REVIGO) 
 length(FDO_sigs_REVIGO) #3462
-writeLines(unlist(FDO_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/FDO_ID_REVIGO.txt")
+writeLines(unlist(FDO_sigs_REVIGO), file.path(deg, "REVIGO_lists/FDO_ID_REVIGO.txt"))
 ```
 
 
 ### GDO list
 ```{r}
-GDO_sigs_ID <-  read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_ID.csv",
+GDO_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"),
                       sep = " ")
 GDO_sigs_ID <- separate_rows(GDO_sigs_ID, GO_ID, sep = ";")
 GDO_sigs_ID$GO_ID <- trimws(GDO_sigs_ID$GO_ID)
 GDO_sigs_REVIGO <- na.omit(GDO_sigs_ID$GO_ID)
 head(GDO_sigs_REVIGO) 
 length(GDO_sigs_REVIGO) #2460
-writeLines(unlist(GDO_sigs_REVIGO), "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/REVIGO_lists/GDO_ID_REVIGO.txt")
+writeLines(unlist(GDO_sigs_REVIGO), file.path(deg, "REVIGO_lists/GDO_ID_REVIGO.txt"))
 ```
 
 

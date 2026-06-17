@@ -3,6 +3,10 @@ title: "Getting_GOSlims"
 output: html_document
 date: "2024-04-03"
 ---
+
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
 ```{r}
 library(tidyverse)
 BiocManager::install(c("GSEABase", "GO.db"))
@@ -19,14 +23,14 @@ FDO_sigs_ID_cleaned_separated$GO_ID <- trimws(FDO_sigs_ID_cleaned_separated$GO_I
 
 ```
 
-```{bash rm-spaces-from-GOs}
+```{bash rm-spaces-from-GOs, eval=FALSE}
 # Remove "hidden" spaces in GOs, but preserve tabs, using sed
 awk -F"\t" '{print $2, "\t", $1}' \
-/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv \
+${GOTERMS}/FDO_sigs_ID.csv \
 | sed 's/ \+//g' \
-> /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv
+> ${GOTERMS}/FDO_sigs_ID.csv
 
-head /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv
+head ${GOTERMS}/FDO_sigs_ID.csv
 ```
 
 # Set variables
@@ -101,7 +105,7 @@ fl <- system.file("extdata", goslims, package="GSEABase")
 Creates one row per GO ID
 ```{r flatten-gene-GO-listt}
 # Read in tab-delimited file
-FDO_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv",
+FDO_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"),
                       sep = " "
                       )
 
@@ -241,7 +245,7 @@ str(goslims_per_gene_df)
 ```{r write-mapped-GOslims-to-file}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/FDO_sigs_ID.tab",
+  write.table(file =file.path(deg, "goslims_genome/FDO_sigs_ID.tab"),
           row.names = FALSE,
           col.names = TRUE,
           quote = FALSE,
@@ -252,7 +256,7 @@ mapped_df %>%
 ### Write flattened genes to file
 ```{r write-flattened-genes-to-file}
 goslims_per_gene_df %>%
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/FDO_sigs_ID.BP_per_gene.tab",
+  write.table(file =file.path(deg, "goslims_genome/FDO_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
               col.names = TRUE,
               quote = FALSE,
@@ -268,7 +272,7 @@ goslims_per_gene_df %>%
 Creates one row per GO ID
 ```{r flatten-gene-GO-listt}
 # Read in tab-delimited file
-GDO_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_ID.csv",
+GDO_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"),
                       sep = " "
                       )
 
@@ -408,7 +412,7 @@ str(goslims_per_gene_df)
 ```{r write-mapped-GOslims-to-file}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/GDO_sigs_ID.tab",
+  write.table(file =file.path(deg, "goslims_genome/GDO_sigs_ID.tab"),
           row.names = FALSE,
           col.names = TRUE,
           quote = FALSE,
@@ -419,7 +423,7 @@ mapped_df %>%
 ### Write flattened genes to file
 ```{r write-flattened-genes-to-file}
 goslims_per_gene_df %>%
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/GDO_sigs_ID.BP_per_gene.tab",
+  write.table(file =file.path(deg, "goslims_genome/GDO_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
               col.names = TRUE,
               quote = FALSE,
@@ -436,7 +440,7 @@ goslims_per_gene_df %>%
 Creates one row per GO ID
 ```{r flatten-gene-GO-listt}
 # Read in tab-delimited file
-FOA_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv",
+FOA_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"),
                       sep = " "
                       )
 
@@ -576,7 +580,7 @@ str(goslims_per_gene_df)
 ```{r write-mapped-GOslims-to-file}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/FOA_sigs_ID.tab",
+  write.table(file =file.path(deg, "goslims_genome/FOA_sigs_ID.tab"),
           row.names = FALSE,
           col.names = TRUE,
           quote = FALSE,
@@ -587,7 +591,7 @@ mapped_df %>%
 ### Write flattened genes to file
 ```{r write-flattened-genes-to-file}
 goslims_per_gene_df %>%
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/FOA_sigs_ID.BP_per_gene.tab",
+  write.table(file =file.path(deg, "goslims_genome/FOA_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
               col.names = TRUE,
               quote = FALSE,
@@ -603,7 +607,7 @@ goslims_per_gene_df %>%
 Creates one row per GO ID
 ```{r flatten-gene-GO-listt}
 # Read in tab-delimited file
-GOA_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_ID.csv",
+GOA_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"),
                       sep = " "
                       )
 
@@ -743,7 +747,7 @@ str(goslims_per_gene_df)
 ```{r write-mapped-GOslims-to-file}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/GOA_sigs_ID.tab",
+  write.table(file =file.path(deg, "goslims_genome/GOA_sigs_ID.tab"),
           row.names = FALSE,
           col.names = TRUE,
           quote = FALSE,
@@ -754,7 +758,7 @@ mapped_df %>%
 ### Write flattened genes to file
 ```{r write-flattened-genes-to-file}
 goslims_per_gene_df %>%
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/GOA_sigs_ID.BP_per_gene.tab",
+  write.table(file =file.path(deg, "goslims_genome/GOA_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
               col.names = TRUE,
               quote = FALSE,
@@ -771,7 +775,7 @@ goslims_per_gene_df %>%
 Creates one row per GO ID
 ```{r flatten-gene-GO-listt}
 # Read in tab-delimited file
-FOW_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_ID.csv",
+FOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"),
                       sep = " "
                       )
 
@@ -911,7 +915,7 @@ str(goslims_per_gene_df)
 ```{r write-mapped-GOslims-to-file}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/FOW_sigs_ID.tab",
+  write.table(file =file.path(deg, "goslims_genome/FOW_sigs_ID.tab"),
           row.names = FALSE,
           col.names = TRUE,
           quote = FALSE,
@@ -922,7 +926,7 @@ mapped_df %>%
 ### Write flattened genes to file
 ```{r write-flattened-genes-to-file}
 goslims_per_gene_df %>%
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/FOW_sigs_ID.BP_per_gene.tab",
+  write.table(file =file.path(deg, "goslims_genome/FOW_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
               col.names = TRUE,
               quote = FALSE,
@@ -938,7 +942,7 @@ goslims_per_gene_df %>%
 Creates one row per GO ID
 ```{r flatten-gene-GO-listt}
 # Read in tab-delimited file
-GOW_sigs_ID <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_ID.csv",
+GOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"),
                       sep = " "
                       )
 
@@ -1078,7 +1082,7 @@ str(goslims_per_gene_df)
 ```{r write-mapped-GOslims-to-file}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/GOW_sigs_ID.tab",
+  write.table(file =file.path(deg, "goslims_genome/GOW_sigs_ID.tab"),
           row.names = FALSE,
           col.names = TRUE,
           quote = FALSE,
@@ -1089,7 +1093,7 @@ mapped_df %>%
 ### Write flattened genes to file
 ```{r write-flattened-genes-to-file}
 goslims_per_gene_df %>%
-  write.table(file ="/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/goslims_genome/GOW_sigs_ID.BP_per_gene.tab",
+  write.table(file =file.path(deg, "goslims_genome/GOW_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
               col.names = TRUE,
               quote = FALSE,

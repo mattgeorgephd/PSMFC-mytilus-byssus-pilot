@@ -4,6 +4,10 @@ output: html_document
 date: "2024-10-24"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 # Load required packages
 ```{r}
 
@@ -18,7 +22,7 @@ library(readxl)  # Or use read.csv() if it's a CSV file
 ### Updated DAVID with just GOBP: 155/215 not used 
 
 # Load your data (adjust the path and function based on file type)
-FDO_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/FDO_DAVID_chart.xlsx")
+FDO_DAVID <- read_excel(file.path(func_david, "FDO_DAVID_chart.xlsx"))
 
 colnames(FDO_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
 
@@ -48,7 +52,7 @@ ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) 
 # GOBP update: 73/119 not used
 
 # Load your data (adjust the path and function based on file type)
-GDO_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/GDO_DAVID_chart.xlsx")
+GDO_DAVID <- read_excel(file.path(func_david, "GDO_DAVID_chart.xlsx"))
 
 colnames(GDO_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
 
@@ -79,7 +83,7 @@ ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment, f
 # GOBP update: 36/60 not used 
 
 # Load your data (adjust the path and function based on file type)
-FOA_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/FOA_DAVID_chart.xlsx")
+FOA_DAVID <- read_excel(file.path(func_david, "FOA_DAVID_chart.xlsx"))
 
 colnames(FOA_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
 
@@ -110,7 +114,7 @@ ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) 
 ## GOBP update: 237/329 not used
 
 # Load your data (adjust the path and function based on file type)
-GOA_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/GOA_DAVID_chart.xlsx")
+GOA_DAVID <- read_excel(file.path(func_david, "GOA_DAVID_chart.xlsx"))
 
 colnames(GOA_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
 
@@ -142,7 +146,7 @@ ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) 
 ## GOBP update: 65/110 not used
 
 # Load your data (adjust the path and function based on file type)
-FOW_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/FOW_DAVID_chart.xlsx")
+FOW_DAVID <- read_excel(file.path(func_david, "FOW_DAVID_chart.xlsx"))
 
 colnames(FOW_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
 
@@ -174,7 +178,7 @@ ggplot(top_terms, aes(x = reorder(term, fold_enrichment), y = fold_enrichment)) 
 ## GOBP update: 81/136 not included 
 
 # Load your data (adjust the path and function based on file type)
-GOW_DAVID <- read_excel("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Func_annot_DAVID/GOW_DAVID_chart.xlsx")
+GOW_DAVID <- read_excel(file.path(func_david, "GOW_DAVID_chart.xlsx"))
 
 colnames(GOW_DAVID)<- c("category", "term", "count", "percent", "p-value", "genes", "list_total", "pop_hits", "pop_total", "fold_enrichment", "bonferroni", "benjamini", "fdr")
 
