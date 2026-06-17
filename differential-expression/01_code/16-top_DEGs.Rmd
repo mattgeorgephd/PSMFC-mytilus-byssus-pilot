@@ -4,6 +4,10 @@ output: html_document
 date: "2025-03-28"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ### Load libraries
 ```{r}
 library(dplyr)
@@ -14,14 +18,14 @@ library(gridExtra)
 ### Load DEGS
 ```{r}
 # Gill (TC)
-GOW_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_ID.csv")
-GOA_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_ID.csv")
-GDO_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_ID.csv")
+GOW_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"))
+GOA_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"))
+GDO_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"))
 
 # Foot (TC)
-FOW_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_ID.csv")
-FOA_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv")
-FDO_sigs_ID<- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv")
+FOW_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"))
+FOA_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"))
+FDO_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"))
 
 # Select only unique identifiers
 GOW_sigs_ID<- unique(GOW_sigs_ID)
@@ -65,7 +69,7 @@ top_genes <- bind_rows(top_up, top_down)
 top_genes <- top_genes %>%arrange(desc(log2FoldChange))
 top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
 
-write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GOW_topgenes.csv", row.names = FALSE)
+write.csv(top_genes, file.path(topgenes, "Top_50_genes/GOW_topgenes.csv"), row.names = FALSE)
 
 gene_labels <- setNames(top_genes$geneID, top_genes$gene)
 
@@ -97,7 +101,7 @@ top_genes <- bind_rows(top_up, top_down)
 # Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
 top_genes <- top_genes %>%arrange(desc(log2FoldChange))
 top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
-write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FOW_topgenes.csv", row.names = FALSE)
+write.csv(top_genes, file.path(topgenes, "Top_50_genes/FOW_topgenes.csv"), row.names = FALSE)
 
 gene_labels <- setNames(top_genes$geneID, top_genes$gene)
 
@@ -128,7 +132,7 @@ top_genes <- bind_rows(top_up, top_down)
 # Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
 top_genes <- top_genes %>%arrange(desc(log2FoldChange))
 top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
-write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GDO_topgenes.csv", row.names = FALSE)
+write.csv(top_genes, file.path(topgenes, "Top_50_genes/GDO_topgenes.csv"), row.names = FALSE)
 
 gene_labels <- setNames(top_genes$geneID, top_genes$gene)
 
@@ -161,7 +165,7 @@ top_genes <- bind_rows(top_up, top_down)
 # Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
 top_genes <- top_genes %>%arrange(desc(log2FoldChange))
 top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
-write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FDO_topgenes.csv", row.names = FALSE)
+write.csv(top_genes, file.path(topgenes, "Top_50_genes/FDO_topgenes.csv"), row.names = FALSE)
 
 
 gene_labels <- setNames(top_genes$geneID, top_genes$gene)
@@ -194,7 +198,7 @@ top_genes <- bind_rows(top_up, top_down)
 # Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
 top_genes <- top_genes %>%arrange(desc(log2FoldChange))
 top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
-write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/GOA_topgenes.csv", row.names = FALSE)
+write.csv(top_genes, file.path(topgenes, "Top_50_genes/GOA_topgenes.csv"), row.names = FALSE)
 
 gene_labels <- setNames(top_genes$geneID, top_genes$gene)
 
@@ -227,7 +231,7 @@ top_genes <- bind_rows(top_up, top_down)
 # Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
 top_genes <- top_genes %>%arrange(desc(log2FoldChange))
 top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
-write.csv(top_genes, "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/Top_gene_summaries/Top_50_genes/FOA_topgenes.csv", row.names = FALSE)
+write.csv(top_genes, file.path(topgenes, "Top_50_genes/FOA_topgenes.csv"), row.names = FALSE)
 
 gene_labels <- setNames(top_genes$geneID, top_genes$gene)
 # Create the plot

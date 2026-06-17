@@ -4,6 +4,10 @@ output: html_document
 date: "2025-07-18"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ```{r}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -39,8 +43,8 @@ library(PCAtools)
 
 ```{r}
 ### Load and clean up treatment info and gene count matrix 
-treatmentinfo <- read_csv("output/treatmentinfo_clean.csv")
-gene_count_matrix_clean_og <- read_csv("output/gene_count_matrix_clean.csv")
+treatmentinfo <- read_csv(file.path(dat, "treatmentinfo_clean.csv"))
+gene_count_matrix_clean_og <- read_csv(file.path(dat, "gene_count_matrix_clean.csv"))
 
 rownames(gene_count_matrix_clean_og) <- gene_count_matrix_clean_og$...1
 rownames <- gene_count_matrix_clean_og$...1
@@ -55,11 +59,11 @@ FG_TC_treatmentinfo <- treatmentinfo %>%
   filter( treatment %in% c("control")) %>%
   filter(!(treatment == "control" & day == 0))
 
-write.table(FG_TC_treatmentinfo, file = "output/DEG_lists/Foot/FG_TC_treatmentinfo.csv", row.names = FALSE)
+write.table(FG_TC_treatmentinfo, file = file.path(deg, "Foot/FG_TC_treatmentinfo.csv"), row.names = FALSE)
 
 FG_TC_countmatrix <- subset(gene_count_matrix_clean, select=(FG_TC_treatmentinfo$sample.1))
 FG_TC_countmatrix <- data.frame(FG_TC_countmatrix)
-write.table(FG_TC_countmatrix, file = "output/DEG_lists/FG_TC_countmatrix.csv")
+write.table(FG_TC_countmatrix, file = file.path(deg, "FG_TC_countmatrix.csv"))
 #doesn't save correctly, need to figure this out
 
 # CaTCulate DESeq object
@@ -94,11 +98,11 @@ FG_LC_treatmentinfo <- treatmentinfo %>%
   filter(!(treatment == "control" & day == 3))%>%
   filter(!(tissue == "X"))
 
-write.table(FG_LC_treatmentinfo, file = "output/DEG_lists/Foot/FG_LC_treatmentinfo.csv", row.names = FALSE)
+write.table(FG_LC_treatmentinfo, file = file.path(deg, "Foot/FG_LC_treatmentinfo.csv"), row.names = FALSE)
 
 FG_LC_countmatrix <- subset(gene_count_matrix_clean, select=(FG_LC_treatmentinfo$sample.1))
 FG_LC_countmatrix <- data.frame(FG_LC_countmatrix)
-write.table(FG_LC_countmatrix, file = "output/DEG_lists/FG_LC_countmatrix.csv")
+write.table(FG_LC_countmatrix, file = file.path(deg, "FG_LC_countmatrix.csv"))
 #doesn't save correctly, need to figure this out
 
 # CaTCulate DESeq object

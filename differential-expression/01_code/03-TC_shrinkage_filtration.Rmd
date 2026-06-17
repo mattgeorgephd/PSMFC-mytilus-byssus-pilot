@@ -4,6 +4,10 @@ output: html_document
 date: "2024-02-15"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ### Foot-OA-TC
 ```{r}
 #Run shrinkage estimates
@@ -38,7 +42,7 @@ FOA_TC_ashr_df <- FOA_TC_ashr_res_table %>%
 
 # Write csv's with significant genes 
 #ignore rowname numbers with row.names = FALSE, not included as separate column
-write.table(FOA_TC_apeglm_df, file = "output/DEG_lists/Foot/FOA_TC_apeglm.csv", row.names = FALSE)
+write.table(FOA_TC_apeglm_df, file = file.path(deg, "Foot/FOA_TC_apeglm.csv"), row.names = FALSE)
 padj.cutoff <- 0.05 # pvalue cut-off
 FOA_TC_siggenes <- FOA_TC_apeglm_df %>%
   filter(padj < padj.cutoff)
@@ -46,7 +50,7 @@ FOA_TC_sig_genes_ashr<- FOA_TC_ashr_df %>%
   filter(padj < padj.cutoff)
 FOA_TC_sig_genes_normal<- FOA_TC_normal_df %>%
   filter(padj < padj.cutoff)
-write.table(FOA_TC_siggenes, file = "output/DEG_lists/Foot/FOA_TC_siggene.csv", row.names = FALSE)
+write.table(FOA_TC_siggenes, file = file.path(deg, "Foot/FOA_TC_siggene.csv"), row.names = FALSE)
 
 #saving gene counts as a result of each filtration step
 gene_counts_FOA_TC <- as.data.frame(c(nrow(FOA_TC_countmatrix),nrow(dds9_filt),(nrow(FOA_TC_countmatrix)-nrow(dds9_filt)),nrow(FOA_TC_normal_res_table),nrow(FOA_TC_apeglm_res_table),nrow(FOA_TC_ashr_res_table),nrow(FOA_TC_siggenes),nrow(FOA_TC_sig_genes_ashr),nrow(FOA_TC_sig_genes_normal)))
@@ -59,12 +63,12 @@ row.names(gene_counts_FOA_TC) <- c("total transcripts","genes_after_filtering","
 #write.csv for the gene count summaries
 
 colnames(gene_counts_FOA_TC) <- "count"
-write.table(gene_counts_FOA_TC, file = "output/DEG_lists/Foot/gene_counts_FOA_TC.csv", row.names = TRUE)
+write.table(gene_counts_FOA_TC, file = file.path(deg, "Foot/gene_counts_FOA_TC.csv"), row.names = TRUE)
 
 
 # Plot MA
 #This graph has like nothing near zero for apeglm, maybe something went wrong
-pdf(file= "output/DEG_lists/Foot/FOA_TC_MA_plots.pdf" )
+pdf(file= file.path(deg, "Foot/FOA_TC_MA_plots.pdf") )
 par(mfrow=c(1,3), mar=c(4,4,2,1))
 xlim <- c(1,1e5); ylim <- c(-3,3)
 DESeq2::plotMA(FOA_TC_normal_res_table, xlim=xlim, ylim=ylim, main="normal", cex=.8)
@@ -112,7 +116,7 @@ GOA_TC_ashr_df <- GOA_TC_ashr_res_table %>%
 
 # Write csv's with significant genes 
 #ignore rowname numbers with row.names = FALSE, not included as separate column
-write.table(GOA_TC_apeglm_df, file = "output/DEG_lists/Gill/GOA_TC.csv", row.names = FALSE)
+write.table(GOA_TC_apeglm_df, file = file.path(deg, "Gill/GOA_TC.csv"), row.names = FALSE)
 padj.cutoff <- 0.05 # pvalue cut-off
 GOA_TC_sig_genes_apeglm <- GOA_TC_apeglm_df %>%
   filter(padj < padj.cutoff)
@@ -120,7 +124,7 @@ GOA_TC_sig_genes_ashr<- GOA_TC_ashr_df %>%
   filter(padj < padj.cutoff)
 GOA_TC_sig_genes_normal<- GOA_TC_normal_df %>%
   filter(padj < padj.cutoff)
-write.table(GOA_TC_sig_genes_apeglm, file = "output/DEG_lists/Gill/GOA_TC_siggene.csv", row.names = FALSE)
+write.table(GOA_TC_sig_genes_apeglm, file = file.path(deg, "Gill/GOA_TC_siggene.csv"), row.names = FALSE)
 
 #saving gene counts as a result of each filtration step
 gene_counts_GOA_TC <- as.data.frame(c(nrow(GOA_TC_countmatrix),nrow(dds12_filt),(nrow(GOA_TC_countmatrix)-nrow(dds12_filt)),nrow(GOA_TC_normal_res_table),nrow(GOA_TC_apeglm_res_table),nrow(GOA_TC_ashr_res_table),nrow(GOA_TC_sig_genes_apeglm), nrow(GOA_TC_sig_genes_ashr),nrow(GOA_TC_sig_genes_normal)))
@@ -133,12 +137,12 @@ row.names(gene_counts_GOA_TC) <- c("total transcripts","genes_after_filtering","
 #write.csv for the gene count summaries
 
 colnames(gene_counts_GOA_TC) <- "count"
-write.table(gene_counts_GOA_TC,      file = "output/DEG_lists/Gill/gene_counts_GOA_TC.csv",        row.names = TRUE)
+write.table(gene_counts_GOA_TC,      file = file.path(deg, "Gill/gene_counts_GOA_TC.csv"),        row.names = TRUE)
 
 
 # Plot MA
 
-pdf(file= "output/DEG_lists/Gill/GOA_TC_MA_plots.pdf" )
+pdf(file= file.path(deg, "Gill/GOA_TC_MA_plots.pdf") )
 par(mfrow=c(1,3), mar=c(4,4,2,1))
 xlim <- c(1,1e5); ylim <- c(-3,3)
 DESeq2::plotMA(GOA_TC_normal_res_table, xlim=xlim, ylim=ylim, main="normal", cex=.8)
@@ -180,7 +184,7 @@ FOW_TC_ashr_df <- FOW_TC_ashr_res_table %>%
 
 # Write csv's with significant genes 
 #ignore rowname numbers with row.names = FALSE, not included as separate column
-write.table(FOW_TC_apeglm_df, file = "output/DEG_lists/Foot/FOW_TC_apeglm.csv", row.names = FALSE)
+write.table(FOW_TC_apeglm_df, file = file.path(deg, "Foot/FOW_TC_apeglm.csv"), row.names = FALSE)
 padj.cutoff <- 0.05 # pvalue cut-off
 FOW_TC_siggenes_apeglm <- FOW_TC_apeglm_df %>%
   filter(padj < padj.cutoff)
@@ -188,7 +192,7 @@ FOW_TC_sig_genes_ashr<- FOW_TC_ashr_df %>%
   filter(padj < padj.cutoff)
 FOW_TC_sig_genes_normal<- FOW_TC_normal_df %>%
   filter(padj < padj.cutoff)
-write.table(FOW_TC_siggenes_apeglm, file = "output/DEG_lists/Foot/FOW_TC_siggene.csv", row.names = FALSE)
+write.table(FOW_TC_siggenes_apeglm, file = file.path(deg, "Foot/FOW_TC_siggene.csv"), row.names = FALSE)
 
 #saving gene counts as a result of each filtration step
 gene_counts_FOW_TC <- as.data.frame(c(nrow(FOW_TC_countmatrix),nrow(dds10_filt),(nrow(FOW_TC_countmatrix)-nrow(dds10_filt)),nrow(FOW_TC_normal_res_table),nrow(FOW_TC_apeglm_res_table),nrow(FOW_TC_ashr_res_table),nrow(FOW_TC_siggenes_apeglm),nrow(FOW_TC_sig_genes_ashr),nrow(FOW_TC_sig_genes_normal)))
@@ -201,11 +205,11 @@ row.names(gene_counts_FOW_TC) <- c("total transcripts","genes_after_filtering","
 #write.csv for the gene count summaries
 
 colnames(gene_counts_FOW_TC) <- "count"
-write.table(gene_counts_FOW_TC, file = "output/DEG_lists/Foot/gene_counts_FOW_TC.csv", row.names = TRUE)
+write.table(gene_counts_FOW_TC, file = file.path(deg, "Foot/gene_counts_FOW_TC.csv"), row.names = TRUE)
 
 # Plot MA
 
-pdf(file= "output/DEG_lists/Foot/FOW_TC_MA_plots.pdf" )
+pdf(file= file.path(deg, "Foot/FOW_TC_MA_plots.pdf") )
 par(mfrow=c(1,3), mar=c(4,4,2,1))
 xlim <- c(1,1e5); ylim <- c(-3,3)
 DESeq2::plotMA(FOW_TC_normal_res_table, xlim=xlim, ylim=ylim, main="normal", cex=.8)
@@ -266,7 +270,7 @@ GOW_TC_ashr_df <- GOW_TC_ashr_res_table %>%
 
 # Write csv's with significant genes 
 #ignore rowname numbers with row.names = FALSE, not included as separate column
-write.table(GOW_TC_apeglm_df, file = "output/DEG_lists/Gill/GOW_TC_apeglm.csv", row.names = FALSE)
+write.table(GOW_TC_apeglm_df, file = file.path(deg, "Gill/GOW_TC_apeglm.csv"), row.names = FALSE)
 padj.cutoff <- 0.05 # pvalue cut-off
 GOW_TC_siggenes_apeglm <- GOW_TC_apeglm_df %>%
   filter(padj < padj.cutoff)
@@ -274,7 +278,7 @@ GOW_TC_sig_genes_ashr<- GOW_TC_ashr_df %>%
   filter(padj < padj.cutoff)
 GOW_TC_sig_genes_normal<- GOW_TC_normal_df %>%
   filter(padj < padj.cutoff)
-write.table(GOW_TC_siggenes_apeglm, file = "output/DEG_lists/Gill/GOW_TC_siggene_apeglm.csv", row.names = FALSE)
+write.table(GOW_TC_siggenes_apeglm, file = file.path(deg, "Gill/GOW_TC_siggene_apeglm.csv"), row.names = FALSE)
 
 #saving gene counts as a result of each filtration step
 gene_counts_GOW_TC <- as.data.frame(c(nrow(GOW_TC_countmatrix),nrow(dds13_filt),(nrow(GOW_TC_countmatrix)-nrow(dds13_filt)),nrow(GOW_TC_normal_res_table),nrow(GOW_TC_apeglm_res_table),nrow(GOW_TC_ashr_res_table),nrow(GOW_TC_siggenes_apeglm),nrow(GOW_TC_sig_genes_ashr),nrow(GOW_TC_sig_genes_normal)))
@@ -287,12 +291,12 @@ row.names(gene_counts_GOW_TC) <- c("total transcripts","genes_after_filtering","
 #write.csv for the gene count summaries
 
 colnames(gene_counts_GOW_TC) <- "count"
-write.table(gene_counts_GOW_TC, file = "output/DEG_lists/Gill/gene_counts_GOW_TC.csv", row.names = TRUE)
+write.table(gene_counts_GOW_TC, file = file.path(deg, "Gill/gene_counts_GOW_TC.csv"), row.names = TRUE)
 
 
 # Plot MA
 
-pdf(file= "output/DEG_lists/Gill/GOW_TC_MA_plots.pdf" )
+pdf(file= file.path(deg, "Gill/GOW_TC_MA_plots.pdf") )
 par(mfrow=c(1,3), mar=c(4,4,2,1))
 xlim <- c(1,1e5); ylim <- c(-3,3)
 DESeq2::plotMA(GOW_TC_normal_res_table, xlim=xlim, ylim=ylim, main="normal", cex=.8)
@@ -335,7 +339,7 @@ FDO_TC_ashr_df <- FDO_TC_ashr_res_table %>%
 
 # Write csv's with significant genes 
 #ignore rowname numbers with row.names = FALSE, not included as separate column
-write.table(FDO_TC_apeglm_df, file = "output/DEG_lists/Foot/FDO_TC_apeglm.csv", row.names = FALSE)
+write.table(FDO_TC_apeglm_df, file = file.path(deg, "Foot/FDO_TC_apeglm.csv"), row.names = FALSE)
 padj.cutoff <- 0.05 # pvalue cut-off
 FDO_TC_siggenes_apeglm <- FDO_TC_apeglm_df %>%
   filter(padj < padj.cutoff)
@@ -343,7 +347,7 @@ FDO_TC_sig_genes_ashr<- FDO_TC_ashr_df %>%
   filter(padj < padj.cutoff)
 FDO_TC_sig_genes_normal<- FDO_TC_normal_df %>%
   filter(padj < padj.cutoff)
-write.table(FDO_TC_siggenes_apeglm, file = "output/DEG_lists/Foot/FDO_TC_siggene_apeglm.csv", row.names = FALSE)
+write.table(FDO_TC_siggenes_apeglm, file = file.path(deg, "Foot/FDO_TC_siggene_apeglm.csv"), row.names = FALSE)
 
 #saving gene counts as a result of each filtration step
 gene_counts_FDO_TC <- as.data.frame(c(nrow(FDO_TC_countmatrix),nrow(dds11_filt),(nrow(FDO_TC_countmatrix)-nrow(dds11_filt)),nrow(FDO_TC_normal_res_table),nrow(FDO_TC_apeglm_res_table),nrow(FDO_TC_ashr_res_table),nrow(FDO_TC_siggenes_apeglm),nrow(FDO_TC_sig_genes_ashr),nrow(FDO_TC_sig_genes_normal)))
@@ -355,10 +359,10 @@ row.names(gene_counts_FDO_TC) <- c("total transcripts","genes_after_filtering","
 
 #write.csv for the gene count summaries
 colnames(gene_counts_FDO_TC) <- "count"
-write.table(gene_counts_FDO_TC, file = "output/DEG_lists/Foot/gene_counts_FDO_TC.csv", row.names = TRUE)
+write.table(gene_counts_FDO_TC, file = file.path(deg, "Foot/gene_counts_FDO_TC.csv"), row.names = TRUE)
 
 # Plot MA
-pdf(file= "output/DEG_lists/Foot/FDO_TC_MA_plots.pdf" )
+pdf(file= file.path(deg, "Foot/FDO_TC_MA_plots.pdf") )
 par(mfrow=c(1,3), mar=c(4,4,2,1))
 xlim <- c(1,1e5); ylim <- c(-3,3)
 DESeq2::plotMA(FDO_TC_normal_res_table, xlim=xlim, ylim=ylim, main="normal", cex=.8)
@@ -416,7 +420,7 @@ GDO_TC_ashr_df <- GDO_TC_ashr_res_table %>%
 
 # Write csv's with significant genes 
 #ignore rowname numbers with row.names = FALSE, not included as separate column
-write.table(GDO_TC_apeglm_df, file = "output/DEG_lists/Gill/GDO_TC_apeglm.csv", row.names = FALSE)
+write.table(GDO_TC_apeglm_df, file = file.path(deg, "Gill/GDO_TC_apeglm.csv"), row.names = FALSE)
 padj.cutoff <- 0.05 # pvalue cut-off
 GDO_TC_siggenes <- GDO_TC_apeglm_df %>%
   filter(padj < padj.cutoff)
@@ -424,7 +428,7 @@ GDO_TC_sig_genes_ashr<- GDO_TC_ashr_df %>%
   filter(padj < padj.cutoff)
 GDO_TC_sig_genes_normal<- GDO_TC_normal_df %>%
   filter(padj < padj.cutoff)
-write.table(GDO_TC_siggenes, file = "output/DEG_lists/Gill/GDO_TC_siggene_apeglm.csv", row.names = FALSE)
+write.table(GDO_TC_siggenes, file = file.path(deg, "Gill/GDO_TC_siggene_apeglm.csv"), row.names = FALSE)
 
 #saving gene counts as a result of each filtration step
 gene_counts_GDO_TC <- as.data.frame(c(nrow(GDO_TC_countmatrix),nrow(dds14_filt),(nrow(GDO_TC_countmatrix)-nrow(dds14_filt)),nrow(GDO_TC_normal_res_table),nrow(GDO_TC_apeglm_res_table),nrow(GDO_TC_ashr_res_table),nrow(GDO_TC_siggenes),nrow(GDO_TC_sig_genes_ashr),nrow(GDO_TC_sig_genes_normal)))
@@ -437,12 +441,12 @@ row.names(gene_counts_GDO_TC) <- c("total transcripts","genes_after_filtering","
 #write.csv for the gene count summaries
 
 colnames(gene_counts_GDO_TC) <- "count"
-write.table(gene_counts_GDO_TC, file = "output/DEG_lists/Gill/gene_counts_GDO_TC.csv", row.names = TRUE)
+write.table(gene_counts_GDO_TC, file = file.path(deg, "Gill/gene_counts_GDO_TC.csv"), row.names = TRUE)
 
 
 # Plot MA
 
-pdf(file= "output/DEG_lists/Gill/GDO_TC_MA_plots.pdf" )
+pdf(file= file.path(deg, "Gill/GDO_TC_MA_plots.pdf") )
 par(mfrow=c(1,3), mar=c(4,4,2,1))
 xlim <- c(1,1e5); ylim <- c(-3,3)
 DESeq2::plotMA(GDO_TC_normal_res_table, xlim=xlim, ylim=ylim, main="normal", cex=.8)

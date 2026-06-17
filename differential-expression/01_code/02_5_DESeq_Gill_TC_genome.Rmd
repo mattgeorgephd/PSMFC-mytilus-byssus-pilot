@@ -4,6 +4,10 @@ output: html_document
 date: "2024-06-15"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ```{r load libraries}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -39,8 +43,8 @@ library(PCAtools)
 ### Load and clean up treatment info and gene count matrix 
 ```{r}
 # Load in treatment info and GCM files
-treatmentinfo <- read_csv("output/treatmentinfo_clean.csv")
-gene_count_matrix_clean_og <- read_delim("output/gene_count_matrix_clean.csv", delim = ",")
+treatmentinfo <- read_csv(file.path(dat, "treatmentinfo_clean.csv"))
+gene_count_matrix_clean_og <- read_delim(file.path(dat, "gene_count_matrix_clean.csv"), delim = ",")
 
 # Make transcripts the row names
 rownames <- gene_count_matrix_clean$...1
@@ -54,12 +58,12 @@ gene_count_matrix_clean <- data.matrix(gene_count_matrix_clean)
 # Filter for gill tissue and treatment control
 G_TC_treatmentinfo <- treatmentinfo %>% filter(tissue == "G") %>%
   filter(!(day == "0")) 
-write.table(G_TC_treatmentinfo, file = "output/DEG_lists/Gill/G_TC_treatmentinfo.csv", row.names = FALSE)
+write.table(G_TC_treatmentinfo, file = file.path(deg, "Gill/G_TC_treatmentinfo.csv"), row.names = FALSE)
 
 # Subset count matrix
 G_TC_countmatrix <- subset(gene_count_matrix_clean, select=(G_TC_treatmentinfo$sample.1))
 G_TC_countmatrix <- data.frame(G_TC_countmatrix)
-write.table(G_TC_countmatrix, file = "output/DEG_lists/Gill/G_TC_countmatrix.csv")
+write.table(G_TC_countmatrix, file = file.path(deg, "Gill/G_TC_countmatrix.csv"))
 
 # Run DESeq
 dds27 <- DESeqDataSetFromMatrix(countData = G_TC_countmatrix,
@@ -93,12 +97,12 @@ ggplot(PCAdata, aes(PC1, PC2, color=treatment)) +
 ### OA vs treatment control
 ```{r}
 # Load gill ocean acidification treatment info, compared with treatment control
-GOA_TC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GOA_TC_treatmentinfo.csv", delim = " ")
+GOA_TC_treatmentinfo <- read_delim(file.path(deg, "Gill/GOA_TC_treatmentinfo.csv"), delim = " ")
 
 # subset count matrix
 GOA_TC_countmatrix <- subset(gene_count_matrix_clean, select=(GOA_TC_treatmentinfo$sample.1))
 GOA_TC_countmatrix <- data.frame(GOA_TC_countmatrix)
-write.table(GOA_TC_countmatrix, file = "output/DEG_lists/Gill/GOA_TC_countmatrix.csv")
+write.table(GOA_TC_countmatrix, file = file.path(deg, "Gill/GOA_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
 dds12 <- DESeqDataSetFromMatrix(countData = GOA_TC_countmatrix,
@@ -130,11 +134,11 @@ dds12_filt <- dds12[keep,]
 ### OW vs treatment control
 ```{r}
 # Load in gill ocean warming samples with treatment control samples
-GOW_TC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GOW_TC_treatmentinfo.csv", delim = " ")
+GOW_TC_treatmentinfo <- read_delim(file.path(deg, "Gill/GOW_TC_treatmentinfo.csv"), delim = " ")
 
 # subset count matrix                                                                                                      
 GOW_TC_countmatrix <- subset(gene_count_matrix, select=(GOW_TC_treatmentinfo$sample.1))
-write.table(GOW_TC_countmatrix, file = "output/DEG_lists/Gill/GOW_TC_countmatrix.csv")
+write.table(GOW_TC_countmatrix, file = file.path(deg, "Gill/GOW_TC_countmatrix.csv"))
 #Doesn't work still
 
 # CaTCulate DESeq object
@@ -168,11 +172,11 @@ dds13_filt <- dds13[keep,]
 ### DO vs treatment control
 ```{r}
 # Load in gill hypoxia and treatment control samples
-GDO_TC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GDO_TC_treatmentinfo.csv", delim = " ")
+GDO_TC_treatmentinfo <- read_delim(file.path(deg, "Gill/GDO_TC_treatmentinfo.csv"), delim = " ")
 
 # subset count matrix                                                                                                       
 GDO_TC_countmatrix <- subset(gene_count_matrix_clean, select=(GDO_TC_treatmentinfo$sample.1))
-write.csv(GDO_TC_countmatrix, file = "output/DEG_lists/Gill/GDO_TC_countmatrix.csv", row.names = TRUE)
+write.csv(GDO_TC_countmatrix, file = file.path(deg, "Gill/GDO_TC_countmatrix.csv"), row.names = TRUE)
 #still comes out wrong
 
 # CaTCulate DESeq object

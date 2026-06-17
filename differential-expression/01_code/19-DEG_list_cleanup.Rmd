@@ -4,19 +4,23 @@ output: html_document
 date: "2025-10-30"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ```{r}
 install.packages("tidyverse")
 library(tidyverse)
 ```
 
 ```{r}
-FDO_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_merged.csv")
-FOA_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_merged.csv")
-FOW_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_merged.csv")
+FDO_sigs <- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
+FOA_sigs <- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
+FOW_sigs <- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
 
-GDO_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_merged.csv")
-GOA_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_merged.csv")
-GOW_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_merged.csv")
+GDO_sigs <- read_csv(file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
+GOA_sigs <- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
+GOW_sigs <- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
 
 ```
 ```{r}
@@ -38,17 +42,17 @@ GOA_sigs_clean <- GOA_sigs %>%
 GOW_sigs_clean <- GOW_sigs %>%
   subset(select = c(gene, baseMean, log2FoldChange, lfcSE, padj, protein_name))
 
-write_csv(FDO_sigs_clean, "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/clean_zenodo_files/FDO_sigs_zenodo")
+write_csv(FDO_sigs_clean, file.path(deg, "GOterms_genome/clean_zenodo_files/FDO_sigs_zenodo"))
 
-write_csv(FOW_sigs_clean, "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/clean_zenodo_files/FOW_sigs_zenodo")
+write_csv(FOW_sigs_clean, file.path(deg, "GOterms_genome/clean_zenodo_files/FOW_sigs_zenodo"))
 
-write_csv(FOA_sigs_clean, "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/clean_zenodo_files/FOA_sigs_zenodo")
+write_csv(FOA_sigs_clean, file.path(deg, "GOterms_genome/clean_zenodo_files/FOA_sigs_zenodo"))
 
-write_csv(GDO_sigs_clean, "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/clean_zenodo_files/GDO_sigs_zenodo")
+write_csv(GDO_sigs_clean, file.path(deg, "GOterms_genome/clean_zenodo_files/GDO_sigs_zenodo"))
 
-write_csv(GOW_sigs_clean, "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/clean_zenodo_files/GOW_sigs_zenodo")
+write_csv(GOW_sigs_clean, file.path(deg, "GOterms_genome/clean_zenodo_files/GOW_sigs_zenodo"))
 
-write_csv(GOA_sigs_clean, "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/clean_zenodo_files/GOA_sigs_zenodo")
+write_csv(GOA_sigs_clean, file.path(deg, "GOterms_genome/clean_zenodo_files/GOA_sigs_zenodo"))
 
 ```
 

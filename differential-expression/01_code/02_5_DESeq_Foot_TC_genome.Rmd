@@ -4,6 +4,10 @@ output: html_document
 date: "2024-06-15"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ```{r load libraries}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -39,10 +43,10 @@ library(PCAtools)
 ### Load and clean up treatment info and gene count matrix 
 ```{r}
 # Read in treatment info file
-treatmentinfo <- read_csv("output/treatmentinfo_clean.csv")
+treatmentinfo <- read_csv(file.path(dat, "treatmentinfo_clean.csv"))
 
 # read in count matrix
-gene_count_matrix_clean_og <- read_delim("output/gene_count_matrix_clean.csv", delim = ",")
+gene_count_matrix_clean_og <- read_delim(file.path(dat, "gene_count_matrix_clean.csv"), delim = ",")
 
 # make transcripts the row names
 rownames <- gene_count_matrix_clean$...1
@@ -58,8 +62,8 @@ gene_count_matrix_clean <- data.matrix(gene_count_matrix_clean)
 ### All foot tissue, TC (treatment control)
 ```{r}
 # read in files
-treatmentinfo3 <- read_delim("output/treatmentinfo_clean.csv", delim = ",")
-gene_count_matrix_clean <- read_delim("output/gene_count_matrix_clean.csv", delim = ",")
+treatmentinfo3 <- read_delim(file.path(dat, "treatmentinfo_clean.csv"), delim = ",")
+gene_count_matrix_clean <- read_delim(file.path(dat, "gene_count_matrix_clean.csv"), delim = ",")
 
 # filter out gill tissue and lab control
 F_TC_treatmentinfo  <- treatmentinfo3  %>% filter(tissue == "F") %>%
@@ -68,12 +72,12 @@ F_TC_treatmentinfo  <- F_TC_treatmentinfo  %>%
   filter(!(  treatment== "control" & day == 0))
 
 # write the filtered treatment info file
-write.table(F_TC_treatmentinfo, file = "output/DEG_lists/Foot/F_TC_treatmentinfo.csv", row.names = FALSE)
+write.table(F_TC_treatmentinfo, file = file.path(deg, "Foot/F_TC_treatmentinfo.csv"), row.names = FALSE)
 
 # subset count matrix and save
 F_TC_countmatrix <- subset(gene_count_matrix_clean, select=(F_TC_treatmentinfo$sample.1))
 F_TC_countmatrix <- data.frame(F_TC_countmatrix)
-write.table(F_TC_countmatrix, file = "output/DEG_lists/Foot/F_TC_countmatrix.csv")
+write.table(F_TC_countmatrix, file = file.path(deg, "Foot/F_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
 dds25 <- DESeqDataSetFromMatrix(countData = F_TC_countmatrix,
@@ -107,8 +111,8 @@ ggplot(PCAdata, aes(PC1, PC2, color=treatment)) +
 ### All tissue all treatments
 ```{r}
 # read in files
-treatmentinfo <- read_csv("output/treatmentinfo_clean.csv")
-gene_count_matrix_clean <- read_delim("output/gene_count_matrix_clean.csv", delim = ",")
+treatmentinfo <- read_csv(file.path(dat, "treatmentinfo_clean.csv"))
+gene_count_matrix_clean <- read_delim(file.path(dat, "gene_count_matrix_clean.csv"), delim = ",")
 
 # filter out lab control
 TC_treatmentinfo <- treatmentinfo %>%
@@ -117,7 +121,7 @@ TC_treatmentinfo <- treatmentinfo %>%
 #subset and save count matrix
 TC_countmatrix <- subset(gene_count_matrix_clean, select=(TC_treatmentinfo$sample.1))
 TC_countmatrix <- data.frame(TC_countmatrix)
-write.table(TC_countmatrix, file = "output/DEG_lists/TC_countmatrix.csv")
+write.table(TC_countmatrix, file = file.path(deg, "TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
 dds26 <- DESeqDataSetFromMatrix(countData = TC_countmatrix,
@@ -153,12 +157,12 @@ ggplot(PCAdata, aes(PC1, PC2, color=treatment, shape = tissue)) +
 ### OA vs treatment control
 ```{r}
 # DEG in the foot after exposure to ocean acidification plus treatment control samples
-FOA_TC_treatmentinfo <- read_delim("output/DEG_lists/Foot/FOA_TC_treatmentinfo.csv", delim = " ")
+FOA_TC_treatmentinfo <- read_delim(file.path(deg, "Foot/FOA_TC_treatmentinfo.csv"), delim = " ")
 
 # subset foot OA samples from count matrix
 FOA_TC_countmatrix <- subset(gene_count_matrix_clean, select=(FOA_TC_treatmentinfo$sample.1))
 FOA_TC_countmatrix <- data.frame(FOA_TC_countmatrix)
-write.table(FOA_TC_countmatrix, file = "output/DEG_lists/Foot/FOA_TC_countmatrix.csv")
+write.table(FOA_TC_countmatrix, file = file.path(deg, "Foot/FOA_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
 dds9 <- DESeqDataSetFromMatrix(countData = FOA_TC_countmatrix,
@@ -195,11 +199,11 @@ dds9_filt <- dds9[keep,]
 ### OW vs treatment control
 ```{r}
 # read in specific treatment info file
-FOW_TC_treatmentinfo <- read_delim("output/DEG_lists/Foot/FOW_TC_treatmentinfo.csv", delim = " ")
+FOW_TC_treatmentinfo <- read_delim(file.path(deg, "Foot/FOW_TC_treatmentinfo.csv"), delim = " ")
                   
 # Subset foot ocean warming samples from count matrix                                                                               
 FOW_TC_countmatrix <- subset(gene_count_matrix_clean, select=(FOW_TC_treatmentinfo$sample.1))
-write.table(FOW_TC_countmatrix, file = "output/DEG_lists/Foot/FOW_TC_countmatrix.csv")
+write.table(FOW_TC_countmatrix, file = file.path(deg, "Foot/FOW_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
 dds10 <- DESeqDataSetFromMatrix(countData = FOW_TC_countmatrix,
@@ -237,11 +241,11 @@ dds10_filt <- dds10[keep,]
 ### DO vs treatment control
 ```{r}
 # read in specific treatment info file
-FDO_TC_treatmentinfo <- read_delim("output/DEG_lists/Foot/FDO_TC_treatmentinfo.csv", delim = " ")
+FDO_TC_treatmentinfo <- read_delim(file.path(deg, "Foot/FDO_TC_treatmentinfo.csv"), delim = " ")
 
 # subset foot hypoxoia samples from count matrix                                                                                     
 FDO_TC_countmatrix <- subset(gene_count_matrix_clean, select=(FDO_TC_treatmentinfo$sample.1))
-write.table(FDO_TC_countmatrix, file = "output/DEG_lists/Foot/FDO_TC_countmatrix.csv")
+write.table(FDO_TC_countmatrix, file = file.path(deg, "Foot/FDO_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
 dds11 <- DESeqDataSetFromMatrix(countData = FDO_TC_countmatrix,

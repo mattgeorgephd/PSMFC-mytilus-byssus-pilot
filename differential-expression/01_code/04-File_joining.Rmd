@@ -4,6 +4,10 @@ output: html_document
 date: "2024-02-20"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ### Load libraries
 ```{r load_libraries, inlcude = TRUE}
 ## clear
@@ -25,7 +29,7 @@ library(dplyr)
 ```{r}
 library(tidyr)
 # Load output of blastx, uniprot, and GO into a single masterID table
-masterID <- read.delim("output/LOC_GO_list.txt", sep= "\t", header = TRUE)
+masterID <- read.delim(file.path(blast_go, "LOC_GO_list.txt"), sep= "\t", header = TRUE)
 #Cut out extras
 masterID <- masterID[, -((ncol(masterID)-2):ncol(masterID))]
 
@@ -39,8 +43,8 @@ colnames(masterID)  <- c("transcript", "database","uniprot_accession","geneID","
 
 ### FDO merge 
 ```{r}
-#FDO_LC_siggene <- read.delim("output/DEG_lists/Foot/FDO_LC_siggene.csv", sep = " ", header = TRUE)
-FDO_TC_siggenes_apeglm <- read.delim("output/DEG_lists/Foot/FDO_TC_siggene_apeglm.csv", sep = " ", header = TRUE)
+#FDO_LC_siggene <- read.delim(file.path(deg, "Foot/FDO_LC_siggene.csv"), sep = " ", header = TRUE)
+FDO_TC_siggenes_apeglm <- read.delim(file.path(deg, "Foot/FDO_TC_siggene_apeglm.csv"), sep = " ", header = TRUE)
 
 FDO_TC_siggenes_apeglm <- FDO_TC_siggenes_apeglm %>%
   mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
@@ -71,18 +75,18 @@ nrow(FDO_sigs_unID) # 99 unID'd genes
 # 460 total expressed 
 
 #Write file of merged files
-write_csv(FDO_TC_siggene, file = "output/DEG_lists/GOterms_genome/FDO_sigs_merged.csv")
+write_csv(FDO_TC_siggene, file = file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
 
-write_csv(FDO_sigs_unID, file = "output/DEG_lists/GOterms_genome/FDO_sigs_unID.csv")
-write_csv(FDO_sigs_ID, file = "output/DEG_lists/GOterms_genome/FDO_sigs_ID.csv")
+write_csv(FDO_sigs_unID, file = file.path(deg, "GOterms_genome/FDO_sigs_unID.csv"))
+write_csv(FDO_sigs_ID, file = file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"))
 
 
 ```
 
 ### GDO merge
 ```{r}
-#GDO_LC_siggene <- read.delim("output/DEG_lists/Gill/GDO_LC_siggene.csv", sep = " ", header = TRUE)
-GDO_TC_siggene <- read.delim("output/DEG_lists/Gill/GDO_TC_siggene_apeglm.csv", sep = " ", header = TRUE)
+#GDO_LC_siggene <- read.delim(file.path(deg, "Gill/GDO_LC_siggene.csv"), sep = " ", header = TRUE)
+GDO_TC_siggene <- read.delim(file.path(deg, "Gill/GDO_TC_siggene_apeglm.csv"), sep = " ", header = TRUE)
 GDO_TC_siggene <- GDO_TC_siggene %>%
   mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
 
@@ -113,16 +117,16 @@ nrow(GDO_sigs_unID) # 108 unID'd genes
 # 409 genes total diff expressed between GDO and GTC
 
 #Write file of merged files
-write_csv(GDO_sigs_merged, file = "output/DEG_lists/GOterms_genome/GDO_sigs_merged.csv")
-write_csv(GDO_sigs_unID, file = "output/DEG_lists/GOterms_genome/GDO_sigs_unID.csv")
-write_csv(GDO_sigs_ID, file = "output/DEG_lists/GOterms_genome/GDO_sigs_ID.csv")
+write_csv(GDO_sigs_merged, file = file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
+write_csv(GDO_sigs_unID, file = file.path(deg, "GOterms_genome/GDO_sigs_unID.csv"))
+write_csv(GDO_sigs_ID, file = file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"))
 
 ```
 
 ### FOA merge
 ```{r}
-#FOA_LC_siggene <- read.delim("output/DEG_lists/Foot/FOA_LC_siggene.csv", sep = " ", header = TRUE)
-FOA_TC_siggene <- read.delim("output/DEG_lists/Foot/FOA_TC_siggene.csv", sep = " ", header = TRUE)
+#FOA_LC_siggene <- read.delim(file.path(deg, "Foot/FOA_LC_siggene.csv"), sep = " ", header = TRUE)
+FOA_TC_siggene <- read.delim(file.path(deg, "Foot/FOA_TC_siggene.csv"), sep = " ", header = TRUE)
 FOA_TC_siggene <- FOA_TC_siggene %>%
   mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
 
@@ -153,9 +157,9 @@ nrow(FOA_sigs_unID) # 20 unID'd genes
 #92 genes total diff expressed between FOA and FTC
 
 #Write file of merged files
-write_csv(FOA_sigs_merged, file = "output/DEG_lists/GOterms_genome/FOA_sigs_merged.csv")
-write_csv(FOA_sigs_unID, file = "output/DEG_lists/GOterms_genome/FOA_sigs_unID.csv")
-write_csv(FOA_sigs_ID, file = "output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv")
+write_csv(FOA_sigs_merged, file = file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
+write_csv(FOA_sigs_unID, file = file.path(deg, "GOterms_genome/FOA_sigs_unID.csv"))
+write_csv(FOA_sigs_ID, file = file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"))
 
 
 ```
@@ -163,8 +167,8 @@ write_csv(FOA_sigs_ID, file = "output/DEG_lists/GOterms_genome/FOA_sigs_ID.csv")
 ### GOA merge
 
 ```{r}
-#GOA_LC_siggene <- read.delim("output/DEG_lists/Gill/GOA_LC_siggene.csv", sep = " ", header = TRUE)
-GOA_TC_siggene <- read.delim("output/DEG_lists/Gill/GOA_TC_siggene.csv", sep = " ", header = TRUE)
+#GOA_LC_siggene <- read.delim(file.path(deg, "Gill/GOA_LC_siggene.csv"), sep = " ", header = TRUE)
+GOA_TC_siggene <- read.delim(file.path(deg, "Gill/GOA_TC_siggene.csv"), sep = " ", header = TRUE)
 
 GOA_TC_siggene <- GOA_TC_siggene %>%
   mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
@@ -199,16 +203,16 @@ nrow(GOA_sigs_unID) # 248 unID'd genes
 # 830 genes total diff expressed between GOA and GTC
 
 #Write file of merged files
-write_csv(GOA_sigs_merged, file = "output/DEG_lists/GOterms_genome/GOA_sigs_merged.csv")
-write_csv(GOA_sigs_unID, file = "output/DEG_lists/GOterms_genome/GOA_sigs_unID.csv")
-write_csv(GOA_sigs_ID, file = "output/DEG_lists/GOterms_genome/GOA_sigs_ID.csv")
+write_csv(GOA_sigs_merged, file = file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
+write_csv(GOA_sigs_unID, file = file.path(deg, "GOterms_genome/GOA_sigs_unID.csv"))
+write_csv(GOA_sigs_ID, file = file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"))
 
 ```
 
 ### FOW merge
 ```{r}
-# FOW_LC_siggene <- read.delim("output/DEG_lists/Foot/FOW_LC_siggene.csv", sep = " ", header = TRUE)
-FOW_TC_siggene <- read.delim("output/DEG_lists/Foot/FOW_TC_siggene.csv", sep = " ", header = TRUE)
+# FOW_LC_siggene <- read.delim(file.path(deg, "Foot/FOW_LC_siggene.csv"), sep = " ", header = TRUE)
+FOW_TC_siggene <- read.delim(file.path(deg, "Foot/FOW_TC_siggene.csv"), sep = " ", header = TRUE)
 FOW_TC_siggene <- FOW_TC_siggene %>%
   mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
 # 
@@ -239,17 +243,17 @@ nrow(FOW_sigs_unID) # 49 unID'd genes
 # 201 genes total diff expressed between FOW and FTC
 
 #Write file of merged files
-write_csv(FOW_sigs_merged, file = "output/DEG_lists/GOterms_genome/FOW_sigs_merged.csv")
-write_csv(FOW_sigs_unID, file = "output/DEG_lists/GOterms_genome/FOW_sigs_unID.csv")
-write_csv(FOW_sigs_ID, file = "output/DEG_lists/GOterms_genome/FOW_sigs_ID.csv")
+write_csv(FOW_sigs_merged, file = file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
+write_csv(FOW_sigs_unID, file = file.path(deg, "GOterms_genome/FOW_sigs_unID.csv"))
+write_csv(FOW_sigs_ID, file = file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"))
 
 ```
 
 ### GOW merge
 
 ```{r}
-#GOW_LC_siggene <- read.delim("output/DEG_lists/Gill/GOW_LC_siggene.csv", sep = " ", header = TRUE)
-GOW_TC_siggene <- read.delim("output/DEG_lists/Gill/GOW_TC_siggene_apeglm.csv", sep = " ", header = TRUE)
+#GOW_LC_siggene <- read.delim(file.path(deg, "Gill/GOW_LC_siggene.csv"), sep = " ", header = TRUE)
+GOW_TC_siggene <- read.delim(file.path(deg, "Gill/GOW_TC_siggene_apeglm.csv"), sep = " ", header = TRUE)
 GOW_TC_siggene <- GOW_TC_siggene %>%
   mutate(LOC_ID = str_extract(gene, "LOC\\d+"))
 
@@ -280,9 +284,9 @@ nrow(GOW_sigs_unID) # 53 unID'd genes
 # 251 genes total diff expressed between GOW and GTC
 
 #Write file of merged files
-write_csv(GOW_sigs_merged, file = "output/DEG_lists/GOterms_genome/GOW_sigs_merged.csv")
-write_csv(GOW_sigs_unID, file = "output/DEG_lists/GOterms_genome/GOW_sigs_unID.csv")
-write_csv(GOW_sigs_ID, file = "output/DEG_lists/GOterms_genome/GOW_sigs_ID.csv")
+write_csv(GOW_sigs_merged, file = file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
+write_csv(GOW_sigs_unID, file = file.path(deg, "GOterms_genome/GOW_sigs_unID.csv"))
+write_csv(GOW_sigs_ID, file = file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"))
 
 ```
 

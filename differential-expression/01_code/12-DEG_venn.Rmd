@@ -3,6 +3,10 @@ title: "12-DEG_venn"
 output: html_document
 date: "2025-03-21"
 ---
+
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
 ### Load libraries
 ```{r}
 library(dplyr)
@@ -16,14 +20,14 @@ library(ggvenn)
 ```{r}
 # Gill (TC)
 
-GOW_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOW_sigs_merged.csv")
-GOA_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GOA_sigs_merged.csv")
-GDO_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/GDO_sigs_merged.csv")
+GOW_sigs <- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
+GOA_sigs <- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
+GDO_sigs <- read_csv(file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
 
 # Foot (TC)
-FOW_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOW_sigs_merged.csv")
-FOA_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FOA_sigs_merged.csv")
-FDO_sigs <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/DEG_lists/GOterms_genome/FDO_sigs_merged.csv")
+FOW_sigs <- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
+FOA_sigs <- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
+FDO_sigs <- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
 
 # Select only unique identifiers
 GOW_sigs_venn <- unique(GOW_sigs)

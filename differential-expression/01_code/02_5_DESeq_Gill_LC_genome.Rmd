@@ -4,6 +4,10 @@ output: html_document
 date: "2024-06-14"
 ---
 
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
+
 ```{r load libraries}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
@@ -38,8 +42,8 @@ library(PCAtools)
 
 ### Load and clean up treatment info and gene count matrix 
 ```{r}
-treatmentinfo <- read_csv("output/treatmentinfo_clean.csv")
-gene_count_matrix_clean_og <- read_delim("output/gene_count_matrix_clean.csv", delim = ",")
+treatmentinfo <- read_csv(file.path(dat, "treatmentinfo_clean.csv"))
+gene_count_matrix_clean_og <- read_delim(file.path(dat, "gene_count_matrix_clean.csv"), delim = ",")
 
 # make transcripts the rownames
 rownames <- gene_count_matrix_clean$...1
@@ -53,18 +57,18 @@ gene_count_matrix_clean <- data.matrix(gene_count_matrix_clean)
 ### Gill, all treatments
 ```{r}
 # read in treatment info and GCM file
-treatmentinfo <- read_delim("output/treatmentinfo_clean.csv", delim = " ")
-gene_count_matrix_clean <- read_delim("output/gene_count_matrix_clean.csv", delim = ",")
+treatmentinfo <- read_delim(file.path(dat, "treatmentinfo_clean.csv"), delim = " ")
+gene_count_matrix_clean <- read_delim(file.path(dat, "gene_count_matrix_clean.csv"), delim = ",")
 
 # filter for lab control and gill tissue only
 G_LC_treatmentinfo <- treatmentinfo %>% filter(tissue == "G") %>%
   filter(!(treatment == "control" & day == 3)) 
-write.table(G_LC_treatmentinfo, file = "output/DEG_lists/Gill/G_LC_treatmentinfo.csv", row.names = FALSE)
+write.table(G_LC_treatmentinfo, file = file.path(deg, "Gill/G_LC_treatmentinfo.csv"), row.names = FALSE)
 
 # subset count matrix
 G_LC_countmatrix <- subset(gene_count_matrix_clean, select=(G_LC_treatmentinfo$sample.1))
 G_LC_countmatrix <- data.frame(G_LC_countmatrix)
-write.table(G_LC_countmatrix, file = "output/DEG_lists/Gill/G_LC_countmatrix.csv")
+write.table(G_LC_countmatrix, file = file.path(deg, "Gill/G_LC_countmatrix.csv"))
 
 # Run DESeq
 dds28 <- DESeqDataSetFromMatrix(countData = G_LC_countmatrix,
@@ -98,12 +102,12 @@ ggplot(PCAdata, aes(PC1, PC2, color=treatment)) +
 ### OA vs lab control
 ```{r}
 # Read in gill ocean acidification treatment info with lab control samples
-GOA_LC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GOA_LC_countmatrix.csv", delim = " ")
+GOA_LC_treatmentinfo <- read_delim(file.path(deg, "Gill/GOA_LC_countmatrix.csv"), delim = " ")
 
 # subset count matrix
 GOA_LC_countmatrix <- subset(gene_count_matrix, select=(GOA_LC_treatmentinfo$sample.1))
 GOA_LC_countmatrix <- data.frame(GOA_LC_countmatrix)
-write.table(GOA_LC_countmatrix, file = "output/DEG_lists/Gill/GOA_LC_countmatrix.csv")
+write.table(GOA_LC_countmatrix, file = file.path(deg, "Gill/GOA_LC_countmatrix.csv"))
 
 # Calculate DESeq object
 dds1 <- DESeqDataSetFromMatrix(countData = GOA_LC_countmatrix,
@@ -135,11 +139,11 @@ dds1_filt <- dds1[keep,]
 ### OW vs lab control
 ```{r}
 # read in gill ocean warming treatment info with lab control samples
-GOW_LC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GOW_LC_treatmentinfo.csv", delim = " ")
+GOW_LC_treatmentinfo <- read_delim(file.path(deg, "Gill/GOW_LC_treatmentinfo.csv"), delim = " ")
 
 # subset count matrix                                                                                                      
 GOW_LC_countmatrix <- subset(gene_count_matrix, select=(GOW_LC_treatmentinfo$sample.1))
-write.table(GOW_LC_countmatrix, file = "output/DEG_lists/Gill/GOW_LC_countmatrix.csv")
+write.table(GOW_LC_countmatrix, file = file.path(deg, "Gill/GOW_LC_countmatrix.csv"))
 #Doesn't work still
 
 # Calculate DESeq object
@@ -173,11 +177,11 @@ dds2_filt <- dds2[keep,]
 ### DO vs lab control
 ```{r}
 # read in gill hypoxia treatment info file with lab control samples
-GDO_LC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GDO_LC_treatmentinfo.csv", delim = " ")
+GDO_LC_treatmentinfo <- read_delim(file.path(deg, "Gill/GDO_LC_treatmentinfo.csv"), delim = " ")
 
 # subset count matrix                                                                                                
 GDO_LC_countmatrix <- subset(gene_count_matrix_clean, select=(GDO_LC_treatmentinfo$sample.1))
-write.csv(GDO_LC_countmatrix, file = "output/DEG_lists/Gill/GDO_LC_countmatrix.csv", row.names = TRUE)
+write.csv(GDO_LC_countmatrix, file = file.path(deg, "Gill/GDO_LC_countmatrix.csv"), row.names = TRUE)
 
 # Calculate DESeq object
 dds3 <- DESeqDataSetFromMatrix(countData = GDO_LC_countmatrix,
@@ -210,11 +214,11 @@ dds3_filt <- dds3[keep,]
 ### treatment control vs lab control
 ```{r}
 # Filter data
-GTC_LC_treatmentinfo <- read_delim("output/DEG_lists/Gill/GTC_LC_treatmentinfo.csv", delim = " ")
+GTC_LC_treatmentinfo <- read_delim(file.path(deg, "Gill/GTC_LC_treatmentinfo.csv"), delim = " ")
          
 #subset count matrix                                                                        
 GTC_LC_countmatrix <- subset(gene_count_matrix, select=(GTC_LC_treatmentinfo$sample.1))
-write.table(GTC_LC_countmatrix, file = "output/DEG_lists/Gill/GTC_LC_countmatrix.csv")    
+write.table(GTC_LC_countmatrix, file = file.path(deg, "Gill/GTC_LC_countmatrix.csv"))    
 GTC_LC_treatmentinfo$day <- as.factor(GTC_LC_treatmentinfo$day)
 
 # Calculate DESeq object

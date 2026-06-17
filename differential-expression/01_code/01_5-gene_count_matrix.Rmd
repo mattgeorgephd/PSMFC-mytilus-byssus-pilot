@@ -3,9 +3,13 @@ title: "02-foot_TC_DGE_viz_genome"
 output: html_document
 date: "2024-06-05"
 ---
+
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+```
 ## Make genome counts matrix
 ```{r, eval = TRUE}
-gene_count_matrix1 <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/gene_count_matrix.csv")
+gene_count_matrix1 <- read_csv(file.path(dat, "gene_count_matrix.csv"))
 gene_count_matrix1 <- data.frame(gene_count_matrix)
 
 ```
@@ -13,7 +17,7 @@ gene_count_matrix1 <- data.frame(gene_count_matrix)
 ```{r}
 #Load in the metadata
 library(dplyr)
-treatmentinfo.2 <- read.csv("data/PSMFC-mytilus-byssus-pilot-RNA-tagseq_raw.csv", header = TRUE, sep = ",")
+treatmentinfo.2 <- read.csv(file.path(dat, "PSMFC-mytilus-byssus-pilot-RNA-tagseq_raw.csv"), header = TRUE, sep = ",")
 treatmentinfo.2
 
 ### NEED TO ADD IN CODE FROM OTHER CODE FILE TO CLEAN UP THIS FILE
@@ -89,8 +93,8 @@ gene_count_matrix3 <- subset(gene_count_matrix, select=-(loc_id))
 all(rownames(treatmentinfo.2) == colnames(gene_count_matrix3))
 
 # Write gene count matrix files
-write.csv(gene_count_matrix3, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/gene_count_matrix_clean.csv", row.names = TRUE)
-write.csv(treatmentinfo.2, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/treatmentinfo_clean.csv", row.names = TRUE)
+write.csv(gene_count_matrix3, file = file.path(dat, "gene_count_matrix_clean.csv"), row.names = TRUE)
+write.csv(treatmentinfo.2, file = file.path(dat, "treatmentinfo_clean.csv"), row.names = TRUE)
 ```
 
 
