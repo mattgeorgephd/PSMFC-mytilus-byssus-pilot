@@ -28,6 +28,7 @@ library(RColorBrewer)
 library(data.table)
 library(DT)
 library(Biostrings)
+library(here)
 
 knitr::opts_chunk$set(
   echo = TRUE,         # Display code chunks
@@ -44,7 +45,7 @@ Lets take look at Isoseq fasta
 
 
 ```{bash}
-cd ../data/
+cd ../02_data/
 
 curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_transcripts.fasta
 ```
@@ -54,7 +55,7 @@ curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_tran
 ```{r, eval=TRUE}
 
 # Load the sequences from a fasta file
-fasta_path <- "../data/Mtros-hq_transcripts.fasta" # Change to your FASTA file path
+fasta_path <- here::here("02_data", "Mtros-hq_transcripts.fasta") # downloaded by the bash chunk above; not committed to the repo
 dna_sequences <- readDNAStringSet(fasta_path)
 
 # Calculate the lengths of the sequences
