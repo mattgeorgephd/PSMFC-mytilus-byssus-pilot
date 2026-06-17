@@ -1,3 +1,6 @@
 # ignore ALL .Renviron files
 *.Renviron
 .Rproj.user
+.Rhistory
+.Rproj.user/
+~$*

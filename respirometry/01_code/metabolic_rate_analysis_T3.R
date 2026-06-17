@@ -5,11 +5,8 @@
 ## clear
 rm(list = ls())
 
-## Grab the WD from the file location
-library(rstudioapi)
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path ))
-getwd()
+## Paths resolve with here::here(), anchored to respirometry.Rproj
+library(here)
 
 ## Load R packages
 library(readxl)
@@ -50,19 +47,18 @@ my_theme <- theme(line              = element_line(size = 1.5),
 #######################################################################################################################################
 # Navigate to data folder and import file list
 
-getwd()
-setwd("measurements/20211029_T3")
-
+# Folder with the raw O2 measurement files for this timepoint
+meas_dir <- here::here("02_data", "measurements", "20211029_T3")
 
 # grab list of file names from folder
-f <- Sys.glob("*.xlsx")
+f <- list.files(meas_dir, pattern = "\\.xlsx$")
 tail(f) # check for ~$ files at end. 
 #f <- f[-66] # If you see one, remove
 
 # Loop through and grab data using lapply
 dat = lapply(f, function(i)
   {
-  x = read_excel(i, sheet = "SABD0002000012, Ch 1", col_names = TRUE)
+  x = read_excel(file.path(meas_dir, i), sheet = "SABD0002000012, Ch 1", col_names = TRUE)
   # Get the columns you want
   x = x[, c(3, 7, 9)] 
   if(length(x[,3])>15) x=x[c(-1:-10),] # remove the first 10 to get rid of noise
@@ -122,14 +118,22 @@ for (i in steps) {
 
 }
 
-# Export list of file names before review
-getwd(); setwd('..'); setwd('..'); setwd('constraints'); getwd()
-write.xlsx(x=dat_nested$ID_sort, file="constraints_20211029_T3.xlsx", sheetName = "20211029_T3", col.names = TRUE, row.names = TRUE, append = FALSE)
+# Export the run list as a constraints TEMPLATE for manual review.
+# This file is hand-edited after QC (keep/recalc flag + start/stop columns), so we
+# only write the template when one does not already exist, to avoid wiping curation.
+constr_dir  <- here::here("02_data", "constraints")
+dir.create(constr_dir, recursive = TRUE, showWarnings = FALSE)
+constr_file <- file.path(constr_dir, "constraints_20211029_T3.xlsx")
+if (!file.exists(constr_file)) {
+  write.xlsx(x = dat_nested$ID_sort, file = constr_file, sheetName = "20211029_T3",
+             col.names = TRUE, row.names = TRUE, append = FALSE)
+} else message("Existing constraints kept, not overwritten: ", constr_file)
 
 
 # Plot the lines one by one to find ones to trash. Add start and stop to for recalcs in constraints tab of MR_output.
 
-getwd(); setwd('..'); setwd('QC_plots/20211029_T3'); getwd()
+qc_dir <- here::here("03_analyses", "metabolic-rate", "QC_plots", "20211029_T3")
+dir.create(qc_dir, recursive = TRUE, showWarnings = FALSE)
 
 
 steps <- seq(from=1,to=nrow(dat_nested),by=1)
@@ -153,7 +157,7 @@ for (i in steps){
           ggtitle(dat_nested$ID_sort[i]) +
           geom_text(x = max(time)-8, y = max(oxy)-0.2, label = lm_eqn(df), parse = TRUE) +
           my_theme
-  ggsave(filename = paste(ID,"_",tempset,".png",sep=""),
+  ggsave(filename = file.path(qc_dir, paste0(ID, "_", tempset, ".png")),
          plot   = p,
          dpi    = 300,
          device = "png",
@@ -171,10 +175,9 @@ for (i in steps){
 #####################################################################################################################
 ## Calculate metabolic rate
 
-## Input constraints
-setwd('..'); setwd('..'); getwd()
-setwd('constraints'); getwd()
-constraints <- read_excel("constraints_20211029_T3.xlsx", sheet = "20211029_T3", col_names = TRUE)
+## Input constraints (the hand-edited file in 02_data/constraints/)
+constraints <- read_excel(here::here("02_data", "constraints", "constraints_20211029_T3.xlsx"),
+                          sheet = "20211029_T3", col_names = TRUE)
 
 # calculate slope
 steps <- seq(from=1,to=nrow(dat_nested),by=1)
@@ -213,5 +216,7 @@ for (i in steps) {
 } ## looks into the constraints tab of MR_output and calculates slope, umol/L oxy consumption per hour, outputs oxy_hr 
 
 # output calculated umol/L/hr
-getwd(); setwd('..'); setwd('output'); getwd()
-write.xlsx(x=oxy_hr,file="SMR_slope_final.xlsx", sheetName = "final", col.names = TRUE, row.names = TRUE, append = FALSE)
+out_dir <- here::here("03_analyses", "metabolic-rate", "output")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+write.xlsx(x = oxy_hr, file = file.path(out_dir, "SMR_slope_final.xlsx"),
+           sheetName = "final", col.names = TRUE, row.names = TRUE, append = FALSE)
