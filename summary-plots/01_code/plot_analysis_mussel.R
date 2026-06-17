@@ -6,9 +6,15 @@
 rm(list=ls())
 
 ## Grab the WD from the file location
-library(rstudioapi)
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path )); getwd()
+library(here)
+# Cross-folder pointer: this analysis reads outputs from the respirometry and
+# morphometrics folders, and writes its own plots under 03_analyses/.
+repo_root  <- normalizePath(file.path(here::here(), ".."))
+smr_file   <- file.path(repo_root, "respirometry", "03_analyses", "metabolic-rate", "output", "processed_summary.xlsx")
+morph_file <- file.path(repo_root, "morphometrics", "02_data", "morphometrics.xlsx")
+fr_file    <- file.path(repo_root, "feeding_rate", "FR.xlsx")  # NOTE: feeding_rate/ is NOT in the repo (leftover oyster-project section, see README)
+out_dir    <- here::here("03_analyses", "plot-analysis-mussel")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 ## Load R packages
 library(readxl)
@@ -42,12 +48,10 @@ my_theme <- theme(line              = element_line(size=1.5),
 ###########################################################################################################################
 ### [1] Boxplot - SMR vs. time by treatment - OA, OW, DO
 
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path )); setwd('respirometry/output'); getwd()
 
-trt_list <- read_excel("processed_summary.xlsx", sheet = "trt_list", col_names = TRUE)
+trt_list <- read_excel(smr_file, sheet = "trt_list", col_names = TRUE)
 
-trt_plot            <- read_excel("processed_summary.xlsx", sheet = "SMR", col_names = TRUE)
+trt_plot            <- read_excel(smr_file, sheet = "SMR", col_names = TRUE)
 trt_plot$timepoint  <- factor(trt_plot$timepoint, levels=c("baseline","final"),ordered=TRUE)
 trt_plot$trt_list   <- factor(trt_plot$trt_list,levels=trt_list$trt_list,ordered=TRUE)
 trt_plot$trt2_list   <- factor(trt_plot$trt2_list,levels=c("gallo-baseline","tross-baseline","gallo-final","tross-final"),ordered=TRUE)
@@ -146,10 +150,8 @@ bp3 <- ggplot(trt_plot_DO, aes(x=timepoint, y=SMR, group=as.factor(trt2_list),fi
 
 bp3
 
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path )); setwd('plots'); getwd()
 
-ggsave("BOXPLOT_SMR_OA.png",
+ggsave(file.path(out_dir, "BOXPLOT_SMR_OA.png"),
        plot   = bp1,
        dpi    = 600,
        device = "png",
@@ -157,7 +159,7 @@ ggsave("BOXPLOT_SMR_OA.png",
        height = 4,
        units  = "in")
 
-ggsave("BOXPLOT_SMR_OW.png",
+ggsave(file.path(out_dir, "BOXPLOT_SMR_OW.png"),
        plot   = bp2,
        dpi    = 600,
        device = "png",
@@ -165,7 +167,7 @@ ggsave("BOXPLOT_SMR_OW.png",
        height = 4,
        units  = "in")
 
-ggsave("BOXPLOT_SMR_DO.png",
+ggsave(file.path(out_dir, "BOXPLOT_SMR_DO.png"),
        plot   = bp3,
        dpi    = 600,
        device = "png",
@@ -173,7 +175,7 @@ ggsave("BOXPLOT_SMR_DO.png",
        height = 4,
        units  = "in")
 
-ggsave("LINEGRAPH_SMR_OA.png",
+ggsave(file.path(out_dir, "LINEGRAPH_SMR_OA.png"),
        plot   = p1,
        dpi    = 600,
        device = "png",
@@ -181,7 +183,7 @@ ggsave("LINEGRAPH_SMR_OA.png",
        height = 4,
        units  = "in")
 
-ggsave("LINEGRAPH_SMR_OW.png",
+ggsave(file.path(out_dir, "LINEGRAPH_SMR_OW.png"),
        plot   = p2,
        dpi    = 600,
        device = "png",
@@ -189,7 +191,7 @@ ggsave("LINEGRAPH_SMR_OW.png",
        height = 4,
        units  = "in")
 
-ggsave("LINEGRAPH_SMR_DO.png",
+ggsave(file.path(out_dir, "LINEGRAPH_SMR_DO.png"),
        plot   = p3,
        dpi    = 600,
        device = "png",
@@ -201,12 +203,10 @@ ggsave("LINEGRAPH_SMR_DO.png",
 ###########################################################################################################################
 ### [2] Boxplot - SMR vs. time by treatment - OA, OW, DO
 
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path )); setwd('morphometrics'); getwd()
 
-trt_list <- read_excel("morphometrics.xlsx", sheet = "trt_list", col_names = TRUE)
+trt_list <- read_excel(morph_file, sheet = "trt_list", col_names = TRUE)
 
-trt_plot              <- read_excel("morphometrics.xlsx", sheet = "thread_count", col_names = TRUE)
+trt_plot              <- read_excel(morph_file, sheet = "thread_count", col_names = TRUE)
 trt_plot$species      <- factor(trt_plot$species)
 trt_plot$trt          <- factor(trt_plot$trt)
 trt_plot$time         <- factor(trt_plot$time,levels=c("before","after"),ordered=TRUE)
@@ -308,10 +308,8 @@ bp3 <- ggplot(trt_plot_DO, aes(x=time, y=thread,fill=species)) +
 
 bp3
 
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path )); setwd('plots'); getwd()
 
-ggsave("BOXPLOT_thread_OA.png",
+ggsave(file.path(out_dir, "BOXPLOT_thread_OA.png"),
        plot   = bp1,
        dpi    = 600,
        device = "png",
@@ -319,7 +317,7 @@ ggsave("BOXPLOT_thread_OA.png",
        height = 4,
        units  = "in")
 
-ggsave("BOXPLOT_thread_OW.png",
+ggsave(file.path(out_dir, "BOXPLOT_thread_OW.png"),
        plot   = bp2,
        dpi    = 600,
        device = "png",
@@ -327,7 +325,7 @@ ggsave("BOXPLOT_thread_OW.png",
        height = 4,
        units  = "in")
 
-ggsave("BOXPLOT_thread_DO.png",
+ggsave(file.path(out_dir, "BOXPLOT_thread_DO.png"),
        plot   = bp3,
        dpi    = 600,
        device = "png",
@@ -335,7 +333,7 @@ ggsave("BOXPLOT_thread_DO.png",
        height = 4,
        units  = "in")
 
-ggsave("LINEGRAPH_thread_OA.png",
+ggsave(file.path(out_dir, "LINEGRAPH_thread_OA.png"),
        plot   = p1,
        dpi    = 600,
        device = "png",
@@ -343,7 +341,7 @@ ggsave("LINEGRAPH_thread_OA.png",
        height = 4,
        units  = "in")
 
-ggsave("LINEGRAPH_thread_OW.png",
+ggsave(file.path(out_dir, "LINEGRAPH_thread_OW.png"),
        plot   = p2,
        dpi    = 600,
        device = "png",
@@ -351,7 +349,7 @@ ggsave("LINEGRAPH_thread_OW.png",
        height = 4,
        units  = "in")
 
-ggsave("LINEGRAPH_thread_DO.png",
+ggsave(file.path(out_dir, "LINEGRAPH_thread_DO.png"),
        plot   = p3,
        dpi    = 600,
        device = "png",
@@ -363,12 +361,10 @@ ggsave("LINEGRAPH_thread_DO.png",
 ###########################################################################################################################
 ### [1] Boxplot - Condition vs. time by treatment - OA, OW, DO
 
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path )); setwd('morphometrics'); getwd()
 
-# trt_list <- read_excel("processed_summary.xlsx", sheet = "trt_list", col_names = TRUE)
+# trt_list <- read_excel(smr_file, sheet = "trt_list", col_names = TRUE)
 
-trt_plot            <- read_excel("morphometrics.xlsx", sheet = "condition", col_names = TRUE)
+trt_plot            <- read_excel(morph_file, sheet = "condition", col_names = TRUE)
 # trt_plot$timepoint  <- factor(trt_plot$timepoint, levels=c("baseline","final"),ordered=TRUE)
 trt_plot$trt         <- factor(trt_plot$trt,levels=c('baseline','final','OA','OW','DO'),ordered=TRUE)
 trt_plot$species     <- factor(trt_plot$species,levels=c("gallo","tross"),ordered=TRUE)
@@ -401,10 +397,8 @@ bp5 <- ggplot(trt_plot, aes(x=trt, y=GI,group=combo,fill=species)) +
 
 bp5
 
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path )); setwd('plots'); getwd()
 
-ggsave("BOXPLOT_CI.png",
+ggsave(file.path(out_dir, "BOXPLOT_CI.png"),
        plot   = bp4,
        dpi    = 600,
        device = "png",
@@ -412,7 +406,7 @@ ggsave("BOXPLOT_CI.png",
        height = 4,
        units  = "in")
 
-ggsave("BOXPLOT_GI.png",
+ggsave(file.path(out_dir, "BOXPLOT_GI.png"),
        plot   = bp5,
        dpi    = 600,
        device = "png",
@@ -499,12 +493,10 @@ amod <- aov(SMR ~ tx, data=MR_plot)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
 
 # FR
-current_path <- getActiveDocumentContext()$path
-setwd(dirname(current_path )); setwd('feeding_rate'); getwd()
 
-trt_list <- read_excel("FR.xlsx", sheet = "trt_list", col_names = TRUE)
+trt_list <- read_excel(fr_file, sheet = "trt_list", col_names = TRUE)
 
-FR_plot           <- read_excel("FR.xlsx", sheet = "heat", col_names = TRUE)
+FR_plot           <- read_excel(fr_file, sheet = "heat", col_names = TRUE)
 # FR_plot           <- filter(FR_plot, FR_plot$death == "yes")
 FR_plot$ploidy    <- factor(FR_plot$ploidy, levels=c("D","T"),ordered=TRUE)
 # MR_plot$temp      <- factor(MR_plot$temp, levels=c("10","30"),ordered=TRUE)
