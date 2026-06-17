@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
 
 ## LDOd Packages
-lDOd.lib<-c("readxl","tidyverse","bestNormalize","agricolae","nlme","multcomp","rstatix","lme4","lmerTest") # List of required packages
+lDOd.lib<-c("readxl","tidyverse","bestNormalize","agricolae","nlme","multcomp","rstatix","lme4","lmerTest","here") # List of required packages
 install.lib <- lDOd.lib[!lDOd.lib %in% installed.packages()] # Select missing packages
 for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missing packages + dependencies
 sapply(lDOd.lib,require,character=TRUE) # LDOd all packages.
@@ -40,17 +40,17 @@ my_theme <- theme(line              = element_line(size=1.2),
                   ) 
 ```
 
-```{bash}
-mkdir analyses
-mkdir analyses/thread_strength
-
+```{r}
+# Create this script's output folder under 03_analyses (idempotent)
+out_dir <- here::here("03_analyses", "analyze-thread-strength")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
 
 ### LOAD data set
 ```{r}
 # Load datasets
-thread_plot       <- read_excel("thread_strength/summarized_data/summary.xlsx", 
+thread_plot       <- read_excel(here::here("02_data", "summary.xlsx"),
                               sheet = "data", col_names = TRUE)
 # trt_list        <- read_excel("data/respirometry/respirometry.xlsx", 
 #                               sheet = "trt_list", col_names = TRUE)
@@ -170,7 +170,7 @@ p1
 # p4
 
 
-ggsave("analyses/thread_strength/BP_AllMussels_AllThreads.png",
+ggsave(file.path(out_dir, "BP_AllMussels_AllThreads.png"),
        plot   = p1,
        dpi    = 1200,
        device = "png",
@@ -178,7 +178,7 @@ ggsave("analyses/thread_strength/BP_AllMussels_AllThreads.png",
        height = 5,
        units  = "in")
 
-# ggsave("analyses/thread_strength/BP_OnlyRepeatedMussels_AllThreads.png",
+# ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_AllThreads.png"),
 #        plot   = p2,
 #        dpi    = 1200,
 #        device = "png",
@@ -186,7 +186,7 @@ ggsave("analyses/thread_strength/BP_AllMussels_AllThreads.png",
 #        height = 6,
 #        units  = "in")
 
-# ggsave("analyses/thread_strength/BP_AllMussels_MeanThreads.png",
+# ggsave(file.path(out_dir, "BP_AllMussels_MeanThreads.png"),
 #        plot   = p3,
 #        dpi    = 1200,
 #        device = "png",
@@ -194,7 +194,7 @@ ggsave("analyses/thread_strength/BP_AllMussels_AllThreads.png",
 #        height = 4,
 #        units  = "in")
 
-# ggsave("analyses/thread_strength/BP_OnlyRepeatedMussels_MeanThreads.png",
+# ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_MeanThreads.png"),
 #        plot   = p4,
 #        dpi    = 1200,
 #        device = "png",
@@ -304,7 +304,7 @@ p4
 
 
 
-# ggsave("analyses/thread_strength/LineGraph_OA_AllMussels_MeanThreads.png",
+# ggsave(file.path(out_dir, "LineGraph_OA_AllMussels_MeanThreads.png"),
 #        plot   = p3,
 #        dpi    = 1200,
 #        device = "png",
@@ -312,7 +312,7 @@ p4
 #        height = 4,
 #        units  = "in")
 
-ggsave("analyses/thread_strength/LineGraph_OA_OnlyRepeatedMussels_MeanThreads.png",
+ggsave(file.path(out_dir, "LineGraph_OA_OnlyRepeatedMussels_MeanThreads.png"),
        plot   = p4,
        dpi    = 1200,
        device = "png",
@@ -423,7 +423,7 @@ p4
 
 
 
-# ggsave("analyses/thread_strength/LineGraph_OW_AllMussels_MeanThreads.png",
+# ggsave(file.path(out_dir, "LineGraph_OW_AllMussels_MeanThreads.png"),
 #        plot   = p3,
 #        dpi    = 1200,
 #        device = "png",
@@ -431,7 +431,7 @@ p4
 #        height = 4,
 #        units  = "in")
 
-ggsave("analyses/thread_strength/LineGraph_OW_OnlyRepeatedMussels_MeanThreads.png",
+ggsave(file.path(out_dir, "LineGraph_OW_OnlyRepeatedMussels_MeanThreads.png"),
        plot   = p4,
        dpi    = 1200,
        device = "png",
@@ -542,7 +542,7 @@ p4
 
 
 
-# ggsave("analyses/thread_strength/LineGraph_DO_AllMussels_MeanThreads.png",
+# ggsave(file.path(out_dir, "LineGraph_DO_AllMussels_MeanThreads.png"),
 #        plot   = p3,
 #        dpi    = 1200,
 #        device = "png",
@@ -550,7 +550,7 @@ p4
 #        height = 4,
 #        units  = "in")
 
-ggsave("analyses/thread_strength/LineGraph_DO_OnlyRepeatedMussels_MeanThreads.png",
+ggsave(file.path(out_dir, "LineGraph_DO_OnlyRepeatedMussels_MeanThreads.png"),
        plot   = p4,
        dpi    = 1200,
        device = "png",
