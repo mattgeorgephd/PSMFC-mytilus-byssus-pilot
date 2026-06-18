@@ -33,21 +33,40 @@ This script:
 - **E. Diagnostics** - flags genes sitting at the detection floor (whose correlations are
   driven by zeros) and influential animals.
 
-> **Prerequisite:** run script 20 first **in the same R session** so the objects
-> `paired`, `vp`, `annot`, `thr_raw`, and the config (`MAIN_REPO`, `EXPR_REPO`, `TISSUE`,
-> `OUT_DIR`) exist. The guard below stops with a clear message if they don't.
+> **Prerequisite:** run script 20 first. This script no longer shares 20's R session; it
+> reads 20's CSV handoffs (`paired_sample_manifest`, `vst_paired_<T>`, `annotation_map`,
+> `candidate_genes_<T>`, `thread_plaques_paired_<T>`) from `03_analyses/gene_mechanics/`.
 
-```{r guard}
-needed <- c("paired", "vp", "annot", "thr_raw", "OUT_DIR")
-miss <- needed[!vapply(needed, exists, logical(1))]
-if (length(miss))
-  stop("Run script 20 first in this session. Missing objects: ", paste(miss, collapse = ", "))
+```{r setup_inputs}
+suppressPackageStartupMessages({ library(tidyverse); library(lmerTest); library(here) })
+## lmerTest::lmer gives Satterthwaite p-values
 
-suppressPackageStartupMessages({
-  library(tidyverse); library(lmerTest)   # lmerTest::lmer gives Satterthwaite p-values
-})
-metrics <- c("max_force", "adhesion_kpa", "pad_area")
+## ---- config: must match the values script 20 ran with ------------------------------
+TISSUE    <- "F"                                   # "F" foot (default) or "G" gill
+metrics   <- c("max_force", "adhesion_kpa", "pad_area")
 FDR_ALPHA <- 0.10
+
+## ---- read script 20's CSV handoffs (run 20 first) ----------------------------------
+find_repo_root <- function(start = here::here()) {
+  d <- normalizePath(start, winslash = "/")
+  for (i in 1:6) {
+    if (all(dir.exists(file.path(d, c("differential-expression", "thread-strength"))))) return(d)
+    d <- dirname(d)
+  }
+  stop("Repo root not found: need a parent containing differential-expression/ and thread-strength/.")
+}
+IN_DIR  <- file.path(find_repo_root(), "gene-mechanics-correlation", "03_analyses", "gene_mechanics")
+OUT_DIR <- IN_DIR                                  # 21 writes alongside 20's outputs
+need <- function(f) { p <- file.path(IN_DIR, f)
+  if (!file.exists(p)) stop("Missing ", f, " - run script 20 first (it writes this)."); p }
+
+paired <- read_csv(need("paired_sample_manifest.csv"), show_col_types = FALSE) %>%
+  mutate(treatment = factor(treatment, levels = c("OA", "OW", "DO")))
+candidates <- read_csv(need(sprintf("candidate_genes_%s.csv", TISSUE)), show_col_types = FALSE)
+annot      <- read_csv(need("annotation_map.csv"), show_col_types = FALSE)
+thr_raw    <- read_csv(need(sprintf("thread_plaques_paired_%s.csv", TISSUE)), show_col_types = FALSE)
+vp_df <- read_csv(need(sprintf("vst_paired_%s.csv", TISSUE)), show_col_types = FALSE)
+vp <- as.matrix(vp_df[, -1]); rownames(vp) <- vp_df[[1]]   # LOC_ID column -> matrix rownames
 ```
 
 ---
@@ -94,10 +113,7 @@ run_mixed <- function(loci, set_name) {
     arrange(metric, p_mixed)
 }
 
-## candidate set (rebuild the same way script 20 did)
-candidates <- annot %>%
-  filter(grepl(CANDIDATE_KEYWORDS, protein_name, ignore.case = TRUE),
-         LOC_ID %in% rownames(vp))
+## candidate set: already loaded from script 20's candidate_genes_<T>.csv handoff above
 
 res_cand_mixed <- run_mixed(candidates$LOC_ID, "candidate")
 write_csv(res_cand_mixed, file.path(OUT_DIR, sprintf("assoc_candidate_MIXED_%s.csv", TISSUE)))

@@ -263,6 +263,19 @@ cat("Candidate (byssal/stress) genes present & expressed:", nrow(candidates), "\
 print(candidates, n = nrow(candidates))
 ```
 
+```{r exports}
+## ---- handoff CSVs for downstream scripts (21 reads all; 22 reads annotation_map) -----
+## paired_sample_manifest.csv was written above; these add the rest so 21 can run on its
+## own instead of sharing this R session's objects.
+write_csv(data.frame(LOC_ID = rownames(vp), vp, check.names = FALSE),
+          file.path(OUT_DIR, sprintf("vst_paired_%s.csv", TISSUE)))            # genes x paired samples (VST)
+write_csv(annot,      file.path(OUT_DIR, "annotation_map.csv"))                # LOC_ID -> protein_name
+write_csv(candidates, file.path(OUT_DIR, sprintf("candidate_genes_%s.csv", TISSUE)))  # candidate set
+write_csv(thr_raw %>% filter(treatment %in% c("OA", "OW", "DO"), mussel %in% paired$mussel) %>%
+            select(mussel, treatment, max_force, adhesion_kpa, pad_area),
+          file.path(OUT_DIR, sprintf("thread_plaques_paired_%s.csv", TISSUE)))  # raw plaques, paired animals
+```
+
 ---
 
 # 4. DEG union (data-driven gene universe)

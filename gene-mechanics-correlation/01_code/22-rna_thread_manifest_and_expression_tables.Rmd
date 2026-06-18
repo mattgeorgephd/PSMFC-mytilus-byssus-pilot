@@ -23,23 +23,42 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
    sequenced mussel that has thread data**, plus a companion table of each mussel's thread
    mechanics so you can cross-reference expression against attachment in one place.
 
-This script is self-contained (it does not require script 20). Set the two paths.
+This script reads script 20's `annotation_map.csv` handoff, so run 20 first. All paths resolve automatically.
 
 ```{r config}
-MAIN_REPO <- "../../PSMFC-mytilus-byssus-pilot"   # mattgeorgephd repo (thread data)
-EXPR_REPO <- ".."                                  # this (graceleuchtenberger) repo root
+suppressPackageStartupMessages({ library(tidyverse); library(readxl); library(DESeq2); library(here) })
 
+## ---- analysis options --------------------------------------------------------------
 TISSUE      <- "F"                  # "F" foot (default) or "G" gill
 TREATMENTS  <- c("OA", "OW", "DO")  # contrasts to tabulate
 N_TOP       <- 25                   # genes per direction
 SIG_ONLY    <- TRUE                 # rank within significant DEGs (padj<0.05); FALSE = all genes
-USE_RAW_THREAD_SET <- FALSE         # FALSE = mussels present in summary 'data' sheet;
-                                    # TRUE  = mussels with ANY raw tensometer file (incl. the
-                                    #         baseline records currently missing from summary)
+USE_RAW_THREAD_SET <- FALSE         # FALSE = mussels in the clean summary; TRUE = any raw (T) tensometer file
 
-OUT_DIR <- "../output/expr_tables"
+## ---- portable paths ----------------------------------------------------------------
+find_repo_root <- function(start = here::here()) {
+  d <- normalizePath(start, winslash = "/")
+  for (i in 1:6) {
+    if (all(dir.exists(file.path(d, c("differential-expression", "thread-strength"))))) return(d)
+    d <- dirname(d)
+  }
+  stop("Repo root not found: need a parent containing differential-expression/ and thread-strength/.")
+}
+repo_root   <- find_repo_root()
+DE_DIR      <- file.path(repo_root, "differential-expression")
+THREAD_FILE <- file.path(repo_root, "thread-strength", "02_data", "thread-summary-trossulus-clean.xlsx")
+RAW_DIR     <- file.path(repo_root, "thread-strength", "02_data", "tensometer_output")
+GM_DIR      <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "gene_mechanics")  # script 20 outputs
+OUT_DIR     <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "expr_tables")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
-suppressPackageStartupMessages({ library(tidyverse); library(readxl); library(DESeq2) })
+
+## canonical 3-digit trossulus mussel tag, shared across the chain
+norm_id <- function(x) {
+  x   <- as.character(x)
+  pre <- gsub("[0-9].*$", "", x)
+  num <- suppressWarnings(as.integer(gsub("[^0-9].*$", "", gsub("^[^0-9]+", "", x))))
+  ifelse(is.na(num), NA_character_, sprintf("%s%03d", pre, num))
+}
 ```
 
 ---
@@ -47,11 +66,8 @@ suppressPackageStartupMessages({ library(tidyverse); library(readxl); library(DE
 # 1. RNA x thread manifest and raw-file reconciliation
 
 ```{r manifest}
-norm_id <- function(x) sprintf("%s%03d", substr(x, 1, 1),
-                               as.integer(sub("^[TG]", "", x)))
-
 ## RNA samples present (chosen-tissue + the other, to know what was sequenced)
-cm_head <- read.csv(file.path(EXPR_REPO, "output/gene_count_matrix_clean.csv"),
+cm_head <- read.csv(file.path(DE_DIR, "02_data", "gene_count_matrix_clean.csv"),
                     nrows = 1, check.names = FALSE)
 rna_cols <- colnames(cm_head)[-1]
 rna_tab <- tibble(col = rna_cols) %>%
@@ -62,20 +78,20 @@ rna_tab <- tibble(col = rna_cols) %>%
                                  .groups = "drop")
 
 ## RNA treatment/day (foot treatmentinfo is authoritative; same animal => same treatment)
-ti <- read.table(file.path(EXPR_REPO, "output/DEG_lists/Foot/F_treatmentinfo.csv"),
+ti <- read.table(file.path(DE_DIR, "03_analyses", "DEG_lists", "Foot", "F_treatmentinfo.csv"),
                  header = TRUE, sep = " ") %>%
   mutate(mussel = sub("F$", "", `...1`)) %>% distinct(mussel, treatment, day)
 
 ## thread summary presence
-thr_raw <- read_excel(file.path(MAIN_REPO, "thread_strength/summarized_data/summary.xlsx"),
+thr_raw <- read_excel(THREAD_FILE,
                       sheet = "data") %>% mutate(mn = norm_id(mussel))
 post_n <- thr_raw %>% filter(treatment %in% c("OA","OW","DO")) %>% count(mn, name = "in_summary_post")
 base_n <- thr_raw %>% filter(treatment == "control") %>% count(mn, name = "in_summary_base")
 
 ## raw tensometer file counts (mussel -> n files), normalised IDs
 count_raw <- function(sub) {
-  fp <- file.path(MAIN_REPO, "thread_strength/tensometer_output", sub)
-  ids <- str_extract(list.files(fp), "^[TG]\\d+")
+  fp <- file.path(RAW_DIR, sub)
+  ids <- str_extract(list.files(fp), "^T\\d+")
   ids <- ids[!is.na(ids)]
   tibble(mn = vapply(ids, norm_id, character(1))) %>% count(mn, name = paste0("raw_", sub))
 }
@@ -135,7 +151,7 @@ mech <- thr_raw %>%
 # 3. VST expression matrix (chosen tissue)
 
 ```{r vst}
-cm <- read.csv(file.path(EXPR_REPO, "output/gene_count_matrix_clean.csv"),
+cm <- read.csv(file.path(DE_DIR, "02_data", "gene_count_matrix_clean.csv"),
                row.names = 1, check.names = FALSE)
 tissue_cols <- if (TISSUE == "F") grep("F$", colnames(cm), value = TRUE) else
                                   grep("G$", colnames(cm), value = TRUE)   # F$ excludes FX
@@ -156,12 +172,11 @@ cat("Thread-having mussels:", length(thread_mussels),
 # 4. Annotation map
 
 ```{r annot}
-annot <- list.files(file.path(EXPR_REPO, "output/DEG_lists/GOterms_genome"),
-                    pattern = "_sigs_ID\\.csv$", full.names = TRUE) %>%
-  map_dfr(~ { d <- tryCatch(read.csv(.x), error = function(e) NULL)
-              if (is.null(d) || !all(c("LOC_ID","protein_name") %in% names(d))) return(NULL)
-              d %>% select(LOC_ID, protein_name) }) %>%
-  distinct(LOC_ID, .keep_all = TRUE)
+## annotation map: read script 20's handoff (one source of truth across the chain)
+am_path <- file.path(GM_DIR, "annotation_map.csv")
+if (!file.exists(am_path))
+  stop("annotation_map.csv not found in ", GM_DIR, " - run script 20 first.")
+annot <- read_csv(am_path, show_col_types = FALSE)
 ```
 
 ---
@@ -175,7 +190,7 @@ stressed animals cluster, but every thread-having mussel is included.
 
 ```{r tables}
 find_sig <- function(tcode) {                       # locate the siggene file for this contrast
-  d <- file.path(EXPR_REPO, "output/DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"))
+  d <- file.path(DE_DIR, "03_analyses", "DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"))
   f <- list.files(d, pattern = sprintf("^%s%s_TC_siggene.*\\.csv$", TISSUE, tcode),
                   full.names = TRUE)
   if (!length(f)) return(NULL)
