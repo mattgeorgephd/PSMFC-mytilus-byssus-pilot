@@ -1,0 +1,322 @@
+---
+title: "21 - Gene x mechanics: expanded analysis (mixed models, modules, permutation)"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 8, fig.height = 6)
+```
+
+# What this adds to script 20
+
+Script 20 correlated each mussel's **unweighted mean** plaque mechanics against expression.
+That uses the mussel as the unit (correct, no pseudoreplication) but ignores that some
+mussels have only 1-2 plaques, which inflates the apparent significance of the best hits.
+This script:
+
+- **A. Thread-level mixed model** - keeps every plaque, models `mussel` as a random
+  intercept, so the expression effect is estimated between mussels and weighted by each
+  mussel's plaque count. **This is the headline fix for the pooling issue.**
+- **B. Precision-weighted regression** - a transparent, fast alternative (weights =
+  n_plaques) used for the permutation loop.
+- **C. Module eigengenes** - collapse co-regulated pathways (HIF, oxidative, HSP,
+  tRNA-synthetase, byssal/collagen) into one score each, cutting the multiple-testing
+  burden from hundreds of genes to ~5 modules and matching the biology.
+- **D. Permutation null** - an honest "is the best hit better than chance?" p-value that
+  accounts for searching across many genes AND their correlation structure.
+- **E. Diagnostics** - flags genes sitting at the detection floor (whose correlations are
+  driven by zeros) and influential animals.
+
+> **Prerequisite:** run script 20 first **in the same R session** so the objects
+> `paired`, `vp`, `annot`, `thr_raw`, and the config (`MAIN_REPO`, `EXPR_REPO`, `TISSUE`,
+> `OUT_DIR`) exist. The guard below stops with a clear message if they don't.
+
+```{r guard}
+needed <- c("paired", "vp", "annot", "thr_raw", "OUT_DIR")
+miss <- needed[!vapply(needed, exists, logical(1))]
+if (length(miss))
+  stop("Run script 20 first in this session. Missing objects: ", paste(miss, collapse = ", "))
+
+suppressPackageStartupMessages({
+  library(tidyverse); library(lmerTest)   # lmerTest::lmer gives Satterthwaite p-values
+})
+metrics <- c("max_force", "adhesion_kpa", "pad_area")
+FDR_ALPHA <- 0.10
+```
+
+---
+
+# A. Thread-level mixed model (the pooling fix)
+
+Raw plaque-level data, joined to each mussel's expression. Model:
+`metric ~ expression + treatment + (1 | mussel)`. The expression term varies only between
+mussels, so its test reflects ~31 mussel-level df (Satterthwaite), not the thread count;
+mussels with more/precise plaques contribute more. Singular-fit warnings are expected when
+between-mussel variance is near zero and do not invalidate the fixed-effect estimate.
+
+```{r mixed}
+## raw plaque-level mechanics for the paired animals
+thr_threads <- thr_raw %>%
+  filter(treatment %in% c("OA", "OW", "DO"), mussel %in% paired$mussel) %>%
+  transmute(mussel,
+            treatment = factor(treatment, levels = c("OA", "OW", "DO")),
+            max_force, adhesion_kpa, pad_area)
+
+test_gene_mixed <- function(loc, metric) {
+  ev  <- data.frame(mussel = paired$mussel,
+                    expr = as.numeric(vp[match(loc, rownames(vp)), paired$sample]))
+  dat <- thr_threads %>% inner_join(ev, by = "mussel")
+  dat <- dat[stats::complete.cases(dat[, c(metric, "expr", "treatment", "mussel")]), ]
+  if (dplyr::n_distinct(dat$mussel) < 6) return(NULL)
+  fm <- tryCatch(suppressWarnings(
+          lmerTest::lmer(reformulate(c("expr", "treatment", "(1|mussel)"),
+                                     response = metric),
+                         data = dat, REML = TRUE)),
+        error = function(e) NULL)
+  if (is.null(fm)) return(NULL)
+  co <- summary(fm)$coefficients
+  if (!"expr" %in% rownames(co)) return(NULL)
+  tibble(LOC_ID = loc, metric = metric,
+         n_threads = nrow(dat), n_mussel = dplyr::n_distinct(dat$mussel),
+         slope_mixed = co["expr", "Estimate"], p_mixed = co["expr", "Pr(>|t|)"])
+}
+
+run_mixed <- function(loci, set_name) {
+  map_dfr(metrics, function(mt) map_dfr(loci, ~ test_gene_mixed(.x, mt))) %>%
+    group_by(metric) %>% mutate(q_mixed = p.adjust(p_mixed, "BH")) %>% ungroup() %>%
+    left_join(annot, by = "LOC_ID") %>% mutate(gene_set = set_name) %>%
+    arrange(metric, p_mixed)
+}
+
+## candidate set (rebuild the same way script 20 did)
+candidates <- annot %>%
+  filter(grepl(CANDIDATE_KEYWORDS, protein_name, ignore.case = TRUE),
+         LOC_ID %in% rownames(vp))
+
+res_cand_mixed <- run_mixed(candidates$LOC_ID, "candidate")
+write_csv(res_cand_mixed, file.path(OUT_DIR, sprintf("assoc_candidate_MIXED_%s.csv", TISSUE)))
+
+cat("Candidate genes, MIXED model, top per metric (compare p_mixed with script-20 p_lm):\n")
+res_cand_mixed %>% group_by(metric) %>% slice_min(p_mixed, n = 6) %>% ungroup() %>%
+  mutate(across(c(slope_mixed), ~round(., 4)),
+         p_mixed = signif(p_mixed, 2), q_mixed = signif(q_mixed, 2)) %>%
+  select(metric, LOC_ID, protein_name, n_mussel, slope_mixed, p_mixed, q_mixed) %>%
+  as.data.frame() %>% print()
+```
+
+---
+
+# B. Precision-weighted regression (fast, for permutation)
+
+Per-mussel means weighted by plaque count. Nearly equivalent to the mixed model but cheap
+to refit thousands of times.
+
+```{r weighted}
+test_gene_wls <- function(loc, metric) {
+  x <- as.numeric(vp[match(loc, rownames(vp)), paired$sample])
+  dat <- data.frame(y = paired[[metric]], x = x,
+                    treatment = paired$treatment, w = paired$n_plaques)
+  fm <- tryCatch(lm(y ~ x + treatment, data = dat, weights = w), error = function(e) NULL)
+  if (is.null(fm)) return(NULL)
+  co <- summary(fm)$coefficients
+  if (!"x" %in% rownames(co)) return(NULL)
+  tibble(LOC_ID = loc, metric = metric,
+         slope_wls = co["x", "Estimate"], p_wls = co["x", "Pr(>|t|)"])
+}
+res_cand_wls <- map_dfr(metrics, function(mt) map_dfr(candidates$LOC_ID, ~ test_gene_wls(.x, mt))) %>%
+  group_by(metric) %>% mutate(q_wls = p.adjust(p_wls, "BH")) %>% ungroup()
+```
+
+---
+
+# C. Module eigengenes (power-preserving)
+
+Each module = PC1 of its members' VST values (per mussel), oriented so higher score = higher
+module expression. ~5 modules x 3 metrics is FDR-tractable, and a coordinated pathway score
+is biologically closer to "is the HIF response engaged" than any single gene.
+
+```{r modules}
+modules <- list(
+  HIF_hypoxia      = "hypoxia-inducible|Egl nine|prolyl 4-hydroxylase|prolyl hydroxylase|hypoxia up-regulated",
+  oxidative_detox  = "superoxide|glutathione|catalase|peroxiredoxin|dual oxidase|peroxidase",
+  HSP_proteostasis = "heat shock|Hsp|stress-70|chaperone|BiP|peptidyl-prolyl",
+  tRNA_translation = "--tRNA|tRNA ligase|aminoacyl",
+  byssal_collagen  = "collagen|byss|foot protein|adhesive plaque|polyphenolic"
+)
+
+module_score <- function(rx) {
+  locs <- annot %>% filter(grepl(rx, protein_name, ignore.case = TRUE)) %>% pull(LOC_ID)
+  locs <- intersect(locs, rownames(vp))
+  if (length(locs) < 3) return(NULL)
+  z <- t(scale(t(vp[locs, paired$sample, drop = FALSE])))   # standardise each gene
+  z <- z[stats::complete.cases(z), , drop = FALSE]
+  pc <- prcomp(t(z), center = TRUE, scale. = FALSE)
+  sc <- pc$x[, 1]
+  if (suppressWarnings(cor(sc, colMeans(vp[locs, paired$sample]))) < 0) sc <- -sc
+  list(score = sc, n_genes = length(locs),
+       var_expl = summary(pc)$importance[2, 1])
+}
+
+mod_fits <- imap_dfr(modules, function(rx, nm) {
+  ms <- module_score(rx); if (is.null(ms)) return(NULL)
+  dat0 <- tibble(mussel = paired$mussel, score = ms$score)
+  map_dfr(metrics, function(mt) {
+    dat <- thr_threads %>% inner_join(dat0, by = "mussel")
+    fm <- tryCatch(suppressWarnings(
+            lmerTest::lmer(reformulate(c("score", "treatment", "(1|mussel)"),
+                                       response = mt), data = dat, REML = TRUE)),
+          error = function(e) NULL)
+    if (is.null(fm)) return(NULL)
+    co <- summary(fm)$coefficients
+    tibble(module = nm, n_genes = ms$n_genes, pc1_var = round(ms$var_expl, 2),
+           metric = mt, slope = co["score", "Estimate"], p = co["score", "Pr(>|t|)"])
+  })
+}) %>% group_by(metric) %>% mutate(q = p.adjust(p, "BH")) %>% ungroup() %>% arrange(p)
+
+write_csv(mod_fits, file.path(OUT_DIR, sprintf("module_associations_%s.csv", TISSUE)))
+cat("MODULE-level associations (mixed model, BH across the ", n_distinct(mod_fits$module),
+    " modules x metric):\n", sep = "")
+mod_fits %>% mutate(slope = round(slope, 4), p = signif(p, 2), q = signif(q, 2)) %>%
+  as.data.frame() %>% print()
+```
+
+---
+
+# D. Permutation null for the best candidate hit
+
+Shuffle the expression-to-animal assignment **within treatment** (preserving treatment
+structure and gene-gene correlation), recompute the minimum p across the candidate set,
+repeat. The empirical p tells you whether your best observed hit beats what the search
+itself produces by chance. Uses the fast weighted lm.
+
+```{r permutation}
+set.seed(1)
+NPERM  <- 1000
+PMETRIC <- "max_force"
+
+E   <- vp[candidates$LOC_ID, paired$sample, drop = FALSE]   # genes x mussels
+y   <- paired[[PMETRIC]]; w <- paired$n_plaques; trt <- paired$treatment
+idx_by_trt <- split(seq_along(y), trt)
+
+min_p_for_order <- function(perm) {
+  Ep <- E[, perm, drop = FALSE]
+  ps <- apply(Ep, 1, function(xx) {
+    f <- tryCatch(lm(y ~ xx + trt, weights = w), error = function(e) NULL)
+    if (is.null(f)) return(NA_real_)
+    cc <- summary(f)$coefficients
+    if ("xx" %in% rownames(cc)) cc["xx", "Pr(>|t|)"] else NA_real_
+  })
+  min(ps, na.rm = TRUE)
+}
+
+obs_min_p <- min_p_for_order(seq_along(y))
+null_min_p <- replicate(NPERM, {
+  perm <- seq_along(y)
+  for (g in idx_by_trt) perm[g] <- sample(g)
+  min_p_for_order(perm)
+})
+p_emp <- (sum(null_min_p <= obs_min_p) + 1) / (NPERM + 1)
+
+cat(sprintf("Best candidate hit for %s: observed min p = %.4f\n", PMETRIC, obs_min_p))
+cat(sprintf("Permutation-corrected p (best hit vs chance, %d perms) = %.4f\n", NPERM, p_emp))
+cat("Interpretation: if this is >> 0.05, the best hit is consistent with noise given the search.\n")
+```
+
+---
+
+# E. Diagnostics: detection floor and influence
+
+Genes where many paired samples sit at the VST minimum are effectively absent/zero-inflated;
+their correlations are driven by detection, not biology (e.g. the multidrug-resistance gene
+in the script-20 scatter pile-up at x ~ 3.5). Flag and optionally drop them. Also report the
+most influential animal per top hit (Cook's distance) so you know if one mussel drives a fit.
+
+```{r diagnostics}
+floor_val <- min(vp)
+frac_at_floor <- apply(vp[candidates$LOC_ID, paired$sample, drop = FALSE], 1,
+                       function(x) mean(abs(x - floor_val) < 1e-6))
+floor_flag <- tibble(LOC_ID = candidates$LOC_ID,
+                     protein_name = candidates$protein_name,
+                     frac_samples_at_floor = round(frac_at_floor, 2)) %>%
+  arrange(desc(frac_samples_at_floor))
+cat("Candidate genes most affected by detection floor (consider excluding > ~0.4):\n")
+floor_flag %>% filter(frac_samples_at_floor > 0.2) %>% as.data.frame() %>% print()
+
+## influence: top hit per metric, which mussel has the largest Cook's distance
+top_by_metric <- res_cand_mixed %>% group_by(metric) %>% slice_min(p_mixed, n = 1) %>% ungroup()
+infl <- pmap_dfr(top_by_metric, function(LOC_ID, metric, ...) {
+  x <- as.numeric(vp[match(LOC_ID, rownames(vp)), paired$sample])
+  fm <- lm(paired[[metric]] ~ x + paired$treatment)
+  cd <- cooks.distance(fm)
+  tibble(metric = metric, LOC_ID = LOC_ID,
+         most_influential_mussel = paired$mussel[which.max(cd)],
+         max_cooks_D = round(max(cd), 2),
+         cook_threshold_4n = round(4 / nrow(paired), 2))
+})
+cat("\nMost influential animal for each top hit (flag if max_cooks_D > 4/n):\n")
+as.data.frame(infl) %>% print()
+```
+
+---
+
+# F. Optional: does expression track the *change* in attachment?
+
+27/31 animals have pre-stress baseline threads. Adding baseline as a covariate (or modelling
+post - baseline) asks whether expression relates to how much each animal's attachment
+*changed*, removing fixed between-individual differences. Re-run the mixed model on animals
+with baseline, adding the per-mussel baseline metric as a fixed covariate.
+
+```{r baseline-adjusted}
+base_lookup <- paired %>% select(mussel, base_max_force, base_adhesion_kpa, base_pad_area)
+test_gene_mixed_adj <- function(loc, metric) {
+  bcol <- paste0("base_", metric)
+  ev <- data.frame(mussel = paired$mussel,
+                   expr = as.numeric(vp[match(loc, rownames(vp)), paired$sample]))
+  dat <- thr_threads %>% inner_join(ev, by = "mussel") %>%
+    left_join(base_lookup, by = "mussel") %>%
+    rename(base = !!bcol)
+  dat <- dat[stats::complete.cases(dat[, c(metric, "expr", "treatment", "mussel", "base")]), ]
+  if (dplyr::n_distinct(dat$mussel) < 6) return(NULL)
+  fm <- tryCatch(suppressWarnings(
+          lmerTest::lmer(reformulate(c("expr", "treatment", "base", "(1|mussel)"),
+                                     response = metric), data = dat, REML = TRUE)),
+        error = function(e) NULL)
+  if (is.null(fm)) return(NULL)
+  co <- summary(fm)$coefficients
+  if (!"expr" %in% rownames(co)) return(NULL)
+  tibble(LOC_ID = loc, metric = metric, n_mussel = dplyr::n_distinct(dat$mussel),
+         slope = co["expr", "Estimate"], p = co["expr", "Pr(>|t|)"])
+}
+res_adj <- map_dfr(metrics, function(mt) map_dfr(candidates$LOC_ID, ~ test_gene_mixed_adj(.x, mt))) %>%
+  group_by(metric) %>% mutate(q = p.adjust(p, "BH")) %>% ungroup() %>%
+  left_join(annot, by = "LOC_ID") %>% arrange(metric, p)
+write_csv(res_adj, file.path(OUT_DIR, sprintf("assoc_candidate_BASELINEADJ_%s.csv", TISSUE)))
+cat("Baseline-adjusted candidate top hits (expression vs CHANGE in attachment):\n")
+res_adj %>% group_by(metric) %>% slice_min(p, n = 5) %>% ungroup() %>%
+  mutate(slope = round(slope, 4), p = signif(p, 2), q = signif(q, 2)) %>%
+  select(metric, LOC_ID, protein_name, n_mussel, slope, p, q) %>%
+  as.data.frame() %>% print()
+```
+
+```{r close, echo=FALSE, results='asis'}
+cat("
+**Reading these results together**
+
+- Compare `p_mixed` (block A) with script-20's `p_lm`. Where they diverge, trust the mixed
+  model; divergence means single-plaque animals were driving the original p.
+- The module table (block C) is your best-powered test. If, say, `HIF_hypoxia` vs
+  `max_force` is significant after BH while no single gene is, that is a stronger and more
+  defensible statement than any individual correlation.
+- The permutation p (block D) is the number to quote when asked 'is your best hit real?'.
+- Genes flagged at the detection floor (block E) should be dropped before interpretation.
+- None of this raises the ceiling set by n = 31; it makes the inference honest and tells you
+  which signals merit a powered follow-up (paired RNA + mechanics on more animals, or qPCR
+  of the HIF/oxidative module against thread strength in a larger cohort).
+")
+```

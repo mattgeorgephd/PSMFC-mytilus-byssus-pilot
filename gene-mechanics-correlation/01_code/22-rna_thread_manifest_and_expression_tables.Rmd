@@ -1,0 +1,264 @@
+---
+title: "22 - RNA x thread manifest + top-25 up/down expression tables"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Purpose
+
+1. **Manifest:** per treatment, which RNA-sequenced mussels also have thread data, with a
+   reconciliation against the raw tensometer files so you can see exactly where the summary
+   is missing entries.
+2. **Expression tables:** for each tissue x stressor contrast, the top 25 up- and top 25
+   down-regulated DEGs (by log2 fold change), with their expression across **every
+   sequenced mussel that has thread data**, plus a companion table of each mussel's thread
+   mechanics so you can cross-reference expression against attachment in one place.
+
+This script is self-contained (it does not require script 20). Set the two paths.
+
+```{r config}
+MAIN_REPO <- "../../PSMFC-mytilus-byssus-pilot"   # mattgeorgephd repo (thread data)
+EXPR_REPO <- ".."                                  # this (graceleuchtenberger) repo root
+
+TISSUE      <- "F"                  # "F" foot (default) or "G" gill
+TREATMENTS  <- c("OA", "OW", "DO")  # contrasts to tabulate
+N_TOP       <- 25                   # genes per direction
+SIG_ONLY    <- TRUE                 # rank within significant DEGs (padj<0.05); FALSE = all genes
+USE_RAW_THREAD_SET <- FALSE         # FALSE = mussels present in summary 'data' sheet;
+                                    # TRUE  = mussels with ANY raw tensometer file (incl. the
+                                    #         baseline records currently missing from summary)
+
+OUT_DIR <- "../output/expr_tables"
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+suppressPackageStartupMessages({ library(tidyverse); library(readxl); library(DESeq2) })
+```
+
+---
+
+# 1. RNA x thread manifest and raw-file reconciliation
+
+```{r manifest}
+norm_id <- function(x) sprintf("%s%03d", substr(x, 1, 1),
+                               as.integer(sub("^[TG]", "", x)))
+
+## RNA samples present (chosen-tissue + the other, to know what was sequenced)
+cm_head <- read.csv(file.path(EXPR_REPO, "output/gene_count_matrix_clean.csv"),
+                    nrows = 1, check.names = FALSE)
+rna_cols <- colnames(cm_head)[-1]
+rna_tab <- tibble(col = rna_cols) %>%
+  mutate(mussel = str_extract(col, "^T\\d+"),
+         tissue = str_extract(col, "(FX|F|G)$")) %>%
+  filter(!is.na(mussel)) %>%
+  group_by(mussel) %>% summarise(rna_tissues = paste(sort(unique(tissue)), collapse = ""),
+                                 .groups = "drop")
+
+## RNA treatment/day (foot treatmentinfo is authoritative; same animal => same treatment)
+ti <- read.table(file.path(EXPR_REPO, "output/DEG_lists/Foot/F_treatmentinfo.csv"),
+                 header = TRUE, sep = " ") %>%
+  mutate(mussel = sub("F$", "", `...1`)) %>% distinct(mussel, treatment, day)
+
+## thread summary presence
+thr_raw <- read_excel(file.path(MAIN_REPO, "thread_strength/summarized_data/summary.xlsx"),
+                      sheet = "data") %>% mutate(mn = norm_id(mussel))
+post_n <- thr_raw %>% filter(treatment %in% c("OA","OW","DO")) %>% count(mn, name = "in_summary_post")
+base_n <- thr_raw %>% filter(treatment == "control") %>% count(mn, name = "in_summary_base")
+
+## raw tensometer file counts (mussel -> n files), normalised IDs
+count_raw <- function(sub) {
+  fp <- file.path(MAIN_REPO, "thread_strength/tensometer_output", sub)
+  ids <- str_extract(list.files(fp), "^[TG]\\d+")
+  ids <- ids[!is.na(ids)]
+  tibble(mn = vapply(ids, norm_id, character(1))) %>% count(mn, name = paste0("raw_", sub))
+}
+raw_treat <- count_raw("treatment"); raw_ctrl <- count_raw("control")
+
+manifest <- rna_tab %>%
+  mutate(mn = norm_id(mussel)) %>%
+  left_join(ti, by = "mussel") %>%
+  left_join(post_n, by = "mn") %>% left_join(base_n, by = "mn") %>%
+  left_join(raw_treat, by = "mn") %>% left_join(raw_ctrl, by = "mn") %>%
+  mutate(across(c(in_summary_post, in_summary_base, raw_treatment, raw_control),
+                ~replace_na(., 0)),
+         poststress_missing = raw_treatment > 0 & in_summary_post == 0,
+         baseline_missing   = raw_control  > 0 & in_summary_base == 0) %>%
+  arrange(treatment, mn)
+
+write_csv(manifest, file.path(OUT_DIR, "rna_thread_manifest.csv"))
+
+cat("RNA-sequenced mussels with post-stress thread data, by treatment:\n")
+manifest %>% filter(in_summary_post > 0) %>%
+  group_by(treatment) %>% summarise(mussels = paste(mussel, collapse = ", "), .groups="drop") %>%
+  as.data.frame() %>% print()
+
+cat("\nRNA-sequenced, MISSING post-stress threads (check raw files):\n")
+manifest %>% filter(!is.na(treatment), treatment != "control", in_summary_post == 0) %>%
+  select(mussel, treatment, rna_tissues, raw_treatment) %>% as.data.frame() %>% print()
+
+cat("\nBaseline thread data in RAW but MISSING from summary (summarisation gap):\n")
+manifest %>% filter(baseline_missing) %>%
+  select(mussel, treatment, rna_tissues, raw_control) %>% as.data.frame() %>% print()
+```
+
+---
+
+# 2. Define the "mussels with thread data" sample set
+
+```{r threadset}
+if (USE_RAW_THREAD_SET) {
+  thread_mussels <- manifest %>% filter(raw_treatment > 0 | raw_control > 0) %>% pull(mussel)
+} else {
+  thread_mussels <- unique(thr_raw$mussel)            # present in summary 'data' sheet
+}
+samples_wanted <- paste0(thread_mussels, TISSUE)
+
+## per-mussel thread mechanics (post-stress means) for cross-reference
+mech <- thr_raw %>%
+  filter(treatment %in% c("OA","OW","DO")) %>%
+  group_by(mussel, treatment) %>%
+  summarise(n_plaques = n(),
+            max_force = mean(max_force, na.rm = TRUE),
+            adhesion_kpa = mean(adhesion_kpa, na.rm = TRUE),
+            pad_area = mean(pad_area, na.rm = TRUE), .groups = "drop")
+```
+
+---
+
+# 3. VST expression matrix (chosen tissue)
+
+```{r vst}
+cm <- read.csv(file.path(EXPR_REPO, "output/gene_count_matrix_clean.csv"),
+               row.names = 1, check.names = FALSE)
+tissue_cols <- if (TISSUE == "F") grep("F$", colnames(cm), value = TRUE) else
+                                  grep("G$", colnames(cm), value = TRUE)   # F$ excludes FX
+cm_t <- cm[, tissue_cols, drop = FALSE]
+dds <- DESeqDataSetFromMatrix(round(as.matrix(cm_t)),
+                              DataFrame(row.names = colnames(cm_t)), design = ~ 1)
+dds <- dds[rowSums(counts(dds)) > 0, ]
+vmat <- assay(vst(dds, blind = TRUE))
+rownames(vmat) <- sub("^gene-", "", sub(".*\\|", "", sub("^gene-", "", rownames(vmat))))
+
+samples_have <- intersect(samples_wanted, colnames(vmat))
+cat("Thread-having mussels:", length(thread_mussels),
+    "| with", TISSUE, "expression:", length(samples_have), "\n")
+```
+
+---
+
+# 4. Annotation map
+
+```{r annot}
+annot <- list.files(file.path(EXPR_REPO, "output/DEG_lists/GOterms_genome"),
+                    pattern = "_sigs_ID\\.csv$", full.names = TRUE) %>%
+  map_dfr(~ { d <- tryCatch(read.csv(.x), error = function(e) NULL)
+              if (is.null(d) || !all(c("LOC_ID","protein_name") %in% names(d))) return(NULL)
+              d %>% select(LOC_ID, protein_name) }) %>%
+  distinct(LOC_ID, .keep_all = TRUE)
+```
+
+---
+
+# 5. Build top-25 up / down expression tables per contrast
+
+For each contrast, rank DEGs by log2 fold change (within significant genes if `SIG_ONLY`),
+take the top/bottom `N_TOP`, and emit a gene x sample VST table with LFC/padj and the
+direction label. Column order is sorted by the contrast's own treatment first so the
+stressed animals cluster, but every thread-having mussel is included.
+
+```{r tables}
+find_sig <- function(tcode) {                       # locate the siggene file for this contrast
+  d <- file.path(EXPR_REPO, "output/DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"))
+  f <- list.files(d, pattern = sprintf("^%s%s_TC_siggene.*\\.csv$", TISSUE, tcode),
+                  full.names = TRUE)
+  if (!length(f)) return(NULL)
+  read.table(f[1], header = TRUE, sep = " ")
+}
+
+## sample column order: chosen contrast animals first, then others, by treatment
+mussel_trt <- manifest %>% select(mussel, treatment) %>% deframe()
+order_samples <- function(tcode) {
+  s_mussel <- sub(paste0(TISSUE, "$"), "", samples_have)
+  ord <- tibble(sample = samples_have, mussel = s_mussel,
+                trt = mussel_trt[s_mussel]) %>%
+    mutate(trt = replace_na(trt, "control"),
+           pri = ifelse(trt == tcode, 0, 1)) %>%
+    arrange(pri, trt, mussel)
+  ord$sample
+}
+
+build_table <- function(tcode) {
+  sg <- find_sig(tcode); if (is.null(sg)) { message("no siggene for ", tcode); return(NULL) }
+  gcol <- grep("gene", names(sg), ignore.case = TRUE, value = TRUE)[1]
+  sg <- sg %>%
+    mutate(LOC_ID = sub("^gene-", "", sub(".*\\|", "", sub("^gene-", "", .data[[gcol]]))))
+  if (SIG_ONLY && "padj" %in% names(sg)) sg <- filter(sg, padj < 0.05)
+  sg <- sg %>% filter(LOC_ID %in% rownames(vmat)) %>%
+    arrange(desc(log2FoldChange))
+  top <- bind_rows(
+    head(sg, N_TOP) %>% mutate(direction = "up"),
+    tail(sg, N_TOP) %>% mutate(direction = "down"))
+  cols <- order_samples(tcode)
+  expr <- vmat[top$LOC_ID, cols, drop = FALSE]
+  out <- top %>%
+    left_join(annot, by = "LOC_ID") %>%
+    transmute(direction, LOC_ID, protein_name,
+              log2FoldChange = round(log2FoldChange, 3),
+              padj = signif(padj, 3)) %>%
+    bind_cols(as.data.frame(round(expr, 3)))
+  write_csv(out, file.path(OUT_DIR, sprintf("top%d_updown_%s_%s.csv", N_TOP, TISSUE, tcode)))
+  out
+}
+
+tables <- set_names(TREATMENTS) %>% map(build_table)
+cat("Wrote", sum(!map_lgl(tables, is.null)), "expression tables to", OUT_DIR, "\n")
+
+## companion: per-sample metadata + thread mechanics (one row per thread-having mussel)
+sample_meta <- tibble(sample = samples_have,
+                      mussel = sub(paste0(TISSUE, "$"), "", samples_have)) %>%
+  left_join(manifest %>% select(mussel, rna_treatment = treatment, rna_day = day), by = "mussel") %>%
+  left_join(mech, by = "mussel") %>%
+  arrange(rna_treatment, mussel)
+write_csv(sample_meta, file.path(OUT_DIR, sprintf("sample_metadata_%s.csv", TISSUE)))
+
+cat("\nExample - top up/down for", TREATMENTS[1], "(first few columns):\n")
+if (!is.null(tables[[1]]))
+  tables[[1]] %>% select(direction, protein_name, log2FoldChange, padj) %>%
+    group_by(direction) %>% slice_head(n = 5) %>% ungroup() %>% as.data.frame() %>% print()
+```
+
+---
+
+# 6. Notes
+
+```{r notes, echo=FALSE, results='asis'}
+cat("
+**Outputs (in ", OUT_DIR, "):**
+
+- `rna_thread_manifest.csv` - every sequenced mussel: RNA tissues, treatment/day, summary
+  presence (post-stress & baseline), raw-file counts, and `baseline_missing` /
+  `poststress_missing` flags. Filter `baseline_missing == TRUE` to get your audit list.
+- `top25_updown_<tissue>_<treatment>.csv` - 25 up + 25 down DEGs (by LFC) with LFC, padj,
+  direction, and VST expression across all thread-having mussels.
+- `sample_metadata_<tissue>.csv` - per mussel: treatment, day, and post-stress thread
+  mechanics, to cross-reference against the expression columns above (match on mussel ID;
+  expression column `T046F` -> mussel `T046`).
+
+**Caveats:**
+
+- `SIG_ONLY = TRUE` ranks within padj<0.05 DEGs; for contrasts with few DEGs (e.g. foot-OA,
+  ~80 genes) you may get fewer than 25 in a direction. Set FALSE to rank all expressed genes.
+- With `USE_RAW_THREAD_SET = FALSE`, columns are limited to mussels currently in the summary.
+  Recover the missing baseline records (manifest `baseline_missing`) and re-run with TRUE to
+  pull the day-0 control animals (T003-T012 etc.) into the tables.
+- Genes are ranked by fold change, not by association with mechanics; this is a descriptive
+  cross-reference table, not a test.
+")
+```
