@@ -9,16 +9,16 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### LDOd packages; set ggplot theme
+### Load packages; set ggplot theme
 ```{r message=FALSE, warning=FALSE}
 ## clear workspace
 rm(list=ls())
 
-## LDOd Packages
-lDOd.lib<-c("readxl","tidyverse","bestNormalize","agricolae","nlme","multcomp","rstatix","lme4","lmerTest","here") # List of required packages
-install.lib <- lDOd.lib[!lDOd.lib %in% installed.packages()] # Select missing packages
+## Load Packages
+load.lib<-c("readxl","tidyverse","bestNormalize","agricolae","nlme","multcomp","rstatix","lme4","lmerTest","here") # List of required packages
+install.lib <- load.lib[!load.lib %in% installed.packages()] # Select missing packages
 for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missing packages + dependencies
-sapply(lDOd.lib,require,character=TRUE) # LDOd all packages.
+sapply(load.lib,require,character=TRUE) # Load all packages.
 
 ## Set ggplot theme
 my_theme <- theme(line              = element_line(size=1.2),
@@ -50,7 +50,7 @@ dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 ### LOAD data set
 ```{r}
 # Load datasets
-thread_plot       <- read_excel(here::here("02_data", "summary.xlsx"),
+thread_plot       <- read_excel(here::here("02_data", "thread-summary-trossulus-clean.xlsx"),
                               sheet = "data", col_names = TRUE)
 # trt_list        <- read_excel("data/respirometry/respirometry.xlsx", 
 #                               sheet = "trt_list", col_names = TRUE)
