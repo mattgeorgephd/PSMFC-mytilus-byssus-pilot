@@ -1,0 +1,210 @@
+---
+title: "Assemble thread summary"
+author: "PSMFC mytilus byssus pilot"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE)
+```
+
+This script assembles the initial, pre-curation thread summary by joining the tensometer extraction
+outputs (script 1) with per-mussel metadata. It does not exclude any data; every extracted trace is
+carried through so bad runs can be reviewed against their QC plots and removed by hand. The curated
+result is what you save as `thread-summary-clean.xlsx` for script 3.
+
+Sources and join keys:
+
+  - max_force, integral, note         from the extraction outputs   <- the trace itself
+  - species, assigned treatment (trt) from the morphometrics `key`   <- mussel tag
+  - pad_area, failure, technician force from the tech GOOGLESHEET     <- mussel tag + thread + before/after
+  - rna-sequenced flag                from `rna_isolation_info`       <- mussel tag
+
+The `treatment` label follows the experiment: a control-folder trace is a before-stress (baseline)
+thread, so its label is "control" regardless of the mussel's eventual assignment; a treatment-folder
+trace takes the mussel's assigned treatment (OA/OW/DO).
+
+## Load packages
+
+```{r}
+## Run within "thread-strength.Rproj" so here::here() resolves to the analysis root.
+load.lib <- c("readxl", "tidyverse", "openxlsx", "here") # List of required packages
+install.lib <- load.lib[!load.lib %in% installed.packages()] # Select missing packages
+for (lib in install.lib) install.packages(lib, dependencies = TRUE) # Install missing packages
+sapply(load.lib, require, character = TRUE) # Load all packages
+```
+
+## Paths
+
+```{r paths}
+# Within-analysis inputs and outputs are anchored to the thread-strength .Rproj.
+extract_dir <- here::here("03_analyses", "extract-tensometer-data", "summarized_data")
+data_dir    <- here::here("02_data")
+out_dir     <- here::here("03_analyses", "assemble-thread-summary")
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+
+# Cross-analysis input: per-mussel metadata lives in the morphometrics folder.
+repo_root  <- normalizePath(file.path(here::here(), ".."))
+morph_xlsx <- file.path(repo_root, "morphometrics", "02_data", "morphometrics.xlsx")
+```
+
+## Helper: normalize a mussel tag to a single 3-digit form
+
+```{r}
+# Tensometer tags are 2-digit in the control folder (G18, T37) and 3-digit in the treatment folder
+# (G013, T037); the metadata sheets mix both. Collapse everything to prefix + zero-padded 3-digit
+# (T37 -> T037) so the same physical mussel joins across sources regardless of how it was written.
+norm_id <- function(x) {
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x))
+  ifelse(is.na(num), NA_character_, sprintf("%s%03d", pre, num))
+}
+```
+
+## 1. Combine the extraction outputs into one trace-level table
+
+```{r}
+# Each extracted trace is uniquely identified by mussel, thread, and the technician note (the note
+# distinguishes a clean run from its retries/flukes). Join max_force to integral on all three.
+read_group <- function(group) {
+  mf <- read_excel(file.path(extract_dir, paste0("max_force_", group, ".xlsx")))
+  ig <- read_excel(file.path(extract_dir, paste0("integral_",  group, ".xlsx")))
+  mf <- mf %>% transmute(mussel,
+                         thread = as.integer(thread),
+                         note   = replace_na(as.character(note), ""),
+                         max_force)
+  ig <- ig %>% transmute(mussel,
+                         thread = as.integer(thread),
+                         note   = replace_na(as.character(note), ""),
+                         integral = auc)
+  full_join(mf, ig, by = c("mussel", "thread", "note")) %>% mutate(group = group)
+}
+
+traces <- bind_rows(read_group("control"), read_group("treatment")) %>%
+  mutate(mkey = norm_id(mussel))
+
+message("Combined traces: ", nrow(traces),
+        " | unique mussels: ", n_distinct(traces$mkey))
+```
+
+## 2. Join species and assigned treatment from the morphometrics key
+
+```{r}
+key <- read_excel(morph_xlsx, sheet = "key") %>%
+  transmute(mkey = norm_id(ID), species, trt) %>%
+  distinct(mkey, .keep_all = TRUE)
+
+traces <- traces %>%
+  left_join(key, by = "mkey") %>%
+  mutate(treatment = if_else(group == "control", "control", trt))
+
+unmatched <- traces %>% filter(is.na(species))
+if (nrow(unmatched) > 0) {
+  warning(nrow(unmatched), " trace(s) have no morphometrics key match: ",
+          paste(unique(unmatched$mussel), collapse = ", "))
+}
+```
+
+## 3. Join pad area, failure mode, and technician-recorded force from the tech sheet
+
+```{r}
+# The tech sheet's own `treatment` column is already "control"/"treatment", matching our group label.
+tech <- read_excel(file.path(data_dir, "GOOGLESHEET-PSMFC-mytilus-byssus-pilot-threads.xlsx")) %>%
+  transmute(mkey   = norm_id(mussel_ID),
+            thread = as.integer(thread_number),
+            group  = treatment,
+            pad_area       = `pad_cross-sectional_area_mm^2`,
+            failure        = failure_mode,
+            tech_max_force = maximum_force,
+            tech_notes     = notes)
+
+# A few mussel/thread/group keys have retest duplicates (e.g. T029). Keep the first of each for the
+# initial join and report the rest so they can be checked during curation.
+tech_dups <- tech %>% group_by(mkey, thread, group) %>% filter(n() > 1) %>% ungroup()
+if (nrow(tech_dups) > 0) {
+  message("Tech sheet retest duplicates on ",
+          n_distinct(tech_dups %>% select(mkey, thread, group)),
+          " mussel/thread/group key(s); using the first of each.")
+}
+tech1 <- tech %>% distinct(mkey, thread, group, .keep_all = TRUE)
+
+traces <- traces %>% left_join(tech1, by = c("mkey", "thread", "group"))
+```
+
+## 4. Derive adhesion, the technician-vs-computed comparison, and the RNA flag
+
+```{r}
+seq_mussels <- read_excel(morph_xlsx, sheet = "rna_isolation_info") %>%
+  pull(mussel) %>% norm_id() %>% unique()
+
+summary_tbl <- traces %>%
+  mutate(
+    adhesion_kpa  = max_force / pad_area * 1000,
+    force_diff    = max_force - tech_max_force,                 # computed peak minus technician value
+    rna_sequenced = if_else(mkey %in% seq_mussels, "yes", "no"),
+    sort_ID       = paste0(mussel, "_", thread)
+  ) %>%
+  arrange(species, mkey, thread, group) %>%
+  transmute(sort_ID, mussel, thread, note, group, species,
+            treatment, mussel_trt = trt,
+            max_force, integral, pad_area, adhesion_kpa,
+            failure, tech_max_force, force_diff, tech_notes, rna_sequenced)
+```
+
+## 5. Split by species and write the initial summaries
+
+```{r}
+trossulus <- summary_tbl %>% filter(species == "tross")
+gallo     <- summary_tbl %>% filter(species == "gallo")
+
+write.xlsx(list(data = trossulus),
+           file = file.path(out_dir, "thread-summary-trossulus.xlsx"), colNames = TRUE)
+write.xlsx(list(data = gallo),
+           file = file.path(out_dir, "thread-summary-gallo.xlsx"), colNames = TRUE)
+
+message("Wrote trossulus (", nrow(trossulus), " rows) and gallo (", nrow(gallo), " rows).")
+```
+
+These are the initial, everything-included summaries. Review them with the QC plots from script 1,
+using the `note`, `failure`, and `force_diff` columns to spot bad runs, remove what should be
+excluded, and save the curated trossulus table as `02_data/thread-summary-clean.xlsx` (sheet "data")
+for script 3.
+
+## 6. QC: technician-recorded vs computed peak force
+
+```{r}
+compare <- summary_tbl %>% filter(!is.na(tech_max_force), !is.na(max_force))
+message("Force comparison available for ", nrow(compare), " of ", nrow(summary_tbl), " traces.")
+message("  median |computed - technician|: ", round(median(abs(compare$force_diff)), 4), " N")
+
+flagged <- compare %>% filter(abs(force_diff) > 0.05) %>% arrange(desc(abs(force_diff)))
+message("  traces differing by more than 0.05 N: ", nrow(flagged))
+
+p <- ggplot(compare, aes(tech_max_force, max_force, colour = species)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  geom_point(alpha = 0.6) +
+  labs(x = "Technician-recorded maximum force (N)",
+       y = "Computed peak force (N)",
+       title = "Computed vs technician-recorded thread force") +
+  theme_bw()
+ggsave(file.path(out_dir, "force_computed_vs_technician.jpg"), p,
+       width = 6, height = 5, dpi = 150)
+```
+
+## 7. Coverage diagnostics
+
+```{r}
+summary_tbl %>%
+  summarise(
+    traces             = n(),
+    trossulus          = sum(species == "tross", na.rm = TRUE),
+    gallo              = sum(species == "gallo", na.rm = TRUE),
+    no_species         = sum(is.na(species)),
+    before_threads     = sum(group == "control"),
+    after_threads      = sum(group == "treatment"),
+    retry_traces       = sum(note != ""),
+    missing_pad_area   = sum(is.na(pad_area)),
+    missing_tech_force = sum(is.na(tech_max_force))
+  ) %>%
+  knitr::kable()
+```
