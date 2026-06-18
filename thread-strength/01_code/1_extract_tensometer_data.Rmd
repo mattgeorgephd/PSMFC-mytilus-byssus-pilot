@@ -24,8 +24,8 @@ for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missin
 sapply(load.lib,require,character=TRUE) # Load all packages.
 
 ## Set ggplot theme
-my_theme <- theme(line              = element_line(size=1.2),
-                  rect              = element_rect(size=1.2),
+my_theme <- theme(line              = element_line(linewidth=1.2),
+                  rect              = element_rect(linewidth=1.2),
                   text              = element_text(size=14,color="black"),
                   panel.background  = element_blank(),
                   panel.grid.major  = element_blank(), 
@@ -45,6 +45,40 @@ my_theme <- theme(line              = element_line(size=1.2),
 ```
 
 
+## Parse trace filenames into mussel ID, thread number, and note
+
+Tensometer files are named `<prefix><digits>_<digits><optional note>` and may or may not carry a
+`.txt` extension (the instrument exports them without one; the extension was added by hand for some
+files and missed for others). The trailing text is the technician's note (`try2`, `fluke`, `tryTwo`,
+`thirdTry`, `firstTry`, ...). We keep that note as its own field so every run is imported and can be
+checked against its QC plot before any curation. Nothing is dropped or silently merged here.
+
+```{r}
+# Split a filename into mussel ID, thread number, and note. Extension-agnostic and width-agnostic
+# (works for 2-digit control IDs like G18_01 and 3-digit treatment IDs like T037_03).
+parse_trace_name <- function(file_name) {
+  base   <- sub("\\.txt$", "", file_name)                    # drop a trailing .txt if present
+  mussel <- sub("^([A-Za-z]+[0-9]+)_.*$", "\\1", base)       # prefix + digits before the "_"
+  thread <- sub("^[A-Za-z]+[0-9]+_([0-9]+).*$", "\\1", base) # digits immediately after the "_"
+  note   <- sub("^[A-Za-z]+[0-9]+_[0-9]+", "", base)         # anything trailing = technician note
+  list(mussel = mussel, thread = thread, note = note)
+}
+
+# List every tensometer trace in a folder regardless of extension. Anything that does not match the
+# trace naming convention is reported via warning() rather than silently skipped, so a stray file
+# (e.g. a spreadsheet or .DS_Store dropped in the folder) can never be read as data unnoticed.
+list_trace_files <- function(dir) {
+  all_files   <- list.files(dir)
+  trace_files <- all_files[grepl("^[A-Za-z]+[0-9]+_[0-9]+", all_files)]
+  skipped     <- setdiff(all_files, trace_files)
+  if (length(skipped) > 0)
+    warning(basename(dir), ": ", length(skipped),
+            " file(s) did not match the trace pattern and were skipped: ",
+            paste(skipped, collapse = ", "))
+  trace_files
+}
+```
+
 ## CONTROLS
 
 ```{r warning=FALSE}
@@ -58,8 +92,8 @@ control_dir <- here::here("02_data", "tensometer_output", "control")
 # Create an empty list to hold the data
 nested_list <- list()
 
-# Get a vector of the names of all the txt files in the directory
-txt_files <- list.files(control_dir, pattern = "\\.txt$")
+# Get all tensometer traces in the directory, with or without a .txt extension
+txt_files <- list_trace_files(control_dir)
 
 # Loop through each txt file, extract the data, and add it to the nested list
 for (file_name in txt_files) {
@@ -86,12 +120,11 @@ for (file_name in txt_files) {
     data_snipped$displacement[is.na(data_snipped$displacement)] <- 0
     data_snipped$force[is.na(data_snipped$force)] <- 0
   
-    # Extract mussel ID & thread test
-    split_1 <- str_split(file_name, "_") # Split file name by _
-    split_2 <- split_1[[1]][[2]] # Save thread test & .txt
-    split_3 <- str_split(split_2, "\\.") # Split thread test and .txt
-    data_snipped$mussel <- split_1[[1]][[1]] # Saving mussel ID
-    data_snipped$thread <- split_3[[1]][[1]] # Saving thread number
+    # Extract mussel ID, thread number, and technician note from the file name
+    ids <- parse_trace_name(file_name)
+    data_snipped$mussel <- ids$mussel # Saving mussel ID
+    data_snipped$thread <- ids$thread # Saving thread number
+    data_snipped$note   <- ids$note   # Saving technician note (try2, fluke, ...; "" if none)
   
     # Add the data to the nested list using the file name as the list name
     nested_list[[file_name]] <- data_snipped
@@ -106,17 +139,19 @@ for (file_name in txt_files) {
 # Save the maximum into a dataframe, along with the first values in the "mussel" column and "thread" column
 
 # create a data frame with three columns: mussel, thread, and max_force
-max_force_control <- data.frame(mussel = numeric(),
-                        thread = numeric(),
+max_force_control <- data.frame(mussel = character(),
+                        thread = character(),
+                        note = character(),
                         max_force = numeric())
 
 # loop through the nested list
 for(i in seq_along(nested_list)){
   # create a data frame for each list in the nested list
   current_df <- nested_list[[i]]
-  # add a row to the max_force data frame with the mussel, thread, and max_force
+  # add a row to the max_force data frame with the mussel, thread, note, and max_force
   max_force_control <- rbind(max_force_control, data.frame(mussel = current_df$mussel[1],
                                             thread = current_df$thread[1],
+                                            note = current_df$note[1],
                                             max_force = max(current_df$force)))
 
 }
@@ -141,8 +176,9 @@ qc_dir <- here::here("03_analyses", "extract-tensometer-data", "QC_plots", "cont
 dir.create(qc_dir, recursive = TRUE, showWarnings = FALSE)
 
 # create a data frame with three columns: mussel, thread, and max_force
-integral_control <- data.frame(mussel = numeric(),
-                        thread = numeric(),
+integral_control <- data.frame(mussel = character(),
+                        thread = character(),
+                        note = character(),
                         auc = numeric())
 
 for(i in seq_along(nested_list)){
@@ -152,8 +188,11 @@ for(i in seq_along(nested_list)){
   # fit loess function to "time" and "force" using loess() and save as an object
   current_loess <- loess(force ~ time, data = current_df)
   
-  # plot the loess function with the corresponding time and force data points
-  jpeg(file.path(qc_dir, paste0(nested_list[[i]]$mussel[1], "_", nested_list[[i]]$thread[1], ".jpg")))
+  # plot the loess function with the corresponding time and force data points.
+  # Name the QC plot after the source file (extension stripped) so each run, including retries and
+  # flukes that share a mussel/thread, gets its own plot instead of overwriting another's.
+  qc_name <- sub("\\.txt$", "", names(nested_list)[i])
+  jpeg(file.path(qc_dir, paste0(qc_name, ".jpg")))
   plot(current_df$time, current_df$force, main= "Force over Time Plot with Loess Function", 
        xlab = "Time", ylab = "Force", col = "blue")
   lines(current_loess, col = "red") # add the loess function to the plot in red
@@ -169,6 +208,7 @@ for(i in seq_along(nested_list)){
   # create a dataframe to store the results, and save the variables to the corresponding columns in the dataframe
   integral_control <- rbind(integral_control, data.frame(mussel = nested_list[[i]]$mussel[1],
                                            thread = nested_list[[i]]$thread[1],
+                                           note = nested_list[[i]]$note[1],
                                            auc = auc))
 }
 
@@ -186,6 +226,7 @@ max_force_control$ID <- paste(max_force_control$mussel, max_force_control$thread
             position=position_jitter(width=0.15))+
   theme(legend.position="none")
 ```
+
 ```{r}
 library(EnvStats)
 test <- rosnerTest(max_force_control$max_force,
@@ -219,8 +260,8 @@ treatment_dir <- here::here("02_data", "tensometer_output", "treatment")
 # Create an empty list to hold the data
 nested_list <- list()
 
-# Get a vector of the names of all the txt files in the directory
-txt_files <- list.files(treatment_dir, pattern = "\\.txt$")
+# Get all tensometer traces in the directory, with or without a .txt extension
+txt_files <- list_trace_files(treatment_dir)
 
 # Loop through each txt file, extract the data, and add it to the nested list
 for (file_name in txt_files) {
@@ -247,11 +288,11 @@ for (file_name in txt_files) {
     data_snipped$displacement[is.na(data_snipped$displacement)] <- 0
     data_snipped$force[is.na(data_snipped$force)] <- 0
   
-    # Add a new column called "mussel" that contains the first FOUR characters of the file name
-    data_snipped$mussel <- substr(file_name, start = 1, stop = 4)
-    
-    # Add new column that adds thread run
-    data_snipped$thread <- substr(file_name, start = 6, stop = 7)
+    # Extract mussel ID, thread number, and technician note from the file name
+    ids <- parse_trace_name(file_name)
+    data_snipped$mussel <- ids$mussel # Saving mussel ID
+    data_snipped$thread <- ids$thread # Saving thread number
+    data_snipped$note   <- ids$note   # Saving technician note (try2, fluke, ...; "" if none)
   
     # Add the data to the nested list using the file name as the list name
     nested_list[[file_name]] <- data_snipped
@@ -266,17 +307,19 @@ for (file_name in txt_files) {
 # Save the maximum into a dataframe, along with the first values in the "mussel" column and "thread" column
 
 # create a data frame with three columns: mussel, thread, and max_force
-max_force_treatment <- data.frame(mussel = numeric(),
-                        thread = numeric(),
+max_force_treatment <- data.frame(mussel = character(),
+                        thread = character(),
+                        note = character(),
                         max_force = numeric())
 
 # loop through the nested list
 for(i in seq_along(nested_list)){
   # create a data frame for each list in the nested list
   current_df <- nested_list[[i]]
-  # add a row to the max_force data frame with the mussel, thread, and max_force
+  # add a row to the max_force data frame with the mussel, thread, note, and max_force
   max_force_treatment <- rbind(max_force_treatment, data.frame(mussel = current_df$mussel[1],
                                             thread = current_df$thread[1],
+                                            note = current_df$note[1],
                                             max_force = max(current_df$force)))
 
 }
@@ -305,9 +348,10 @@ integral <- data.frame(mussel = numeric(),
                         thread = numeric(),
                         auc = numeric())
 
-# create a data frame with three columns: mussel, thread, and max_force
-integral_treatment <- data.frame(mussel = numeric(),
-                        thread = numeric(),
+# create a data frame with columns: mussel, thread, note, auc
+integral_treatment <- data.frame(mussel = character(),
+                        thread = character(),
+                        note = character(),
                         auc = numeric())
 
 for(i in seq_along(nested_list)){
@@ -317,8 +361,11 @@ for(i in seq_along(nested_list)){
   # fit loess function to "time" and "force" using loess() and save as an object
   current_loess <- loess(force ~ time, data = current_df)
   
-  # plot the loess function with the corresponding time and force data points
-  jpeg(file.path(qc_dir, paste0(nested_list[[i]]$mussel[1], "_", nested_list[[i]]$thread[1], ".jpg")))
+  # plot the loess function with the corresponding time and force data points.
+  # Name the QC plot after the source file (extension stripped) so each run, including retries and
+  # flukes that share a mussel/thread, gets its own plot instead of overwriting another's.
+  qc_name <- sub("\\.txt$", "", names(nested_list)[i])
+  jpeg(file.path(qc_dir, paste0(qc_name, ".jpg")))
   plot(current_df$time, current_df$force, main= "Force over Time Plot with Loess Function", 
        xlab = "Time", ylab = "Force", col = "blue")
   lines(current_loess, col = "red") # add the loess function to the plot in red
@@ -334,6 +381,7 @@ for(i in seq_along(nested_list)){
   # create a dataframe to store the results, and save the variables to the corresponding columns in the dataframe
   integral_treatment <- rbind(integral_treatment, data.frame(mussel = nested_list[[i]]$mussel[1],
                                            thread = nested_list[[i]]$thread[1],
+                                           note = nested_list[[i]]$note[1],
                                            auc = auc))
 }
 
