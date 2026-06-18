@@ -142,10 +142,10 @@ summary_tbl <- traces %>%
     adhesion_kpa  = max_force / pad_area * 1000,
     force_diff    = max_force - tech_max_force,                 # computed peak minus technician value
     rna_sequenced = if_else(mkey %in% seq_mussels, "yes", "no"),
-    sort_ID       = paste0(mussel, "_", thread)
+    sort_ID       = paste0(mkey, "_", thread)   # display the normalized 3-digit ID, not the raw tag
   ) %>%
   arrange(species, mkey, thread, group) %>%
-  transmute(sort_ID, mussel, thread, note, group, species,
+  transmute(sort_ID, mussel = mkey, thread, note, group, species,   # mussel shown in canonical 3-digit form
             treatment, mussel_trt = trt,
             max_force, integral, pad_area, adhesion_kpa,
             failure, tech_max_force, force_diff, tech_notes, rna_sequenced)
