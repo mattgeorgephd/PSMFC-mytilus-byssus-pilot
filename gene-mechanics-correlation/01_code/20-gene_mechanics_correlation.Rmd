@@ -46,22 +46,12 @@ Set these two paths to wherever the repos live on your machine. The script reads
 data from the **main** repo and expression data from the **expression** repo.
 
 ```{r config}
-## ---- paths (EDIT THESE) -------------------------------------------------------------
-# Main data repo: github.com/mattgeorgephd/PSMFC-mytilus-byssus-pilot
-MAIN_REPO <- "PSMFC-mytilus-byssus-pilot"
-# Expression repo: github.com/graceleuchtenberger/Byssus-expression-analysis
-#   (if you run this from within that repo's code/ dir, "../" points at its root)
-EXPR_REPO <- "Byssus-expression-analysis"
-
 ## ---- analysis options ---------------------------------------------------------------
 TISSUE        <- "F"          # "F" = foot (byssus-producing organ; default), "G" = gill
 MIN_COUNT     <- 5            # gene kept if count > MIN_COUNT in >= 1/3 of paired samples
 FDR_ALPHA     <- 0.10         # BH threshold for flagging
 ADJUST_FOR_BASELINE <- FALSE  # TRUE = add each animal's pre-stress thread metric as a
                               #        covariate (n drops to animals with baseline threads)
-
-OUT_DIR <- "../output/gene_mechanics"   # where result tables/plots are written
-dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
 ## ---- candidate gene keywords (regex, case-insensitive) ------------------------------
 ## Grouped by biology; edit freely. Matched against UniProt "protein_name".
@@ -92,6 +82,7 @@ bioc_version <- BiocManager::version()
 bioc_repo <- paste0("https://bioconductor.org/packages/", bioc_version, "/bioc")
 
 # Install DESeq2 directly as a standard package 
+install.packages("GenomeInfoDbData", repos = c(Bioc = bioc_repo, CRAN = "https://cloud.r-project.org"))
 install.packages("DESeq2", repos = c(Bioc = bioc_repo, CRAN = "https://cloud.r-project.org"))
 
 ```
@@ -101,13 +92,41 @@ install.packages("DESeq2", repos = c(Bioc = bioc_repo, CRAN = "https://cloud.r-p
 
 ```{r libs}
 ## Load Packages
-load.lib <- c("dbplyr","tidyverse","readxl","openxlsx","lubridate","DESeq2")
+load.lib <- c("dbplyr","tidyverse","readxl","openxlsx","lubridate","DESeq2","here")
 install.lib <- load.lib[!load.lib %in% installed.packages()]
 for(lib in install.lib) install.packages(lib, dependencies = TRUE)
 sapply(load.lib, require, character = TRUE)
 
 
 `%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
+```
+
+```{r paths}
+## Resolve the repository root (the folder holding the analysis subfolders), robust to whether
+## this is knit from gene-mechanics-correlation.Rproj or the top-level project.
+find_repo_root <- function(start = here::here()) {
+  d <- normalizePath(start, winslash = "/")
+  for (i in 1:6) {
+    if (all(dir.exists(file.path(d, c("differential-expression", "thread-strength"))))) return(d)
+    d <- dirname(d)
+  }
+  stop("Repo root not found: need a parent containing differential-expression/ and thread-strength/.")
+}
+repo_root   <- find_repo_root()
+DE_DIR      <- file.path(repo_root, "differential-expression")          # expression-side inputs
+THREAD_FILE <- file.path(repo_root, "thread-strength", "02_data",
+                         "thread-summary-trossulus-clean.xlsx")         # curated thread summary (trossulus)
+OUT_DIR     <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "gene_mechanics")
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+
+## Canonicalize a mussel tag to one 3-digit form (T55 -> T055) so the thread side and the
+## expression side cannot split on zero-padding when joined.
+norm_id <- function(x) {
+  x   <- as.character(x)
+  pre <- gsub("[0-9].*$", "", x)                                        # leading letters
+  num <- suppressWarnings(as.integer(gsub("[^0-9].*$", "", gsub("^[^0-9]+", "", x))))
+  ifelse(is.na(num), NA_character_, sprintf("%s%03d", pre, num))
+}
 ```
 
 ---
@@ -121,8 +140,8 @@ stressed.
 
 ```{r paired}
 ## ---- thread mechanics: per-animal post-stress means ---------------------------------
-thread_path <- file.path("thread_strength/summarized_data/summary.xlsx")
-thr_raw <- read_excel(thread_path, sheet = "data")
+thread_path <- THREAD_FILE
+thr_raw <- read_excel(thread_path, sheet = "data") %>% mutate(mussel = norm_id(mussel))
 
 post_stress <- thr_raw %>%
   filter(treatment %in% c("OA", "OW", "DO")) %>%
@@ -147,11 +166,11 @@ baseline <- thr_raw %>%
   )
 
 ## ---- Tag-seq treatment assignment (definitive) --------------------------------------
-fti <- read.table(file.path(EXPR_REPO, "output/DEG_lists/Foot/F_treatmentinfo.csv"),
+fti <- read.table(file.path(DE_DIR, "03_analyses", "DEG_lists", "Foot", "F_treatmentinfo.csv"),
                   header = TRUE, sep = " ", stringsAsFactors = FALSE)
 names(fti)[1] <- "sample_id"
 fti <- fti %>%
-  mutate(mussel = sub("F$", "", sample_id)) %>%
+  mutate(mussel = norm_id(sub("F$", "", sample_id))) %>%
   filter(day == 3, treatment != "control") %>%        # day-3 stressor animals only
   distinct(mussel, treatment)
 
@@ -176,7 +195,7 @@ tissue (more stable dispersion estimates), then we subset to the paired animals.
 in the matrix look like `gene-LOC134696364|LOC134696364`; we key on the `LOC######` id.
 
 ```{r counts}
-cm <- read.csv(file.path(EXPR_REPO, "output/gene_count_matrix_clean.csv"),
+cm <- read.csv(file.path(DE_DIR, "02_data", "gene_count_matrix_clean.csv"),
                row.names = 1, check.names = FALSE)
 
 ## keep only columns for the chosen tissue (F = ...F, but NOT ...FX; G = ...G)
@@ -188,11 +207,11 @@ tissue_cols <- if (TISSUE == "F") {
 cm_tissue <- cm[, tissue_cols, drop = FALSE]
 
 ## minimal colData (treatment per sample, for dispersion modelling)
-mussel_of  <- sub(paste0(TISSUE, "$"), "", colnames(cm_tissue))
-all_meta <- read.table(file.path(EXPR_REPO, "output/DEG_lists/Foot/F_treatmentinfo.csv"),
+mussel_of  <- norm_id(sub(paste0(TISSUE, "$"), "", colnames(cm_tissue)))
+all_meta <- read.table(file.path(DE_DIR, "03_analyses", "DEG_lists", "Foot", "F_treatmentinfo.csv"),
                         header = TRUE, sep = " ", stringsAsFactors = FALSE)
 names(all_meta)[1] <- "sample_id"
-all_meta <- all_meta %>% mutate(mussel = sub("F$", "", sample_id))
+all_meta <- all_meta %>% mutate(mussel = norm_id(sub("F$", "", sample_id)))
 coldata <- data.frame(mussel = mussel_of) %>%
   left_join(all_meta %>% distinct(mussel, treatment, day), by = "mussel") %>%
   mutate(grp = ifelse(is.na(treatment), "unk", paste0(treatment, "_d", day)))
@@ -226,7 +245,7 @@ carry both the `LOC_ID` and the UniProt `protein_name`. This covers stress-respo
 genes; unannotated genes are kept in the DEG-wide test but cannot be keyword-filtered.
 
 ```{r annot}
-sig_files <- list.files(file.path(EXPR_REPO, "output/DEG_lists/GOterms_genome"),
+sig_files <- list.files(file.path(DE_DIR, "03_analyses", "DEG_lists", "GOterms_genome"),
                         pattern = "_sigs_ID\\.csv$", full.names = TRUE)
 annot <- map_dfr(sig_files, ~ {
   d <- tryCatch(read.csv(.x, stringsAsFactors = FALSE), error = function(e) NULL)
@@ -253,7 +272,7 @@ baseline). These are genes that already responded to stress; the question is whe
 among the paired animals, their expression *level* tracks attachment.
 
 ```{r deg_union}
-deg_dir <- file.path(EXPR_REPO, "output/DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"))
+deg_dir <- file.path(DE_DIR, "03_analyses", "DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"))
 deg_files <- list.files(deg_dir, pattern = "_TC_siggene.*\\.csv$", full.names = TRUE)
 deg_union <- map(deg_files, ~ {
   d <- tryCatch(read.table(.x, header = TRUE, sep = " ", stringsAsFactors = FALSE),
