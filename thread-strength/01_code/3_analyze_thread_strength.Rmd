@@ -1,9 +1,40 @@
 ---
-title: "2_analyze_thread_strength"
+title: "3_analyze_thread_strength"
 author: "Matt George"
 date: "2023-04-25"
 output: html_document
 ---
+
+<!--
+PURPOSE
+  Analyze byssal-thread plaque adhesion (kPa) for Mytilus trossulus before and
+  after a 3-day stress exposure (ocean acidification OA, ocean warming OW,
+  hypoxia DO), relative to a day-0 baseline and a day-3 control arm.
+
+DATA MODEL (read this before editing the filters below)
+  The input table mixes three columns that are easy to confuse:
+    - group       : "control" = day-0 BASELINE (pre-stress); "treatment" = day-3 (post-stress).
+                    This is the real before/after axis.
+    - mussel_trt  : the arm each mussel was ASSIGNED to (its fate): control, OA, OW, DO.
+                    Each mussel maps to exactly one fate (verified).
+    - treatment   : the condition under which a given THREAD was made. Every baseline
+                    thread is labeled "control" regardless of fate, and the control-arm
+                    day-3 threads are ALSO labeled "control". So `treatment == "control"`
+                    is a mixture of (i) day-0 baselines from all arms and (ii) day-3
+                    control-arm threads (mussels T126-T135).
+  Because of that overload, all filtering in this script is done on `group` + `mussel_trt`,
+  and a clean `timepoint` factor ("baseline"/"post") is derived from `group`.
+
+FIGURE CONVENTION FOR THE LINE+BOX PANELS (one per stress arm)
+  - Left cluster  ("control") = ALL day-0 baselines (group == "control"); the SAME 54 mussels
+    appear on every panel (this is the chosen "population baseline" reference).
+  - Right cluster (the arm)   = only mussels that produced threads in that arm at day 3.
+  - A connecting line is drawn only for mussels present on BOTH sides (true repeated measures);
+    unpaired mussels appear as a single point with no line.
+  - A boxplot of the per-mussel means flanks each cluster: control box to the LEFT of the
+    control points, treatment box to the RIGHT of the treatment points, both offset so they
+    never overlap the points or cross the connecting lines.
+-->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -11,33 +42,41 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Load packages; set ggplot theme
 ```{r message=FALSE, warning=FALSE}
-## clear workspace
-rm(list=ls())
+## Clear workspace
+rm(list = ls())
 
-## Load Packages
-load.lib<-c("readxl","tidyverse","bestNormalize","agricolae","nlme","multcomp","rstatix","lme4","lmerTest","here") # List of required packages
-install.lib <- load.lib[!load.lib %in% installed.packages()] # Select missing packages
-for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missing packages + dependencies
-sapply(load.lib,require,character=TRUE) # Load all packages.
+## Load packages (auto-install any that are missing)
+load.lib <- c("readxl", "tidyverse", "bestNormalize", "agricolae",
+              "nlme", "multcomp", "rstatix", "lme4", "lmerTest",
+              "emmeans", "broom", "broom.mixed", "colorspace", "here")
+              # emmeans: lmer post-hoc contrasts; broom/broom.mixed: tidy stats output;
+              # colorspace: lightened violin fills in p2
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+for (lib in install.lib) install.packages(lib, dependencies = TRUE)
+sapply(load.lib, require, character = TRUE)
 
-## Set ggplot theme
-my_theme <- theme(line              = element_line(size=1.2),
-                  rect              = element_rect(size=1.2),
-                  text              = element_text(size=14,color="black"),
-                  panel.background  = element_blank(),
-                  panel.grid.major  = element_blank(), 
-                  panel.grid.minor  = element_blank(),
-                  axis.text.x       = element_text(size=16,color="black"), #,angle=90),
-                  axis.text.y       = element_text(size=16,color="black"),
-                  axis.title.x      = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
-                  axis.title.y      = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
-                  axis.ticks.x      = element_line(color="black"),
-                  axis.ticks.y      = element_line(color="black"),
-                  # axis.line         = element_line(color = "black", size = 0.1),
-                  panel.border      = element_rect(color = "black", fill=NA, size=1.2),
-                  legend.key        = element_blank(), # removes background of legend bullets
-                  legend.position   = "none"
-                  ) 
+## ggplot theme (ggplot2 >= 3.4: line/rect widths use `linewidth`, not `size`)
+my_theme <- theme(line             = element_line(linewidth = 1.2),
+                  rect             = element_rect(linewidth = 1.2),
+                  text             = element_text(size = 14, color = "black"),
+                  panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text.x      = element_text(size = 16, color = "black"),
+                  axis.text.y      = element_text(size = 16, color = "black"),
+                  axis.title.x     = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y     = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x     = element_line(color = "black"),
+                  axis.ticks.y     = element_line(color = "black"),
+                  panel.border     = element_rect(color = "black", fill = NA, linewidth = 1.2),
+                  legend.key       = element_blank(),
+                  legend.position  = "none")
+
+## Treatment palette (kept from prior version)
+treatment_colors <- c("control" = "#5DADE2",   # blue
+                      "OW"      = "#fdae61",    # orange
+                      "OA"      = "#4CAF50",    # green
+                      "DO"      = "#9884a3")    # purple
 ```
 
 ```{r}
@@ -46,707 +85,356 @@ out_dir <- here::here("03_analyses", "analyze-thread-strength")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
-
-### LOAD data set
+### Load data set; derive adhesion and timepoint
 ```{r}
-# Load datasets
-thread_plot       <- read_excel(here::here("02_data", "thread-summary-trossulus-clean.xlsx"),
-                              sheet = "data", col_names = TRUE)
-# trt_list        <- read_excel("data/respirometry/respirometry.xlsx", 
-#                               sheet = "trt_list", col_names = TRUE)
-thread_plot$treatment  <- factor(thread_plot$treatment,  levels = c("control","OW","OA","DO"), ordered=TRUE)
+# Load thread-level table
+thread_plot <- read_excel(here::here("02_data", "thread-summary-trossulus-clean.xlsx"),
+                          sheet = "data", col_names = TRUE)
+
+# Adhesion strength (kPa) = peak force (N) / pad area (mm^2) * 1000.
+# Recomputed here so the script does not depend on the spreadsheet's cached formula column.
+thread_plot$adhesion_kpa <- thread_plot$max_force / thread_plot$pad_area * 1000
+
+# Derive a clean before/after axis from `group` (see DATA MODEL note at top).
+thread_plot$timepoint <- factor(ifelse(thread_plot$group == "control", "baseline", "post"),
+                                levels = c("baseline", "post"))
+
+# Factors. `treatment` keeps the analysis/plot order; `mussel_trt` uses control as the
+# reference level so the lmer interaction reads as "change relative to the control arm".
+thread_plot$treatment  <- factor(thread_plot$treatment,  levels = c("control", "OW", "OA", "DO"))
+thread_plot$mussel_trt <- factor(thread_plot$mussel_trt, levels = c("control", "OA", "OW", "DO"))
 thread_plot$mussel     <- factor(thread_plot$mussel)
 thread_plot$thread     <- factor(thread_plot$thread)
 
-# # set alpha for boxplots
-# alpha_set = 0.9
-# 
-# # summarize by ploidy * timepoint * treatment
-# resp_plot %>% group_by(trt_list) %>% summarise(mean=mean(SMR_weight), sd=sd(SMR_weight), count=n())
-# 
-# # define SE
-# summary_se <- function(.data, measure_var, ..., .ci = 0.95, na.rm = FALSE) {
-#   
-#   measure_var <- dplyr::enquo(measure_var)
-#   group_var <- dplyr::enquos(...)
-#   
-#   .data %>%
-#     group_by(!!! group_var) %>%
-#     summarise(mean = mean(!! measure_var, na.rm = na.rm),
-#               sd = sd(!! measure_var, na.rm = na.rm),
-#               n = n(),
-#               se = sd/sqrt(n),
-#               ci = se * qt(.ci/2 + 0.5, n-1)) %>%
-#     ungroup()
-#   
-# }
-
+# Quick structural check (printed once): every mussel should map to exactly one fate.
+stopifnot(all(thread_plot %>% group_by(mussel) %>%
+                summarise(n_fate = n_distinct(mussel_trt), .groups = "drop") %>% pull(n_fate) == 1))
 ```
 
+### Per-mussel summaries (the unit of replication for figures and classic tests)
+```{r message=FALSE}
+# Collapse threads to one adhesion summary per mussel x timepoint x treatment.
+# Within a timepoint a mussel carries a single treatment label, so this yields one row
+# per mussel per timepoint. SE is NA for singletons (1 thread); those points get no error bar.
+per_mussel_means <- thread_plot %>%
+  group_by(mussel, timepoint, treatment) %>%
+  summarise(adh_mean = mean(adhesion_kpa),
+            adh_sd   = sd(adhesion_kpa),
+            n        = n(),
+            adh_se   = adh_sd / sqrt(n),
+            .groups  = "drop")
 
+# Fixed horizontal offset per mussel, computed ONCE over all mussels so the control
+# cluster looks identical across the three arm panels. Used only for point/line placement.
+set.seed(1)
+mussel_offsets <- tibble(mussel = levels(thread_plot$mussel),
+                         xoff   = runif(nlevels(thread_plot$mussel), -0.08, 0.08))
+```
 
-### boxplot, all
-```{r}
-thread_plot$adhesion_kpa <- thread_plot$max_force/thread_plot$pad_area*1000
-# filter the data to only include the mussels w/ repeated observations
+### Distribution plots: adhesion by treatment (manuscript Fig. "all threads" / "by individual")
+```{r warning=FALSE}
+# These four panels summarize the distribution of adhesion. p1 (all threads) and
+# p3 (per-mussel means) correspond to the two manuscript panels; p2 and p4 restrict to
+# mussels measured at BOTH timepoints (true repeated measures).
+#
+# NOTE: x here is the `treatment` column, so its "control" bar pools day-0 baselines (all
+# arms) with day-3 control-arm threads. These panels are descriptive; the before/after
+# structure is shown properly by the line+box panels further down.
+
+# Mussels measured at both baseline and post-stress (repeated-measures subset).
 thread_plot_repeated <- thread_plot %>%
   group_by(mussel) %>%
-  filter(n_distinct(treatment) == 2)
+  filter(n_distinct(timepoint) == 2) %>%
+  ungroup()
 
-# create a new dataframe that groups the data by mussel and treatment and then summarizes the data by calculating the mean and standard deviation of the max_force, pad_area, and adhesion_kpa columns
-thread_plot_all_mean <- thread_plot %>%
-  group_by(mussel, treatment) %>% 
-  summarize(
-    across(c(max_force, pad_area, adhesion_kpa), 
-           list(mean = mean, sd = sd, se = ~ sd(.x) / sqrt(length(.x))),
-           .names = "{.col}_{.fn}")
-  )
-
-# average across thread for each mussel * treatment combination, only mussels with repeated measurements
-# create a new dataframe called thread_plot_repeated_mean
-thread_plot_repeated_mean <- thread_plot %>%
-  # group the data by mussel
+# Per-mussel means, all mussels and repeated-only, for the mean-based panels.
+thread_plot_all_mean <- per_mussel_means
+thread_plot_repeated_mean <- per_mussel_means %>%
   group_by(mussel) %>%
-  # filter the data to only include mussels that have two treatments
-  filter(n_distinct(treatment) == 2) %>%
-  # group the data by mussel and treatment
-  group_by(mussel, treatment) %>% 
-  # summarize the data by calculating the mean and sd of max_force, pad_area, and adhesion_kpa
-  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd, se = ~ sd(.x) / sqrt(length(.x))), .names = "{.col}_{.fn}"))
+  filter(n_distinct(timepoint) == 2) %>%
+  ungroup()
 
-
-
-# Define specific colors for each treatment
-treatment_colors <- c("control" = "#5DADE2",  # Gray
-                      "OW" = "#fdae61",       # Orange
-                      "OA" = "#4CAF50",       # Green (from previous inquiries)
-                      "DO" = "#9884a3")       # Purple (from previous inquiries)
-
-# Plot all data with specified fill colors
+# p1: all threads, violin + box + jittered points
 p1 <- ggplot(thread_plot, aes(x = treatment, y = adhesion_kpa)) +
-      geom_violin(aes(fill = treatment), color = "black", size = 1.2, bw = 12) +
-      geom_boxplot(colour = "black", size = 0.8, outlier.colour = "black", outlier.shape = NA, width = 0.2,
-                   outlier.size = 1, notch = FALSE, varwidth = FALSE, alpha = 0.8, coef = 0) +
+      geom_violin(aes(fill = treatment), color = "black", linewidth = 1.2, bw = 12) +
+      geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = NA,
+                   width = 0.2, notch = FALSE, varwidth = FALSE, alpha = 0.8, coef = 0) +
       geom_point(position = position_jitter(width = .03, seed = 0), size = 5, alpha = .1) +
-      geom_point(position = position_jitter(width = .03, seed = 0), size = 5, stroke = .7, shape = 1, color = "black") +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5,
+                 stroke = .7, shape = 1, color = "black") +
       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
       scale_fill_manual(values = treatment_colors) +
-      xlab(NULL) + 
-      ylab(NULL) + 
-      my_theme
-
+      xlab(NULL) + ylab(NULL) + my_theme
 p1
 
+# p2: repeated-measures mussels only, all threads
+p2 <- ggplot(thread_plot_repeated, aes(x = treatment, y = adhesion_kpa)) +
+      geom_violin(aes(fill = treatment,
+                      fill = after_scale(colorspace::lighten(fill, .5))),
+                  color = "black", linewidth = 1.2, bw = 12) +
+      geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = NA,
+                   width = 0.2, notch = FALSE, varwidth = FALSE, alpha = 0.8, coef = 0) +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5, alpha = .3) +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5,
+                 stroke = .7, shape = 1, color = "black") +
+      scale_fill_manual(values = treatment_colors) +
+      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
+      xlab(NULL) + ylab(NULL) + my_theme
+p2
 
-# # plot only mussels with repeated measurements
-# p2 <- ggplot(thread_plot_repeated, aes(x=treatment, y=adhesion_kpa)) +
-#        geom_violin(aes(fill = treatment, fill = after_scale(colorspace::lighten(fill, .5))), size = 1.2, bw = 12) +
-#        geom_boxplot(colour = "black", size = 0.8, outlier.colour="black", outlier.shape = NA, width = 0.2,
-#                            outlier.size=1, notch=FALSE, varwidth = FALSE, alpha = 0.8, coef = 0) +
-#       geom_point(position = position_jitter(width = .03, seed = 0), size = 5, alpha = .3) +
-#       geom_point(position = position_jitter(width = .03, seed = 0), size = 5, stroke = .7, shape = 1, color = "black") +
-#       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 200)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p2
+# p3: all mussels, per-mussel means
+p3 <- ggplot(thread_plot_all_mean, aes(x = treatment, y = adh_mean)) +
+      geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = 16,
+                   notch = FALSE, varwidth = TRUE, alpha = 0.8) +
+      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
+      xlab(NULL) + ylab(NULL) + my_theme
+p3
 
-
-# # plot data from all mussels, averaging across threads produced by the mussel at each timepoint
-# p3 <- ggplot(thread_plot_all_mean, aes(x=treatment, y=adhesion_kpa_mean)) +
-#        geom_boxplot(colour = "black", size = 0.8,outlier.colour="black", outlier.shape = 16,
-#                            outlier.size=1, notch=FALSE, varwidth = TRUE, alpha = 0.8) +
-#       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p3
-
-# # plot only mussels with repeated measures, averaging across threads produced by the mussel at each timepoint
-# p4 <- ggplot(thread_plot_repeated_mean, aes(x=treatment, y=adhesion_kpa_mean)) +
-#        geom_boxplot(colour = "black", size = 0.8,outlier.colour="black", outlier.shape = 16,
-#                            outlier.size=1, notch=FALSE, varwidth = TRUE, alpha = 0.8) +
-#       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p4
-
+# p4: repeated-measures mussels only, per-mussel means
+p4 <- ggplot(thread_plot_repeated_mean, aes(x = treatment, y = adh_mean)) +
+      geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = 16,
+                   notch = FALSE, varwidth = TRUE, alpha = 0.8) +
+      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
+      xlab(NULL) + ylab(NULL) + my_theme
+p4
 
 ggsave(file.path(out_dir, "BP_AllMussels_AllThreads.png"),
-       plot   = p1,
-       dpi    = 1200,
-       device = "png",
-       width  = 7,
-       height = 5,
-       units  = "in")
-
-# ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_AllThreads.png"),
-#        plot   = p2,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 8,
-#        height = 6,
-#        units  = "in")
-
-# ggsave(file.path(out_dir, "BP_AllMussels_MeanThreads.png"),
-#        plot   = p3,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
-
-# ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_MeanThreads.png"),
-#        plot   = p4,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
-
+       plot = p1, dpi = 1200, device = "png", width = 7, height = 5, units = "in")
+ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_AllThreads.png"),
+       plot = p2, dpi = 1200, device = "png", width = 8, height = 6, units = "in")
+ggsave(file.path(out_dir, "BP_AllMussels_MeanThreads.png"),
+       plot = p3, dpi = 1200, device = "png", width = 4, height = 4, units = "in")
+ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_MeanThreads.png"),
+       plot = p4, dpi = 1200, device = "png", width = 4, height = 4, units = "in")
 ```
 
-### linegraph, repeated measures only, OA
+### Line + box panels: baseline vs each stress arm
+```{r warning=FALSE}
+# One reusable builder, called once per arm (removes the previous copy-paste blocks).
+#
+# x-geometry (continuous axis):
+#   control points/lines/error bars live near x = 1 (within +/- 0.08)
+#   arm     points/lines/error bars live near x = 2 (within +/- 0.08)
+#   control box sits at x = 0.60, arm box at x = 2.40 (width 0.22)
+# so the boxes are always clear of the point clusters and the connecting lines.
+#
+# Coloring: control points/box in control blue; arm points/box in the arm color;
+# connecting lines neutral grey so they read as links rather than adding new colors.
+
+make_line_box <- function(trt_code, trt_label = trt_code,
+                          y_breaks = seq(0, 200, 25), y_lim = c(0, 210)) {
+
+  control_col <- treatment_colors[["control"]]
+  trt_col     <- treatment_colors[[trt_code]]
+  box_w <- 0.22; box_ctrl_x <- 0.60; box_trt_x <- 2.40
+
+  # Control side = ALL day-0 baselines (same 54 mussels on every panel).
+  ctrl <- per_mussel_means %>% filter(timepoint == "baseline") %>%
+          mutate(side = "control", xbase = 1, xbox = box_ctrl_x)
+  # Arm side = mussels that produced threads in this arm at day 3.
+  trt  <- per_mussel_means %>% filter(timepoint == "post", treatment == trt_code) %>%
+          mutate(side = "treatment", xbase = 2, xbox = box_trt_x)
+
+  dat <- bind_rows(ctrl, trt) %>%
+         left_join(mussel_offsets, by = "mussel") %>%
+         mutate(xpos = xbase + xoff)
+
+  # Connecting lines only for mussels present on both sides (true repeated measures).
+  paired_ids <- intersect(ctrl$mussel, trt$mussel)
+  lines_dat  <- dat %>% filter(mussel %in% paired_ids)
+
+  ggplot() +
+    # connecting lines (paired only)
+    geom_line(data = lines_dat,
+              aes(x = xpos, y = adh_mean, group = mussel),
+              color = "grey55", linewidth = 0.6, alpha = 0.8) +
+    # flanking boxplots of the per-mussel means (outliers hidden; points shown separately)
+    geom_boxplot(data = filter(dat, side == "control"),
+                 aes(x = xbox, y = adh_mean, group = 1),
+                 width = box_w, fill = control_col, color = "black",
+                 linewidth = 0.7, alpha = 0.55, outlier.shape = NA) +
+    geom_boxplot(data = filter(dat, side == "treatment"),
+                 aes(x = xbox, y = adh_mean, group = 1),
+                 width = box_w, fill = trt_col, color = "black",
+                 linewidth = 0.7, alpha = 0.55, outlier.shape = NA) +
+    # control points + SE
+    geom_errorbar(data = filter(dat, side == "control"),
+                  aes(x = xpos, ymin = adh_mean - adh_se, ymax = adh_mean + adh_se),
+                  width = 0.04, linewidth = 0.6, color = "black", na.rm = TRUE) +
+    geom_point(data = filter(dat, side == "control"),
+               aes(x = xpos, y = adh_mean), size = 3, color = control_col) +
+    geom_point(data = filter(dat, side == "control"),
+               aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") +
+    # arm points + SE
+    geom_errorbar(data = filter(dat, side == "treatment"),
+                  aes(x = xpos, ymin = adh_mean - adh_se, ymax = adh_mean + adh_se),
+                  width = 0.04, linewidth = 0.6, color = "black", na.rm = TRUE) +
+    geom_point(data = filter(dat, side == "treatment"),
+               aes(x = xpos, y = adh_mean), size = 3, color = trt_col) +
+    geom_point(data = filter(dat, side == "treatment"),
+               aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") +
+    scale_x_continuous(breaks = c(1, 2), labels = c("control", trt_label),
+                       limits = c(0.4, 2.6)) +
+    scale_y_continuous(breaks = y_breaks, limits = y_lim) +
+    xlab(NULL) + ylab(NULL) + my_theme
+}
+
+p_OA <- make_line_box("OA"); p_OA
+p_OW <- make_line_box("OW"); p_OW
+p_DO <- make_line_box("DO"); p_DO
+
+ggsave(file.path(out_dir, "LineBox_OA_BaselineVsTreatment.png"),
+       plot = p_OA, dpi = 1200, device = "png", width = 4.5, height = 4.5, units = "in")
+ggsave(file.path(out_dir, "LineBox_OW_BaselineVsTreatment.png"),
+       plot = p_OW, dpi = 1200, device = "png", width = 4.5, height = 4.5, units = "in")
+ggsave(file.path(out_dir, "LineBox_DO_BaselineVsTreatment.png"),
+       plot = p_DO, dpi = 1200, device = "png", width = 4.5, height = 4.5, units = "in")
+```
+
+<!--
+STATISTICS
+
+  The previous version's tests were not valid for this design and have been replaced:
+    - The "all treatments" model was aov(response ~ trt) with NO error term, so it treated
+      every thread as independent (pseudoreplication) while its comment claimed it accounted
+      for repeated sampling.
+    - The per-arm models used aov(response ~ trt + Error(ID/thread)); `thread` (1,2,3) is just
+      a within-mussel index, not a meaningful nesting stratum, and the data fed in mixed all
+      arms' baselines into the "control" level. aov(... Error()) also requires balanced,
+      complete cells, which this partially paired design does not have.
+
+  Replacement, in two parts:
+    (1) CLASSIC tests on the per-mussel means (one value per mussel per timepoint), which is
+        the correct unit of replication and removes pseudoreplication without a mixed model.
+    (2) A MIXED-MODEL section (lmer) on the full thread-level data, which uses every thread and
+        every animal (paired and unpaired) and tests the arm-by-timepoint interaction directly.
+
+  Parametric and non-parametric versions are reported side by side rather than relying on an
+  automatic transform, so the reader can see both. Sample sizes are small; results are
+  descriptive of this pilot, not confirmatory.
+-->
+
+### Statistics 1a: between-arm comparison of day-3 adhesion (per-mussel means)
 ```{r}
+# Each mussel contributes one day-3 mean, so groups are independent (no pseudoreplication).
+post_means <- per_mussel_means %>%
+  filter(timepoint == "post") %>%
+  mutate(treatment = factor(treatment, levels = c("control", "OA", "OW", "DO")))
 
-# ChatGPT prompts:
-# create a new dataframe called "thread_plot_OA" that is only data from thread_plot when the column "treatment" is control or OA and the same "mussel" ID is represented in both treatments (as noted in the "mussel" column)
-# create a new dataframe called "thread_plot_OA_mean" from "thread_plot" that produces the mean and standard deviation of the columns "max_force", "pad_area", and "adhesion_kpa"  across unique combinations of "mussel" and "treatment".
+cat("Day-3 per-mussel means, n per arm:\n")
+print(post_means %>% count(treatment))
 
+# Parametric: one-way ANOVA + Tukey HSD
+aov_between <- aov(adh_mean ~ treatment, data = post_means)
+print(summary(aov_between))
+tukey_between <- TukeyHSD(aov_between)
+print(tukey_between)
 
-# filter the data to only include the control and OA treatment
-thread_plot_OA_all <- thread_plot %>% filter(treatment == "control" | treatment == "OA")
+# Non-parametric backup: Kruskal-Wallis (robust to the small, skewed samples)
+print(kruskal.test(adh_mean ~ treatment, data = post_means))
 
-# filter the data to only include the control and OA treatments
-thread_plot_OA_repeated <- thread_plot %>%
-  group_by(mussel) %>%
-  filter(treatment %in% c("control", "OA")) %>%
-  filter(n_distinct(treatment) == 2)
-
-# create a new data frame called thread_plot_OA_mean
-# group the data by mussel
-# filter the data to only include the control and OA treatments
-# group the data by mussel and treatment
-# summarize the data by calculating the mean and sd for max_force, pad_area, and adhesion_kpa
-# rename the columns to include the statistic calculated
-thread_plot_OA_mean <- thread_plot %>%
-  group_by(mussel) %>%
-  filter(treatment %in% c("control", "OA")) %>%
-  group_by(mussel, treatment) %>%
-  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd, se = ~ sd(.x) / sqrt(length(.x))), .names = "{.col}_{.fn}"))
-
-thread_plot_OA_repeated_mean <- thread_plot %>%
-  # group the data by mussel
-  group_by(mussel) %>%
-  # filter the data to only include the control and OA treatments
-  filter(treatment %in% c("control", "OA")) %>%
-  # filter the data to only include mussels that have two treatments
-  filter(n_distinct(treatment) == 2) %>%
-  # group the data by mussel and treatment
-  group_by(mussel, treatment) %>% 
-  # summarize the data by calculating the mean and sd of max_force, pad_area, and adhesion_kpa
-  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd, se = ~ sd(.x) / sqrt(length(.x))), .names = "{.col}_{.fn}"))
-
-
-
-# p1 <- ggplot(thread_plot_OA_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p1
-# 
-# p2 <- ggplot(thread_plot_OA_repeated, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p2
-
-# p3 <- ggplot(thread_plot_OA_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p3
-
-# Generate a range of green shades for the lines
-unique_mussels <- length(unique(thread_plot_OA_mean$mussel))
-green_shades <- colorRampPalette(c("darkgreen", "lightgreen"))(unique_mussels)
-
-# Use position_dodge to ensure alignment between points and error bars
-dodge_position <- position_dodge(width = 0.2)
-
-# Create the plot
-p4 <- ggplot(thread_plot_OA_mean, aes(x = treatment, y = adhesion_kpa_mean, group = as.factor(mussel), color = as.factor(mussel))) +
-      geom_point(size = 3, position = dodge_position) +
-      geom_errorbar(aes(ymin = adhesion_kpa_mean - adhesion_kpa_se, ymax = adhesion_kpa_mean + adhesion_kpa_se), 
-                    width = 0.3, size = 0.8, position = dodge_position) +
-      geom_line(linewidth = 1, position = dodge_position) +
-      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 200)) +
-      scale_color_manual(values = green_shades) +
-      xlab(NULL) + 
-      ylab(NULL) + 
-      my_theme +
-      theme(legend.position = "none")  # Remove legend if each line represents a unique mussel
-
-p4
-
-
-
-# ggsave(file.path(out_dir, "LineGraph_OA_AllMussels_MeanThreads.png"),
-#        plot   = p3,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
-
-ggsave(file.path(out_dir, "LineGraph_OA_OnlyRepeatedMussels_MeanThreads.png"),
-       plot   = p4,
-       dpi    = 1200,
-       device = "png",
-       width  = 4,
-       height = 4,
-       units  = "in")
-
-
+# Save
+write.csv(broom::tidy(aov_between),
+          file.path(out_dir, "STATS_between_arm_day3_ANOVA.csv"), row.names = FALSE)
+write.csv(broom::tidy(tukey_between),
+          file.path(out_dir, "STATS_between_arm_day3_TukeyHSD.csv"), row.names = FALSE)
 ```
 
-### linegraph, repeated measures only, OW
-```{r}
+### Statistics 1b: within-arm before/after, per arm (per-mussel means)
+```{r warning=FALSE}
+# Two complementary questions per arm:
+#   PAIRED  : did the animals measured at both timepoints change? (matches the connecting lines;
+#             uses only paired mussels, so n is small)
+#   2-SAMPLE: does the arm's day-3 distribution differ from the full day-0 baseline pool?
+#             (matches the boxes; uses all baseline and all arm animals)
+# The control arm has no within-subject pairs (baseline cohort T001-T012 differs from the
+# day-3 control cohort T126-T135), so it has no paired test.
 
-# ChatGPT prompts:
-# create a new dataframe called "thread_plot_OW" that is only data from thread_plot when the column "treatment" is control or OW and the same "mussel" ID is represented in both treatments (as noted in the "mussel" column)
-# create a new dataframe called "thread_plot_OW_mean" from "thread_plot" that produces the mean and standard deviation of the columns "max_force", "pad_area", and "adhesion_kpa"  across unique combinations of "mussel" and "treatment".
+baseline_means <- per_mussel_means %>% filter(timepoint == "baseline")
 
+run_arm_tests <- function(trt_code) {
+  post_x <- per_mussel_means %>% filter(timepoint == "post", treatment == trt_code)
+  paired <- inner_join(baseline_means %>% select(mussel, base = adh_mean),
+                       post_x        %>% select(mussel, post = adh_mean),
+                       by = "mussel")
 
-# filter the data to only include the control and OW treatment
-thread_plot_OW_all <- thread_plot %>% filter(treatment == "control" | treatment == "OW")
+  res <- tibble(arm = trt_code,
+                n_pairs   = nrow(paired),
+                n_base    = nrow(baseline_means),
+                n_post    = nrow(post_x),
+                delta_mean = if (nrow(paired) >= 1) mean(paired$post - paired$base) else NA_real_)
 
-# filter the data to only include the control and OW treatments
-thread_plot_OW_repeated <- thread_plot %>%
-  group_by(mussel) %>%
-  filter(treatment %in% c("control", "OW")) %>%
-  filter(n_distinct(treatment) == 2)
+  # Paired tests (need >= 2 pairs)
+  if (nrow(paired) >= 2) {
+    res$paired_t_p   <- t.test(paired$post, paired$base, paired = TRUE)$p.value
+    res$wilcoxon_p   <- suppressWarnings(wilcox.test(paired$post, paired$base, paired = TRUE)$p.value)
+  } else {
+    res$paired_t_p <- NA_real_; res$wilcoxon_p <- NA_real_
+  }
 
-# create a new data frame called thread_plot_OW_mean
-# group the data by mussel
-# filter the data to only include the control and OW treatments
-# group the data by mussel and treatment
-# summarize the data by calculating the mean and sd for max_force, pad_area, and adhesion_kpa
-# rename the columns to include the statistic calculated
-thread_plot_OW_mean <- thread_plot %>%
-  group_by(mussel) %>%
-  filter(treatment %in% c("control", "OW")) %>%
-  group_by(mussel, treatment) %>%
-  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd, se = ~ sd(.x) / sqrt(length(.x))), .names = "{.col}_{.fn}"))
+  # Two-sample tests: baseline pool vs this arm's day-3
+  res$welch_p   <- t.test(post_x$adh_mean, baseline_means$adh_mean, var.equal = FALSE)$p.value
+  res$mannwhit_p <- suppressWarnings(
+    wilcox.test(post_x$adh_mean, baseline_means$adh_mean, paired = FALSE)$p.value)
+  res
+}
 
-thread_plot_OW_repeated_mean <- thread_plot %>%
-  # group the data by mussel
-  group_by(mussel) %>%
-  # filter the data to only include the control and OW treatments
-  filter(treatment %in% c("control", "OW")) %>%
-  # filter the data to only include mussels that have two treatments
-  filter(n_distinct(treatment) == 2) %>%
-  # group the data by mussel and treatment
-  group_by(mussel, treatment) %>% 
-  # summarize the data by calculating the mean and sd of max_force, pad_area, and adhesion_kpa
-  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd, se = ~ sd(.x) / sqrt(length(.x))), .names = "{.col}_{.fn}"))
+within_arm <- bind_rows(lapply(c("OA", "OW", "DO"), run_arm_tests))
+print(as.data.frame(within_arm))
 
-
-
-# p1 <- ggplot(thread_plot_OW_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p1
-# 
-# p2 <- ggplot(thread_plot_OW_repeated, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p2
-
-# p3 <- ggplot(thread_plot_OW_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p3
-
-# Generate a range of green shades for the lines
-unique_mussels <- length(unique(thread_plot_OW_mean$mussel))
-green_shades <- colorRampPalette(c("orangered1", "#fdae61"))(unique_mussels)
-
-# Use position_dodge to ensure alignment between points and error bars
-dodge_position <- position_dodge(width = 0.2)
-
-# Create the plot
-p4 <- ggplot(thread_plot_OW_mean, aes(x = treatment, y = adhesion_kpa_mean, group = as.factor(mussel), color = as.factor(mussel))) +
-      geom_point(size = 3, position = dodge_position) +
-      geom_errorbar(aes(ymin = adhesion_kpa_mean - adhesion_kpa_se, ymax = adhesion_kpa_mean + adhesion_kpa_se), 
-                    width = 0.3, size = 0.8, position = dodge_position) +
-      geom_line(linewidth = 1, position = dodge_position) +
-      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 200)) +
-      scale_color_manual(values = green_shades) +
-      xlab(NULL) + 
-      ylab(NULL) + 
-      my_theme +
-      theme(legend.position = "none")  # Remove legend if each line represents a unique mussel
-
-p4
-
-
-
-# ggsave(file.path(out_dir, "LineGraph_OW_AllMussels_MeanThreads.png"),
-#        plot   = p3,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
-
-ggsave(file.path(out_dir, "LineGraph_OW_OnlyRepeatedMussels_MeanThreads.png"),
-       plot   = p4,
-       dpi    = 1200,
-       device = "png",
-       width  = 4,
-       height = 4,
-       units  = "in")
-
-
+write.csv(within_arm, file.path(out_dir, "STATS_within_arm_beforeafter.csv"), row.names = FALSE)
 ```
 
-### linegraph, repeated measures only, DO
-```{r}
+### Statistics 2: mixed model on all threads (lmer)
+```{r warning=FALSE}
+# Full thread-level model. Random intercept for mussel absorbs (a) multiple threads per
+# mussel x timepoint and (b) the within-mussel correlation across timepoints for paired
+# animals. Fixed effects: arm, timepoint, and their interaction (the interaction is the
+# scientific target: does the baseline -> day-3 change differ by arm?).
+#
+# CAVEAT: the control arm is not paired within-subject (different baseline and day-3 cohorts),
+# so for the control arm "timepoint" is a between-cohort contrast. The clean within-subject
+# evidence is the paired tests in 1b; this model adds the full-data, all-animals view.
 
-# ChatGPT prompts:
-# create a new dataframe called "thread_plot_DO" that is only data from thread_plot when the column "treatment" is control or DO and the same "mussel" ID is represented in both treatments (as noted in the "mussel" column)
-# create a new dataframe called "thread_plot_DO_mean" from "thread_plot" that produces the mean and standard deviation of the columns "max_force", "pad_area", and "adhesion_kpa"  across unique combinations of "mussel" and "treatment".
+dat_lmer <- thread_plot %>% droplevels()
 
+mod <- lmer(adhesion_kpa ~ mussel_trt * timepoint + (1 | mussel), data = dat_lmer)
 
-# filter the data to only include the control and DO treatment
-thread_plot_DO_all <- thread_plot %>% filter(treatment == "control" | treatment == "DO")
+cat("Type III ANOVA (lmerTest default, Satterthwaite df):\n")
+print(anova(mod))
+cat("\nFixed-effect estimates:\n")
+print(summary(mod)$coefficients)
 
-# filter the data to only include the control and DO treatments
-thread_plot_DO_repeated <- thread_plot %>%
-  group_by(mussel) %>%
-  filter(treatment %in% c("control", "DO")) %>%
-  filter(n_distinct(treatment) == 2)
+# Residual diagnostics (adhesion is right-skewed; check before trusting the Gaussian fit)
+qqnorm(resid(mod)); qqline(resid(mod))
+plot(fitted(mod), resid(mod), xlab = "Fitted", ylab = "Residuals"); abline(h = 0, lty = 2)
 
-# create a new data frame called thread_plot_DO_mean
-# group the data by mussel
-# filter the data to only include the control and DO treatments
-# group the data by mussel and treatment
-# summarize the data by calculating the mean and sd for max_force, pad_area, and adhesion_kpa
-# rename the columns to include the statistic calculated
-thread_plot_DO_mean <- thread_plot %>%
-  group_by(mussel) %>%
-  filter(treatment %in% c("control", "DO")) %>%
-  group_by(mussel, treatment) %>%
-  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd, se = ~ sd(.x) / sqrt(length(.x))), .names = "{.col}_{.fn}"))
+# Robustness: same model on log adhesion. Compare the interaction term against the raw fit.
+mod_log <- lmer(log(adhesion_kpa) ~ mussel_trt * timepoint + (1 | mussel), data = dat_lmer)
+cat("\nType III ANOVA, log(adhesion) model:\n")
+print(anova(mod_log))
 
-thread_plot_DO_repeated_mean <- thread_plot %>%
-  # group the data by mussel
-  group_by(mussel) %>%
-  # filter the data to only include the control and DO treatments
-  filter(treatment %in% c("control", "DO")) %>%
-  # filter the data to only include mussels that have two treatments
-  filter(n_distinct(treatment) == 2) %>%
-  # group the data by mussel and treatment
-  group_by(mussel, treatment) %>% 
-  # summarize the data by calculating the mean and sd of max_force, pad_area, and adhesion_kpa
-  summarize(across(c(max_force, pad_area, adhesion_kpa), list(mean = mean, sd = sd, se = ~ sd(.x) / sqrt(length(.x))), .names = "{.col}_{.fn}"))
+# Interpretable contrasts via estimated marginal means
+emm_change <- emmeans(mod, ~ timepoint | mussel_trt)   # post vs baseline, within each arm
+cat("\nWithin-arm change (post - baseline):\n")
+print(pairs(emm_change))
 
+emm_post <- emmeans(mod, ~ mussel_trt, at = list(timepoint = "post"))   # arm means at day 3
+cat("\nArm marginal means at day 3 (post):\n")
+print(emm_post)
+cat("\nArm contrasts at day 3 (post):\n")
+print(pairs(emm_post, adjust = "tukey"))
 
+# Randomization check: arms were assigned at random, so baseline adhesion should be similar.
+emm_base <- emmeans(mod, ~ mussel_trt, at = list(timepoint = "baseline"))
+cat("\nArm marginal means at baseline (randomization check):\n")
+print(emm_base)
 
-# p1 <- ggplot(thread_plot_DO_all, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p1
-# 
-# p2 <- ggplot(thread_plot_DO_repeated, aes(x=treatment, y=adhesion_kpa, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p2
-
-# p3 <- ggplot(thread_plot_DO_mean, aes(x=treatment, y=adhesion_kpa_mean, group=as.factor(mussel))) +
-#       geom_point() +
-#       geom_line(linewidth=1, alpha = 1) +
-#       # facet_wrap(~ID) +
-#       # scale_color_manual(values=c("royalblue4","royalblue1")) +
-#       scale_y_continuous(breaks = seq(0, 150, 50), limits = c(0, 155)) +
-#       # scale_x_continuous(breaks = seq(0, 30, 5), limits = c(0, 32)) +
-#       xlab(NULL) + ylab(NULL) + my_theme
-# 
-# p3
-
-# Generate a range of green shades for the lines
-unique_mussels <- length(unique(thread_plot_DO_mean$mussel))
-green_shades <- colorRampPalette(c("#4B0082", "#9884a3"))(unique_mussels)
-
-# Use position_dodge to ensure alignment between points and error bars
-dodge_position <- position_dodge(width = 0.2)
-
-# Create the plot
-p4 <- ggplot(thread_plot_DO_mean, aes(x = treatment, y = adhesion_kpa_mean, group = as.factor(mussel), color = as.factor(mussel))) +
-      geom_point(size = 3, position = dodge_position) +
-      geom_errorbar(aes(ymin = adhesion_kpa_mean - adhesion_kpa_se, ymax = adhesion_kpa_mean + adhesion_kpa_se), 
-                    width = 0.3, size = 0.8, position = dodge_position) +
-      geom_line(linewidth = 1, position = dodge_position) +
-      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 200)) +
-      scale_color_manual(values = green_shades) +
-      xlab(NULL) + 
-      ylab(NULL) + 
-      my_theme +
-      theme(legend.position = "none")  # Remove legend if each line represents a unique mussel
-
-p4
-
-
-
-# ggsave(file.path(out_dir, "LineGraph_DO_AllMussels_MeanThreads.png"),
-#        plot   = p3,
-#        dpi    = 1200,
-#        device = "png",
-#        width  = 4,
-#        height = 4,
-#        units  = "in")
-
-ggsave(file.path(out_dir, "LineGraph_DO_OnlyRepeatedMussels_MeanThreads.png"),
-       plot   = p4,
-       dpi    = 1200,
-       device = "png",
-       width  = 4,
-       height = 4,
-       units  = "in")
-
-
-```
-
-
-### Statistical Testing - all treatments, all threads, accounts for repeated sampling
-```{R}
-# Define dataset for analysis, factors
-dat_stat <- thread_plot
-test_me  <- dat_stat$adhesion_kpa
-
-dat_stat$ID         <- factor(dat_stat$mussel)
-dat_stat$trt        <- factor(dat_stat$treatment)
-dat_stat$thread     <- factor(dat_stat$thread)
-dat_stat$pad        <- factor(dat_stat$pad_area)
-
-# Test for normality
-qqnorm(test_me) # check linearity of transformed data
-qqline(test_me)
-norm_test <- shapiro.test(test_me) # p-value fail = good, don't need transformation
-print(norm_test$p.value)
-
-# Normalize data if normality test failed
-if(norm_test$p.value<0.05)     {
-        normalized <- bestNormalize(test_me)
-        test_me <- normalized$x.t # overwrite
-        qqnorm(test_me) # check linearity of transformed data
-        qqline(test_me)
-        print(shapiro.test(test_me))
-        print("transformed!",quote=FALSE)}
-
-dat_stat$response <- test_me
-
-
-# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as random grouping factors.
-# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
-my_test <- aov(response ~ trt, data = dat_stat)
-
-my_test_summary <- summary(my_test)
-summary(my_test)
-
-# Significant interaction observed between timepoint:trt:ploidy. Proceed with HSD test.
-tx <- with(dat_stat, interaction(trt))
-amod <- aov(response ~ tx, data = dat_stat)
-mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
-# 
-# # save output
-# write.table(my_test_summary$`Error: Within`[[1]], file = "stats/respirometry/AOV_respirometry.csv",      row.names = TRUE)
-# write.table(mult_comp$groups,                     file = "stats/respirometry/HSD_test_respirometry.csv", row.names = TRUE)
-
-```
-
-
-### Statistical Testing - multiple observations, OA
-```{R}
-# Define dataset for analysis, factors
-dat_stat <- thread_plot_OA_all
-test_me  <- dat_stat$adhesion_kpa
-
-dat_stat$ID         <- factor(dat_stat$mussel)
-dat_stat$trt        <- factor(dat_stat$treatment)
-dat_stat$thread     <- factor(dat_stat$thread)
-dat_stat$pad        <- factor(dat_stat$pad_area)
-
-# Test for normality
-qqnorm(test_me) # check linearity of transformed data
-qqline(test_me)
-norm_test <- shapiro.test(test_me) # p-value fail = good, don't need transformation
-print(norm_test$p.value)
-
-# Normalize data if normality test failed
-if(norm_test$p.value<0.05)     {
-        normalized <- bestNormalize(test_me)
-        test_me <- normalized$x.t # overwrite
-        qqnorm(test_me) # check linearity of transformed data
-        qqline(test_me)
-        print(shapiro.test(test_me))
-        print("transformed!",quote=FALSE)}
-
-dat_stat$response <- test_me
-
-
-# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as random grouping factors.
-# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
-my_test <- aov(response ~ trt + Error(ID/thread), data = dat_stat)
-
-my_test_summary <- summary(my_test)
-summary(my_test)
-
-# Significant interaction observed between timepoint:trt:ploidy. Proceed with HSD test.
-tx <- with(dat_stat, interaction(trt))
-amod <- aov(response ~ tx, data = dat_stat)
-mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
-# 
-# # save output
-# write.table(my_test_summary$`Error: Within`[[1]], file = "stats/respirometry/AOV_respirometry.csv",      row.names = TRUE)
-# write.table(mult_comp$groups,                     file = "stats/respirometry/HSD_test_respirometry.csv", row.names = TRUE)
-
-```
-
-### Statistical Testing - multiple observations, OW
-```{R}
-# Define dataset for analysis, factors
-dat_stat <- thread_plot_OW_all
-test_me  <- dat_stat$adhesion_kpa
-
-dat_stat$ID         <- factor(dat_stat$mussel)
-dat_stat$trt        <- factor(dat_stat$treatment)
-dat_stat$thread     <- factor(dat_stat$thread)
-dat_stat$pad        <- factor(dat_stat$pad_area)
-
-# Test for normality
-qqnorm(test_me) # check linearity of transformed data
-qqline(test_me)
-norm_test <- shapiro.test(test_me) # p-value fail = good, don't need transformation
-print(norm_test$p.value)
-
-# Normalize data if normality test failed
-if(norm_test$p.value<0.05)     {
-        normalized <- bestNormalize(test_me)
-        test_me <- normalized$x.t # overwrite
-        qqnorm(test_me) # check linearity of transformed data
-        qqline(test_me)
-        print(shapiro.test(test_me))
-        print("transformed!",quote=FALSE)}
-
-dat_stat$response <- test_me
-
-
-# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as random grouping factors.
-# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
-my_test <- aov(response ~ trt + Error(ID/thread), data = dat_stat)
-
-my_test_summary <- summary(my_test)
-summary(my_test)
-
-# Significant interaction observed between timepoint:trt:ploidy. Proceed with HSD test.
-tx <- with(dat_stat, interaction(trt))
-amod <- aov(response ~ tx, data = dat_stat)
-mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
-# 
-# # save output
-# write.table(my_test_summary$`Error: Within`[[1]], file = "stats/respirometry/AOV_respirometry.csv",      row.names = TRUE)
-# write.table(mult_comp$groups,                     file = "stats/respirometry/HSD_test_respirometry.csv", row.names = TRUE)
-
-```
-
-### Statistical Testing - multiple observations, DO
-```{R}
-# Define dataset for analysis, factors
-dat_stat <- thread_plot_DO
-test_me  <- dat_stat$adhesion_kpa
-
-dat_stat$ID         <- factor(dat_stat$mussel)
-dat_stat$trt        <- factor(dat_stat$treatment)
-dat_stat$thread     <- factor(dat_stat$thread)
-dat_stat$pad        <- factor(dat_stat$pad_area)
-
-# Test for normality
-qqnorm(test_me) # check linearity of transformed data
-qqline(test_me)
-norm_test <- shapiro.test(test_me) # p-value fail = good, don't need transformation
-print(norm_test$p.value)
-
-# Normalize data if normality test failed
-if(norm_test$p.value<0.05)     {
-        normalized <- bestNormalize(test_me)
-        test_me <- normalized$x.t # overwrite
-        qqnorm(test_me) # check linearity of transformed data
-        qqline(test_me)
-        print(shapiro.test(test_me))
-        print("transformed!",quote=FALSE)}
-
-dat_stat$response <- test_me
-
-
-# This will generate an ANOVA model with "treatment" as the fixed effect and "mussel" and "thread" as random grouping factors.
-# The "Error" term specifies that you want a within-subjects design, with the "mussel" and "thread" factors nested within each other.
-my_test <- aov(response ~ trt + Error(ID/thread), data = dat_stat)
-
-my_test_summary <- summary(my_test)
-summary(my_test)
-
-# Significant interaction observed between timepoint:trt:ploidy. Proceed with HSD test.
-tx <- with(dat_stat, interaction(trt))
-amod <- aov(response ~ tx, data = dat_stat)
-mult_comp <- HSD.test(amod, "tx", group=TRUE, console=TRUE)
-# 
-# # save output
-# write.table(my_test_summary$`Error: Within`[[1]], file = "stats/respirometry/AOV_respirometry.csv",      row.names = TRUE)
-# write.table(mult_comp$groups,                     file = "stats/respirometry/HSD_test_respirometry.csv", row.names = TRUE)
-
+# Save
+write.csv(broom.mixed::tidy(mod, effects = "fixed"),
+          file.path(out_dir, "STATS_lmer_fixed_effects.csv"), row.names = FALSE)
+write.csv(as.data.frame(pairs(emm_change)),
+          file.path(out_dir, "STATS_lmer_within_arm_change.csv"), row.names = FALSE)
+write.csv(as.data.frame(pairs(emm_post, adjust = "tukey")),
+          file.path(out_dir, "STATS_lmer_arm_contrasts.csv"), row.names = FALSE)
 ```

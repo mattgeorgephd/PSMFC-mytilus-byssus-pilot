@@ -295,12 +295,13 @@ test_gene_mixed_adj <- function(loc, metric) {
   ev <- data.frame(mussel = paired$mussel,
                    expr = as.numeric(vp[match(loc, rownames(vp)), paired$sample]))
   dat <- thr_threads %>% inner_join(ev, by = "mussel") %>%
-    left_join(base_lookup, by = "mussel") %>%
-    rename(base = !!bcol)
-  dat <- dat[stats::complete.cases(dat[, c(metric, "expr", "treatment", "mussel", "base")]), ]
+    left_join(base_lookup, by = "mussel")
+  dat$base_val <- dat[[bcol]]                       # was: rename(base = !!bcol)
+  keep_cols <- c(metric, "expr", "treatment", "mussel", "base_val")
+  dat <- dat[stats::complete.cases(dat[, keep_cols]), ]
   if (dplyr::n_distinct(dat$mussel) < 6) return(NULL)
   fm <- tryCatch(suppressWarnings(
-          lmerTest::lmer(reformulate(c("expr", "treatment", "base", "(1|mussel)"),
+          lmerTest::lmer(reformulate(c("expr", "treatment", "base_val", "(1|mussel)"),
                                      response = metric), data = dat, REML = TRUE)),
         error = function(e) NULL)
   if (is.null(fm)) return(NULL)
@@ -309,6 +310,7 @@ test_gene_mixed_adj <- function(loc, metric) {
   tibble(LOC_ID = loc, metric = metric, n_mussel = dplyr::n_distinct(dat$mussel),
          slope = co["expr", "Estimate"], p = co["expr", "Pr(>|t|)"])
 }
+
 res_adj <- map_dfr(metrics, function(mt) map_dfr(candidates$LOC_ID, ~ test_gene_mixed_adj(.x, mt))) %>%
   group_by(metric) %>% mutate(q = p.adjust(p, "BH")) %>% ungroup() %>%
   left_join(annot, by = "LOC_ID") %>% arrange(metric, p)

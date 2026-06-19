@@ -33,7 +33,7 @@ TISSUE      <- "F"                  # "F" foot (default) or "G" gill
 TREATMENTS  <- c("OA", "OW", "DO")  # contrasts to tabulate
 N_TOP       <- 25                   # genes per direction
 SIG_ONLY    <- TRUE                 # rank within significant DEGs (padj<0.05); FALSE = all genes
-USE_RAW_THREAD_SET <- FALSE         # FALSE = mussels in the clean summary; TRUE = any raw (T) tensometer file
+USE_RAW_THREAD_SET <- TRUE         # FALSE = mussels in the clean summary; TRUE = any raw (T) tensometer file
 
 ## ---- portable paths ----------------------------------------------------------------
 find_repo_root <- function(start = here::here()) {
