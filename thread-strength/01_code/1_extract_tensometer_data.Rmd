@@ -18,7 +18,7 @@ Load packages; set ggplot theme
 rm(list=ls())
 
 ## Load Packages
-load.lib<-c("readxl","tidyverse","openxlsx","EnvStats","here") # List of required packages
+load.lib<-c("readxl","tidyverse","openxlsx","EnvStats","here", "EnvStats") # List of required packages
 install.lib <- load.lib[!load.lib %in% installed.packages()] # Select missing packages
 for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missing packages + dependencies
 sapply(load.lib,require,character=TRUE) # Load all packages.
