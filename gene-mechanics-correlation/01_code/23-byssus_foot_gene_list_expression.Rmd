@@ -28,7 +28,7 @@ naive "peroxidase|amine oxidase" filter wrongly pulls in.
 Reads script 22's `rna_thread_manifest.csv` for the mussel set, so run 22 first. All paths resolve automatically.
 
 ```{r config}
-suppressPackageStartupMessages({ library(tidyverse); library(readxl); library(DESeq2); library(here) })
+suppressPackageStartupMessages({ library(DESeq2); library(readxl); library(here); library(tidyverse) })
 
 ## ---- analysis options --------------------------------------------------------------
 TISSUE      <- "F"                 # "F" foot (default) or "G" gill
@@ -85,7 +85,7 @@ byss <- ann %>% mutate(category = category) %>% filter(!is.na(category)) %>%
   mutate(hi_conf = pident >= 40 & evalue < 1e-10)
 
 cat("Byssus/foot genes:", nrow(byss), "| high-confidence:", sum(byss$hi_conf, na.rm = TRUE), "\n")
-byss %>% count(category) %>% as.data.frame() %>% print()
+byss %>% dplyr::count(category) %>% as.data.frame() %>% print()
 ```
 
 ---
@@ -175,7 +175,7 @@ write_csv(table_out, file.path(OUT_DIR, sprintf("byssus_gene_expression_%s.csv",
 
 ## companion: per-mussel treatment + thread mechanics
 mech <- thr_raw %>% filter(treatment %in% c("OA","OW","DO")) %>%
-  group_by(mussel) %>% summarise(treatment = first(treatment), n_plaques = n(),
+  group_by(mussel) %>% summarise(treatment = dplyr::first(treatment), n_plaques = n(),
             max_force = round(mean(max_force, na.rm=TRUE),3),
             adhesion_kpa = round(mean(adhesion_kpa, na.rm=TRUE),1),
             pad_area = round(mean(pad_area, na.rm=TRUE),2), .groups="drop")
@@ -184,7 +184,7 @@ sample_meta <- tibble(sample = samples_have, mussel = sub(paste0(TISSUE,"$"),"",
 write_csv(sample_meta, file.path(OUT_DIR, sprintf("sample_metadata_%s.csv", TISSUE)))
 
 cat("\nGene counts in final table by category:\n")
-table_out %>% count(category) %>% as.data.frame() %>% print()
+table_out %>% dplyr::count(category) %>% as.data.frame() %>% print()
 cat("\nByssus genes that respond to stress (n_DE>0):\n")
 table_out %>% filter(n_DE > 0) %>%
   select(category, protein_name, ends_with("_log2FC")) %>% as.data.frame() %>% print()

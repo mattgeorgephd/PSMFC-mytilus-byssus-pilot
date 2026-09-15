@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 This script reads script 20's `annotation_map.csv` handoff, so run 20 first. All paths resolve automatically.
 
 ```{r config}
-suppressPackageStartupMessages({ library(tidyverse); library(readxl); library(DESeq2); library(here) })
+suppressPackageStartupMessages({ library(DESeq2); library(readxl); library(here); library(tidyverse) })
 
 ## ---- analysis options --------------------------------------------------------------
 TISSUE      <- "F"                  # "F" foot (default) or "G" gill
@@ -85,15 +85,17 @@ ti <- read.table(file.path(DE_DIR, "03_analyses", "DEG_lists", "Foot", "F_treatm
 ## thread summary presence
 thr_raw <- read_excel(THREAD_FILE,
                       sheet = "data") %>% mutate(mn = norm_id(mussel))
-post_n <- thr_raw %>% filter(treatment %in% c("OA","OW","DO")) %>% count(mn, name = "in_summary_post")
-base_n <- thr_raw %>% filter(treatment == "control") %>% count(mn, name = "in_summary_base")
+post_n <- thr_raw %>% dplyr::filter(treatment %in% c("OA","OW","DO")) %>%
+  dplyr::count(mn, name = "in_summary_post")
+base_n <- thr_raw %>% dplyr::filter(treatment == "control") %>%
+  dplyr::count(mn, name = "in_summary_base")
 
 ## raw tensometer file counts (mussel -> n files), normalised IDs
 count_raw <- function(sub) {
   fp <- file.path(RAW_DIR, sub)
   ids <- str_extract(list.files(fp), "^T\\d+")
   ids <- ids[!is.na(ids)]
-  tibble(mn = vapply(ids, norm_id, character(1))) %>% count(mn, name = paste0("raw_", sub))
+  tibble(mn = vapply(ids, norm_id, character(1))) %>% dplyr::count(mn, name = paste0("raw_", sub))
 }
 raw_treat <- count_raw("treatment"); raw_ctrl <- count_raw("control")
 
