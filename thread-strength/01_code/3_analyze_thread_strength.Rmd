@@ -9,31 +9,49 @@ output: html_document
 PURPOSE
   Analyze byssal-thread plaque adhesion (kPa) for Mytilus trossulus before and
   after a 3-day stress exposure (ocean acidification OA, ocean warming OW,
-  hypoxia DO), relative to a day-0 baseline and a day-3 control arm.
+  hypoxia DO), relative to a pre-exposure baseline and a day-3 control arm.
+
+INPUT
+  03_analyses/thread-summary.xlsx, sheet "data" - the hand-curated table.
+  Produced by curating 03_analyses/assemble-thread-summary/thread-summary-candidate.xlsx
+  (script 2), which in turn reads script 1's extraction output.
 
 DATA MODEL (read this before editing the filters below)
-  The input table mixes three columns that are easy to confuse:
-    - group       : "control" = day-0 BASELINE (pre-stress); "treatment" = day-3 (post-stress).
-                    This is the real before/after axis.
-    - mussel_trt  : the arm each mussel was ASSIGNED to (its fate): control, OA, OW, DO.
-                    Each mussel maps to exactly one fate (verified).
-    - treatment   : the condition under which a given THREAD was made. Every baseline
-                    thread is labeled "control" regardless of fate, and the control-arm
-                    day-3 threads are ALSO labeled "control". So `treatment == "control"`
-                    is a mixture of (i) day-0 baselines from all arms and (ii) day-3
-                    control-arm threads (mussels T126-T135).
-  Because of that overload, all filtering in this script is done on `group` + `mussel_trt`,
-  and a clean `timepoint` factor ("baseline"/"post") is derived from `group`.
+  Three columns, three different grains. They are easy to confuse, so each is named
+  for what it describes:
+    - thread_trt : what the THREAD was built in.
+                   lab_control | baseline | treatment_control | OA | OW | DO
+    - phase      : lab  = never entered the experimental system (day 0)
+                   pre  = shared holding system, before exposure (day 1)
+                   post = during the exposure (day 3)
+                   Derived from thread_trt if the column is absent.
+    - mussel_trt : the arm the ANIMAL was assigned to (its fate).
+                   lab_control | control | OA | OW | DO
+                   This is a DESTINY label. For a `pre` thread it describes the
+                   animal's future, not its past: a baseline thread from an OA
+                   animal is NOT an OA thread.
 
-FIGURE CONVENTION FOR THE LINE+BOX PANELS (one per stress arm)
-  - Left cluster  ("control") = ALL day-0 baselines (group == "control"); the SAME 54 mussels
-    appear on every panel (this is the chosen "population baseline" reference).
-  - Right cluster (the arm)   = only mussels that produced threads in that arm at day 3.
-  - A connecting line is drawn only for mussels present on BOTH sides (true repeated measures);
-    unpaired mussels appear as a single point with no line.
-  - A boxplot of the per-mussel means flanks each cluster: control box to the LEFT of the
-    control points, treatment box to the RIGHT of the treatment points, both offset so they
-    never overlap the points or cross the connecting lines.
+  `phase` has THREE levels on purpose. The previous version derived a binary
+  timepoint from a `group` column whose "control" value pooled the day-0
+  lab-reference animals with the day-1 pre-exposure baselines. That put 11
+  animals which never entered the experimental system into a 54-animal
+  "baseline" reference pool. See INCLUDE_LAB_REFERENCE below.
+
+  The retired `group` column is not used. It was fully recoverable from
+  thread_trt, and its value "control" collided with both
+  mussel_trt == "control" and thread_trt == "treatment_control".
+
+FIGURE CONVENTION FOR THE LINE+BOX PANELS (one per arm)
+  - Left cluster  = the baseline reference pool (see INCLUDE_LAB_REFERENCE);
+    the SAME mussels appear on every panel.
+  - Right cluster = only mussels that produced threads in that arm at day 3.
+  - A connecting line is drawn only for mussels present on BOTH sides (true
+    repeated measures); unpaired mussels appear as a single point with no line.
+  - A boxplot of the per-mussel means flanks each cluster, offset so it never
+    overlaps the points or crosses the connecting lines.
+  - A panel is now built for the CONTROL arm too, not only OA/OW/DO. Whether it
+    has connecting lines depends on whether the T126-T135 baselines have been
+    curated with a plaque area; the script reports the pair count either way.
 -->
 
 ```{r setup, include=FALSE}
@@ -45,10 +63,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Clear workspace
 rm(list = ls())
 
-## Load packages (auto-install any that are missing)
-load.lib <- c("readxl", "tidyverse", "bestNormalize", "agricolae",
-              "nlme", "multcomp", "rstatix", "lme4", "lmerTest",
-              "emmeans", "broom", "broom.mixed", "colorspace", "here")
+## Load packages (auto-install any that are missing).
+## bestNormalize, agricolae, nlme, multcomp and rstatix were declared by the previous
+## version but never called; they are dropped so a fresh machine does not install five
+## packages this script has no use for.
+load.lib <- c("readxl", "tidyverse", "lme4", "lmerTest", "emmeans",
+              "broom", "broom.mixed", "colorspace", "here")
               # emmeans: lmer post-hoc contrasts; broom/broom.mixed: tidy stats output;
               # colorspace: lightened violin fills in p2
 install.lib <- load.lib[!load.lib %in% installed.packages()]
@@ -72,11 +92,15 @@ my_theme <- theme(line             = element_line(linewidth = 1.2),
                   legend.key       = element_blank(),
                   legend.position  = "none")
 
-## Treatment palette (kept from prior version)
-treatment_colors <- c("control" = "#5DADE2",   # blue
-                      "OW"      = "#fdae61",    # orange
-                      "OA"      = "#4CAF50",    # green
-                      "DO"      = "#9884a3")    # purple
+## Palette, keyed on thread_trt. `baseline` keeps the blue the old pooled "control"
+## level used, so the pre-exposure cluster reads the same as before; the day-3 control
+## arm gets its own lighter blue so the two are never mistaken for each other.
+treatment_colors <- c("lab_control"       = "#B0BEC5",   # grey: outside the experiment
+                      "baseline"          = "#5DADE2",   # blue
+                      "treatment_control" = "#7FB3D5",   # lighter blue
+                      "OW"                = "#fdae61",   # orange
+                      "OA"                = "#4CAF50",   # green
+                      "DO"                = "#9884a3")   # purple
 ```
 
 ```{r}
@@ -85,78 +109,179 @@ out_dir <- here::here("03_analyses", "analyze-thread-strength")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
+### Configuration
+```{r}
+# Should the day-0 lab-reference animals (phase == "lab", mussel_trt == "lab_control")
+# count as part of the BASELINE REFERENCE POOL?
+#
+#   FALSE (default) - the pool is the day-1 pre-exposure threads only. These animals
+#                     went on to be exposed, so a before/after contrast against them
+#                     isolates the stressor.
+#   TRUE            - reproduces the previous behaviour, where the pool was 43
+#                     pre-exposure animals PLUS 11 lab-reference animals that never
+#                     entered the experimental system. That confounds "effect of the
+#                     stressor" with "effect of being in the system at all".
+#
+# This toggle affects the line+box left cluster and the two-sample tests in 1b only.
+# It does NOT affect the paired tests (lab animals have no day-3 pull, so they never
+# pair) and it does NOT affect the mixed model, which is always restricted to
+# phase %in% c("pre", "post").
+INCLUDE_LAB_REFERENCE <- FALSE
+```
+
 ### Load data set; derive adhesion and timepoint
 ```{r}
-# Load thread-level table
-thread_plot <- read_excel(here::here("02_data", "thread-summary-trossulus-clean.xlsx"),
+thread_plot <- read_excel(here::here("03_analyses", "thread-summary.xlsx"),
                           sheet = "data", col_names = TRUE)
 
-# Adhesion strength (kPa) = peak force (N) / pad area (mm^2) * 1000.
-# Recomputed here so the script does not depend on the spreadsheet's cached formula column.
+# --- Schema normalisation -------------------------------------------------------------
+# Accepts the curated file under either the old or the new column names, so this script
+# keeps working across the rename. `mussel`/`thread`/`thread_trt` are the names used below.
+ren <- c(mussel_ID = "mussel", thread_num = "thread", treatment = "thread_trt")
+for (from in names(ren)) {
+  to <- ren[[from]]
+  if (from %in% names(thread_plot) && !to %in% names(thread_plot))
+    names(thread_plot)[names(thread_plot) == from] <- to
+}
+
+need <- c("mussel", "thread", "thread_trt", "mussel_trt", "max_force", "pad_area")
+if (length(setdiff(need, names(thread_plot))) > 0)
+  stop("thread-summary.xlsx is missing required column(s): ",
+       paste(setdiff(need, names(thread_plot)), collapse = ", "),
+       "\nColumns present: ", paste(names(thread_plot), collapse = ", "))
+
+# `phase` is fully determined by thread_trt, so derive it if the curated file predates it.
+if (!"phase" %in% names(thread_plot)) {
+  thread_plot$phase <- dplyr::case_when(
+    thread_plot$thread_trt == "lab_control" ~ "lab",
+    thread_plot$thread_trt == "baseline"    ~ "pre",
+    TRUE                                    ~ "post")
+  message("No `phase` column found; derived from thread_trt.")
+}
+
+# Canonical tag, so `mussel` joins regardless of how it was written.
+norm_id <- function(x) {
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
+}
+thread_plot$mussel <- norm_id(thread_plot$mussel)
+
+# --- Adhesion -------------------------------------------------------------------------
+# kPa = N / mm^2 * 1000. Recomputed here so the script does not depend on the
+# spreadsheet's cached formula column.
 thread_plot$adhesion_kpa <- thread_plot$max_force / thread_plot$pad_area * 1000
 
-# Derive a clean before/after axis from `group` (see DATA MODEL note at top).
-thread_plot$timepoint <- factor(ifelse(thread_plot$group == "control", "baseline", "post"),
+# Drop rows with no plaque measurement, LOUDLY. Previously these passed through as NA and
+# were silently discarded by each model, so the n behind a contrast was never visible.
+n_all  <- nrow(thread_plot)
+no_pad <- thread_plot %>% filter(is.na(adhesion_kpa))
+if (nrow(no_pad) > 0) {
+  message(nrow(no_pad), " of ", n_all,
+          " thread(s) have no pad_area and cannot yield adhesion_kpa; excluded.")
+  no_pad %>% count(thread_trt, name = "threads_dropped") %>% knitr::kable() %>% print()
+}
+thread_plot <- thread_plot %>% filter(!is.na(adhesion_kpa))
+
+# --- Factors and the before/after axis -------------------------------------------------
+# `timepoint` is the two-level axis the models use, and it is deliberately NOT defined for
+# phase == "lab": those animals were never in the experimental system, so they have no
+# before/after position. They stay in the data as their own descriptive group.
+thread_plot$timepoint <- factor(dplyr::case_when(thread_plot$phase == "pre"  ~ "baseline",
+                                                 thread_plot$phase == "post" ~ "post",
+                                                 TRUE                        ~ NA_character_),
                                 levels = c("baseline", "post"))
 
-# Factors. `treatment` keeps the analysis/plot order; `mussel_trt` uses control as the
-# reference level so the lmer interaction reads as "change relative to the control arm".
-thread_plot$treatment  <- factor(thread_plot$treatment,  levels = c("control", "OW", "OA", "DO"))
-thread_plot$mussel_trt <- factor(thread_plot$mussel_trt, levels = c("control", "OA", "OW", "DO"))
-thread_plot$mussel     <- factor(thread_plot$mussel)
-thread_plot$thread     <- factor(thread_plot$thread)
+thread_trt_levels <- c("lab_control", "baseline", "treatment_control", "OW", "OA", "DO")
+thread_plot$thread_trt <- factor(thread_plot$thread_trt,
+                                 levels = intersect(thread_trt_levels,
+                                                    unique(thread_plot$thread_trt)))
 
-# Quick structural check (printed once): every mussel should map to exactly one fate.
-stopifnot(all(thread_plot %>% group_by(mussel) %>%
-                summarise(n_fate = n_distinct(mussel_trt), .groups = "drop") %>% pull(n_fate) == 1))
+# `mussel_trt` uses control as the reference level so the lmer interaction reads as
+# "change relative to the control arm".
+mussel_trt_levels <- c("control", "OA", "OW", "DO", "lab_control")
+unknown_arm <- setdiff(unique(thread_plot$mussel_trt), mussel_trt_levels)
+if (length(unknown_arm) > 0)
+  stop("Unrecognised mussel_trt value(s): ", paste(unknown_arm, collapse = ", "),
+       "\nAdd them to `mussel_trt_levels` rather than letting factor() silently NA them.")
+thread_plot$mussel_trt <- factor(thread_plot$mussel_trt,
+                                 levels = intersect(mussel_trt_levels,
+                                                    unique(thread_plot$mussel_trt)))
+
+thread_plot$mussel <- factor(thread_plot$mussel)
+thread_plot$thread <- factor(thread_plot$thread)
+
+# Structural check: every mussel maps to exactly one fate.
+bad_fate <- thread_plot %>% group_by(mussel) %>%
+  summarise(n_fate = n_distinct(mussel_trt), .groups = "drop") %>% filter(n_fate != 1)
+if (nrow(bad_fate) > 0)
+  stop("Mussel(s) carrying more than one mussel_trt: ",
+       paste(bad_fate$mussel, collapse = ", "))
+
+cat("Threads analysed:", nrow(thread_plot), "| mussels:", n_distinct(thread_plot$mussel), "\n")
+thread_plot %>% count(phase, thread_trt, mussel_trt) %>% knitr::kable()
 ```
 
 ### Per-mussel summaries (the unit of replication for figures and classic tests)
 ```{r message=FALSE}
-# Collapse threads to one adhesion summary per mussel x timepoint x treatment.
-# Within a timepoint a mussel carries a single treatment label, so this yields one row
-# per mussel per timepoint. SE is NA for singletons (1 thread); those points get no error bar.
+# Collapse threads to one adhesion summary per mussel x thread_trt. Within a phase a mussel
+# carries a single thread_trt, so this yields one row per mussel per phase.
+# SE is NA for singletons (1 thread); those points get no error bar.
 per_mussel_means <- thread_plot %>%
-  group_by(mussel, timepoint, treatment) %>%
+  group_by(mussel, phase, timepoint, thread_trt, mussel_trt) %>%
   summarise(adh_mean = mean(adhesion_kpa),
             adh_sd   = sd(adhesion_kpa),
             n        = n(),
             adh_se   = adh_sd / sqrt(n),
             .groups  = "drop")
 
-# Fixed horizontal offset per mussel, computed ONCE over all mussels so the control
-# cluster looks identical across the three arm panels. Used only for point/line placement.
+# THE BASELINE REFERENCE POOL. One definition, used by the line+box panels and the
+# two-sample tests, so the figures and the p-values can never disagree about who is in it.
+baseline_pool <- per_mussel_means %>%
+  filter(phase == "pre" | (INCLUDE_LAB_REFERENCE & phase == "lab"))
+
+cat("Baseline reference pool: ", n_distinct(baseline_pool$mussel), " mussels (",
+    if (INCLUDE_LAB_REFERENCE) "pre-exposure + lab-reference" else "pre-exposure only",
+    ").\n", sep = "")
+baseline_pool %>% count(phase, thread_trt, name = "mussels") %>% knitr::kable()
+
+# Fixed horizontal offset per mussel, computed ONCE over all mussels so the baseline
+# cluster looks identical across the arm panels. Used only for point/line placement.
 set.seed(1)
 mussel_offsets <- tibble(mussel = levels(thread_plot$mussel),
                          xoff   = runif(nlevels(thread_plot$mussel), -0.08, 0.08))
 ```
 
-### Distribution plots: adhesion by treatment (manuscript Fig. "all threads" / "by individual")
+### Distribution plots: adhesion by thread treatment
 ```{r warning=FALSE}
 # These four panels summarize the distribution of adhesion. p1 (all threads) and
 # p3 (per-mussel means) correspond to the two manuscript panels; p2 and p4 restrict to
 # mussels measured at BOTH timepoints (true repeated measures).
 #
-# NOTE: x here is the `treatment` column, so its "control" bar pools day-0 baselines (all
-# arms) with day-3 control-arm threads. These panels are descriptive; the before/after
-# structure is shown properly by the line+box panels further down.
+# x is `thread_trt`, so each bar is one condition a thread was actually built in. The
+# previous version plotted a `treatment` column whose "control" bar POOLED day-0/day-1
+# baselines with day-3 control-arm threads; `baseline` and `treatment_control` are now
+# separate bars. Compare against the old figures with that in mind.
 
 # Mussels measured at both baseline and post-stress (repeated-measures subset).
 thread_plot_repeated <- thread_plot %>%
   group_by(mussel) %>%
-  filter(n_distinct(timepoint) == 2) %>%
+  filter(n_distinct(timepoint[!is.na(timepoint)]) == 2) %>%
   ungroup()
 
-# Per-mussel means, all mussels and repeated-only, for the mean-based panels.
 thread_plot_all_mean <- per_mussel_means
 thread_plot_repeated_mean <- per_mussel_means %>%
   group_by(mussel) %>%
-  filter(n_distinct(timepoint) == 2) %>%
+  filter(n_distinct(timepoint[!is.na(timepoint)]) == 2) %>%
   ungroup()
 
+cat("Repeated-measures mussels (both timepoints):",
+    n_distinct(thread_plot_repeated$mussel), "\n")
+
 # p1: all threads, violin + box + jittered points
-p1 <- ggplot(thread_plot, aes(x = treatment, y = adhesion_kpa)) +
-      geom_violin(aes(fill = treatment), color = "black", linewidth = 1.2, bw = 12) +
+p1 <- ggplot(thread_plot, aes(x = thread_trt, y = adhesion_kpa)) +
+      geom_violin(aes(fill = thread_trt), color = "black", linewidth = 1.2, bw = 12) +
       geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = NA,
                    width = 0.2, notch = FALSE, varwidth = FALSE, alpha = 0.8, coef = 0) +
       geom_point(position = position_jitter(width = .03, seed = 0), size = 5, alpha = .1) +
@@ -164,12 +289,13 @@ p1 <- ggplot(thread_plot, aes(x = treatment, y = adhesion_kpa)) +
                  stroke = .7, shape = 1, color = "black") +
       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
       scale_fill_manual(values = treatment_colors) +
-      xlab(NULL) + ylab(NULL) + my_theme
+      xlab(NULL) + ylab(NULL) + my_theme +
+      theme(axis.text.x = element_text(size = 12, angle = 25, hjust = 1))
 p1
 
 # p2: repeated-measures mussels only, all threads
-p2 <- ggplot(thread_plot_repeated, aes(x = treatment, y = adhesion_kpa)) +
-      geom_violin(aes(fill = treatment,
+p2 <- ggplot(thread_plot_repeated, aes(x = thread_trt, y = adhesion_kpa)) +
+      geom_violin(aes(fill = thread_trt,
                       fill = after_scale(colorspace::lighten(fill, .5))),
                   color = "black", linewidth = 1.2, bw = 12) +
       geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = NA,
@@ -179,23 +305,26 @@ p2 <- ggplot(thread_plot_repeated, aes(x = treatment, y = adhesion_kpa)) +
                  stroke = .7, shape = 1, color = "black") +
       scale_fill_manual(values = treatment_colors) +
       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
-      xlab(NULL) + ylab(NULL) + my_theme
+      xlab(NULL) + ylab(NULL) + my_theme +
+      theme(axis.text.x = element_text(size = 12, angle = 25, hjust = 1))
 p2
 
 # p3: all mussels, per-mussel means
-p3 <- ggplot(thread_plot_all_mean, aes(x = treatment, y = adh_mean)) +
+p3 <- ggplot(thread_plot_all_mean, aes(x = thread_trt, y = adh_mean)) +
       geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = 16,
                    notch = FALSE, varwidth = TRUE, alpha = 0.8) +
       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
-      xlab(NULL) + ylab(NULL) + my_theme
+      xlab(NULL) + ylab(NULL) + my_theme +
+      theme(axis.text.x = element_text(size = 11, angle = 25, hjust = 1))
 p3
 
 # p4: repeated-measures mussels only, per-mussel means
-p4 <- ggplot(thread_plot_repeated_mean, aes(x = treatment, y = adh_mean)) +
+p4 <- ggplot(thread_plot_repeated_mean, aes(x = thread_trt, y = adh_mean)) +
       geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = 16,
                    notch = FALSE, varwidth = TRUE, alpha = 0.8) +
       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
-      xlab(NULL) + ylab(NULL) + my_theme
+      xlab(NULL) + ylab(NULL) + my_theme +
+      theme(axis.text.x = element_text(size = 11, angle = 25, hjust = 1))
 p4
 
 ggsave(file.path(out_dir, "BP_AllMussels_AllThreads.png"),
@@ -203,69 +332,73 @@ ggsave(file.path(out_dir, "BP_AllMussels_AllThreads.png"),
 ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_AllThreads.png"),
        plot = p2, dpi = 1200, device = "png", width = 8, height = 6, units = "in")
 ggsave(file.path(out_dir, "BP_AllMussels_MeanThreads.png"),
-       plot = p3, dpi = 1200, device = "png", width = 4, height = 4, units = "in")
+       plot = p3, dpi = 1200, device = "png", width = 4.5, height = 4, units = "in")
 ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_MeanThreads.png"),
-       plot = p4, dpi = 1200, device = "png", width = 4, height = 4, units = "in")
+       plot = p4, dpi = 1200, device = "png", width = 4.5, height = 4, units = "in")
 ```
 
-### Line + box panels: baseline vs each stress arm
+### Line + box panels: baseline vs each day-3 arm
 ```{r warning=FALSE}
-# One reusable builder, called once per arm (removes the previous copy-paste blocks).
+# One reusable builder, called once per day-3 arm.
 #
 # x-geometry (continuous axis):
-#   control points/lines/error bars live near x = 1 (within +/- 0.08)
-#   arm     points/lines/error bars live near x = 2 (within +/- 0.08)
-#   control box sits at x = 0.60, arm box at x = 2.40 (width 0.22)
+#   baseline points/lines/error bars live near x = 1 (within +/- 0.08)
+#   arm      points/lines/error bars live near x = 2 (within +/- 0.08)
+#   baseline box sits at x = 0.60, arm box at x = 2.40 (width 0.22)
 # so the boxes are always clear of the point clusters and the connecting lines.
 #
-# Coloring: control points/box in control blue; arm points/box in the arm color;
+# Coloring: baseline points/box in baseline blue; arm points/box in the arm color;
 # connecting lines neutral grey so they read as links rather than adding new colors.
+#
+# The control arm gets a panel too. Whether it shows connecting lines depends on whether
+# the day-3 control animals' own baseline threads have been curated with a plaque area;
+# the pair count is printed for every panel so an empty pairing is never silent.
 
 make_line_box <- function(trt_code, trt_label = trt_code,
                           y_breaks = seq(0, 200, 25), y_lim = c(0, 210)) {
 
-  control_col <- treatment_colors[["control"]]
-  trt_col     <- treatment_colors[[trt_code]]
+  base_col <- treatment_colors[["baseline"]]
+  trt_col  <- if (trt_code %in% names(treatment_colors)) treatment_colors[[trt_code]] else "grey60"
   box_w <- 0.22; box_ctrl_x <- 0.60; box_trt_x <- 2.40
 
-  # Control side = ALL day-0 baselines (same 54 mussels on every panel).
-  ctrl <- per_mussel_means %>% filter(timepoint == "baseline") %>%
-          mutate(side = "control", xbase = 1, xbox = box_ctrl_x)
-  # Arm side = mussels that produced threads in this arm at day 3.
-  trt  <- per_mussel_means %>% filter(timepoint == "post", treatment == trt_code) %>%
+  ctrl <- baseline_pool %>% mutate(side = "control", xbase = 1, xbox = box_ctrl_x)
+  trt  <- per_mussel_means %>% filter(phase == "post", thread_trt == trt_code) %>%
           mutate(side = "treatment", xbase = 2, xbox = box_trt_x)
+
+  if (nrow(trt) == 0) {
+    warning("No day-3 threads for arm '", trt_code, "'; panel skipped.", call. = FALSE)
+    return(NULL)
+  }
 
   dat <- bind_rows(ctrl, trt) %>%
          left_join(mussel_offsets, by = "mussel") %>%
          mutate(xpos = xbase + xoff)
 
   # Connecting lines only for mussels present on both sides (true repeated measures).
-  paired_ids <- intersect(ctrl$mussel, trt$mussel)
-  lines_dat  <- dat %>% filter(mussel %in% paired_ids)
+  paired_ids <- intersect(as.character(ctrl$mussel), as.character(trt$mussel))
+  lines_dat  <- dat %>% filter(as.character(mussel) %in% paired_ids)
+  message(trt_code, ": ", nrow(trt), " day-3 mussels, ", length(paired_ids),
+          " paired to a baseline.")
 
   ggplot() +
-    # connecting lines (paired only)
     geom_line(data = lines_dat,
               aes(x = xpos, y = adh_mean, group = mussel),
               color = "grey55", linewidth = 0.6, alpha = 0.8) +
-    # flanking boxplots of the per-mussel means (outliers hidden; points shown separately)
     geom_boxplot(data = filter(dat, side == "control"),
                  aes(x = xbox, y = adh_mean, group = 1),
-                 width = box_w, fill = control_col, color = "black",
+                 width = box_w, fill = base_col, color = "black",
                  linewidth = 0.7, alpha = 0.55, outlier.shape = NA) +
     geom_boxplot(data = filter(dat, side == "treatment"),
                  aes(x = xbox, y = adh_mean, group = 1),
                  width = box_w, fill = trt_col, color = "black",
                  linewidth = 0.7, alpha = 0.55, outlier.shape = NA) +
-    # control points + SE
     geom_errorbar(data = filter(dat, side == "control"),
                   aes(x = xpos, ymin = adh_mean - adh_se, ymax = adh_mean + adh_se),
                   width = 0.04, linewidth = 0.6, color = "black", na.rm = TRUE) +
     geom_point(data = filter(dat, side == "control"),
-               aes(x = xpos, y = adh_mean), size = 3, color = control_col) +
+               aes(x = xpos, y = adh_mean), size = 3, color = base_col) +
     geom_point(data = filter(dat, side == "control"),
                aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") +
-    # arm points + SE
     geom_errorbar(data = filter(dat, side == "treatment"),
                   aes(x = xpos, ymin = adh_mean - adh_se, ymax = adh_mean + adh_se),
                   width = 0.04, linewidth = 0.6, color = "black", na.rm = TRUE) +
@@ -273,28 +406,37 @@ make_line_box <- function(trt_code, trt_label = trt_code,
                aes(x = xpos, y = adh_mean), size = 3, color = trt_col) +
     geom_point(data = filter(dat, side == "treatment"),
                aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") +
-    scale_x_continuous(breaks = c(1, 2), labels = c("control", trt_label),
+    scale_x_continuous(breaks = c(1, 2), labels = c("baseline", trt_label),
                        limits = c(0.4, 2.6)) +
     scale_y_continuous(breaks = y_breaks, limits = y_lim) +
     xlab(NULL) + ylab(NULL) + my_theme
 }
 
-p_OA <- make_line_box("OA"); p_OA
-p_OW <- make_line_box("OW"); p_OW
-p_DO <- make_line_box("DO"); p_DO
+# Build a panel for every day-3 arm actually present in the data.
+day3_arms <- per_mussel_means %>% filter(phase == "post") %>%
+             pull(thread_trt) %>% droplevels() %>% levels()
 
-ggsave(file.path(out_dir, "LineBox_OA_BaselineVsTreatment.png"),
-       plot = p_OA, dpi = 1200, device = "png", width = 4.5, height = 4.5, units = "in")
-ggsave(file.path(out_dir, "LineBox_OW_BaselineVsTreatment.png"),
-       plot = p_OW, dpi = 1200, device = "png", width = 4.5, height = 4.5, units = "in")
-ggsave(file.path(out_dir, "LineBox_DO_BaselineVsTreatment.png"),
-       plot = p_DO, dpi = 1200, device = "png", width = 4.5, height = 4.5, units = "in")
+panel_files <- c(treatment_control = "LineBox_CONTROL_BaselineVsDay3.png",
+                 OA = "LineBox_OA_BaselineVsTreatment.png",
+                 OW = "LineBox_OW_BaselineVsTreatment.png",
+                 DO = "LineBox_DO_BaselineVsTreatment.png")
+
+line_box_panels <- list()
+for (arm in day3_arms) {
+  pnl <- make_line_box(arm, trt_label = if (arm == "treatment_control") "control" else arm)
+  if (is.null(pnl)) next
+  line_box_panels[[arm]] <- pnl
+  print(pnl)
+  fn <- if (arm %in% names(panel_files)) panel_files[[arm]] else paste0("LineBox_", arm, ".png")
+  ggsave(file.path(out_dir, fn), plot = pnl,
+         dpi = 1200, device = "png", width = 4.5, height = 4.5, units = "in")
+}
 ```
 
 <!--
 STATISTICS
 
-  The previous version's tests were not valid for this design and have been replaced:
+  The previous version's tests were not valid for this design and were replaced:
     - The "all treatments" model was aov(response ~ trt) with NO error term, so it treated
       every thread as independent (pseudoreplication) while its comment claimed it accounted
       for repeated sampling.
@@ -304,10 +446,25 @@ STATISTICS
       complete cells, which this partially paired design does not have.
 
   Replacement, in two parts:
-    (1) CLASSIC tests on the per-mussel means (one value per mussel per timepoint), which is
+    (1) CLASSIC tests on the per-mussel means (one value per mussel per phase), which is
         the correct unit of replication and removes pseudoreplication without a mixed model.
     (2) A MIXED-MODEL section (lmer) on the full thread-level data, which uses every thread and
         every animal (paired and unpaired) and tests the arm-by-timepoint interaction directly.
+
+  CHANGED IN THIS VERSION
+    - The baseline reference pool is governed by INCLUDE_LAB_REFERENCE and is FALSE by
+      default, so the day-0 lab-reference animals no longer sit in the reference group for
+      the two-sample tests. This moves welch_p and mannwhit_p relative to earlier figures.
+    - The control arm is no longer hardcoded as unpairable. The previous comment asserted
+      that its baseline cohort was T001-T012 and its day-3 cohort T126-T135, so no animal
+      appeared in both. That was an artifact of pooling the lab-reference animals into the
+      baseline: T126-T135 DO have baseline threads on disk. Pairing is now computed from the
+      data, per arm, and reported. It will be zero until those baseline threads are curated
+      with a plaque area.
+    - The mixed model is always restricted to phase %in% c("pre", "post"). Lab-reference
+      animals have no before/after position, so including them would make the
+      arm-by-timepoint interaction unestimable for their level.
+    - Every table that was previously print-only is now written to disk.
 
   Parametric and non-parametric versions are reported side by side rather than relying on an
   automatic transform, so the reader can see both. Sample sizes are small; results are
@@ -318,69 +475,89 @@ STATISTICS
 ```{r}
 # Each mussel contributes one day-3 mean, so groups are independent (no pseudoreplication).
 post_means <- per_mussel_means %>%
-  filter(timepoint == "post") %>%
-  mutate(treatment = factor(treatment, levels = c("control", "OA", "OW", "DO")))
+  filter(phase == "post") %>%
+  mutate(thread_trt = droplevels(thread_trt))
 
 cat("Day-3 per-mussel means, n per arm:\n")
-print(post_means %>% count(treatment))
+print(post_means %>% count(thread_trt))
 
-# Parametric: one-way ANOVA + Tukey HSD
-aov_between <- aov(adh_mean ~ treatment, data = post_means)
-print(summary(aov_between))
-tukey_between <- TukeyHSD(aov_between)
-print(tukey_between)
+if (n_distinct(post_means$thread_trt) < 2) {
+  message("Fewer than two day-3 arms with data; between-arm tests skipped.")
+} else {
+  # Parametric: one-way ANOVA + Tukey HSD
+  aov_between <- aov(adh_mean ~ thread_trt, data = post_means)
+  print(summary(aov_between))
+  tukey_between <- TukeyHSD(aov_between)
+  print(tukey_between)
 
-# Non-parametric backup: Kruskal-Wallis (robust to the small, skewed samples)
-print(kruskal.test(adh_mean ~ treatment, data = post_means))
+  # Non-parametric backup: Kruskal-Wallis (robust to the small, skewed samples)
+  print(kruskal.test(adh_mean ~ thread_trt, data = post_means))
 
-# Save
-write.csv(broom::tidy(aov_between),
-          file.path(out_dir, "STATS_between_arm_day3_ANOVA.csv"), row.names = FALSE)
-write.csv(broom::tidy(tukey_between),
-          file.path(out_dir, "STATS_between_arm_day3_TukeyHSD.csv"), row.names = FALSE)
+  write.csv(broom::tidy(aov_between),
+            file.path(out_dir, "STATS_between_arm_day3_ANOVA.csv"), row.names = FALSE)
+  write.csv(broom::tidy(tukey_between),
+            file.path(out_dir, "STATS_between_arm_day3_TukeyHSD.csv"), row.names = FALSE)
+  write.csv(broom::tidy(kruskal.test(adh_mean ~ thread_trt, data = post_means)),
+            file.path(out_dir, "STATS_between_arm_day3_KruskalWallis.csv"), row.names = FALSE)
+}
 ```
 
 ### Statistics 1b: within-arm before/after, per arm (per-mussel means)
 ```{r warning=FALSE}
 # Two complementary questions per arm:
-#   PAIRED  : did the animals measured at both timepoints change? (matches the connecting lines;
-#             uses only paired mussels, so n is small)
-#   2-SAMPLE: does the arm's day-3 distribution differ from the full day-0 baseline pool?
-#             (matches the boxes; uses all baseline and all arm animals)
-# The control arm has no within-subject pairs (baseline cohort T001-T012 differs from the
-# day-3 control cohort T126-T135), so it has no paired test.
+#   PAIRED  : did the animals measured at both timepoints change? (matches the connecting
+#             lines; uses only paired mussels, so n is small)
+#   2-SAMPLE: does the arm's day-3 distribution differ from the baseline reference pool?
+#             (matches the boxes; uses all pool animals and all arm animals)
+#
+# Both are computed for EVERY day-3 arm, including the control arm. Nothing is assumed
+# about which arms can be paired; n_pairs is reported and the paired columns are NA when
+# there are fewer than two pairs.
 
-baseline_means <- per_mussel_means %>% filter(timepoint == "baseline")
+baseline_means <- baseline_pool
 
 run_arm_tests <- function(trt_code) {
-  post_x <- per_mussel_means %>% filter(timepoint == "post", treatment == trt_code)
-  paired <- inner_join(baseline_means %>% select(mussel, base = adh_mean),
-                       post_x        %>% select(mussel, post = adh_mean),
+  post_x <- per_mussel_means %>% filter(phase == "post", thread_trt == trt_code)
+  paired <- inner_join(baseline_means %>%
+                         transmute(mussel = as.character(mussel), base = adh_mean),
+                       post_x %>%
+                         transmute(mussel = as.character(mussel), post = adh_mean),
                        by = "mussel")
 
-  res <- tibble(arm = trt_code,
-                n_pairs   = nrow(paired),
-                n_base    = nrow(baseline_means),
-                n_post    = nrow(post_x),
+  res <- tibble(arm        = as.character(trt_code),
+                n_pairs    = nrow(paired),
+                n_base     = nrow(baseline_means),
+                n_post     = nrow(post_x),
                 delta_mean = if (nrow(paired) >= 1) mean(paired$post - paired$base) else NA_real_)
 
   # Paired tests (need >= 2 pairs)
   if (nrow(paired) >= 2) {
-    res$paired_t_p   <- t.test(paired$post, paired$base, paired = TRUE)$p.value
-    res$wilcoxon_p   <- suppressWarnings(wilcox.test(paired$post, paired$base, paired = TRUE)$p.value)
+    res$paired_t_p <- t.test(paired$post, paired$base, paired = TRUE)$p.value
+    res$wilcoxon_p <- suppressWarnings(wilcox.test(paired$post, paired$base, paired = TRUE)$p.value)
   } else {
     res$paired_t_p <- NA_real_; res$wilcoxon_p <- NA_real_
   }
 
-  # Two-sample tests: baseline pool vs this arm's day-3
-  res$welch_p   <- t.test(post_x$adh_mean, baseline_means$adh_mean, var.equal = FALSE)$p.value
-  res$mannwhit_p <- suppressWarnings(
-    wilcox.test(post_x$adh_mean, baseline_means$adh_mean, paired = FALSE)$p.value)
+  # Two-sample tests: baseline pool vs this arm's day-3 (need >= 2 per side)
+  if (nrow(post_x) >= 2 && nrow(baseline_means) >= 2) {
+    res$welch_p    <- t.test(post_x$adh_mean, baseline_means$adh_mean, var.equal = FALSE)$p.value
+    res$mannwhit_p <- suppressWarnings(
+      wilcox.test(post_x$adh_mean, baseline_means$adh_mean, paired = FALSE)$p.value)
+  } else {
+    res$welch_p <- NA_real_; res$mannwhit_p <- NA_real_
+  }
   res
 }
 
-within_arm <- bind_rows(lapply(c("OA", "OW", "DO"), run_arm_tests))
+within_arm <- bind_rows(lapply(day3_arms, run_arm_tests)) %>%
+  mutate(baseline_pool = if (INCLUDE_LAB_REFERENCE) "pre + lab" else "pre only")
 print(as.data.frame(within_arm))
+
+unpaired_arms <- within_arm %>% filter(n_pairs < 2) %>% pull(arm)
+if (length(unpaired_arms) > 0)
+  message("Arm(s) with fewer than 2 within-subject pairs, so no paired test: ",
+          paste(unpaired_arms, collapse = ", "),
+          ". Check whether their baseline threads simply lack a plaque measurement.")
 
 write.csv(within_arm, file.path(out_dir, "STATS_within_arm_beforeafter.csv"), row.names = FALSE)
 ```
@@ -392,27 +569,62 @@ write.csv(within_arm, file.path(out_dir, "STATS_within_arm_beforeafter.csv"), ro
 # animals. Fixed effects: arm, timepoint, and their interaction (the interaction is the
 # scientific target: does the baseline -> day-3 change differ by arm?).
 #
-# CAVEAT: the control arm is not paired within-subject (different baseline and day-3 cohorts),
-# so for the control arm "timepoint" is a between-cohort contrast. The clean within-subject
-# evidence is the paired tests in 1b; this model adds the full-data, all-animals view.
+# Restricted to phase pre/post. Lab-reference animals have no before/after position, so
+# their level of the interaction is unestimable; excluding them is not optional.
+#
+# CAVEAT: for any arm whose animals are not paired within-subject, "timepoint" is a
+# between-cohort contrast rather than a within-subject one. The clean within-subject
+# evidence is the paired tests in 1b. n_pairs there tells you which arms qualify.
 
-dat_lmer <- thread_plot %>% droplevels()
+dat_lmer <- thread_plot %>%
+  filter(phase %in% c("pre", "post"), !is.na(timepoint)) %>%
+  droplevels()
+
+cat("lmer data:", nrow(dat_lmer), "threads,", n_distinct(dat_lmer$mussel), "mussels\n")
+design_cells <- dat_lmer %>% count(mussel_trt, timepoint) %>%
+  pivot_wider(names_from = timepoint, values_from = n, values_fill = 0)
+print(design_cells)
+
+# Design-balance check. An arm with an empty baseline cell makes the interaction rank
+# deficient: lme4 drops a coefficient, lmerTest warns about missing cells, and emmeans
+# returns `nonEst` for that arm's within-arm change. That is correct behaviour, but it is
+# easy to mistake for a model failure, so name the cause here.
+empty_cells <- design_cells %>%
+  filter(if_any(any_of(c("baseline", "post")), ~ .x == 0))
+if (nrow(empty_cells) > 0) {
+  warning("Arm(s) with an empty design cell, so their interaction term is not estimable: ",
+          paste(empty_cells$mussel_trt, collapse = ", "),
+          ". Expect a rank-deficiency message and `nonEst` contrasts for them. ",
+          "This is a curation gap, not a model error, if those threads exist on disk ",
+          "but have no plaque measurement.", call. = FALSE)
+  knitr::kable(empty_cells) %>% print()
+}
 
 mod <- lmer(adhesion_kpa ~ mussel_trt * timepoint + (1 | mussel), data = dat_lmer)
 
 cat("Type III ANOVA (lmerTest default, Satterthwaite df):\n")
-print(anova(mod))
+aov_mod <- anova(mod)
+print(aov_mod)
 cat("\nFixed-effect estimates:\n")
 print(summary(mod)$coefficients)
 
-# Residual diagnostics (adhesion is right-skewed; check before trusting the Gaussian fit)
+# Residual diagnostics (adhesion is right-skewed; check before trusting the Gaussian fit).
+# Saved, not just printed, so the diagnostic travels with the result.
+png(file.path(out_dir, "DIAG_lmer_residuals.png"), width = 1600, height = 800, res = 150)
+par(mfrow = c(1, 2))
+qqnorm(resid(mod), main = "Normal Q-Q, adhesion model"); qqline(resid(mod))
+plot(fitted(mod), resid(mod), xlab = "Fitted", ylab = "Residuals",
+     main = "Residuals vs fitted"); abline(h = 0, lty = 2)
+par(mfrow = c(1, 1)); dev.off()
+
 qqnorm(resid(mod)); qqline(resid(mod))
 plot(fitted(mod), resid(mod), xlab = "Fitted", ylab = "Residuals"); abline(h = 0, lty = 2)
 
 # Robustness: same model on log adhesion. Compare the interaction term against the raw fit.
 mod_log <- lmer(log(adhesion_kpa) ~ mussel_trt * timepoint + (1 | mussel), data = dat_lmer)
 cat("\nType III ANOVA, log(adhesion) model:\n")
-print(anova(mod_log))
+aov_mod_log <- anova(mod_log)
+print(aov_mod_log)
 
 # Interpretable contrasts via estimated marginal means
 emm_change <- emmeans(mod, ~ timepoint | mussel_trt)   # post vs baseline, within each arm
@@ -430,11 +642,34 @@ emm_base <- emmeans(mod, ~ mussel_trt, at = list(timepoint = "baseline"))
 cat("\nArm marginal means at baseline (randomization check):\n")
 print(emm_base)
 
-# Save
+# --- Save everything. The previous version printed the ANOVA tables, the log-adhesion
+# --- model and the marginal means to console and wrote none of them (register items 5, 6).
+tidy_anova <- function(a, label) {
+  as.data.frame(a) %>% tibble::rownames_to_column("term") %>% mutate(model = label)
+}
+write.csv(bind_rows(tidy_anova(aov_mod, "adhesion_kpa"),
+                    tidy_anova(aov_mod_log, "log(adhesion_kpa)")),
+          file.path(out_dir, "STATS_lmer_typeIII_ANOVA.csv"), row.names = FALSE)
 write.csv(broom.mixed::tidy(mod, effects = "fixed"),
           file.path(out_dir, "STATS_lmer_fixed_effects.csv"), row.names = FALSE)
+write.csv(broom.mixed::tidy(mod_log, effects = "fixed"),
+          file.path(out_dir, "STATS_lmer_fixed_effects_log.csv"), row.names = FALSE)
 write.csv(as.data.frame(pairs(emm_change)),
           file.path(out_dir, "STATS_lmer_within_arm_change.csv"), row.names = FALSE)
 write.csv(as.data.frame(pairs(emm_post, adjust = "tukey")),
           file.path(out_dir, "STATS_lmer_arm_contrasts.csv"), row.names = FALSE)
+write.csv(bind_rows(as.data.frame(emm_post)  %>% mutate(timepoint = "post"),
+                    as.data.frame(emm_base)  %>% mutate(timepoint = "baseline")),
+          file.path(out_dir, "STATS_lmer_marginal_means.csv"), row.names = FALSE)
+
+# Provenance: which configuration produced the files in this folder.
+writeLines(c(paste0("generated       : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             paste0("input           : 03_analyses/thread-summary.xlsx"),
+             paste0("INCLUDE_LAB_REFERENCE : ", INCLUDE_LAB_REFERENCE),
+             paste0("threads analysed: ", nrow(thread_plot)),
+             paste0("threads dropped (no pad_area): ", nrow(no_pad)),
+             paste0("baseline pool   : ", n_distinct(baseline_pool$mussel), " mussels"),
+             paste0("lmer data       : ", nrow(dat_lmer), " threads, ",
+                    n_distinct(dat_lmer$mussel), " mussels")),
+           file.path(out_dir, "RUN_provenance.txt"))
 ```

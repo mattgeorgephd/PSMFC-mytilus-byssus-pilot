@@ -1,99 +1,232 @@
 # `3_analyze_thread_strength.Rmd` documentation
 
-Analysis of byssal-thread plaque adhesion (kPa) in *Mytilus trossulus* before and after a 3-day stress exposure (ocean acidification OA, ocean warming OW, hypoxia DO), against a day-0 baseline and a day-3 control arm.
+Analyzes byssal-thread plaque adhesion (kPa) for *M. trossulus* before and after a 3-day
+stress exposure, relative to a pre-exposure baseline and a day-3 control arm.
 
-This file rewrites the prior `3_analyze_thread_strength.Rmd`: it corrects the comments throughout, rebuilds the per-arm line figures with flanking boxplots, and replaces the invalid statistics with correct models plus a new mixed-model section.
+Run it from inside `thread-strength.Rproj`, after curating
+`03_analyses/thread-summary.xlsx`.
 
 ---
 
 ## 1. Input
 
-- `02_data/thread-summary-trossulus-clean.xlsx`, sheet `data` (299 thread-level rows, 80 mussels, *M. trossulus* only).
-- Output folder created at `03_analyses/analyze-thread-strength/` (idempotent).
+`03_analyses/thread-summary.xlsx`, sheet `data`: the hand-curated table. It is produced by
+reviewing `03_analyses/assemble-thread-summary/thread-summary-candidate.xlsx` (script 2),
+adding `pad_area` and `failure`, and dropping bad runs.
 
-Adhesion is recomputed in R as `max_force / pad_area * 1000`, so the script does not depend on the spreadsheet's cached `adhesion_kpa` formula column.
+The previous version read `02_data/thread-summary-trossulus-clean.xlsx`, which was deleted
+in commit `91dea50`. The script could not run at all.
 
-## 2. Data model (the key to the filtering)
+### Schema normalization
 
-Three columns are easy to confuse, and the prior code keyed everything off the wrong one:
+The load chunk accepts the curated file under either the old or the new column names, so the
+script keeps working across the rename:
 
-| Column | Meaning |
+| accepted | used internally |
 |---|---|
-| `group` | `control` = day-0 **baseline** (pre-stress); `treatment` = day-3 (**post-stress**). This is the true before/after axis. |
-| `mussel_trt` | The arm each mussel was **assigned** to (its fate): control, OA, OW, DO. Each mussel maps to exactly one fate (verified in code with a `stopifnot`). |
-| `treatment` | The condition under which a single **thread** was made. **Every baseline thread is labeled `control`** regardless of fate, and the day-3 control-arm threads are **also** labeled `control`. |
+| `mussel_ID` or `mussel` | `mussel` |
+| `thread_num` or `thread` | `thread` |
+| `thread_trt` or `treatment` | `thread_trt` |
 
-Consequence: `treatment == "control"` (180 threads, 64 mussels) is a mixture of (i) day-0 baselines from all four arms and (ii) day-3 control-arm threads (mussels T126-T135). All filtering in this script therefore uses `group` + `mussel_trt`, and a clean `timepoint` factor (`baseline`/`post`) is derived from `group`.
+`phase` is derived from `thread_trt` if the column is absent, since `thread_trt` determines
+it completely. A missing required column is a hard stop that names what is missing and what
+is present, rather than an obscure failure two chunks later.
 
-A second structural fact worth knowing: the **control arm has no within-subject pairs**. The baseline control cohort is T001-T012 and the day-3 control cohort is T126-T135, different animals. So there is no before/after pairing for the control condition itself.
+---
 
-## 3. What changed from the prior version
+## 2. Data model
 
-**Comments / labels.** Removed the stale "ChatGPT prompt" headers and the copy-paste artifacts from the oyster/ploidy study (`timepoint:trt:ploidy`, "individual oysters"). Fixed the wrong color comment (`#5DADE2` is blue, not gray). Corrected the YAML title (`2_` → `3_`).
+Three columns, three grains. Each is named for what it describes.
 
-**ggplot2 modernization.** `size` is deprecated for lines/borders since ggplot2 3.4.0; the theme and geom borders now use `linewidth`. Point `size` is unchanged (points still use `size`).
+| column | grain | values |
+|---|---|---|
+| `thread_trt` | thread | `lab_control`, `baseline`, `treatment_control`, `OA`, `OW`, `DO` |
+| `phase` | thread | `lab`, `pre`, `post` |
+| `mussel_trt` | mussel | `lab_control`, `control`, `OA`, `OW`, `DO` |
 
-**Refactor.** The three near-identical line-graph chunks are collapsed into one function, `make_line_box()`, called once per arm. This removes the copy-paste and the duplicated-bug risk.
+`mussel_trt` is a **destiny** label. For a `pre` thread it describes the animal's future, not
+its past: a baseline thread from an OA animal is not an OA thread.
 
-## 4. Figures
+`timepoint` is the two-level modelling axis (`baseline` / `post`) derived from `phase`. It is
+deliberately `NA` for `phase == "lab"`: those animals were never in the experimental system,
+so they have no before/after position.
 
-### 4a. Distribution panels (`p1`-`p4`)
-Kept and cleaned. `p1` (all threads) and `p3` (per-mussel means) are the two manuscript distribution panels. `p2`/`p4` restrict to mussels measured at both timepoints. These use the `treatment` column on the x-axis, so their "control" bar pools day-0 baselines with day-3 control threads; they are descriptive only. `p2` now uses the treatment palette (lightened) rather than ggplot's default hues, for consistency.
+The retired `group` column is not used. It was fully recoverable from `thread_trt`, and its
+value `control` collided with both `mussel_trt == "control"` and
+`thread_trt == "treatment_control"`.
 
-### 4b. Line + box panels (`make_line_box()`, one per arm)
-This is the figure you asked to rebuild. Per the chosen convention (interpretation **B**):
+---
 
-- **Left cluster ("control")** = **all** day-0 baselines (`group == "control"`). This is the same 54 mussels on every panel, a fixed population-baseline reference.
-- **Right cluster (the arm)** = only mussels that produced threads in that arm at day 3 (13 OA, 22 OW, 11 DO).
-- **Connecting line** = drawn only for mussels present on both sides (true repeated measures: 9 OA, 12 OW, 9 DO). Unpaired mussels appear as a single point with no line. These line counts were checked against the arm-fate-with-both-timepoints sets and match exactly.
-- **Flanking boxplots** summarize the **per-mussel means** (matching the plotted points). The control box sits at x = 0.60 and the arm box at x = 2.40 (width 0.22), while the points and connecting lines are confined to a narrow band around x = 1 and x = 2 (± 0.08). The boxes are therefore always clear of the points and never cross the lines, as requested.
+## 3. `INCLUDE_LAB_REFERENCE`, the one configuration decision
 
-**Geometry note.** The x-axis is continuous (control = 1, the arm = 2) so the boxes can be offset. Each mussel gets one fixed horizontal offset (computed once over all mussels) so the control cluster looks identical across the three panels.
+At the top of the script, defaulting to `FALSE`.
 
-**Color.** Control points and box in control blue (`#5DADE2`); arm points and box in the arm color (OA green, OW orange, DO purple); connecting lines neutral grey so they read as links rather than adding a 4th color family. The prior per-mussel rainbow ramp is dropped; if you prefer it back, it is a one-line change (map `color` to `mussel` and restore the `colorRampPalette` call). Note that under interpretation B the rainbow would be ~54 near-identical shades on the control side, which is mostly noise, hence the switch.
+The previous version built its baseline reference pool as `group == "control"`, described in
+its own comment as "ALL day-0 baselines ... the SAME 54 mussels". That pool was actually
+**43 pre-exposure animals plus 11 lab-reference animals** (T001–T011) that never entered the
+experimental system.
 
-**Error bars.** Per-mussel SE (`sd / sqrt(n)`). Singletons (1 thread) have SE = NA and draw no bar (`na.rm = TRUE`); there are 2 such mussels on the control side and a few per arm.
+| | pool | mean adhesion |
+|---|---|---|
+| pre-exposure baselines | 43 | 72.42 kPa |
+| lab-reference animals | 11 | 79.40 kPa |
+| pooled (old behaviour) | 54 | 73.84 kPa |
 
-**Axis.** y from 0 to 210, breaks every 25 (matches the distribution panels). Verified no point or error-bar top is clipped (max plotted point 134.7, max mean+SE 151.9).
+The lab animals sit 6.98 kPa above the pre-exposure animals. On their own that gap is not
+significant (Welch p = 0.44), but pooling them both raises the reference mean and adds 11
+observations to it, and both effects push the two-sample p-values down:
 
-## 5. Statistics
+| arm | `welch_p`, pre only (default) | `welch_p`, pre + lab (old) |
+|---|---|---|
+| `treatment_control` | 0.993 | 0.856 |
+| OW | 0.0203 | 0.0103 |
+| OA | 0.0263 | 0.0150 |
+| DO | 0.469 | 0.400 |
 
-The prior tests were invalid and were replaced. The "all treatments" model (`aov(response ~ trt)`) had no error term, so it treated every thread as independent (pseudoreplication) while its comment claimed otherwise. The per-arm models (`aov(response ~ trt + Error(ID/thread))`) used `thread` (values 1,2,3) as a nesting stratum, which it is not, fed in all arms' baselines as the "control" level, and used `aov(Error())`, which requires balanced complete cells that this partially paired design does not have.
+**So the default setting roughly doubles the OA and OW two-sample p-values relative to your
+existing figures.** Set the toggle to `TRUE` for one run if you want the old numbers side by
+side.
 
-Replacement is in two parts.
+Scope of the toggle:
 
-### 5a/5b. Classic tests on per-mussel means
-Collapsing threads to one mean per mussel per timepoint makes the **mussel** the unit of replication and removes pseudoreplication without a mixed model.
+- **Affects:** the line+box left cluster, and `welch_p` / `mannwhit_p` in section 1b.
+- **Does not affect:** the paired tests (lab animals have no day-3 pull, so they never pair),
+  or the mixed model, which is always restricted to `phase %in% c("pre", "post")`.
 
-- **Between-arm (5a):** one-way ANOVA + Tukey HSD on day-3 per-mussel means across control/OA/OW/DO (each mussel once, so groups are independent), with Kruskal-Wallis as a non-parametric backup.
-- **Within-arm before/after (5b):** for each stress arm, a **paired** test on mussels measured at both timepoints (matches the connecting lines) and a **two-sample** test of the arm's day-3 means against the full baseline pool (matches the boxes). Parametric and non-parametric versions are reported side by side. The control arm has no paired test (no within-subject pairs).
+---
 
-### 5c. Mixed model (lmer), new section
-`adhesion_kpa ~ mussel_trt * timepoint + (1 | mussel)` on the full thread-level data. The random intercept absorbs multiple threads per mussel×timepoint and the within-mussel correlation across timepoints; the **arm×timepoint interaction** is the scientific target (does the baseline→day-3 change differ by arm?). Reported: Type III ANOVA (Satterthwaite df via `lmerTest`), fixed-effect estimates, residual diagnostics, a log-adhesion robustness fit, and `emmeans` contrasts (within-arm change; arm contrasts at day 3; baseline arm means as a randomization check).
+## 4. The control arm is no longer hardcoded as unpairable
 
-**Caveat (documented in the code):** because the control arm is not paired within-subject, its `timepoint` effect in this model is a between-cohort contrast, not a within-subject one. The clean within-subject evidence is the paired tests in 5b; the lmer adds the full-data, all-animals view.
+The previous version asserted, in a comment and in its code path:
 
-### Key results (validated in Python; confirm against the R output)
-- **Between-arm at day 3:** no difference (one-way ANOVA F = 0.92, p = 0.44). Between-individual variance is large.
-- **Within-arm, paired:** **OA shows a significant adhesion decrease** (mean Δ = -19.4 kPa, paired t p = 0.003, Wilcoxon p = 0.008, n = 9). OW (Δ = -13.5, p = 0.23, n = 12) and DO (Δ = +0.2, p = 0.99, n = 9) are not significant.
+> The control arm has no within-subject pairs (baseline cohort T001-T012 differs from the
+> day-3 control cohort T126-T135), so it has no paired test.
 
-The contrast between these two is the whole point of getting the model right: the naive between-arm test at day 3 misses the OA effect that the paired/within-subject analysis detects, because pairing removes the between-individual variance. The old broken `aov` would have reported the wrong story.
+**That is false.** It was an artifact of pooling the lab-reference animals into the baseline.
+All ten day-3 control animals, T126–T135, have baseline traces on disk in the pre-exposure
+folder. They were never curated into `thread-summary.xlsx` because none of their 25 baseline
+traces has a plaque measurement.
 
-## 6. Outputs (written to `03_analyses/analyze-thread-strength/`)
+Pairing is now computed from the data, per arm, and reported by every code path that depends
+on it. Current state:
 
-Figures: `BP_AllMussels_AllThreads.png`, `BP_OnlyRepeatedMussels_AllThreads.png`, `BP_AllMussels_MeanThreads.png`, `BP_OnlyRepeatedMussels_MeanThreads.png`, `LineBox_OA_BaselineVsTreatment.png`, `LineBox_OW_BaselineVsTreatment.png`, `LineBox_DO_BaselineVsTreatment.png`.
+| arm | day-3 mussels | paired to a baseline |
+|---|---|---|
+| `treatment_control` | 10 | **0** |
+| OW | 22 | 12 |
+| OA | 13 | 9 |
+| DO | 11 | 9 |
 
-Stats tables: `STATS_between_arm_day3_ANOVA.csv`, `STATS_between_arm_day3_TukeyHSD.csv`, `STATS_within_arm_beforeafter.csv`, `STATS_lmer_fixed_effects.csv`, `STATS_lmer_within_arm_change.csv`, `STATS_lmer_arm_contrasts.csv`.
+Measuring those 25 traces takes the control arm to 10 pairs and gives the design a proper
+within-subject control contrast. It also removes the rank deficiency described in §6.
 
-## 7. Dependencies and how to run
+A line+box panel is now built for the control arm as well, saved as
+`LineBox_CONTROL_BaselineVsDay3.png`.
 
-Open in RStudio and knit, or run chunk by chunk. The package chunk auto-installs anything missing. New dependencies beyond the prior version: `emmeans`, `broom`, `broom.mixed`, and `colorspace` (the last was already used implicitly by `p2` but was never in the install list).
+---
 
-## 8. Open decisions / flags for review on your diff
+## 5. Figures
 
-1. **Control cluster = all baselines (interpretation B), per your choice.** This puts the same 54-mussel baseline on every panel, so each panel's control box is identical and most control points on the OA panel are not OA animals. If you later want the cleaner within-arm before/after (interpretation C: only that arm's baselines on the left), it is a one-line filter change in `make_line_box()` (`filter(timepoint == "baseline", mussel_trt == trt_code)`).
-2. **Classic tests collapse to per-mussel means.** This is the correct fix for the pseudoreplication; it is a different modeling choice than the old thread-level `aov`. The thread-level structure is handled correctly (and using all data) by the lmer section.
-3. **Two-sample test added alongside the paired test** in 5b, because your figure shows both the boxes (population-level) and the lines (within-subject). Drop it if you only want the within-subject test.
-4. **Colors changed** to side-based (blue control / arm-color treatment, grey lines) from the per-mussel rainbow. Reversible (see section 4b).
-5. **Output filenames changed** to `LineBox_*` to reflect the new content (they are no longer "OnlyRepeatedMussels").
-6. **lmer reported on raw and log adhesion.** If the residual diagnostics show clear right-skew (likely), prefer the log fit's inference; the interaction term is reported for both so you can compare directly.
+### Distribution panels `p1`–`p4`
+
+x is now `thread_trt`, so each bar is one condition a thread was actually built in. The
+previous version plotted a `treatment` column whose `control` bar **pooled** day-0/day-1
+baselines with day-3 control-arm threads. `baseline` and `treatment_control` are now separate
+bars, so these panels are not directly comparable to the old ones.
+
+The palette gained `lab_control` (grey) and `treatment_control` (lighter blue); `baseline`
+keeps the blue the old pooled `control` level used.
+
+### Line + box panels
+
+Unchanged in geometry. The left cluster is now the baseline reference pool as defined by
+`INCLUDE_LAB_REFERENCE`, the x label reads `baseline` rather than `control`, and a panel is
+built for every day-3 arm present in the data rather than a hardcoded three.
+
+`make_line_box()` returns `NULL` and warns if an arm has no day-3 threads, instead of
+producing an empty plot.
+
+---
+
+## 6. Statistics
+
+**1a, between-arm day-3 comparison** on per-mussel means: one-way ANOVA, Tukey HSD, and a
+Kruskal-Wallis backup. Skipped with a message if fewer than two arms have data.
+
+**1b, within-arm before/after** on per-mussel means. Two questions per arm: a paired test on
+animals measured at both timepoints, and a two-sample test of the arm's day-3 distribution
+against the baseline pool. Run for **every** day-3 arm including control. Paired columns are
+`NA` when there are fewer than two pairs, and the arms in that state are named in a message
+pointing at the likely cause.
+
+**2, mixed model** `lmer(adhesion_kpa ~ mussel_trt * timepoint + (1 | mussel))` on all
+threads with `phase` in `pre`/`post`.
+
+### The rank deficiency you will currently see
+
+With the control arm at zero baseline threads, its interaction cell is empty. `lme4` drops a
+coefficient, `lmerTest` warns about missing cells, and `emmeans` returns `nonEst` for the
+control arm's within-arm change. **This is correct behaviour, not a model failure.** The
+script now runs an explicit design-balance check before fitting and names the offending arm,
+so the cause is stated rather than left to be inferred from an `lme4` message.
+
+It resolves itself when the T126–T135 baselines are curated.
+
+### Current results
+
+Type III ANOVA, adhesion: `timepoint` F = 6.11, p = 0.014; `mussel_trt:timepoint`
+F = 3.13, p = 0.045. On log adhesion: `timepoint` p = 0.0018, interaction p = 0.067.
+
+Paired tests, unchanged by anything in this revision: OA p = 0.0030, OW p = 0.2314,
+DO p = 0.9857.
+
+The paired-versus-mixed disagreement documented in the open-items register still stands, and
+the recommendation is unchanged: report the overall timepoint decline, which both models
+agree on, and the paired within-subject tests as the primary stressor-specific evidence. Do
+not cite mixed-model per-arm contrasts as stressor-specific claims while baseline pairing is
+this unbalanced.
+
+---
+
+## 7. Outputs
+
+Written to `03_analyses/analyze-thread-strength/`.
+
+| file | contents |
+|---|---|
+| `BP_*.png` | four distribution panels |
+| `LineBox_{CONTROL,OA,OW,DO}_*.png` | before/after panels, one per day-3 arm |
+| `DIAG_lmer_residuals.png` | **new.** Q-Q and residuals-vs-fitted for the adhesion model |
+| `STATS_between_arm_day3_{ANOVA,TukeyHSD,KruskalWallis}.csv` | Kruskal-Wallis is **new** to disk |
+| `STATS_within_arm_beforeafter.csv` | now carries a `baseline_pool` column recording the toggle |
+| `STATS_lmer_typeIII_ANOVA.csv` | **new.** Both the raw and the log model (register items 5 and 6) |
+| `STATS_lmer_fixed_effects.csv`, `..._log.csv` | the log version is **new** |
+| `STATS_lmer_marginal_means.csv` | **new.** Arm means at post and at baseline |
+| `STATS_lmer_within_arm_change.csv`, `STATS_lmer_arm_contrasts.csv` | unchanged |
+| `RUN_provenance.txt` | **new.** Timestamp, toggle state, n at each filtering step |
+
+Everything that was print-only is now on disk. That closes register items §1.5 (log-adhesion
+model) and §1.6 (Type III ANOVA and emmeans marginal means).
+
+---
+
+## 8. Other changes
+
+- **Rows with no `pad_area` are dropped loudly**, with a per-arm count, instead of passing
+  through as `NA` and being silently discarded by each model in turn. The n behind every
+  contrast is now visible.
+- **An unrecognised `mussel_trt` value is a hard stop.** Previously `factor(levels = ...)`
+  silently converted `lab_control` to `NA`, and those rows then vanished from the `lmer`
+  without a word.
+- **Five declared packages were dropped**: `bestNormalize`, `agricolae`, `nlme`, `multcomp`
+  and `rstatix` are never called anywhere in the script. A fresh machine no longer installs
+  them.
+- The fate check is now a `stop()` that names the offending mussels rather than a bare
+  `stopifnot`.
+
+## 9. Known cosmetic issue
+
+`p2` uses the `aes(fill = x, fill = after_scale(colorspace::lighten(fill, .5)))` idiom to
+lighten the violin fill. ggplot2 3.5 emits `Duplicated aesthetics after name standardisation:
+fill` for this. The panel still renders. This is pre-existing and was not changed, because
+rewriting it would alter the appearance of a figure you have already been working from.
