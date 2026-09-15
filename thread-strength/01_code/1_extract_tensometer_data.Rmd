@@ -1,7 +1,7 @@
 ---
 title: "1_extract_tensometer_data"
 author: "Matt George"
-date: "2023-04-24"
+date: "2026-09-15"
 output: html_document
 ---
 
@@ -9,64 +9,189 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Load packages; set ggplot theme
-```{r message=TRUE, warning=TRUE}
+## What this script does
+
+Walks every subfolder of `02_data/tensometer_output/`, reads each raw force/displacement
+trace, joins the mussel key, and writes **one** trace-level table to
+`03_analyses/thread-summary-raw-output.xlsx`.
+
+Nothing is excluded. Every trace that parses is exported alongside a QC plot, so bad runs
+get curated later against the evidence rather than dropped silently here. That file is the
+input to the manual curation step that produces `03_analyses/thread-summary.xlsx`.
+
+Replaces the previous two-pass `control` / `treatment` layout, which no longer exists on disk.
+
+### The label model
+
+Three facts, kept deliberately separate, because **a mussel and its threads did not
+necessarily experience the same thing**:
+
+| column | grain | source | meaning |
+|---|---|---|---|
+| `thread_trt` | thread | folder name | what the **thread** was built in |
+| `phase` | thread | folder name | `lab` / `pre` / `post` |
+| `mussel_trt` | mussel | `02_data/mussel-treatment-key.csv` | the arm the **animal** was assigned to |
+
+`mussel_trt` is a *destiny* label, not an experienced-condition label. For a `pre` thread it
+describes the animal's future, not its past: a baseline thread from an OA animal is **not**
+an OA thread. That is the one place the two grains diverge, and keeping them in separate
+columns from separate sources is what stops them being conflated.
+
+`phase` has three levels, not two, because the lab-reference animals (day 0, never in the
+experimental system) are not the same thing as the paired pre-exposure baselines. A binary
+before/after would silently pool them.
+
+`group` from the older `thread-summary.xlsx` is deliberately **not** reproduced: it was fully
+recoverable from `thread_trt`, and its value `control` collided with both
+`mussel_trt == "control"` and `thread_trt == "treatment_control"`.
+
+Run `0_build_mussel_key.Rmd` first if the morphometrics workbook has changed. If the key is
+missing this script still runs; it just warns and leaves the mussel-level columns out.
+
+## Load packages; set ggplot theme
+
+```{r message=FALSE, warning=FALSE}
 
 ## Run within "thread-strength.Rproj" so here::here() resolves to the analysis root.
 
 ## clear workspace
-rm(list=ls())
+rm(list = ls())
 
 ## Load Packages
-load.lib<-c("readxl","tidyverse","openxlsx","EnvStats","here", "EnvStats") # List of required packages
-install.lib <- load.lib[!load.lib %in% installed.packages()] # Select missing packages
-for(lib in install.lib) install.packages(lib,dependencies=TRUE) # Install missing packages + dependencies
-sapply(load.lib,require,character=TRUE) # Load all packages.
+load.lib    <- c("readr", "tidyverse", "openxlsx", "EnvStats", "here")  # required packages
+install.lib <- load.lib[!load.lib %in% installed.packages()]            # select missing packages
+for (lib in install.lib) install.packages(lib, dependencies = TRUE)     # install missing + deps
+sapply(load.lib, require, character = TRUE)                             # load all packages
 
 ## Set ggplot theme
-my_theme <- theme(line              = element_line(linewidth=1.2),
-                  rect              = element_rect(linewidth=1.2),
-                  text              = element_text(size=14,color="black"),
+my_theme <- theme(line              = element_line(linewidth = 1.2),
+                  rect              = element_rect(linewidth = 1.2),
+                  text              = element_text(size = 14, color = "black"),
                   panel.background  = element_blank(),
-                  panel.grid.major  = element_blank(), 
+                  panel.grid.major  = element_blank(),
                   panel.grid.minor  = element_blank(),
-                  axis.text.x       = element_text(size=16,color="black"), #,angle=90),
-                  axis.text.y       = element_text(size=16,color="black"),
+                  axis.text.x       = element_text(size = 16, color = "black"),
+                  axis.text.y       = element_text(size = 16, color = "black"),
                   axis.title.x      = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
                   axis.title.y      = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
-                  axis.ticks.x      = element_line(color="black"),
-                  axis.ticks.y      = element_line(color="black"),
-                  # axis.line         = element_line(color = "black", size = 0.1),
-                  panel.border      = element_rect(color = "black", fill=NA, size=1.2),
-                  legend.key        = element_blank(), # removes background of legend bullets
-                  legend.position   = "none"
-                  )
-
+                  axis.ticks.x      = element_line(color = "black"),
+                  axis.ticks.y      = element_line(color = "black"),
+                  panel.border      = element_rect(color = "black", fill = NA, linewidth = 1.2),
+                  legend.key        = element_blank(),
+                  legend.position   = "none")
 ```
 
+## Paths
+
+```{r paths}
+tens_root <- here::here("02_data", "tensometer_output")
+key_csv   <- here::here("02_data", "mussel-treatment-key.csv")
+qc_root   <- here::here("03_analyses", "extract-tensometer-data", "QC_plots")
+xlsx_out  <- here::here("03_analyses", "thread-summary-raw-output.xlsx")
+
+if (!dir.exists(tens_root))
+  stop("Cannot find:\n  ", tens_root,
+       "\nOpen `thread-strength.Rproj` (not the repository-root .Rproj) before running.")
+
+dir.create(dirname(xlsx_out), recursive = TRUE, showWarnings = FALSE)
+```
+
+## Folder -> thread label map
+
+The subfolder name is the only place the thread treatment is recorded, so this table is the
+single point of interpretation in the script. It is deliberately explicit and editable.
+
+`expect_mussel_trt` is not exported. It exists so the script can check the folder against the
+morphometrics record: for a `post` folder the thread condition and the animal's arm must
+agree, and a disagreement means a file is filed under the wrong folder. It is `NA` for `pre`,
+where the two legitimately differ.
+
+The legacy rows keep this script working **before** the folder rename is applied. Delete them
+once `rename_tensometer_folders.sh` has been run and pushed.
+
+```{r}
+folder_labels <- tibble::tribble(
+  ~source_folder,          ~thread_trt,          ~phase, ~day, ~expect_mussel_trt,
+  # --- current layout ---------------------------------------------------------------
+  "00_lab_reference",      "lab_control",        "lab",   0L,  "lab_control",
+  "01_pre_exposure",       "baseline",           "pre",   1L,  NA_character_,
+  "02_post_control",       "treatment_control",  "post",  3L,  "control",
+  "03_post_OA",            "OA",                 "post",  3L,  "OA",
+  "04_post_OW",            "OW",                 "post",  3L,  "OW",
+  "05_post_DO",            "DO",                 "post",  3L,  "DO",
+  # --- legacy names, pre-rename (safe to delete once renamed) ------------------------
+  "00_laboratory_control", "lab_control",        "lab",   0L,  "lab_control",
+  "00_baseline",           "baseline",           "pre",   1L,  NA_character_,
+  "01_treatment_control",  "treatment_control",  "post",  3L,  "control",
+  "02_OA_treatment",       "OA",                 "post",  3L,  "OA",
+  "03_OW_treatment",       "OW",                 "post",  3L,  "OW",
+  "04_DO_treatment",       "DO",                 "post",  3L,  "DO"
+)
+
+# Fallback for a folder that is not in the map. Deliberately crude, and always warned about,
+# so a new folder is labelled provisionally rather than silently mislabelled.
+derive_label <- function(folder) {
+  bare <- sub("^[0-9]+_", "", folder)
+  tibble(source_folder     = folder,
+         thread_trt        = sub("^(pre|post|lab)_", "", sub("_treatment$", "", bare)),
+         phase             = dplyr::case_when(grepl("^lab", bare)  ~ "lab",
+                                              grepl("^pre", bare)  ~ "pre",
+                                              TRUE                 ~ "post"),
+         day               = NA_integer_,
+         expect_mussel_trt = NA_character_)
+}
+
+folders <- sort(list.dirs(tens_root, full.names = FALSE, recursive = FALSE))
+folders <- folders[nzchar(folders)]
+if (length(folders) == 0) stop("No subfolders under ", tens_root)
+
+novel <- setdiff(folders, folder_labels$source_folder)
+if (length(novel) > 0) {
+  warning("Unmapped tensometer subfolder(s): ", paste(novel, collapse = ", "),
+          ". Labels were guessed from the folder name and `day` is NA; add them to ",
+          "`folder_labels` and confirm the phase.")
+  folder_labels <- bind_rows(folder_labels, bind_rows(lapply(novel, derive_label)))
+}
+
+# Keep only folders that exist, in on-disk order. This is what makes the legacy rows harmless:
+# the old and new names never coexist.
+folder_labels <- folder_labels %>%
+  filter(source_folder %in% folders) %>%
+  arrange(match(source_folder, folders))
+
+if (any(duplicated(folder_labels$source_folder)))
+  stop("Duplicate rows in `folder_labels` for: ",
+       paste(unique(folder_labels$source_folder[duplicated(folder_labels$source_folder)]),
+             collapse = ", "))
+
+knitr::kable(folder_labels)
+```
 
 ## Parse trace filenames into mussel ID, thread number, and note
 
-Tensometer files are named `<prefix><digits>_<digits><optional note>` and may or may not carry a
-`.txt` extension (the instrument exports them without one; the extension was added by hand for some
-files and missed for others). The trailing text is the technician's note (`try2`, `fluke`, `tryTwo`,
-`thirdTry`, `firstTry`, ...). We keep that note as its own field so every run is imported and can be
-checked against its QC plot before any curation. Nothing is dropped or silently merged here.
+Tensometer files are named `<prefix><digits>_<digits><optional note>` and may or may not
+carry a `.txt` extension (the instrument exports them without one; the extension was added by
+hand for some files and missed for others). Any trailing text is the technician's note
+(`try2`, `fluke`, `thirdTry`, ...). It is kept as its own field so every run is imported and
+can be checked against its QC plot before curation. Nothing is dropped or merged here.
+
+`mussel` + `thread` is **not** unique across the dataset: 45 animals were pulled before and
+after exposure, so the same pair appears in two folders. `source_folder` is part of the key.
 
 ```{r}
-# Split a filename into mussel ID, thread number, and note. Extension-agnostic and width-agnostic
-# (works for 2-digit control IDs like G18_01 and 3-digit treatment IDs like T037_03).
+# Extension-agnostic and width-agnostic (works for 2-digit IDs like G18_01 and 3-digit IDs
+# like T037_03). Returns NULL for a name that is not a trace.
 parse_trace_name <- function(file_name) {
-  base   <- sub("\\.txt$", "", file_name)                    # drop a trailing .txt if present
-  mussel <- sub("^([A-Za-z]+[0-9]+)_.*$", "\\1", base)       # prefix + digits before the "_"
-  thread <- sub("^[A-Za-z]+[0-9]+_([0-9]+).*$", "\\1", base) # digits immediately after the "_"
-  note   <- sub("^[A-Za-z]+[0-9]+_[0-9]+", "", base)         # anything trailing = technician note
-  list(mussel = mussel, thread = thread, note = note)
+  base <- sub("\\.txt$", "", file_name, ignore.case = TRUE)
+  if (!grepl("^[A-Za-z]+[0-9]+_[0-9]+", base)) return(NULL)
+  list(mussel = sub("^([A-Za-z]+[0-9]+)_.*$", "\\1", base),
+       thread = as.integer(sub("^[A-Za-z]+[0-9]+_([0-9]+).*$", "\\1", base)),
+       note   = sub("^[A-Za-z]+[0-9]+_[0-9]+", "", base))
 }
 
-# List every tensometer trace in a folder regardless of extension. Anything that does not match the
-# trace naming convention is reported via warning() rather than silently skipped, so a stray file
-# (e.g. a spreadsheet or .DS_Store dropped in the folder) can never be read as data unnoticed.
+# List every trace in a folder regardless of extension. Anything not matching the naming
+# convention is reported via warning() rather than skipped silently, so a stray file
+# (a spreadsheet, a .DS_Store) can never be read as data unnoticed.
 list_trace_files <- function(dir) {
   all_files   <- list.files(dir)
   trace_files <- all_files[grepl("^[A-Za-z]+[0-9]+_[0-9]+", all_files)]
@@ -75,343 +200,300 @@ list_trace_files <- function(dir) {
     warning(basename(dir), ": ", length(skipped),
             " file(s) did not match the trace pattern and were skipped: ",
             paste(skipped, collapse = ", "))
-  trace_files
+  sort(trace_files)
 }
 ```
 
-## CONTROLS
+## Read one trace
 
-```{r warning=FALSE}
+The instrument writes each trace **wide**: a `Time / Displacement / Force` header line
+followed by three tab-separated rows, one per channel. Reading the lines directly is both
+faster and safer than the old `read.delim()` + transpose, which had to infer a column count
+from a 773-field row.
 
-# extract data from all .txt files in a folder located at 02_data/tensometer_output/control/ and add it to a nested list object
-# the data has three column headers: Time, displacement, force. 
-# Add a third data column called "mussel" that is the first three characters of the file name.
-# Folder with the control .txt traces, relative to the project root
-control_dir <- here::here("02_data", "tensometer_output", "control")
+A missing **first** Force sample (a literal `NaN`) is normal instrument behaviour at the start
+of a pull and is set to zero. A missing sample anywhere else is also zeroed, but warns with
+the file and index, because that is a dropout rather than a start-up artifact and should be
+checked against the QC plot.
 
-# Create an empty list to hold the data
-nested_list <- list()
+```{r}
+read_trace <- function(path) {
+  lines <- readLines(path, warn = FALSE)
+  lines <- lines[trimws(lines) != ""]
 
-# Get all tensometer traces in the directory, with or without a .txt extension
-txt_files <- list_trace_files(control_dir)
+  # Drop the channel-name header if present. Detect it by row count, not by content:
+  # as.numeric("NaN") is a valid number, so a content test would misfire on the leading NaN.
+  if (length(lines) == 4L) {
+    lines <- lines[-1]
+  } else if (length(lines) != 3L) {
+    stop(basename(path), ": expected 3 channel rows (optionally after a header), found ",
+         length(lines), ". This file is not in the instrument's wide format.")
+  }
 
-# Loop through each txt file, extract the data, and add it to the nested list
-for (file_name in txt_files) {
-    # Read in the data from the txt file
-    data <- read.delim(file.path(control_dir, file_name),
-                       header = FALSE,
-                       sep = "\t", # how is the data separated?
-                       dec = ".")
-    
-    # transpose
-    data_transpose = t(data) 
-    
-    # Snip data, Fix headers
-    data_snipped <- as.data.frame(data_transpose[,2:4]) # keep all rows, grab only column 2 through 4
-    colnames(data_snipped) <- c('time', 'displacement', 'force')
-    
-    # Fix column data types
-    data_snipped$time         <- as.numeric(data_snipped$time)
-    data_snipped$displacement <- as.numeric(data_snipped$displacement)
-    data_snipped$force        <- as.numeric(data_snipped$force)
-    
-    # Fix NA
-    data_snipped$time[is.na(data_snipped$time)] <- 0
-    data_snipped$displacement[is.na(data_snipped$displacement)] <- 0
-    data_snipped$force[is.na(data_snipped$force)] <- 0
-  
-    # Extract mussel ID, thread number, and technician note from the file name
+  to_num <- function(l) {
+    tok <- strsplit(l, "\t", fixed = TRUE)[[1]]
+    suppressWarnings(as.numeric(tok[trimws(tok) != ""]))
+  }
+  time <- to_num(lines[1]); disp <- to_num(lines[2]); force <- to_num(lines[3])
+
+  n <- length(time)
+  if (length(disp) != n || length(force) != n)
+    stop(basename(path), ": channel rows have unequal lengths (",
+         n, "/", length(disp), "/", length(force), ").")
+  if (n < 3L)
+    stop(basename(path), ": only ", n, " sample(s); too short to integrate.")
+
+  # Count missing values before filling, so the QC record survives into the output.
+  n_na <- c(time = sum(is.na(time)), disp = sum(is.na(disp)), force = sum(is.na(force)))
+
+  zero_fill <- function(v, channel) {
+    bad <- which(is.na(v))
+    if (length(bad) > 0) {
+      non_leading <- bad[bad != 1L]
+      if (length(non_leading) > 0)
+        warning(basename(path), ": ", channel, " has ", length(non_leading),
+                " missing sample(s) away from the start (index ",
+                paste(utils::head(non_leading, 10), collapse = ", "),
+                "); zero-filled - check the QC plot.", call. = FALSE)
+      v[bad] <- 0
+    }
+    v
+  }
+  time  <- zero_fill(time,  "time")
+  disp  <- zero_fill(disp,  "displacement")
+  force <- zero_fill(force, "force")
+
+  # Integration assumes increasing time. Sort rather than trust, and say so if it was not.
+  if (is.unsorted(time, strictly = FALSE)) {
+    warning(basename(path), ": time was not monotonic; samples reordered before integration.",
+            call. = FALSE)
+    o <- order(time); time <- time[o]; disp <- disp[o]; force <- force[o]
+  }
+
+  list(time = time, displacement = disp, force = force, n_na = n_na)
+}
+
+# Area under the force/time curve, by trapezoid, on the raw trace.
+#
+# The previous version called loess() then integrated `loess()$y`, which is the response, not
+# `$fitted` - so it was already integrating the raw trace, but on a grid from
+# approx(n = length(x)) that did not line up with the diff(x) it was multiplied by. This is the
+# same quantity, computed correctly. Across the current 375 traces the two agree to a median of
+# 0.006% and a maximum of 2.1%. loess() is still fitted below, for the QC plot only.
+trapz <- function(y, x) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+```
+
+## Extract every trace
+
+```{r warning=TRUE}
+records <- list()
+
+for (folder in folders) {
+  fdir  <- file.path(tens_root, folder)
+  files <- list_trace_files(fdir)
+  lab   <- folder_labels[folder_labels$source_folder == folder, ]
+
+  qc_dir <- file.path(qc_root, folder)
+  dir.create(qc_dir, recursive = TRUE, showWarnings = FALSE)
+
+  message("Reading ", folder, ": ", length(files), " trace(s)")
+
+  for (file_name in files) {
     ids <- parse_trace_name(file_name)
-    data_snipped$mussel <- ids$mussel # Saving mussel ID
-    data_snipped$thread <- ids$thread # Saving thread number
-    data_snipped$note   <- ids$note   # Saving technician note (try2, fluke, ...; "" if none)
-  
-    # Add the data to the nested list using the file name as the list name
-    nested_list[[file_name]] <- data_snipped
+    if (is.null(ids)) next          # already reported by list_trace_files()
+    tr  <- read_trace(file.path(fdir, file_name))
+
+    # QC plot, named after the source file so retries and flukes never overwrite each other.
+    qc_name <- sub("\\.txt$", "", file_name, ignore.case = TRUE)
+    fit <- tryCatch(loess(force ~ time, data = data.frame(time = tr$time, force = tr$force)),
+                    error = function(e) NULL)
+    if (is.null(fit))
+      warning(file_name, ": loess fit failed; QC plot drawn without a smoother.", call. = FALSE)
+
+    jpeg(file.path(qc_dir, paste0(qc_name, ".jpg")))
+    tryCatch({
+      plot(tr$time, tr$force,
+           main = paste0(qc_name, "  (", folder, ")"),
+           xlab = "Time (s)", ylab = "Force (N)", col = "blue")
+      if (!is.null(fit)) lines(fit, col = "red")
+    }, finally = dev.off())   # never leave a graphics device open if plotting fails
+
+    records[[length(records) + 1L]] <- tibble(
+      source_folder    = folder,
+      thread_trt       = lab$thread_trt,
+      phase            = lab$phase,
+      day              = lab$day,
+      mussel           = ids$mussel,
+      thread           = ids$thread,
+      note             = ids$note,
+      max_force        = max(tr$force),                  # N
+      integral         = trapz(tr$force, tr$time),       # N*s, area under force/time
+      max_displacement = max(tr$displacement),           # mm at peak extension
+      n_points         = length(tr$time),
+      duration_s       = max(tr$time) - min(tr$time),
+      n_na_force       = unname(tr$n_na["force"]),       # missing force samples, zero-filled
+      file             = file_name)
+  }
 }
 
+thread_raw <- bind_rows(records) %>%
+  arrange(match(source_folder, folders), mussel, thread, note)
+
+message("Extracted ", nrow(thread_raw), " trace(s) from ", length(folders), " folder(s); ",
+        n_distinct(thread_raw$mussel), " unique mussels.")
 ```
 
+## Join the mussel key
+
+Mussel-level facts come from `02_data/mussel-treatment-key.csv`, built by
+`0_build_mussel_key.Rmd` from the morphometrics workbook. They are joined, never inferred
+from the folder, so there is exactly one source of truth for what an animal was assigned to.
 
 ```{r}
-# Loop through the list object "nested_list"
-# calculate the maximum value from the "force" column
-# Save the maximum into a dataframe, along with the first values in the "mussel" column and "thread" column
-
-# create a data frame with three columns: mussel, thread, and max_force
-max_force_control <- data.frame(mussel = character(),
-                        thread = character(),
-                        note = character(),
-                        max_force = numeric())
-
-# loop through the nested list
-for(i in seq_along(nested_list)){
-  # create a data frame for each list in the nested list
-  current_df <- nested_list[[i]]
-  # add a row to the max_force data frame with the mussel, thread, note, and max_force
-  max_force_control <- rbind(max_force_control, data.frame(mussel = current_df$mussel[1],
-                                            thread = current_df$thread[1],
-                                            note = current_df$note[1],
-                                            max_force = max(current_df$force)))
-
+# Canonical tag: prefix + zero-padded 3 digits (T37 -> T037), so both sides join regardless
+# of how the tag was written.
+norm_id <- function(x) {
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
 }
 
-```
+thread_raw <- thread_raw %>% mutate(mussel = norm_id(mussel))
 
+if (file.exists(key_csv)) {
+  mussel_key <- readr::read_csv(key_csv, show_col_types = FALSE) %>%
+    mutate(mussel = norm_id(mussel)) %>%
+    select(mussel, species, mussel_trt, rna_sequenced)
 
-```{r}
+  thread_raw <- thread_raw %>% left_join(mussel_key, by = "mussel")
 
-require(stats)
+  orphan <- thread_raw %>% filter(is.na(mussel_trt)) %>% distinct(mussel) %>% pull(mussel)
+  if (length(orphan) > 0)
+    warning(length(orphan), " mussel(s) with traces but no key row: ",
+            paste(orphan, collapse = ", "),
+            ". Re-run 0_build_mussel_key.Rmd, or check the tag.")
 
-# Loop through the list object "nested_list"
-# extract the "time" and "force" column
-# remove rows that contain zeros before first non-zero row. Apply to time column as well.
-# remove rows that contain zeros after last non-zero row. Apply to time column as well.
-# fit loess function to "time" and "force" after trimmed. Time is x, force is y.
-# calculate area under the curve and save in dataframe, along with the first values in the "mussel" column and "thread" column from "nested_list"
-# use a for loop to iterate through the nested list object "nested_list"
+  # Integrity check: in a `post` folder the thread condition and the animal's arm must agree.
+  # A mismatch means a trace is filed under the wrong folder, which no downstream script can
+  # detect on its own.
+  mismatch <- thread_raw %>%
+    left_join(folder_labels %>% select(source_folder, expect_mussel_trt), by = "source_folder") %>%
+    filter(!is.na(expect_mussel_trt), !is.na(mussel_trt), expect_mussel_trt != mussel_trt)
 
-# Output folder for control QC plots (created if needed)
-qc_dir <- here::here("03_analyses", "extract-tensometer-data", "QC_plots", "control")
-dir.create(qc_dir, recursive = TRUE, showWarnings = FALSE)
-
-# create a data frame with three columns: mussel, thread, and max_force
-integral_control <- data.frame(mussel = character(),
-                        thread = character(),
-                        note = character(),
-                        auc = numeric())
-
-for(i in seq_along(nested_list)){
-  # extract time and force column from the current nested list element using $ notation
-  current_df <- nested_list[[i]][c("time", "force")]
-  
-  # fit loess function to "time" and "force" using loess() and save as an object
-  current_loess <- loess(force ~ time, data = current_df)
-  
-  # plot the loess function with the corresponding time and force data points.
-  # Name the QC plot after the source file (extension stripped) so each run, including retries and
-  # flukes that share a mussel/thread, gets its own plot instead of overwriting another's.
-  qc_name <- sub("\\.txt$", "", names(nested_list)[i])
-  jpeg(file.path(qc_dir, paste0(qc_name, ".jpg")))
-  plot(current_df$time, current_df$force, main= "Force over Time Plot with Loess Function", 
-       xlab = "Time", ylab = "Force", col = "blue")
-  lines(current_loess, col = "red") # add the loess function to the plot in red
-  dev.off()
-  
-  # calculate area under the curve using approx() to approximate the integral and save to a variable
-  auc <- sum(diff(current_loess$x) * (approx(current_loess$x, current_loess$y, n = length(current_loess$x)))$y[-1])
-  
-  # save the first values in the "mussel" and "thread" columns to variables
-  mussel_first_val <- nested_list[[i]]$mussel[1]
-  thread_first_val <- nested_list[[i]]$thread[1]
-  
-  # create a dataframe to store the results, and save the variables to the corresponding columns in the dataframe
-  integral_control <- rbind(integral_control, data.frame(mussel = nested_list[[i]]$mussel[1],
-                                           thread = nested_list[[i]]$thread[1],
-                                           note = nested_list[[i]]$note[1],
-                                           auc = auc))
+  if (nrow(mismatch) > 0) {
+    warning(nrow(mismatch), " trace(s) sit in a folder that disagrees with morphometrics.")
+    mismatch %>% count(source_folder, expect_mussel_trt, mussel_trt) %>% knitr::kable()
+  } else {
+    message("Folder arm agrees with morphometrics on all post-exposure traces.")
+  }
+} else {
+  warning("Mussel key not found at ", key_csv,
+          ". Run 0_build_mussel_key.Rmd. Mussel-level columns are omitted from the output.")
 }
 
-
+# Final column order: identity, thread labels, mussel labels, measurements, QC.
+thread_raw <- thread_raw %>%
+  select(any_of(c("source_folder", "thread_trt", "phase", "day",
+                  "mussel", "thread", "note",
+                  "species", "mussel_trt", "rna_sequenced",
+                  "max_force", "integral", "max_displacement",
+                  "n_points", "duration_s", "n_na_force", "file")))
 ```
+
+## Coverage
+
+Written as a second sheet so a short count in an arm is visible without re-deriving it.
+`na_force_samples` counts leading-`NaN` start-up artifacts, which are expected.
 
 ```{r}
-library(ggplot2)
-hist(max_force_control$max_force)
-max_force_control$ID <- paste(max_force_control$mussel, max_force_control$thread)
-  ggplot(data=max_force_control, aes(x=1, y=max_force, label = ID))+
-  geom_boxplot(width=.5)+
-  # jittered text with geom_text
-  geom_text(check_overlap = TRUE,
-            position=position_jitter(width=0.15))+
-  theme(legend.position="none")
+coverage <- thread_raw %>%
+  group_by(source_folder, thread_trt, phase, day) %>%
+  summarise(traces                 = n(),
+            mussels                = n_distinct(mussel),
+            threads_per_mussel_min = min(table(mussel)),
+            threads_per_mussel_max = max(table(mussel)),
+            retry_traces           = sum(note != ""),
+            na_force_samples       = sum(n_na_force),
+            .groups = "drop") %>%
+  arrange(match(source_folder, folders))
+
+knitr::kable(coverage)
 ```
+
+### Pairing
+
+Which animals have both a pre-exposure and a post-exposure pull. Unpaired animals are not an
+error, but they are what makes a per-arm marginal mean unreliable, so the count is worth
+seeing before any model is fitted.
 
 ```{r}
-library(EnvStats)
-test <- rosnerTest(max_force_control$max_force,
-  k = 5
-)
-test
-```
+pairing <- thread_raw %>%
+  filter(phase %in% c("pre", "post")) %>%
+  distinct(mussel, phase) %>%
+  count(mussel, name = "n_phases") %>%
+  mutate(paired = n_phases == 2L)
 
-```{r}
-sum_dir <- here::here("03_analyses", "extract-tensometer-data", "summarized_data")
-dir.create(sum_dir, recursive = TRUE, showWarnings = FALSE)
-write.xlsx(max_force_control, file = file.path(sum_dir, "max_force_control.xlsx"), colNames = TRUE)
-write.xlsx(integral_control,  file = file.path(sum_dir, "integral_control.xlsx"),  colNames = TRUE)
-print("done")
-```
-
-
-
-
-## TREATMENT
-
-```{r warning=FALSE}
-
-# extract data from all .txt files in a folder located at 02_data/tensometer_output/control/ and add it to a nested list object
-# the data has three column headers: Time, displacement, force. 
-# Add a third data column called "mussel" that is the first three characters of the file name.
-
-# Folder with the treatment .txt traces, relative to the project root
-treatment_dir <- here::here("02_data", "tensometer_output", "treatment")
-
-# Create an empty list to hold the data
-nested_list <- list()
-
-# Get all tensometer traces in the directory, with or without a .txt extension
-txt_files <- list_trace_files(treatment_dir)
-
-# Loop through each txt file, extract the data, and add it to the nested list
-for (file_name in txt_files) {
-    # Read in the data from the txt file
-    data <- read.delim(file.path(treatment_dir, file_name),
-                       header = FALSE,
-                       sep = "\t", # how is the data separated?
-                       dec = ".")
-    
-    # transpose
-    data_transpose = t(data) 
-    
-    # Snip data, Fix headers
-    data_snipped <- as.data.frame(data_transpose[,2:4]) # keep all rows, grab only column 2 through 4
-    colnames(data_snipped) <- c('time', 'displacement', 'force')
-    
-    # Fix column data types
-    data_snipped$time         <- as.numeric(data_snipped$time)
-    data_snipped$displacement <- as.numeric(data_snipped$displacement)
-    data_snipped$force        <- as.numeric(data_snipped$force)
-    
-    # Fix NA
-    data_snipped$time[is.na(data_snipped$time)] <- 0
-    data_snipped$displacement[is.na(data_snipped$displacement)] <- 0
-    data_snipped$force[is.na(data_snipped$force)] <- 0
-  
-    # Extract mussel ID, thread number, and technician note from the file name
-    ids <- parse_trace_name(file_name)
-    data_snipped$mussel <- ids$mussel # Saving mussel ID
-    data_snipped$thread <- ids$thread # Saving thread number
-    data_snipped$note   <- ids$note   # Saving technician note (try2, fluke, ...; "" if none)
-  
-    # Add the data to the nested list using the file name as the list name
-    nested_list[[file_name]] <- data_snipped
+# `mussel_trt` is only present when the key was found; fall back to an ungrouped count.
+if ("mussel_trt" %in% names(thread_raw)) {
+  pairing <- pairing %>%
+    left_join(thread_raw %>% distinct(mussel, mussel_trt), by = "mussel")
+  pairing %>%
+    count(mussel_trt, paired) %>%
+    pivot_wider(names_from = paired, values_from = n,
+                names_prefix = "paired_", values_fill = 0) %>%
+    knitr::kable()
+} else {
+  pairing %>% count(paired) %>% knitr::kable()
 }
-
 ```
 
+## Outlier screen
+
+Peak force by thread treatment, with each point labelled, plus a Rosner test for extreme
+values. This flags candidates for curation; it does not remove anything.
+
+```{r fig.width=9, fig.height=5}
+plot_dat <- thread_raw %>%
+  mutate(ID         = paste(mussel, thread),
+         thread_trt = factor(thread_trt, levels = unique(folder_labels$thread_trt)))
+
+ggplot(plot_dat, aes(x = thread_trt, y = max_force, label = ID)) +
+  geom_boxplot(width = 0.5, outlier.shape = NA) +
+  geom_text(check_overlap = TRUE, position = position_jitter(width = 0.18), size = 3) +
+  labs(x = NULL, y = "Peak force (N)") +
+  my_theme +
+  theme(axis.text.x = element_text(size = 12, angle = 25, hjust = 1))
+```
 
 ```{r}
-# Loop through the list object "nested_list"
-# calculate the maximum value from the "force" column
-# Save the maximum into a dataframe, along with the first values in the "mussel" column and "thread" column
+# Pooled screen. Rosner assumes an approximately normal bulk and wants n >= 25.
+print(rosnerTest(thread_raw$max_force, k = 5)$all.stats)
 
-# create a data frame with three columns: mussel, thread, and max_force
-max_force_treatment <- data.frame(mussel = character(),
-                        thread = character(),
-                        note = character(),
-                        max_force = numeric())
-
-# loop through the nested list
-for(i in seq_along(nested_list)){
-  # create a data frame for each list in the nested list
-  current_df <- nested_list[[i]]
-  # add a row to the max_force data frame with the mussel, thread, note, and max_force
-  max_force_treatment <- rbind(max_force_treatment, data.frame(mussel = current_df$mussel[1],
-                                            thread = current_df$thread[1],
-                                            note = current_df$note[1],
-                                            max_force = max(current_df$force)))
-
+# Per thread treatment, where the group is large enough to support it.
+for (trt in levels(plot_dat$thread_trt)) {
+  v <- plot_dat$max_force[plot_dat$thread_trt == trt]
+  if (length(v) < 25) {
+    message(trt, ": n = ", length(v), ", too small for a Rosner test; skipped.")
+    next
+  }
+  res <- tryCatch(rosnerTest(v, k = min(5, length(v) - 2)), error = function(e) NULL)
+  if (is.null(res)) { message(trt, ": Rosner test failed."); next }
+  message("--- ", trt, " (n = ", length(v), ") ---")
+  print(res$all.stats)
 }
-
 ```
 
+## Write the combined output
+
+One workbook, three sheets: `data` (one row per trace), `coverage`, and `pairing`. `data` is
+sheet 1, so `read_excel(path)` with no sheet argument gets the trace table.
 
 ```{r}
+write.xlsx(list(data = thread_raw, coverage = coverage, pairing = pairing),
+           file = xlsx_out, colNames = TRUE, overwrite = TRUE)
 
-require(stats)
-
-# Loop through the list object "nested_list"
-# extract the "time" and "force" column
-# remove rows that contain zeros before first non-zero row. Apply to time column as well.
-# remove rows that contain zeros after last non-zero row. Apply to time column as well.
-# fit loess function to "time" and "force" after trimmed. Time is x, force is y.
-# calculate area under the curve and save in dataframe, along with the first values in the "mussel" column and "thread" column from "nested_list"
-# use a for loop to iterate through the nested list object "nested_list"
-
-# Output folder for treatment QC plots (created if needed)
-qc_dir <- here::here("03_analyses", "extract-tensometer-data", "QC_plots", "treatment")
-dir.create(qc_dir, recursive = TRUE, showWarnings = FALSE)
-
-# create a data frame with three columns: mussel, thread, and max_force
-integral <- data.frame(mussel = numeric(),
-                        thread = numeric(),
-                        auc = numeric())
-
-# create a data frame with columns: mussel, thread, note, auc
-integral_treatment <- data.frame(mussel = character(),
-                        thread = character(),
-                        note = character(),
-                        auc = numeric())
-
-for(i in seq_along(nested_list)){
-  # extract time and force column from the current nested list element using $ notation
-  current_df <- nested_list[[i]][c("time", "force")]
-  
-  # fit loess function to "time" and "force" using loess() and save as an object
-  current_loess <- loess(force ~ time, data = current_df)
-  
-  # plot the loess function with the corresponding time and force data points.
-  # Name the QC plot after the source file (extension stripped) so each run, including retries and
-  # flukes that share a mussel/thread, gets its own plot instead of overwriting another's.
-  qc_name <- sub("\\.txt$", "", names(nested_list)[i])
-  jpeg(file.path(qc_dir, paste0(qc_name, ".jpg")))
-  plot(current_df$time, current_df$force, main= "Force over Time Plot with Loess Function", 
-       xlab = "Time", ylab = "Force", col = "blue")
-  lines(current_loess, col = "red") # add the loess function to the plot in red
-  dev.off()
-  
-  # calculate area under the curve using approx() to approximate the integral and save to a variable
-  auc <- sum(diff(current_loess$x) * (approx(current_loess$x, current_loess$y, n = length(current_loess$x)))$y[-1])
-  
-  # save the first values in the "mussel" and "thread" columns to variables
-  mussel_first_val <- nested_list[[i]]$mussel[1]
-  thread_first_val <- nested_list[[i]]$thread[1]
-  
-  # create a dataframe to store the results, and save the variables to the corresponding columns in the dataframe
-  integral_treatment <- rbind(integral_treatment, data.frame(mussel = nested_list[[i]]$mussel[1],
-                                           thread = nested_list[[i]]$thread[1],
-                                           note = nested_list[[i]]$note[1],
-                                           auc = auc))
-}
-
-
-```
-
-```{r}
-library(ggplot2)
-hist(max_force_treatment$max_force)
-max_force_treatment$ID <- paste(max_force_treatment$mussel, max_force_treatment$thread)
-  ggplot(data=max_force_treatment, aes(x=1, y=max_force, label = ID))+
-  geom_boxplot(width=.5)+
-  # jittered text with geom_text
-  geom_text(check_overlap = TRUE,
-            position=position_jitter(width=0.15))+
-  theme(legend.position="none")
-```
-
-```{r}
-library(EnvStats)
-test <- rosnerTest(max_force_treatment$max_force,
-  k = 5
-)
-test
-```
-
-```{r}
-sum_dir <- here::here("03_analyses", "extract-tensometer-data", "summarized_data")
-dir.create(sum_dir, recursive = TRUE, showWarnings = FALSE)
-write.xlsx(max_force_treatment, file = file.path(sum_dir, "max_force_treatment.xlsx"), colNames = TRUE)
-write.xlsx(integral_treatment,  file = file.path(sum_dir, "integral_treatment.xlsx"),  colNames = TRUE)
+message("Wrote ", xlsx_out, " (", nrow(thread_raw), " rows).")
+message("QC plots under ", qc_root)
 print("done")
 ```

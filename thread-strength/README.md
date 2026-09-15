@@ -1,55 +1,96 @@
 # thread-strength
 
-Plaque adhesion strength and thread mechanics from tensometer pull tests, before
-and after a 3-day stress exposure (control, OA, OW, DO).
+Plaque adhesion strength and thread mechanics from tensometer pull tests, before and after a
+3-day stress exposure (control, OA, OW, DO), plus a lab-reference group.
 
-This analysis is **self-contained and reproducible from this repository**: all
-raw inputs are present in `02_data/`, with one manual step noted below.
+Self-contained and reproducible from this repository apart from one manual step, noted below.
 
 ## Layout
 
 ```
 thread-strength/
-├── thread-strength.Rproj      open this first; it sets the working directory
+├── thread-strength.Rproj              open this first; it anchors here::here()
 ├── 01_code/
-│   ├── 1_extract_tensometer_data.Rmd   raw .txt traces -> max force + AUC tables
-│   ├── 2_analyze_thread_strength.Rmd   summary.xlsx     -> adhesion plots + stats
-│   └── thread-code/                    (legacy note)
+│   ├── 0_build_mussel_key.Rmd         morphometrics -> 02_data/mussel-treatment-key.csv
+│   ├── 1_extract_tensometer_data.Rmd  raw traces    -> 03_analyses/thread-summary-raw-output.xlsx
+│   ├── 2_assemble_thread_summary.Rmd  raw output    -> curation-ready candidate
+│   ├── 3_analyze_thread_strength.Rmd  curated table -> adhesion plots + stats
+│   ├── rename_tensometer_folders.sh   one-off folder rename helper (dry run by default)
+│   └── *_DOC.md                       companion documentation, one per script
 ├── 02_data/
-│   ├── tensometer_output/{control,treatment}/   raw force/displacement .txt files
-│   ├── pictures/{control,treatment}/            microscope images for plaque area
-│   ├── summary.xlsx                             curated input for script 2 (see note)
-│   └── instrument-reference/                    force-gauge VI, manual, wiring notes
+│   ├── tensometer_output/<phase folders>/   raw force/displacement .txt traces
+│   ├── pictures/{control,treatment}/        microscope images, source of pad_area
+│   └── mussel-treatment-key.csv             mussel tag -> arm, species, rna flag
 └── 03_analyses/
-    ├── extract-tensometer-data/        outputs of script 1
-    │   ├── QC_plots/{control,treatment}/   per-thread loess QC jpgs
-    │   └── summarized_data/                max_force_*.xlsx, integral_*.xlsx
-    └── analyze-thread-strength/        outputs of script 2 (boxplots, line graphs)
+    ├── thread-summary-raw-output.xlsx       output of script 1 (every trace, nothing dropped)
+    ├── thread-summary.xlsx                  hand-curated table, input to script 3
+    ├── extract-tensometer-data/QC_plots/    per-trace loess QC jpgs, by source folder
+    ├── assemble-thread-summary/             output of script 2
+    └── analyze-thread-strength/             output of script 3
 ```
 
-Output subfolders under `03_analyses/` are named for the script that generates
-them, so a file's provenance is always obvious.
+## Tensometer folder layout
+
+```
+02_data/tensometer_output/
+├── 00_lab_reference/    day 0  T001-T012, never entered the experimental system
+├── 01_pre_exposure/     day 1  shared holding system, threads built before exposure
+├── 02_post_control/     day 3  common-garden control tank
+├── 03_post_OA/          day 3
+├── 04_post_OW/          day 3
+└── 05_post_DO/          day 3
+```
+
+Phase first, so the numeric prefix orders the experiment rather than fighting it. The
+previous names (`00_baseline`, `00_laboratory_control`, `01_treatment_control`,
+`02_OA_treatment`, ...) put two different phases under the same `00` prefix and made
+`treatment_control` read as "a treatment called control".
+
+`rename_tensometer_folders.sh` performs the rename with `git mv`. It is a dry run unless you
+pass `--apply`. Script 1 recognises both the old and the new names, so it works before and
+after; delete the legacy rows from its `folder_labels` table once the rename is pushed.
+
+## The label model
+
+A mussel and its threads did not necessarily experience the same thing. Three columns keep
+that straight:
+
+| column | grain | source | meaning |
+|---|---|---|---|
+| `thread_trt` | thread | folder name | what the **thread** was built in |
+| `phase` | thread | folder name | `lab` / `pre` / `post` |
+| `mussel_trt` | mussel | `mussel-treatment-key.csv` | the arm the **animal** was assigned to |
+
+`mussel_trt` is a **destiny** label. For a `pre` thread it describes the animal's future, not
+its past: a baseline thread from an OA animal is not an OA thread. Thread-level facts come
+from the folder path, mussel-level facts from the key, joined on the tag. Never put the
+animal's arm in the folder path; that creates a second copy of the key that can drift.
+
+`phase` has three levels because the lab-reference animals are not pre-exposure baselines. A
+binary before/after would pool them and contaminate every paired contrast.
+
+The old `group` column is retired: it was fully recoverable from `thread_trt`, and its value
+`control` collided with both `mussel_trt == "control"` and `thread_trt == "treatment_control"`.
 
 ## How to run
 
-1. Open `thread-strength.Rproj` in RStudio (this anchors `here::here()` to this
-   folder).
-2. Knit or run `01_code/1_extract_tensometer_data.Rmd`. It reads the raw traces
-   from `02_data/tensometer_output/` and writes force/AUC tables and QC plots into
-   `03_analyses/extract-tensometer-data/`.
-3. Knit or run `01_code/2_analyze_thread_strength.Rmd`. It reads `02_data/summary.xlsx`
-   and writes adhesion boxplots and line graphs into
-   `03_analyses/analyze-thread-strength/`.
+1. Open `thread-strength.Rproj` in RStudio. Not the repository-root `.Rproj`; `here::here()`
+   must resolve to this folder.
+2. `01_code/0_build_mussel_key.Rmd` — only needed when the morphometrics workbook changes.
+3. `01_code/1_extract_tensometer_data.Rmd` — reads every trace, writes
+   `03_analyses/thread-summary-raw-output.xlsx` and the QC plots.
+4. `01_code/2_assemble_thread_summary.Rmd` — writes the curation candidate.
+5. Curate by hand: add `pad_area` and `failure`, drop bad runs against the QC plots, save as
+   `03_analyses/thread-summary.xlsx` (sheet `data`).
+6. `01_code/3_analyze_thread_strength.Rmd`.
 
-All paths use `here::here(...)`, so the scripts run regardless of where this
-folder sits, as long as they are run inside `thread-strength.Rproj`.
+## The manual step
 
-## Reproducibility note: summary.xlsx
+`pad_area` (plaque cross-sectional area, mm²) and `failure_mode` are measured from the
+microscope images in `02_data/pictures/`. They cannot be derived from a force trace, so step
+5 above is genuinely manual. Script 2 carries forward every measurement already present in
+`thread-summary.xlsx` and reports exactly which traces still need one, so the manual work is
+only ever on the new traces.
 
-`summary.xlsx` is **assembled by hand**, not produced by script 1. It combines
-the force/AUC values from script 1 with plaque-area measurements (`pad_area`,
-derived from the `02_data/pictures/` microscopy) and treatment labels. The master
-copy of these data lives in the project Google Sheet
-(<https://docs.google.com/spreadsheets/d/1GxLnNJjjjZ8xhBzz8nD-eUdpOwg6UY7yicG7ER5YIOQ/edit>).
-Because this step is manual, re-running script 1 alone does not regenerate
-`summary.xlsx`; update it from the sheet if the underlying data change.
+`adhesion_kpa = max_force / pad_area * 1000` is recomputed by script 3 rather than trusted
+from a cached spreadsheet formula.
