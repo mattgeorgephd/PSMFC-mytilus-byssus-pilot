@@ -1,400 +1,400 @@
 LOC_ID,metric,n,slope_wls,p_wls,q_wls,protein_name
-LOC134707468,max_force,44,-0.003652087116849403,0.8312573498255957,0.9666491469144137,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
-LOC134715138,max_force,44,0.006785554518150878,0.7681600089997853,0.9666491469144137,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
-LOC134699268,max_force,44,0.02189563512162436,0.19425141532646673,0.7669170190104692,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
-LOC134714939,max_force,44,0.02296842239533724,0.4223921133089956,0.9220211452258119,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
-LOC134707842,max_force,44,0.012094575357578337,0.6137023416451767,0.9666491469144137,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
-LOC134714791,max_force,44,0.019201211157282863,0.36876416345259155,0.9220211452258119,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
-LOC134711783,max_force,44,0.013944207631060407,0.5278646524699778,0.9666491469144137,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
-LOC134706577,max_force,44,0.005657818769838668,0.8032954206682132,0.9666491469144137,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
-LOC134697300,max_force,44,4.945397632874057e-4,0.9632358576885482,0.9735761612029927,Byssal HSP-like protein 1
-LOC134706345,max_force,44,0.005396051073665709,0.7976025841681784,0.9666491469144137,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
-LOC134700327,max_force,44,0.007627152372133333,0.6015951578418139,0.9666491469144137,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
-LOC134717350,max_force,44,-0.013898912066158694,0.09750322613860235,0.6716630498944831,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
-LOC134722124,max_force,44,0.003151789500044723,0.8360328349741555,0.9666491469144137,Hypoxia up-regulated protein 1
-LOC134706576,max_force,44,0.023276749568001274,0.33406429590217557,0.9067459460201909,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
-LOC134725152,max_force,44,-0.04266474546373125,0.03462380426321178,0.6716630498944831,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
-LOC134712215,max_force,44,-0.03364689288819922,0.0989477675384058,0.6716630498944831,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
-LOC134711376,max_force,44,-0.05183490211702306,0.013265179451899183,0.6716630498944831,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
-LOC134725758,max_force,44,0.0030843478953620543,0.8522856434216743,0.9666491469144137,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
-LOC134695781,max_force,44,0.003023669221091296,0.8850136832723333,0.9666491469144137,97 kDa heat shock protein (Heat shock protein 110)
-LOC134685659,max_force,44,8.308809718341672e-4,0.9735761612029927,0.9735761612029927,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
-LOC134721501,max_force,44,-0.006190156963590246,0.7099962173651027,0.9666491469144137,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
-LOC134714392,max_force,44,0.00577091762318952,0.7548930416222948,0.9666491469144137,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
-LOC134728203,max_force,44,0.010991348515112511,0.6015828961252889,0.9666491469144137,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
-LOC134721377,max_force,44,0.009990598846487465,0.6343377538113536,0.9666491469144137,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
-LOC134709977,max_force,44,-0.04406642937971952,0.21112333929186944,0.7669170190104692,Heat shock protein HSP 90-alpha
-LOC134716333,max_force,44,-0.013864313631667836,0.6672544300232482,0.9666491469144137,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
-LOC134680973,max_force,44,-0.011414662760218158,0.2690936908808664,0.7669170190104692,Collagen alpha-6(VI) chain
-LOC134716384,max_force,44,-0.007783080955292469,0.6022549007207678,0.9666491469144137,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134708353,max_force,44,-0.027825974568661788,0.22674652858359676,0.7669170190104692,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
-LOC134684257,max_force,44,-0.01505438843601993,0.4323477482961484,0.9220211452258119,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
-LOC134722108,max_force,44,0.012967442009658643,0.2660671065280701,0.7669170190104692,Collagen alpha-1(XXI) chain
-LOC134695253,max_force,44,0.0011389505393724871,0.9367722450218943,0.9708366902954177,Collagen alpha-3(VI) chain
-LOC134716146,max_force,44,-0.028497222406701165,0.06826024012832427,0.6716630498944831,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
-LOC134715482,max_force,44,0.02254895070842997,0.4859125246096362,0.9666491469144137,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
-LOC134682955,max_force,44,0.011975802207433313,0.5669570639154724,0.9666491469144137,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
-LOC134720973,max_force,44,0.031049695970999137,0.24658576283473368,0.7669170190104692,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
-LOC134716385,max_force,44,-0.011884928045779813,0.20100203913080267,0.7669170190104692,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134720932,max_force,44,-0.0055862813378790175,0.43674685826485826,0.9220211452258119,Byssal peroxidase-like protein 2
-LOC134721315,max_force,44,-0.0038487275387784543,0.7073740880389376,0.9666491469144137,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
-LOC134695001,max_force,44,0.01501070880405504,0.3797703346568657,0.9220211452258119,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
-LOC134710997,max_force,44,-0.008126929489121653,0.41038738778874473,0.9220211452258119,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
-LOC134691221,max_force,44,-0.041870268424590795,0.17203650175574875,0.7669170190104692,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
-LOC134697127,max_force,44,-0.03016267559374299,0.21775526773453405,0.7669170190104692,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134722070,max_force,44,-0.0074996695331734356,0.6386188289543996,0.9666491469144137,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
-LOC134721046,max_force,44,0.0036088465815580493,0.9025591788063777,0.9666491469144137,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
-LOC134705706,max_force,44,-0.024444821828281997,0.05470510238658204,0.6716630498944831,Collagen alpha-1(V) chain
-LOC134715908,max_force,44,0.01303354969596464,0.6325618728207405,0.9666491469144137,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
-LOC134720677,max_force,44,0.007442316882818361,0.7143537689156498,0.9666491469144137,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
-LOC134725897,max_force,44,0.022915916502920457,0.09796016415850604,0.6716630498944831,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
-LOC134697168,max_force,44,0.0025951685574068517,0.9157728760241814,0.9666491469144137,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134686763,max_force,44,-0.03706626865932808,0.11564076508660033,0.6716630498944831,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
-LOC134711515,max_force,44,-0.02988684471916985,0.1178356227885058,0.6716630498944831,Collagen alpha-2(IV) chain
-LOC134687560,max_force,44,-0.03042683440899824,0.24759850634016323,0.7669170190104692,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
-LOC134720928,max_force,44,-0.0029659469600483864,0.8012713586890126,0.9666491469144137,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
-LOC134711985,max_force,44,-0.00291618437171937,0.866335385806682,0.9666491469144137,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
-LOC134715354,max_force,44,0.005868092259227042,0.6678753644763498,0.9666491469144137,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
-LOC134693874,max_force,44,-0.03730384558972832,0.10104965660320651,0.6716630498944831,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
-LOC134707468,pad_area,44,0.11277813519654478,0.6237074055598647,0.846429558263408,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
-LOC134715138,pad_area,44,-0.34513771940637106,0.2605771258775689,0.7817313776327068,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
-LOC134699268,pad_area,44,0.23386141902482752,0.30385286077235935,0.8247434792392612,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
-LOC134714939,pad_area,44,-0.33060551314981135,0.38955876769008946,0.846429558263408,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
-LOC134707842,pad_area,44,-0.4139384152275421,0.19413704118573438,0.7817313776327068,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
-LOC134714791,pad_area,44,-0.24086442004393152,0.4014899258039696,0.846429558263408,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
-LOC134711783,pad_area,44,-0.21458817590230753,0.46909101835395806,0.846429558263408,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
-LOC134706577,pad_area,44,-0.37199107817102844,0.2183248500115666,0.7817313776327068,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
-LOC134697300,pad_area,44,-0.10052993336767464,0.48398333257018966,0.846429558263408,Byssal HSP-like protein 1
-LOC134706345,pad_area,44,-0.45735719478995657,0.0996728404612424,0.7817313776327068,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
-LOC134700327,pad_area,44,0.11745287580614155,0.5491625453730311,0.846429558263408,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
-LOC134717350,pad_area,44,0.10638347073594082,0.35078573844915895,0.846429558263408,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
-LOC134722124,pad_area,44,-0.05674941831445835,0.7813571349040906,0.8507575461312707,Hypoxia up-regulated protein 1
-LOC134706576,pad_area,44,-0.03266595807426008,0.9200765666823205,0.9365065053730762,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
-LOC134725152,pad_area,44,0.18437519107403216,0.50767730948806,0.846429558263408,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
-LOC134712215,pad_area,44,0.16556119073906286,0.5516046117918988,0.846429558263408,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
-LOC134711376,pad_area,44,-0.5853386527864469,0.03964734471998074,0.7817313776327068,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
-LOC134725758,pad_area,44,0.13911883616456713,0.5307669825891883,0.846429558263408,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
-LOC134695781,pad_area,44,0.08009015860609746,0.7753815845859129,0.8507575461312707,97 kDa heat shock protein (Heat shock protein 110)
-LOC134685659,pad_area,44,-0.5679735624861084,0.08570775014839481,0.7817313776327068,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
-LOC134721501,pad_area,44,-0.26835501888090707,0.22598440253968463,0.7817313776327068,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
-LOC134714392,pad_area,44,-0.3194032742983211,0.19360956789047112,0.7817313776327068,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
-LOC134728203,pad_area,44,-0.5386905909583445,0.051261472060223696,0.7817313776327068,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
-LOC134721377,pad_area,44,-0.3611002942782718,0.19631755051294894,0.7817313776327068,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
-LOC134709977,pad_area,44,0.572488383499218,0.22670981834018517,0.7817313776327068,Heat shock protein HSP 90-alpha
-LOC134716333,pad_area,44,-0.09598558821820652,0.8247546015986813,0.8705743016874969,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
-LOC134680973,pad_area,44,-0.07174492503514593,0.6072319803259794,0.846429558263408,Collagen alpha-6(VI) chain
-LOC134716384,pad_area,44,0.09568599489025109,0.6333944579358691,0.846429558263408,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134708353,pad_area,44,0.1330465448516126,0.6695187971642707,0.8502485664150624,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
-LOC134684257,pad_area,44,-0.18939594913773938,0.4622275007461393,0.846429558263408,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
-LOC134722108,pad_area,44,0.05796302771826797,0.7132224097976372,0.8502485664150624,Collagen alpha-1(XXI) chain
-LOC134695253,pad_area,44,-0.05106420323932465,0.7910552621922342,0.8507575461312707,Collagen alpha-3(VI) chain
-LOC134716146,pad_area,44,-0.1140668189225538,0.5941244361196316,0.846429558263408,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
-LOC134715482,pad_area,44,-0.5229190356770838,0.225916128812548,0.7817313776327068,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
-LOC134682955,pad_area,44,-0.15137361484931866,0.590067652265867,0.846429558263408,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
-LOC134720973,pad_area,44,0.45789791089473497,0.20242238570109775,0.7817313776327068,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
-LOC134716385,pad_area,44,0.04585647302967096,0.7159987927705789,0.8502485664150624,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134720932,pad_area,44,-0.22476656710281562,0.015995967483286005,0.7817313776327068,Byssal peroxidase-like protein 2
-LOC134721315,pad_area,44,-0.06780617443720548,0.6221704690638004,0.846429558263408,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
-LOC134695001,pad_area,44,-0.20162329023597048,0.37968978049216917,0.846429558263408,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
-LOC134710997,pad_area,44,0.004054367824278651,0.9757112634917047,0.9757112634917047,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
-LOC134691221,pad_area,44,-0.6004609830144284,0.14404523727141064,0.7817313776327068,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
-LOC134697127,pad_area,44,0.43391694258543106,0.18609198983329645,0.7817313776327068,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134722070,pad_area,44,0.06052108230524391,0.7779899036223751,0.8507575461312707,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
-LOC134721046,pad_area,44,-0.16698135791325575,0.6728360648598799,0.8502485664150624,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
-LOC134705706,pad_area,44,0.1891939103393217,0.27593290195599895,0.786408770574597,Collagen alpha-1(V) chain
-LOC134715908,pad_area,44,0.2336454589568811,0.5228472093366012,0.846429558263408,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
-LOC134720677,pad_area,44,-0.31906259517722935,0.23881218695956793,0.7817313776327068,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
-LOC134725897,pad_area,44,-0.020069354025628885,0.9155601287573789,0.9365065053730762,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
-LOC134697168,pad_area,44,-0.10146052748325082,0.7580437811649083,0.8507575461312707,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134686763,pad_area,44,-0.2535690623987697,0.4284036397494758,0.846429558263408,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
-LOC134711515,pad_area,44,0.2952710551857662,0.2534280221369594,0.7817313776327068,Collagen alpha-2(IV) chain
-LOC134687560,pad_area,44,-0.33202026080047037,0.3489327858390444,0.846429558263408,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
-LOC134720928,pad_area,44,-0.19140167785221018,0.22218700564468855,0.7817313776327068,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
-LOC134711985,pad_area,44,-0.10916439892963656,0.6385345790408167,0.846429558263408,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
-LOC134715354,pad_area,44,-0.15144727693546411,0.40809995767925555,0.846429558263408,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
-LOC134693874,pad_area,44,0.11776682656950518,0.7045564863495268,0.8502485664150624,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
-LOC134707468,adhesion_kpa,44,-6.914282742409886,0.35244915909958496,0.6278000646461357,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
-LOC134715138,adhesion_kpa,44,10.129758606999532,0.31005695517519277,0.5956372348345498,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
-LOC134699268,adhesion_kpa,44,-0.48761386147493696,0.9477291574874839,0.9646528924426174,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
-LOC134714939,adhesion_kpa,44,17.126079130737843,0.16673469043403713,0.5349723060078813,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
-LOC134707842,adhesion_kpa,44,18.430914803823132,0.07219876677497855,0.4286330407088047,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
-LOC134714791,adhesion_kpa,44,11.004954025749191,0.23578496615153371,0.5349723060078813,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
-LOC134711783,adhesion_kpa,44,16.478959322926055,0.08192510492486887,0.4286330407088047,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
-LOC134706577,adhesion_kpa,44,11.445686000527349,0.244022455372016,0.5349723060078813,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
-LOC134697300,adhesion_kpa,44,5.074380768102558,0.2745110367265315,0.558826039050439,Byssal HSP-like protein 1
-LOC134706345,adhesion_kpa,44,12.28549805628457,0.17572485649526123,0.5349723060078813,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
-LOC134700327,adhesion_kpa,44,-0.7260239094811505,0.9094362603894715,0.9599604970777754,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
-LOC134717350,adhesion_kpa,44,-6.756190904914676,0.06360064947640165,0.4286330407088047,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
-LOC134722124,adhesion_kpa,44,4.538050166444492,0.4932755508624701,0.7257610549571122,Hypoxia up-regulated protein 1
-LOC134706576,adhesion_kpa,44,9.356472082570239,0.3738033160397015,0.6456602731594845,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
-LOC134725152,adhesion_kpa,44,-20.243679354574134,0.020825113810409572,0.23740629743866912,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
-LOC134712215,adhesion_kpa,44,-20.908389928252845,0.016555436163623587,0.2359149653316361,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
-LOC134711376,adhesion_kpa,44,-7.665428770760552,0.4175450632262453,0.6613871085232378,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
-LOC134725758,adhesion_kpa,44,-7.922739473221999,0.2691437865093097,0.558826039050439,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
-LOC134695781,adhesion_kpa,44,-2.3595077156608624,0.7957871071891249,0.8962761043576534,97 kDa heat shock protein (Heat shock protein 110)
-LOC134685659,adhesion_kpa,44,13.736636935165658,0.20456724032766452,0.5349723060078813,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
-LOC134721501,adhesion_kpa,44,4.545531402033411,0.5306115038276313,0.7376794077603654,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
-LOC134714392,adhesion_kpa,44,9.756205206911142,0.222082216705408,0.5349723060078813,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
-LOC134728203,adhesion_kpa,44,15.582178605927593,0.08416919293063242,0.4286330407088047,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
-LOC134721377,adhesion_kpa,44,11.58375379145099,0.20200114735305089,0.5349723060078813,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
-LOC134709977,adhesion_kpa,44,-25.821957225483473,0.09023853488606415,0.4286330407088047,Heat shock protein HSP 90-alpha
-LOC134716333,adhesion_kpa,44,1.040827048615017,0.9410831259435768,0.9646528924426174,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
-LOC134680973,adhesion_kpa,44,-3.461463196416327,0.4441645839559393,0.684253548256447,Collagen alpha-6(VI) chain
-LOC134716384,adhesion_kpa,44,-6.273982350786558,0.3333847148588821,0.6129977015147187,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134708353,adhesion_kpa,44,-14.80638559733779,0.13843936246100325,0.5349723060078813,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
-LOC134684257,adhesion_kpa,44,-2.2428014620884733,0.7892880783515108,0.8962761043576534,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
-LOC134722108,adhesion_kpa,44,4.136903141525183,0.4177181738041502,0.6613871085232378,Collagen alpha-1(XXI) chain
-LOC134695253,adhesion_kpa,44,1.5703584831778208,0.8019312512673741,0.8962761043576534,Collagen alpha-3(VI) chain
-LOC134716146,adhesion_kpa,44,-12.353919834162886,0.07004080133760449,0.4286330407088047,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
-LOC134715482,adhesion_kpa,44,16.96651725690332,0.22639598756717996,0.5349723060078813,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
-LOC134682955,adhesion_kpa,44,11.81173168735346,0.19146727811196687,0.5349723060078813,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
-LOC134720973,adhesion_kpa,44,0.2122228112811779,0.9856395428747848,0.9856395428747848,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
-LOC134716385,adhesion_kpa,44,-5.325363995274125,0.18872337914598036,0.5349723060078813,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134720932,adhesion_kpa,44,2.0698788609198293,0.5093060034786752,0.7257610549571122,Byssal peroxidase-like protein 2
-LOC134721315,adhesion_kpa,44,-3.0002170404088266,0.5014304978240969,0.7257610549571122,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
-LOC134695001,adhesion_kpa,44,10.54734176597004,0.15371854289088696,0.5349723060078813,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
-LOC134710997,adhesion_kpa,44,-1.7512481111598661,0.6852276809048339,0.8137078710744903,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
-LOC134691221,adhesion_kpa,44,-7.24731214191799,0.5916544847766808,0.7763163854588315,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
-LOC134697127,adhesion_kpa,44,-28.720264222390906,0.005089256500942805,0.2106782209331611,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134722070,adhesion_kpa,44,-3.545466016169215,0.6106588481002562,0.7763163854588315,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
-LOC134721046,adhesion_kpa,44,6.495144063229016,0.6128813569411828,0.7763163854588315,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
-LOC134705706,adhesion_kpa,44,-13.85056585742564,0.011088327417534795,0.2106782209331611,Collagen alpha-1(V) chain
-LOC134715908,adhesion_kpa,44,-2.638776014284959,0.8245703008609364,0.9038559067129496,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
-LOC134720677,adhesion_kpa,44,10.65705590544032,0.22549122920198683,0.5349723060078813,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
-LOC134725897,adhesion_kpa,44,9.250147250227583,0.12665091549024263,0.5349723060078813,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
-LOC134697168,adhesion_kpa,44,1.492715792367864,0.8890763332546121,0.9561764338776017,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134686763,adhesion_kpa,44,-8.842139888397883,0.39488896372596083,0.6613871085232378,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
-LOC134711515,adhesion_kpa,44,-20.961652203349562,0.009780620555863971,0.2106782209331611,Collagen alpha-2(IV) chain
-LOC134687560,adhesion_kpa,44,-5.269485189389756,0.6485901729321351,0.7878421595315264,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
-LOC134720928,adhesion_kpa,44,5.148518232159684,0.31349328149186834,0.5956372348345498,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
-LOC134711985,adhesion_kpa,44,3.827078339622552,0.6120331628533737,0.7763163854588315,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
-LOC134715354,adhesion_kpa,44,2.709588458670985,0.6496242368066971,0.7878421595315264,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
-LOC134693874,adhesion_kpa,44,-20.267461639355066,0.03909856645042526,0.37143638127904,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
-LOC134707468,max_displacement,44,0.017829275508563617,0.09353142771435694,0.9380467014350676,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
-LOC134715138,max_displacement,44,-0.006445348836483874,0.6572545103824117,0.9920591398393659,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
-LOC134699268,max_displacement,44,0.002071854005862726,0.8473979404644245,0.9920591398393659,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
-LOC134714939,max_displacement,44,0.006367802951665105,0.7255696995550929,0.9920591398393659,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
-LOC134707842,max_displacement,44,-0.004734247620747342,0.7546031213768246,0.9920591398393659,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
-LOC134714791,max_displacement,44,0.002029369885704302,0.8810348807609294,0.9920591398393659,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
-LOC134711783,max_displacement,44,-0.008637218794277084,0.5358376907705289,0.9920591398393659,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
-LOC134706577,max_displacement,44,0.017656598660011232,0.2139404757658926,0.9380467014350676,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
-LOC134697300,max_displacement,44,6.743427880854932e-5,0.9920591398393659,0.9920591398393659,Byssal HSP-like protein 1
-LOC134706345,max_displacement,44,0.0053510542478110755,0.6869766648787721,0.9920591398393659,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
-LOC134700327,max_displacement,44,0.007855157403369784,0.39309893691327524,0.9687730262970726,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
-LOC134717350,max_displacement,44,0.002938994362126943,0.584961558095581,0.9920591398393659,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
-LOC134722124,max_displacement,44,0.011851167287767429,0.21333571754505065,0.9380467014350676,Hypoxia up-regulated protein 1
-LOC134706576,max_displacement,44,-0.0018374191973757744,0.9044621947665651,0.9920591398393659,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
-LOC134725152,max_displacement,44,0.013506816874060338,0.3000598231519999,0.9687730262970726,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
-LOC134712215,max_displacement,44,0.003979472551052231,0.7612768620793586,0.9920591398393659,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
-LOC134711376,max_displacement,44,0.01109132692991545,0.41783133900086056,0.9687730262970726,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
-LOC134725758,max_displacement,44,0.0011891194482314105,0.9095068643856594,0.9920591398393659,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
-LOC134695781,max_displacement,44,0.00362331805440872,0.7836886551628254,0.9920591398393659,97 kDa heat shock protein (Heat shock protein 110)
-LOC134685659,max_displacement,44,-7.688591520001975e-4,0.9612885800517436,0.9920591398393659,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
-LOC134721501,max_displacement,44,0.006262135657961827,0.5508154460539023,0.9920591398393659,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
-LOC134714392,max_displacement,44,-0.009003936511225878,0.43902708005501867,0.9687730262970726,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
-LOC134728203,max_displacement,44,0.004219071825173026,0.7512334161476435,0.9920591398393659,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
-LOC134721377,max_displacement,44,3.3785775094227494e-4,0.9797095934741675,0.9920591398393659,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
-LOC134709977,max_displacement,44,0.005973025418534789,0.7903801930578556,0.9920591398393659,Heat shock protein HSP 90-alpha
-LOC134716333,max_displacement,44,0.029470997380330426,0.14274778819635336,0.9380467014350676,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
-LOC134680973,max_displacement,44,0.008443580694055056,0.19414559925164201,0.9380467014350676,Collagen alpha-6(VI) chain
-LOC134716384,max_displacement,44,-0.011030270830867061,0.23876777348477635,0.9654958652022497,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134708353,max_displacement,44,-0.00833068172299596,0.5694570110526547,0.9920591398393659,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
-LOC134684257,max_displacement,44,0.00865925493859144,0.4748068577965474,0.9687730262970726,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
-LOC134722108,max_displacement,44,-0.005664712442509205,0.443616164464414,0.9687730262970726,Collagen alpha-1(XXI) chain
-LOC134695253,max_displacement,44,2.5877310476459306e-4,0.9772319602698589,0.9920591398393659,Collagen alpha-3(VI) chain
-LOC134716146,max_displacement,44,0.012524446093244313,0.20958694963762534,0.9380467014350676,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
-LOC134715482,max_displacement,44,0.007233203399275781,0.723992472075019,0.9920591398393659,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
-LOC134682955,max_displacement,44,0.011966419813217331,0.3634300126988663,0.9687730262970726,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
-LOC134720973,max_displacement,44,0.02746832586913117,0.10158241808754134,0.9380467014350676,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
-LOC134716385,max_displacement,44,-0.004215230487836271,0.4758885041459304,0.9687730262970726,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134720932,max_displacement,44,-0.0050167791063998515,0.26679905416950994,0.9654958652022497,Byssal peroxidase-like protein 2
-LOC134721315,max_displacement,44,0.006459725479770065,0.31570921557923975,0.9687730262970726,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
-LOC134695001,max_displacement,44,0.001126149454864358,0.9173040051342809,0.9920591398393659,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
-LOC134710997,max_displacement,44,-0.018664520314732157,0.001479954292346953,0.08435739466377631,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
-LOC134691221,max_displacement,44,0.004447496900644511,0.8204013329526222,0.9920591398393659,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
-LOC134697127,max_displacement,44,0.027012218430991723,0.07740242052216674,0.9380467014350676,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134722070,max_displacement,44,0.015355682489648923,0.12255475374646542,0.9380467014350676,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
-LOC134721046,max_displacement,44,-0.0022825522021577404,0.9024083332249997,0.9920591398393659,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
-LOC134705706,max_displacement,44,-5.465312183608217e-4,0.9470443034851475,0.9920591398393659,Collagen alpha-1(V) chain
-LOC134715908,max_displacement,44,-0.013055897881647203,0.4471720191418127,0.9687730262970726,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
-LOC134720677,max_displacement,44,-0.019899097964964692,0.1156371050252317,0.9380467014350676,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
-LOC134725897,max_displacement,44,0.005031520914799543,0.5710978628614394,0.9920591398393659,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
-LOC134697168,max_displacement,44,0.022418271144593313,0.14240293402960832,0.9380467014350676,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134686763,max_displacement,44,0.02068140213683894,0.1660159820339311,0.9380467014350676,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
-LOC134711515,max_displacement,44,-0.0012230500541538804,0.9205350315208404,0.9920591398393659,Collagen alpha-2(IV) chain
-LOC134687560,max_displacement,44,0.015567658808407115,0.35033757390759146,0.9687730262970726,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
-LOC134720928,max_displacement,44,0.0081301177620604,0.2710163832146666,0.9654958652022497,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
-LOC134711985,max_displacement,44,-0.009987441137032982,0.35879845646167563,0.9687730262970726,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
-LOC134715354,max_displacement,44,0.0045061663093271176,0.6016401679722955,0.9920591398393659,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
-LOC134693874,max_displacement,44,-5.298503079880903e-4,0.9710862654372714,0.9920591398393659,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
-LOC134707468,dlog_max_force,42,-0.046261170922534574,0.6893344663797206,0.9137689438056761,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
-LOC134715138,dlog_max_force,42,0.032875156750980426,0.8274388156332682,0.9191382816827499,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
-LOC134699268,dlog_max_force,42,0.2429234640176121,0.03415472540424444,0.5777566728308492,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
-LOC134714939,dlog_max_force,42,0.24903840611988443,0.21788514342975787,0.729834755332343,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
-LOC134707842,dlog_max_force,42,0.1465469548946508,0.36382888145537073,0.7932597671805077,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
-LOC134714791,dlog_max_force,42,0.21707623838059312,0.18227316406295468,0.729834755332343,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
-LOC134711783,dlog_max_force,42,0.12137359109517319,0.4141221195662539,0.8022876989262104,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
-LOC134706577,dlog_max_force,42,0.08822171377325849,0.5688187061715718,0.8762882770751241,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
-LOC134697300,dlog_max_force,42,-0.08100526948678272,0.2801074469957827,0.7328520560294527,Byssal HSP-like protein 1
-LOC134706345,dlog_max_force,42,0.10233185888668526,0.46320497450378895,0.8245295209694542,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
-LOC134700327,dlog_max_force,42,0.12351950292196398,0.21174870282440997,0.729834755332343,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
-LOC134717350,dlog_max_force,42,-0.1321139216405174,0.02686098017935849,0.5777566728308492,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
-LOC134722124,dlog_max_force,42,-0.006299307181796124,0.9513546063708009,0.9796557800226506,Hypoxia up-regulated protein 1
-LOC134706576,dlog_max_force,42,0.24001373003721044,0.16662406035901245,0.729834755332343,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
-LOC134725152,dlog_max_force,42,-0.18347762560669767,0.18205390029053412,0.729834755332343,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
-LOC134712215,dlog_max_force,42,-0.13480002498418986,0.3450885302887273,0.7932597671805077,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
-LOC134711376,dlog_max_force,42,-0.14016478534590726,0.38967146457989854,0.7932597671805077,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
-LOC134725758,dlog_max_force,42,0.234664014743329,0.0614981015474098,0.5777566728308492,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
-LOC134695781,dlog_max_force,42,0.0863441504576949,0.5335309721085648,0.8688932974339484,97 kDa heat shock protein (Heat shock protein 110)
-LOC134685659,dlog_max_force,42,0.0762115494034754,0.6677971433987535,0.9137689438056761,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
-LOC134721501,dlog_max_force,42,0.062446743268307736,0.5578323648201831,0.8762882770751241,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
-LOC134714392,dlog_max_force,42,-0.025394750522967347,0.8331968208248812,0.9191382816827499,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
-LOC134728203,dlog_max_force,42,0.05231035129738012,0.7180732805727825,0.9191382816827499,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
-LOC134721377,dlog_max_force,42,-0.03125474497837089,0.8385121166228595,0.9191382816827499,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
-LOC134709977,dlog_max_force,42,-0.19073303473340142,0.42225668364537394,0.8022876989262104,Heat shock protein HSP 90-alpha
-LOC134716333,dlog_max_force,42,-0.272461035335691,0.2027088385290412,0.729834755332343,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
-LOC134680973,dlog_max_force,42,-0.11195179107641377,0.10136081979488583,0.5777566728308492,Collagen alpha-6(VI) chain
-LOC134716384,dlog_max_force,42,-0.011345339946972632,0.9123592698878353,0.9796557800226506,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134708353,dlog_max_force,42,-0.2822987583365175,0.06889515476057671,0.5777566728308492,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
-LOC134684257,dlog_max_force,42,-0.1368842150585115,0.28285517952013967,0.7328520560294527,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
-LOC134722108,dlog_max_force,42,0.022965422559186693,0.8101692830475729,0.9191382816827499,Collagen alpha-1(XXI) chain
-LOC134695253,dlog_max_force,42,0.053099202676048986,0.6379690839964456,0.9137689438056761,Collagen alpha-3(VI) chain
-LOC134716146,dlog_max_force,42,-0.1786670761510708,0.09949341447822106,0.5777566728308492,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
-LOC134715482,dlog_max_force,42,-0.06263425910334337,0.7761275173248458,0.9191382816827499,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
-LOC134682955,dlog_max_force,42,0.07855664592309544,0.5962782279499088,0.8944173419248632,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
-LOC134720973,dlog_max_force,42,0.12636577183683576,0.5179456363964923,0.8683206257235312,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
-LOC134716385,dlog_max_force,42,0.019251270304144752,0.7696064106214635,0.9191382816827499,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134720932,dlog_max_force,42,-0.08423553503998657,0.07979462886833458,0.5777566728308492,Byssal peroxidase-like protein 2
-LOC134721315,dlog_max_force,42,-0.08063036123117884,0.2543216919012827,0.7328520560294527,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
-LOC134695001,dlog_max_force,42,0.003702854265974881,0.97663994213211,0.9796557800226506,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
-LOC134710997,dlog_max_force,42,0.07586908257277243,0.2716501053127339,0.7328520560294527,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
-LOC134691221,dlog_max_force,42,-0.18171047054240372,0.3835168949158585,0.7932597671805077,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
-LOC134697127,dlog_max_force,42,-0.2028415414210112,0.23047413326284516,0.729834755332343,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134722070,dlog_max_force,42,-0.09890465551571923,0.35078042181710345,0.7932597671805077,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
-LOC134721046,dlog_max_force,42,-0.19212598995022664,0.3649123502286815,0.7932597671805077,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
-LOC134705706,dlog_max_force,42,-0.20549046368796353,0.0249174770087503,0.5777566728308492,Collagen alpha-1(V) chain
-LOC134715908,dlog_max_force,42,-0.05015338639720379,0.786404749124954,0.9191382816827499,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
-LOC134720677,dlog_max_force,42,0.10617471032261949,0.44888824215758905,0.8245295209694542,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
-LOC134725897,dlog_max_force,42,0.0024158888928559963,0.9796557800226506,0.9796557800226506,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
-LOC134697168,dlog_max_force,42,-0.11694248136950633,0.47735919635073665,0.8245295209694542,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134686763,dlog_max_force,42,0.07466716148831128,0.641445619002335,0.9137689438056761,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
-LOC134711515,dlog_max_force,42,-0.2353030764593828,0.08731233956653708,0.5777566728308492,Collagen alpha-2(IV) chain
-LOC134687560,dlog_max_force,42,0.056392937315332306,0.7561985713359166,0.9191382816827499,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
-LOC134720928,dlog_max_force,42,-0.13954535028382584,0.07620938863869367,0.5777566728308492,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
-LOC134711985,dlog_max_force,42,0.00606617774727796,0.9595773362117471,0.9796557800226506,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
-LOC134715354,dlog_max_force,42,-0.03957571158712163,0.6877706286967501,0.9137689438056761,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
-LOC134693874,dlog_max_force,42,-0.22460283932960357,0.19558933344981352,0.729834755332343,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
-LOC134707468,dlog_pad_area,42,0.06380534678675082,0.46466821431635463,0.8039030963198156,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
-LOC134715138,dlog_pad_area,42,-0.04079243802290107,0.7203603556811763,0.8398064786510768,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
-LOC134699268,dlog_pad_area,42,0.17271311917808688,0.04717452311893557,0.5377895635558655,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
-LOC134714939,dlog_pad_area,42,-0.1083483891182608,0.48133953817166275,0.8039030963198156,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
-LOC134707842,dlog_pad_area,42,-0.06245932860486056,0.6100731421249781,0.8180792997881408,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
-LOC134714791,dlog_pad_area,42,-0.06827223904449042,0.5828012291053035,0.8162811429610454,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
-LOC134711783,dlog_pad_area,42,-0.030007834048239593,0.7902542948352757,0.8583365494115898,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
-LOC134706577,dlog_pad_area,42,-0.15848522209962446,0.17120792409169308,0.8039030963198156,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
-LOC134697300,dlog_pad_area,42,-0.056376548255502035,0.32067920220444934,0.8039030963198156,Byssal HSP-like protein 1
-LOC134706345,dlog_pad_area,42,-0.10770519347634336,0.30542760254485857,0.8039030963198156,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
-LOC134700327,dlog_pad_area,42,0.03324813314006825,0.6595849883518224,0.835474318578975,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
-LOC134717350,dlog_pad_area,42,0.033473943785059385,0.47143729848467897,0.8039030963198156,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
-LOC134722124,dlog_pad_area,42,-0.0432263850708024,0.5789716714482366,0.8162811429610454,Hypoxia up-regulated protein 1
-LOC134706576,dlog_pad_area,42,0.0446602140313523,0.7366723496939271,0.8398064786510768,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
-LOC134725152,dlog_pad_area,42,0.20578523837608237,0.04440201866973858,0.5377895635558655,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
-LOC134712215,dlog_pad_area,42,0.23335993553602535,0.02628039984385465,0.5174710542158167,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
-LOC134711376,dlog_pad_area,42,-0.08769527237058933,0.4772389458592734,0.8039030963198156,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
-LOC134725758,dlog_pad_area,42,0.10281533664959175,0.28621756416583494,0.8039030963198156,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
-LOC134695781,dlog_pad_area,42,-0.03651485147219259,0.7281041765530186,0.8398064786510768,97 kDa heat shock protein (Heat shock protein 110)
-LOC134685659,dlog_pad_area,42,-0.15053575914606765,0.258597588828813,0.8039030963198156,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
-LOC134721501,dlog_pad_area,42,-0.04739364188896352,0.5562979904185253,0.8162811429610454,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
-LOC134714392,dlog_pad_area,42,0.00498853780781481,0.9563718960615415,0.9660266756738296,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
-LOC134728203,dlog_pad_area,42,-0.06999528989867725,0.5220246045933357,0.8162811429610454,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
-LOC134721377,dlog_pad_area,42,-0.11783047244780769,0.3061677576320632,0.8039030963198156,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
-LOC134709977,dlog_pad_area,42,0.16797270168130612,0.34910510507352144,0.8039030963198156,Heat shock protein HSP 90-alpha
-LOC134716333,dlog_pad_area,42,-0.1369585246552856,0.3999408307981004,0.8039030963198156,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
-LOC134680973,dlog_pad_area,42,-0.006388559207430632,0.9033502415032856,0.9361993411943141,Collagen alpha-6(VI) chain
-LOC134716384,dlog_pad_area,42,0.08448433257443651,0.27443014947849703,0.8039030963198156,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134708353,dlog_pad_area,42,0.10154868769209409,0.39506476868441653,0.8039030963198156,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
-LOC134684257,dlog_pad_area,42,-0.06627484897484723,0.49362470826655347,0.8039030963198156,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
-LOC134722108,dlog_pad_area,42,0.024470948315264373,0.734841902767008,0.8398064786510768,Collagen alpha-1(XXI) chain
-LOC134695253,dlog_pad_area,42,-0.1004564692760024,0.2351896578255411,0.8039030963198156,Collagen alpha-3(VI) chain
-LOC134716146,dlog_pad_area,42,0.015708086166058177,0.850796725480513,0.8980632102294304,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
-LOC134715482,dlog_pad_area,42,-0.23437285402477065,0.15374898350980887,0.8039030963198156,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
-LOC134682955,dlog_pad_area,42,-0.08629405399733336,0.4404649598024162,0.8039030963198156,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
-LOC134720973,dlog_pad_area,42,-0.006311719537287675,0.9660266756738296,0.9660266756738296,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
-LOC134716385,dlog_pad_area,42,0.0586064753054026,0.23397264180927863,0.8039030963198156,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134720932,dlog_pad_area,42,-0.0513882991691693,0.16057342812667483,0.8039030963198156,Byssal peroxidase-like protein 2
-LOC134721315,dlog_pad_area,42,-0.01422630347235367,0.7919302245146105,0.8583365494115898,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
-LOC134695001,dlog_pad_area,42,-0.08797052590325898,0.35466377661554527,0.8039030963198156,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
-LOC134710997,dlog_pad_area,42,0.013452183495641121,0.7981024055932326,0.8583365494115898,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
-LOC134691221,dlog_pad_area,42,-0.22203707348137358,0.15542480222171226,0.8039030963198156,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
-LOC134697127,dlog_pad_area,42,0.2181692824702416,0.08473204857283205,0.8039030963198156,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134722070,dlog_pad_area,42,0.06284863176098845,0.4336899871413923,0.8039030963198156,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
-LOC134721046,dlog_pad_area,42,-0.07210793012708656,0.6542312550204996,0.835474318578975,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
-LOC134705706,dlog_pad_area,42,0.15311759559805974,0.027235318642937725,0.5174710542158167,Collagen alpha-1(V) chain
-LOC134715908,dlog_pad_area,42,0.21181180733586863,0.12413790305970043,0.8039030963198156,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
-LOC134720677,dlog_pad_area,42,-0.10161247560808262,0.33659183933145176,0.8039030963198156,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
-LOC134725897,dlog_pad_area,42,-0.05936942149503965,0.4049278945308893,0.8039030963198156,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
-LOC134697168,dlog_pad_area,42,-0.04937850340814688,0.6921693913823099,0.8398064786510768,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134686763,dlog_pad_area,42,0.06578342802221487,0.5871495940596994,0.8162811429610454,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
-LOC134711515,dlog_pad_area,42,0.24538287829869257,0.016209014399201298,0.5174710542158167,Collagen alpha-2(IV) chain
-LOC134687560,dlog_pad_area,42,0.08212609853206186,0.5490697677714058,0.8162811429610454,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
-LOC134720928,dlog_pad_area,42,-0.06353168781046534,0.2922866805074889,0.8039030963198156,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
-LOC134711985,dlog_pad_area,42,-0.10547956179847759,0.23927478533682447,0.8039030963198156,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
-LOC134715354,dlog_pad_area,42,-0.03719422935415704,0.6171475419454395,0.8180792997881408,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
-LOC134693874,dlog_pad_area,42,0.1384588731933838,0.29315349653214995,0.8039030963198156,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
-LOC134707468,dlog_adhesion_kpa,42,-0.12445651280907741,0.395793588153017,0.7735874839858988,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
-LOC134715138,dlog_adhesion_kpa,42,0.05882872714017675,0.7589111943532659,0.873143637475831,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
-LOC134699268,dlog_adhesion_kpa,42,0.052660588015143076,0.7258713620900723,0.873143637475831,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
-LOC134714939,dlog_adhesion_kpa,42,0.3546203840423438,0.16643161649557844,0.7735874839858988,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
-LOC134707842,dlog_adhesion_kpa,42,0.20583143488643577,0.31515717483893424,0.7735874839858988,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
-LOC134714791,dlog_adhesion_kpa,42,0.26956162226881475,0.19292278080175118,0.7735874839858988,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
-LOC134711783,dlog_adhesion_kpa,42,0.13888838834654615,0.46271376363899475,0.7735874839858988,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
-LOC134706577,dlog_adhesion_kpa,42,0.22515673687325882,0.24946503265388198,0.7735874839858988,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
-LOC134697300,dlog_adhesion_kpa,42,-0.029833065697732496,0.7561170325379065,0.873143637475831,Byssal HSP-like protein 1
-LOC134706345,dlog_adhesion_kpa,42,0.1877331333256114,0.28787044890429114,0.7735874839858988,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
-LOC134700327,dlog_adhesion_kpa,42,0.08874960581254876,0.4835596865397771,0.7735874839858988,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
+LOC134707468,max_force,44,-0.003652087116849412,0.8312573498255953,0.9666491469144141,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
+LOC134715138,max_force,44,0.0067855545181508305,0.768160008999787,0.9666491469144141,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
+LOC134699268,max_force,44,0.02189563512162437,0.19425141532646656,0.7669170190104714,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
+LOC134714939,max_force,44,0.022968422395337248,0.4223921133089952,0.9220211452258134,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
+LOC134707842,max_force,44,0.012094575357578366,0.6137023416451757,0.9666491469144141,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
+LOC134714791,max_force,44,0.01920121115728287,0.36876416345259133,0.9220211452258134,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+LOC134711783,max_force,44,0.01394420763106039,0.5278646524699782,0.9666491469144141,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
+LOC134706577,max_force,44,0.005657818769838681,0.8032954206682128,0.9666491469144141,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
+LOC134697300,max_force,44,4.94539763287413e-4,0.9632358576885477,0.9735761612029944,Byssal HSP-like protein 1
+LOC134706345,max_force,44,0.0053960510736656905,0.7976025841681791,0.9666491469144141,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+LOC134700327,max_force,44,0.007627152372133349,0.6015951578418133,0.9666491469144141,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
+LOC134717350,max_force,44,-0.0138989120661587,0.09750322613860231,0.6716630498944838,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
+LOC134722124,max_force,44,0.003151789500044728,0.8360328349741551,0.9666491469144141,Hypoxia up-regulated protein 1
+LOC134706576,max_force,44,0.023276749568001274,0.3340642959021758,0.9067459460201914,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
+LOC134725152,max_force,44,-0.04266474546373123,0.03462380426321186,0.6716630498944838,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
+LOC134712215,max_force,44,-0.0336468928881992,0.09894776753840573,0.6716630498944838,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
+LOC134711376,max_force,44,-0.05183490211702304,0.01326517945189917,0.6716630498944838,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+LOC134725758,max_force,44,0.0030843478953620712,0.8522856434216736,0.9666491469144141,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
+LOC134695781,max_force,44,0.0030236692210913224,0.8850136832723323,0.9666491469144141,97 kDa heat shock protein (Heat shock protein 110)
+LOC134685659,max_force,44,8.308809718341163e-4,0.9735761612029944,0.9735761612029944,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
+LOC134721501,max_force,44,-0.006190156963590295,0.7099962173651007,0.9666491469144141,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
+LOC134714392,max_force,44,0.005770917623189472,0.7548930416222968,0.9666491469144141,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
+LOC134728203,max_force,44,0.010991348515112492,0.6015828961252899,0.9666491469144141,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+LOC134721377,max_force,44,0.009990598846487446,0.6343377538113544,0.9666491469144141,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
+LOC134709977,max_force,44,-0.04406642937971958,0.21112333929186897,0.7669170190104714,Heat shock protein HSP 90-alpha
+LOC134716333,max_force,44,-0.013864313631667827,0.6672544300232484,0.9666491469144141,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+LOC134680973,max_force,44,-0.011414662760218146,0.26909369088086715,0.7669170190104714,Collagen alpha-6(VI) chain
+LOC134716384,max_force,44,-0.007783080955292472,0.6022549007207678,0.9666491469144141,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134708353,max_force,44,-0.027825974568661788,0.22674652858359687,0.7669170190104714,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
+LOC134684257,max_force,44,-0.01505438843601988,0.43234774829614986,0.9220211452258134,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
+LOC134722108,max_force,44,0.012967442009658648,0.26606710652806986,0.7669170190104714,Collagen alpha-1(XXI) chain
+LOC134695253,max_force,44,0.0011389505393724962,0.9367722450218937,0.9708366902954171,Collagen alpha-3(VI) chain
+LOC134716146,max_force,44,-0.02849722240670113,0.06826024012832474,0.6716630498944838,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
+LOC134715482,max_force,44,0.022548950708429858,0.4859125246096384,0.9666491469144141,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
+LOC134682955,max_force,44,0.011975802207433304,0.5669570639154728,0.9666491469144141,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
+LOC134720973,max_force,44,0.03104969597099915,0.24658576283473324,0.7669170190104714,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
+LOC134716385,max_force,44,-0.011884928045779833,0.20100203913080222,0.7669170190104714,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134720932,max_force,44,-0.00558628133787901,0.43674685826485893,0.9220211452258134,Byssal peroxidase-like protein 2
+LOC134721315,max_force,44,-0.0038487275387784577,0.7073740880389373,0.9666491469144141,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
+LOC134695001,max_force,44,0.015010708804055053,0.37977033465686527,0.9220211452258134,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
+LOC134710997,max_force,44,-0.00812692948912163,0.41038738778874595,0.9220211452258134,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
+LOC134691221,max_force,44,-0.04187026842459073,0.17203650175574928,0.7669170190104714,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
+LOC134697127,max_force,44,-0.03016267559374299,0.21775526773453396,0.7669170190104714,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134722070,max_force,44,-0.007499669533173437,0.6386188289543996,0.9666491469144141,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
+LOC134721046,max_force,44,0.003608846581558062,0.9025591788063774,0.9666491469144141,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
+LOC134705706,max_force,44,-0.024444821828282018,0.05470510238658189,0.6716630498944838,Collagen alpha-1(V) chain
+LOC134715908,max_force,44,0.013033549695964645,0.6325618728207404,0.9666491469144141,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
+LOC134720677,max_force,44,0.007442316882818409,0.7143537689156483,0.9666491469144141,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
+LOC134725897,max_force,44,0.022915916502920474,0.09796016415850599,0.6716630498944838,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
+LOC134697168,max_force,44,0.0025951685574068426,0.9157728760241817,0.9666491469144141,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134686763,max_force,44,-0.03706626865932808,0.11564076508660037,0.6716630498944838,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
+LOC134711515,max_force,44,-0.029886844719169848,0.11783562278850591,0.6716630498944838,Collagen alpha-2(IV) chain
+LOC134687560,max_force,44,-0.030426834408998283,0.2475985063401626,0.7669170190104714,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
+LOC134720928,max_force,44,-0.002965946960048379,0.801271358689013,0.9666491469144141,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
+LOC134711985,max_force,44,-0.002916184371719389,0.8663353858066811,0.9666491469144141,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
+LOC134715354,max_force,44,0.0058680922592270444,0.6678753644763495,0.9666491469144141,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
+LOC134693874,max_force,44,-0.03730384558972835,0.1010496566032063,0.6716630498944838,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
+LOC134707468,pad_area,44,0.11277813519654546,0.6237074055598626,0.8464295582634109,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
+LOC134715138,pad_area,44,-0.3451377194063714,0.26057712587756865,0.781731377632706,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
+LOC134699268,pad_area,44,0.23386141902482732,0.3038528607723598,0.8247434792392623,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
+LOC134714939,pad_area,44,-0.3306055131498113,0.3895587676900897,0.8464295582634109,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
+LOC134707842,pad_area,44,-0.41393841522754193,0.19413704118573474,0.781731377632706,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
+LOC134714791,pad_area,44,-0.24086442004393127,0.4014899258039699,0.8464295582634109,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+LOC134711783,pad_area,44,-0.2145881759023078,0.4690910183539575,0.8464295582634109,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
+LOC134706577,pad_area,44,-0.37199107817102706,0.21832485001156843,0.781731377632706,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
+LOC134697300,pad_area,44,-0.10052993336767432,0.483983332570191,0.8464295582634109,Byssal HSP-like protein 1
+LOC134706345,pad_area,44,-0.45735719478995723,0.09967284046124204,0.781731377632706,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+LOC134700327,pad_area,44,0.11745287580614168,0.5491625453730309,0.8464295582634109,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
+LOC134717350,pad_area,44,0.10638347073594091,0.3507857384491587,0.8464295582634109,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
+LOC134722124,pad_area,44,-0.05674941831445703,0.7813571349040955,0.8507575461312703,Hypoxia up-regulated protein 1
+LOC134706576,pad_area,44,-0.032665958074260135,0.9200765666823204,0.9365065053730761,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
+LOC134725152,pad_area,44,0.1843751910740319,0.5076773094880604,0.8464295582634109,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
+LOC134712215,pad_area,44,0.16556119073906214,0.5516046117919002,0.8464295582634109,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
+LOC134711376,pad_area,44,-0.5853386527864465,0.03964734471998078,0.781731377632706,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+LOC134725758,pad_area,44,0.13911883616456705,0.5307669825891888,0.8464295582634109,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
+LOC134695781,pad_area,44,0.08009015860609746,0.7753815845859129,0.8507575461312703,97 kDa heat shock protein (Heat shock protein 110)
+LOC134685659,pad_area,44,-0.5679735624861086,0.08570775014839449,0.781731377632706,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
+LOC134721501,pad_area,44,-0.2683550188809074,0.2259844025396841,0.781731377632706,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
+LOC134714392,pad_area,44,-0.3194032742983199,0.19360956789047318,0.781731377632706,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
+LOC134728203,pad_area,44,-0.5386905909583455,0.05126147206022336,0.781731377632706,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+LOC134721377,pad_area,44,-0.361100294278272,0.19631755051294864,0.781731377632706,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
+LOC134709977,pad_area,44,0.572488383499218,0.22670981834018517,0.781731377632706,Heat shock protein HSP 90-alpha
+LOC134716333,pad_area,44,-0.09598558821820614,0.824754601598682,0.8705743016874976,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+LOC134680973,pad_area,44,-0.07174492503514597,0.6072319803259794,0.8464295582634109,Collagen alpha-6(VI) chain
+LOC134716384,pad_area,44,0.09568599489025124,0.6333944579358688,0.8464295582634109,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134708353,pad_area,44,0.13304654485161263,0.6695187971642704,0.8502485664150583,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
+LOC134684257,pad_area,44,-0.18939594913773927,0.4622275007461394,0.8464295582634109,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
+LOC134722108,pad_area,44,0.05796302771826786,0.7132224097976376,0.8502485664150583,Collagen alpha-1(XXI) chain
+LOC134695253,pad_area,44,-0.05106420323932478,0.7910552621922338,0.8507575461312703,Collagen alpha-3(VI) chain
+LOC134716146,pad_area,44,-0.11406681892255331,0.5941244361196333,0.8464295582634109,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
+LOC134715482,pad_area,44,-0.5229190356770835,0.225916128812548,0.781731377632706,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
+LOC134682955,pad_area,44,-0.15137361484931913,0.5900676522658659,0.8464295582634109,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
+LOC134720973,pad_area,44,0.45789791089473464,0.2024223857010979,0.781731377632706,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
+LOC134716385,pad_area,44,0.04585647302967156,0.7159987927705754,0.8502485664150583,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134720932,pad_area,44,-0.2247665671028155,0.01599596748328604,0.781731377632706,Byssal peroxidase-like protein 2
+LOC134721315,pad_area,44,-0.06780617443720552,0.6221704690637999,0.8464295582634109,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
+LOC134695001,pad_area,44,-0.20162329023597048,0.37968978049216917,0.8464295582634109,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
+LOC134710997,pad_area,44,0.004054367824278648,0.9757112634917047,0.9757112634917047,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
+LOC134691221,pad_area,44,-0.6004609830144285,0.1440452372714104,0.781731377632706,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
+LOC134697127,pad_area,44,0.43391694258543123,0.18609198983329622,0.781731377632706,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134722070,pad_area,44,0.06052108230524357,0.7779899036223765,0.8507575461312703,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
+LOC134721046,pad_area,44,-0.16698135791325652,0.6728360648598786,0.8502485664150583,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
+LOC134705706,pad_area,44,0.18919391033932195,0.27593290195599857,0.7864087705745959,Collagen alpha-1(V) chain
+LOC134715908,pad_area,44,0.23364545895688046,0.5228472093366026,0.8464295582634109,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
+LOC134720677,pad_area,44,-0.31906259517722896,0.238812186959569,0.781731377632706,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
+LOC134725897,pad_area,44,-0.02006935402562906,0.9155601287573782,0.9365065053730761,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
+LOC134697168,pad_area,44,-0.10146052748325123,0.7580437811649073,0.8507575461312703,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134686763,pad_area,44,-0.2535690623987696,0.42840363974947593,0.8464295582634109,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
+LOC134711515,pad_area,44,0.29527105518576613,0.2534280221369594,0.781731377632706,Collagen alpha-2(IV) chain
+LOC134687560,pad_area,44,-0.332020260800471,0.3489327858390434,0.8464295582634109,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
+LOC134720928,pad_area,44,-0.19140167785221024,0.22218700564468838,0.781731377632706,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
+LOC134711985,pad_area,44,-0.10916439892963592,0.6385345790408188,0.8464295582634109,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
+LOC134715354,pad_area,44,-0.15144727693546423,0.4080999576792552,0.8464295582634109,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
+LOC134693874,pad_area,44,0.1177668265695052,0.704556486349527,0.8502485664150583,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
+LOC134707468,adhesion_kpa,44,-6.914282742409901,0.35244915909958385,0.6278000646461337,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
+LOC134715138,adhesion_kpa,44,10.129758606999518,0.3100569551751936,0.5956372348345491,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
+LOC134699268,adhesion_kpa,44,-0.4876138614749292,0.9477291574874847,0.9646528924426182,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
+LOC134714939,adhesion_kpa,44,17.12607913073784,0.16673469043403705,0.5349723060078818,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
+LOC134707842,adhesion_kpa,44,18.430914803823132,0.07219876677497855,0.42863304070880553,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
+LOC134714791,adhesion_kpa,44,11.004954025749177,0.23578496615153435,0.5349723060078818,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+LOC134711783,adhesion_kpa,44,16.47895932292608,0.08192510492486832,0.42863304070880553,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
+LOC134706577,adhesion_kpa,44,11.445686000527346,0.24402245537201625,0.5349723060078818,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
+LOC134697300,adhesion_kpa,44,5.074380768102546,0.2745110367265326,0.5588260390504414,Byssal HSP-like protein 1
+LOC134706345,adhesion_kpa,44,12.285498056284581,0.17572485649526082,0.5349723060078818,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+LOC134700327,adhesion_kpa,44,-0.7260239094811523,0.9094362603894712,0.9599604970777752,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
+LOC134717350,adhesion_kpa,44,-6.75619090491468,0.06360064947640155,0.42863304070880553,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
+LOC134722124,adhesion_kpa,44,4.538050166444482,0.49327555086247066,0.7257610549571131,Hypoxia up-regulated protein 1
+LOC134706576,adhesion_kpa,44,9.356472082570242,0.3738033160397013,0.645660273159484,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
+LOC134725152,adhesion_kpa,44,-20.243679354574123,0.020825113810409638,0.23740629743866987,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
+LOC134712215,adhesion_kpa,44,-20.908389928252834,0.016555436163623587,0.2359149653316361,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
+LOC134711376,adhesion_kpa,44,-7.665428770760565,0.4175450632262443,0.6613871085232378,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+LOC134725758,adhesion_kpa,44,-7.922739473222002,0.26914378650930976,0.5588260390504414,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
+LOC134695781,adhesion_kpa,44,-2.359507715660863,0.7957871071891249,0.8962761043576531,97 kDa heat shock protein (Heat shock protein 110)
+LOC134685659,adhesion_kpa,44,13.736636935165643,0.20456724032766477,0.5349723060078818,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
+LOC134721501,adhesion_kpa,44,4.545531402033408,0.530611503827632,0.7376794077603664,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
+LOC134714392,adhesion_kpa,44,9.756205206911112,0.22208221670540962,0.5349723060078818,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
+LOC134728203,adhesion_kpa,44,15.58217860592761,0.08416919293063226,0.42863304070880553,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+LOC134721377,adhesion_kpa,44,11.583753791450986,0.20200114735305105,0.5349723060078818,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
+LOC134709977,adhesion_kpa,44,-25.82195722548347,0.09023853488606433,0.42863304070880553,Heat shock protein HSP 90-alpha
+LOC134716333,adhesion_kpa,44,1.0408270486150097,0.9410831259435772,0.9646528924426182,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+LOC134680973,adhesion_kpa,44,-3.4614631964163243,0.44416458395593994,0.684253548256448,Collagen alpha-6(VI) chain
+LOC134716384,adhesion_kpa,44,-6.273982350786567,0.33338471485888155,0.6129977015147177,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134708353,adhesion_kpa,44,-14.806385597337792,0.1384393624610032,0.5349723060078818,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
+LOC134684257,adhesion_kpa,44,-2.2428014620884733,0.7892880783515108,0.8962761043576531,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
+LOC134722108,adhesion_kpa,44,4.136903141525182,0.4177181738041502,0.6613871085232378,Collagen alpha-1(XXI) chain
+LOC134695253,adhesion_kpa,44,1.5703584831778228,0.8019312512673739,0.8962761043576531,Collagen alpha-3(VI) chain
+LOC134716146,adhesion_kpa,44,-12.353919834162886,0.07004080133760451,0.42863304070880553,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
+LOC134715482,adhesion_kpa,44,16.966517256903288,0.22639598756718068,0.5349723060078818,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
+LOC134682955,adhesion_kpa,44,11.811731687353467,0.19146727811196668,0.5349723060078818,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
+LOC134720973,adhesion_kpa,44,0.21222281128117831,0.9856395428747847,0.9856395428747847,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
+LOC134716385,adhesion_kpa,44,-5.32536399527414,0.18872337914597928,0.5349723060078818,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134720932,adhesion_kpa,44,2.0698788609198266,0.5093060034786758,0.7257610549571131,Byssal peroxidase-like protein 2
+LOC134721315,adhesion_kpa,44,-3.0002170404088266,0.5014304978240969,0.7257610549571131,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
+LOC134695001,adhesion_kpa,44,10.54734176597004,0.15371854289088682,0.5349723060078818,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
+LOC134710997,adhesion_kpa,44,-1.751248111159863,0.6852276809048344,0.8137078710744909,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
+LOC134691221,adhesion_kpa,44,-7.24731214191799,0.5916544847766807,0.7763163854588302,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
+LOC134697127,adhesion_kpa,44,-28.72026422239092,0.005089256500942783,0.21067822093316066,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134722070,adhesion_kpa,44,-3.545466016169223,0.6106588481002555,0.7763163854588302,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
+LOC134721046,adhesion_kpa,44,6.495144063229038,0.6128813569411817,0.7763163854588302,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
+LOC134705706,adhesion_kpa,44,-13.850565857425648,0.011088327417534771,0.21067822093316066,Collagen alpha-1(V) chain
+LOC134715908,adhesion_kpa,44,-2.638776014284966,0.8245703008609361,0.9038559067129492,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
+LOC134720677,adhesion_kpa,44,10.657055905440332,0.22549122920198664,0.5349723060078818,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
+LOC134725897,adhesion_kpa,44,9.250147250227599,0.12665091549024193,0.5349723060078818,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
+LOC134697168,adhesion_kpa,44,1.4927157923678636,0.8890763332546121,0.9561764338776017,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134686763,adhesion_kpa,44,-8.842139888397885,0.3948889637259607,0.6613871085232378,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
+LOC134711515,adhesion_kpa,44,-20.961652203349555,0.009780620555863973,0.21067822093316066,Collagen alpha-2(IV) chain
+LOC134687560,adhesion_kpa,44,-5.269485189389763,0.6485901729321346,0.787842159531527,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
+LOC134720928,adhesion_kpa,44,5.148518232159689,0.31349328149186795,0.5956372348345491,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
+LOC134711985,adhesion_kpa,44,3.8270783396225445,0.6120331628533745,0.7763163854588302,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
+LOC134715354,adhesion_kpa,44,2.70958845867098,0.6496242368066977,0.787842159531527,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
+LOC134693874,adhesion_kpa,44,-20.267461639355076,0.03909856645042523,0.3714363812790397,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
+LOC134707468,max_displacement,44,0.017829275508563634,0.09353142771435664,0.9380467014350614,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
+LOC134715138,max_displacement,44,-0.00644534883648388,0.6572545103824114,0.9920591398393653,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
+LOC134699268,max_displacement,44,0.0020718540058627124,0.8473979404644255,0.9920591398393653,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
+LOC134714939,max_displacement,44,0.006367802951665093,0.7255696995550933,0.9920591398393653,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
+LOC134707842,max_displacement,44,-0.004734247620747349,0.7546031213768244,0.9920591398393653,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
+LOC134714791,max_displacement,44,0.002029369885704326,0.881034880760928,0.9920591398393653,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+LOC134711783,max_displacement,44,-0.008637218794277098,0.5358376907705279,0.9920591398393653,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
+LOC134706577,max_displacement,44,0.01765659866001128,0.21394047576589117,0.9380467014350614,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
+LOC134697300,max_displacement,44,6.743427880855427e-5,0.9920591398393653,0.9920591398393653,Byssal HSP-like protein 1
+LOC134706345,max_displacement,44,0.005351054247811088,0.6869766648787712,0.9920591398393653,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+LOC134700327,max_displacement,44,0.007855157403369789,0.3930989369132749,0.9687730262970742,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
+LOC134717350,max_displacement,44,0.002938994362126944,0.584961558095581,0.9920591398393653,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
+LOC134722124,max_displacement,44,0.011851167287767474,0.2133357175450487,0.9380467014350614,Hypoxia up-regulated protein 1
+LOC134706576,max_displacement,44,-0.0018374191973757783,0.9044621947665649,0.9920591398393653,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
+LOC134725152,max_displacement,44,0.013506816874060341,0.30005982315199975,0.9687730262970742,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
+LOC134712215,max_displacement,44,0.003979472551052194,0.7612768620793606,0.9920591398393653,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
+LOC134711376,max_displacement,44,0.011091326929915438,0.4178313390008608,0.9687730262970742,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+LOC134725758,max_displacement,44,0.0011891194482313962,0.9095068643856605,0.9920591398393653,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
+LOC134695781,max_displacement,44,0.003623318054408712,0.7836886551628259,0.9920591398393653,97 kDa heat shock protein (Heat shock protein 110)
+LOC134685659,max_displacement,44,-7.688591520002491e-4,0.961288580051741,0.9920591398393653,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
+LOC134721501,max_displacement,44,0.006262135657961829,0.5508154460539023,0.9920591398393653,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
+LOC134714392,max_displacement,44,-0.009003936511225816,0.4390270800550222,0.9687730262970742,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
+LOC134728203,max_displacement,44,0.004219071825173008,0.7512334161476448,0.9920591398393653,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+LOC134721377,max_displacement,44,3.378577509422726e-4,0.9797095934741678,0.9920591398393653,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
+LOC134709977,max_displacement,44,0.005973025418534793,0.7903801930578556,0.9920591398393653,Heat shock protein HSP 90-alpha
+LOC134716333,max_displacement,44,0.029470997380330394,0.14274778819635386,0.9380467014350614,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+LOC134680973,max_displacement,44,0.00844358069405506,0.19414559925164193,0.9380467014350614,Collagen alpha-6(VI) chain
+LOC134716384,max_displacement,44,-0.01103027083086706,0.23876777348477682,0.9654958652022502,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134708353,max_displacement,44,-0.008330681722995958,0.5694570110526547,0.9920591398393653,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
+LOC134684257,max_displacement,44,0.008659254938591425,0.4748068577965482,0.9687730262970742,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
+LOC134722108,max_displacement,44,-0.00566471244250921,0.44361616446441365,0.9687730262970742,Collagen alpha-1(XXI) chain
+LOC134695253,max_displacement,44,2.5877310476459046e-4,0.9772319602698591,0.9920591398393653,Collagen alpha-3(VI) chain
+LOC134716146,max_displacement,44,0.012524446093244343,0.2095869496376244,0.9380467014350614,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
+LOC134715482,max_displacement,44,0.007233203399275881,0.7239924720750154,0.9920591398393653,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
+LOC134682955,max_displacement,44,0.011966419813217343,0.3634300126988661,0.9687730262970742,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
+LOC134720973,max_displacement,44,0.027468325869131168,0.1015824180875414,0.9380467014350614,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
+LOC134716385,max_displacement,44,-0.0042152304878362665,0.4758885041459312,0.9687730262970742,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134720932,max_displacement,44,-0.005016779106399845,0.2667990541695105,0.9654958652022502,Byssal peroxidase-like protein 2
+LOC134721315,max_displacement,44,0.006459725479770068,0.3157092155792395,0.9687730262970742,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
+LOC134695001,max_displacement,44,0.0011261494548643553,0.9173040051342811,0.9920591398393653,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
+LOC134710997,max_displacement,44,-0.01866452031473215,0.001479954292346953,0.08435739466377631,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
+LOC134691221,max_displacement,44,0.004447496900644538,0.8204013329526211,0.9920591398393653,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
+LOC134697127,max_displacement,44,0.02701221843099174,0.07740242052216664,0.9380467014350614,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134722070,max_displacement,44,0.015355682489648918,0.12255475374646564,0.9380467014350614,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
+LOC134721046,max_displacement,44,-0.0022825522021577647,0.9024083332249986,0.9920591398393653,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
+LOC134705706,max_displacement,44,-5.465312183608254e-4,0.9470443034851471,0.9920591398393653,Collagen alpha-1(V) chain
+LOC134715908,max_displacement,44,-0.013055897881647231,0.4471720191418118,0.9687730262970742,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
+LOC134720677,max_displacement,44,-0.01989909796496468,0.11563710502523232,0.9380467014350614,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
+LOC134725897,max_displacement,44,0.005031520914799547,0.5710978628614392,0.9920591398393653,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
+LOC134697168,max_displacement,44,0.02241827114459332,0.14240293402960805,0.9380467014350614,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134686763,max_displacement,44,0.02068140213683895,0.16601598203393084,0.9380467014350614,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
+LOC134711515,max_displacement,44,-0.0012230500541538793,0.9205350315208405,0.9920591398393653,Collagen alpha-2(IV) chain
+LOC134687560,max_displacement,44,0.015567658808407107,0.3503375739075917,0.9687730262970742,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
+LOC134720928,max_displacement,44,0.008130117762060395,0.2710163832146667,0.9654958652022502,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
+LOC134711985,max_displacement,44,-0.009987441137032971,0.3587984564616763,0.9687730262970742,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
+LOC134715354,max_displacement,44,0.0045061663093271045,0.6016401679722965,0.9920591398393653,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
+LOC134693874,max_displacement,44,-5.298503079880908e-4,0.9710862654372714,0.9920591398393653,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
+LOC134707468,dlog_max_force,42,-0.04626117092253454,0.6893344663797207,0.9137689438056763,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
+LOC134715138,dlog_max_force,42,0.03287515675098026,0.827438815633269,0.9191382816827494,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
+LOC134699268,dlog_max_force,42,0.2429234640176119,0.03415472540424467,0.5777566728308496,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
+LOC134714939,dlog_max_force,42,0.24903840611988443,0.21788514342975765,0.7298347553323384,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
+LOC134707842,dlog_max_force,42,0.14654695489465097,0.3638288814553702,0.7932597671805043,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
+LOC134714791,dlog_max_force,42,0.21707623838059298,0.18227316406295468,0.7298347553323384,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+LOC134711783,dlog_max_force,42,0.12137359109517322,0.41412211956625344,0.8022876989262098,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
+LOC134706577,dlog_max_force,42,0.08822171377325824,0.568818706171573,0.876288277075126,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
+LOC134697300,dlog_max_force,42,-0.08100526948678284,0.28010744699578233,0.7328520560294534,Byssal HSP-like protein 1
+LOC134706345,dlog_max_force,42,0.10233185888668532,0.4632049745037887,0.8245295209694561,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+LOC134700327,dlog_max_force,42,0.1235195029219638,0.21174870282441077,0.7298347553323384,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
+LOC134717350,dlog_max_force,42,-0.1321139216405174,0.02686098017935849,0.5777566728308496,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
+LOC134722124,dlog_max_force,42,-0.006299307181796044,0.9513546063708016,0.9796557800226506,Hypoxia up-regulated protein 1
+LOC134706576,dlog_max_force,42,0.24001373003721033,0.16662406035901267,0.7298347553323384,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
+LOC134725152,dlog_max_force,42,-0.18347762560669778,0.182053900290534,0.7298347553323384,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
+LOC134712215,dlog_max_force,42,-0.13480002498418958,0.34508853028872866,0.7932597671805043,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
+LOC134711376,dlog_max_force,42,-0.14016478534590773,0.3896714645798969,0.7932597671805043,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+LOC134725758,dlog_max_force,42,0.23466401474332935,0.06149810154740962,0.5777566728308496,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
+LOC134695781,dlog_max_force,42,0.08634415045769502,0.5335309721085645,0.8688932974339478,97 kDa heat shock protein (Heat shock protein 110)
+LOC134685659,dlog_max_force,42,0.07621154940347524,0.6677971433987542,0.9137689438056763,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
+LOC134721501,dlog_max_force,42,0.06244674326830756,0.5578323648201844,0.876288277075126,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
+LOC134714392,dlog_max_force,42,-0.025394750522967687,0.833196820824879,0.9191382816827494,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
+LOC134728203,dlog_max_force,42,0.05231035129738007,0.7180732805727826,0.9191382816827494,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+LOC134721377,dlog_max_force,42,-0.03125474497837099,0.838512116622859,0.9191382816827494,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
+LOC134709977,dlog_max_force,42,-0.1907330347334016,0.4222566836453736,0.8022876989262098,Heat shock protein HSP 90-alpha
+LOC134716333,dlog_max_force,42,-0.27246103533569077,0.20270883852904173,0.7298347553323384,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+LOC134680973,dlog_max_force,42,-0.11195179107641376,0.1013608197948859,0.5777566728308496,Collagen alpha-6(VI) chain
+LOC134716384,dlog_max_force,42,-0.011345339946972665,0.9123592698878351,0.9796557800226506,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134708353,dlog_max_force,42,-0.2822987583365175,0.06889515476057671,0.5777566728308496,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
+LOC134684257,dlog_max_force,42,-0.13688421505851145,0.2828551795201399,0.7328520560294534,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
+LOC134722108,dlog_max_force,42,0.022965422559186724,0.8101692830475726,0.9191382816827494,Collagen alpha-1(XXI) chain
+LOC134695253,dlog_max_force,42,0.053099202676049,0.6379690839964456,0.9137689438056763,Collagen alpha-3(VI) chain
+LOC134716146,dlog_max_force,42,-0.17866707615107064,0.09949341447822127,0.5777566728308496,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
+LOC134715482,dlog_max_force,42,-0.06263425910334351,0.7761275173248454,0.9191382816827494,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
+LOC134682955,dlog_max_force,42,0.0785566459230954,0.596278227949909,0.8944173419248636,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
+LOC134720973,dlog_max_force,42,0.12636577183683592,0.5179456363964918,0.8683206257235304,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
+LOC134716385,dlog_max_force,42,0.019251270304144818,0.7696064106214628,0.9191382816827494,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134720932,dlog_max_force,42,-0.08423553503998656,0.07979462886833477,0.5777566728308496,Byssal peroxidase-like protein 2
+LOC134721315,dlog_max_force,42,-0.08063036123117874,0.2543216919012831,0.7328520560294534,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
+LOC134695001,dlog_max_force,42,0.003702854265974769,0.9766399421321107,0.9796557800226506,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
+LOC134710997,dlog_max_force,42,0.07586908257277242,0.2716501053127339,0.7328520560294534,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
+LOC134691221,dlog_max_force,42,-0.1817104705424039,0.38351689491585805,0.7932597671805043,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
+LOC134697127,dlog_max_force,42,-0.20284154142101188,0.23047413326284374,0.7298347553323384,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134722070,dlog_max_force,42,-0.09890465551571918,0.3507804218171038,0.7932597671805043,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
+LOC134721046,dlog_max_force,42,-0.19212598995022728,0.36491235022867985,0.7932597671805043,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
+LOC134705706,dlog_max_force,42,-0.20549046368796356,0.024917477008750268,0.5777566728308496,Collagen alpha-1(V) chain
+LOC134715908,dlog_max_force,42,-0.050153386397204035,0.786404749124953,0.9191382816827494,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
+LOC134720677,dlog_max_force,42,0.10617471032261935,0.44888824215758916,0.8245295209694561,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
+LOC134725897,dlog_max_force,42,0.002415888892856005,0.9796557800226506,0.9796557800226506,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
+LOC134697168,dlog_max_force,42,-0.1169424813695059,0.47735919635073776,0.8245295209694561,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134686763,dlog_max_force,42,0.07466716148831133,0.6414456190023347,0.9137689438056763,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
+LOC134711515,dlog_max_force,42,-0.23530307645938286,0.08731233956653704,0.5777566728308496,Collagen alpha-2(IV) chain
+LOC134687560,dlog_max_force,42,0.05639293731533295,0.7561985713359138,0.9191382816827494,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
+LOC134720928,dlog_max_force,42,-0.13954535028382548,0.07620938863869411,0.5777566728308496,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
+LOC134711985,dlog_max_force,42,0.006066177747277877,0.9595773362117477,0.9796557800226506,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
+LOC134715354,dlog_max_force,42,-0.03957571158712158,0.6877706286967504,0.9137689438056763,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
+LOC134693874,dlog_max_force,42,-0.2246028393296038,0.19558933344981289,0.7298347553323384,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
+LOC134707468,dlog_pad_area,42,0.06380534678675079,0.46466821431635486,0.803903096319818,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
+LOC134715138,dlog_pad_area,42,-0.04079243802290137,0.7203603556811744,0.8398064786510767,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
+LOC134699268,dlog_pad_area,42,0.17271311917808702,0.047174523118935524,0.537789563555865,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
+LOC134714939,dlog_pad_area,42,-0.10834838911826092,0.4813395381716621,0.803903096319818,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
+LOC134707842,dlog_pad_area,42,-0.062459328604860476,0.6100731421249785,0.8180792997881421,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
+LOC134714791,dlog_pad_area,42,-0.06827223904449024,0.5828012291053042,0.816281142961046,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+LOC134711783,dlog_pad_area,42,-0.030007834048239545,0.790254294835276,0.8583365494115902,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
+LOC134706577,dlog_pad_area,42,-0.1584852220996245,0.171207924091693,0.803903096319818,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
+LOC134697300,dlog_pad_area,42,-0.05637654825550202,0.32067920220444945,0.803903096319818,Byssal HSP-like protein 1
+LOC134706345,dlog_pad_area,42,-0.10770519347634347,0.30542760254485823,0.803903096319818,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+LOC134700327,dlog_pad_area,42,0.033248133140068296,0.6595849883518221,0.8354743185789746,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
+LOC134717350,dlog_pad_area,42,0.03347394378505937,0.4714372984846792,0.803903096319818,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
+LOC134722124,dlog_pad_area,42,-0.043226385070802543,0.5789716714482356,0.816281142961046,Hypoxia up-regulated protein 1
+LOC134706576,dlog_pad_area,42,0.04466021403135235,0.736672349693927,0.8398064786510767,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
+LOC134725152,dlog_pad_area,42,0.20578523837608234,0.044402018669738676,0.537789563555865,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
+LOC134712215,dlog_pad_area,42,0.23335993553602616,0.026280399843854208,0.517471054215817,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
+LOC134711376,dlog_pad_area,42,-0.08769527237058919,0.4772389458592742,0.803903096319818,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+LOC134725758,dlog_pad_area,42,0.10281533664959196,0.28621756416583405,0.803903096319818,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
+LOC134695781,dlog_pad_area,42,-0.03651485147219201,0.7281041765530227,0.8398064786510767,97 kDa heat shock protein (Heat shock protein 110)
+LOC134685659,dlog_pad_area,42,-0.15053575914606768,0.258597588828813,0.803903096319818,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
+LOC134721501,dlog_pad_area,42,-0.04739364188896335,0.556297990418527,0.816281142961046,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
+LOC134714392,dlog_pad_area,42,0.004988537807814756,0.9563718960615419,0.9660266756738287,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
+LOC134728203,dlog_pad_area,42,-0.06999528989867754,0.5220246045933339,0.816281142961046,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+LOC134721377,dlog_pad_area,42,-0.11783047244780777,0.30616775763206283,0.803903096319818,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
+LOC134709977,dlog_pad_area,42,0.16797270168130615,0.3491051050735213,0.803903096319818,Heat shock protein HSP 90-alpha
+LOC134716333,dlog_pad_area,42,-0.13695852465528538,0.39994083079810117,0.803903096319818,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+LOC134680973,dlog_pad_area,42,-0.0063885592074306,0.9033502415032861,0.9361993411943147,Collagen alpha-6(VI) chain
+LOC134716384,dlog_pad_area,42,0.08448433257443679,0.27443014947849564,0.803903096319818,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134708353,dlog_pad_area,42,0.10154868769209409,0.39506476868441653,0.803903096319818,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
+LOC134684257,dlog_pad_area,42,-0.06627484897484703,0.4936247082665549,0.803903096319818,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
+LOC134722108,dlog_pad_area,42,0.02447094831526434,0.7348419027670083,0.8398064786510767,Collagen alpha-1(XXI) chain
+LOC134695253,dlog_pad_area,42,-0.10045646927600244,0.2351896578255411,0.803903096319818,Collagen alpha-3(VI) chain
+LOC134716146,dlog_pad_area,42,0.015708086166058077,0.8507967254805139,0.8980632102294314,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
+LOC134715482,dlog_pad_area,42,-0.2343728540247703,0.1537489835098098,0.803903096319818,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
+LOC134682955,dlog_pad_area,42,-0.08629405399733336,0.4404649598024162,0.803903096319818,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
+LOC134720973,dlog_pad_area,42,-0.006311719537287845,0.9660266756738287,0.9660266756738287,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
+LOC134716385,dlog_pad_area,42,0.05860647530540268,0.23397264180927776,0.803903096319818,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134720932,dlog_pad_area,42,-0.0513882991691693,0.160573428126675,0.803903096319818,Byssal peroxidase-like protein 2
+LOC134721315,dlog_pad_area,42,-0.014226303472353638,0.7919302245146109,0.8583365494115902,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
+LOC134695001,dlog_pad_area,42,-0.08797052590325906,0.35466377661554493,0.803903096319818,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
+LOC134710997,dlog_pad_area,42,0.013452183495641106,0.798102405593233,0.8583365494115902,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
+LOC134691221,dlog_pad_area,42,-0.2220370734813731,0.15542480222171312,0.803903096319818,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
+LOC134697127,dlog_pad_area,42,0.21816928247024162,0.08473204857283216,0.803903096319818,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134722070,dlog_pad_area,42,0.06284863176098864,0.43368998714139084,0.803903096319818,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
+LOC134721046,dlog_pad_area,42,-0.0721079301270869,0.6542312550204983,0.8354743185789746,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
+LOC134705706,dlog_pad_area,42,0.1531175955980597,0.027235318642937736,0.517471054215817,Collagen alpha-1(V) chain
+LOC134715908,dlog_pad_area,42,0.21181180733586852,0.12413790305970074,0.803903096319818,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
+LOC134720677,dlog_pad_area,42,-0.10161247560808269,0.3365918393314513,0.803903096319818,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
+LOC134725897,dlog_pad_area,42,-0.0593694214950396,0.40492789453088995,0.803903096319818,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
+LOC134697168,dlog_pad_area,42,-0.04937850340814673,0.6921693913823106,0.8398064786510767,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134686763,dlog_pad_area,42,0.06578342802221482,0.5871495940596998,0.816281142961046,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
+LOC134711515,dlog_pad_area,42,0.24538287829869257,0.01620901439920127,0.517471054215817,Collagen alpha-2(IV) chain
+LOC134687560,dlog_pad_area,42,0.08212609853206157,0.549069767771407,0.816281142961046,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
+LOC134720928,dlog_pad_area,42,-0.06353168781046496,0.29228668050749135,0.803903096319818,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
+LOC134711985,dlog_pad_area,42,-0.10547956179847756,0.2392747853368247,0.803903096319818,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
+LOC134715354,dlog_pad_area,42,-0.03719422935415692,0.6171475419454405,0.8180792997881421,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
+LOC134693874,dlog_pad_area,42,0.13845887319338374,0.2931534965321502,0.803903096319818,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
+LOC134707468,dlog_adhesion_kpa,42,-0.12445651280907738,0.39579358815301724,0.7735874839858999,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
+LOC134715138,dlog_adhesion_kpa,42,0.05882872714017682,0.7589111943532656,0.8731436374758292,"Stress-70 protein, mitochondrial (75 kDa glucose-regulated protein) (GRP-75) (Heat shock 70 kDa protein 9)"
+LOC134699268,dlog_adhesion_kpa,42,0.05266058801514296,0.7258713620900732,0.8731436374758292,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
+LOC134714939,dlog_adhesion_kpa,42,0.3546203840423438,0.16643161649557842,0.7735874839858999,"Threonine--tRNA ligase 1, cytoplasmic (EC 6.1.1.3) (Threonine--tRNA ligase, cytoplasmic) (Threonyl-tRNA synthetase) (ThrRS) (Threonyl-tRNA synthetase 1)"
+LOC134707842,dlog_adhesion_kpa,42,0.20583143488643574,0.31515717483893435,0.7735874839858999,"Methionine--tRNA ligase, cytoplasmic (EC 6.1.1.10) (Methionyl-tRNA synthetase) (MetRS)"
+LOC134714791,dlog_adhesion_kpa,42,0.2695616222688145,0.19292278080175118,0.7735874839858999,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+LOC134711783,dlog_adhesion_kpa,42,0.13888838834654596,0.4627137636389954,0.7735874839858999,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)]
+LOC134706577,dlog_adhesion_kpa,42,0.22515673687325888,0.24946503265388204,0.7735874839858999,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)"
+LOC134697300,dlog_adhesion_kpa,42,-0.029833065697732614,0.7561170325379059,0.8731436374758292,Byssal HSP-like protein 1
+LOC134706345,dlog_adhesion_kpa,42,0.18773313332561178,0.28787044890429025,0.7735874839858999,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+LOC134700327,dlog_adhesion_kpa,42,0.08874960581254863,0.4835596865397781,0.7735874839858999,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9)
 LOC134717350,dlog_adhesion_kpa,42,-0.1611221836408286,0.03422798614314777,0.2959101272939799,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)
-LOC134722124,dlog_adhesion_kpa,42,0.03383123213254624,0.7965520903288282,0.873143637475831,Hypoxia up-regulated protein 1
-LOC134706576,dlog_adhesion_kpa,42,0.1620831401928969,0.4667640774356224,0.7735874839858988,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
-LOC134725152,dlog_adhesion_kpa,42,-0.4218568863318971,0.012923344263025216,0.2455435409974791,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
-LOC134712215,dlog_adhesion_kpa,42,-0.417935921977176,0.01741837110599131,0.24821178826037618,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
-LOC134711376,dlog_adhesion_kpa,42,-0.05793994602118423,0.780693075670078,0.873143637475831,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
-LOC134725758,dlog_adhesion_kpa,42,0.12803042500897974,0.43135254429092407,0.7735874839858988,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
-LOC134695781,dlog_adhesion_kpa,42,0.1378339532120601,0.43365009574995983,0.7735874839858988,97 kDa heat shock protein (Heat shock protein 110)
-LOC134685659,dlog_adhesion_kpa,42,0.19415598802866185,0.38798366018035324,0.7735874839858988,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
-LOC134721501,dlog_adhesion_kpa,42,0.08947040627031552,0.5086993585284785,0.7735874839858988,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
-LOC134714392,dlog_adhesion_kpa,42,-0.06471694772634069,0.6726371803477624,0.873143637475831,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
-LOC134728203,dlog_adhesion_kpa,42,0.07382640007686925,0.6885293686768723,0.873143637475831,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
-LOC134721377,dlog_adhesion_kpa,42,0.05245018152809169,0.7878875088930171,0.873143637475831,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
-LOC134709977,dlog_adhesion_kpa,42,-0.33961708639606714,0.25899506026379515,0.7735874839858988,Heat shock protein HSP 90-alpha
-LOC134716333,dlog_adhesion_kpa,42,-0.16649900504144988,0.5438116119690211,0.7735874839858988,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
-LOC134680973,dlog_adhesion_kpa,42,-0.10655424923147473,0.22381230953119824,0.7735874839858988,Collagen alpha-6(VI) chain
-LOC134716384,dlog_adhesion_kpa,42,-0.10806504302780394,0.4074483435182664,0.7735874839858988,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134708353,dlog_adhesion_kpa,42,-0.4099991014666833,0.03633984019399754,0.2959101272939799,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
-LOC134684257,dlog_adhesion_kpa,42,-0.06043013753655643,0.7111456222465207,0.873143637475831,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
-LOC134722108,dlog_adhesion_kpa,42,-0.0028158736942961683,0.981525345143253,0.9953428493950113,Collagen alpha-1(XXI) chain
-LOC134695253,dlog_adhesion_kpa,42,0.18101958477563754,0.20272127290470177,0.7735874839858988,Collagen alpha-3(VI) chain
-LOC134716146,dlog_adhesion_kpa,42,-0.20814965373179026,0.13235250641209859,0.7735874839858988,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
-LOC134715482,dlog_adhesion_kpa,42,0.16439893499458877,0.5564401200600325,0.7735874839858988,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
-LOC134682955,dlog_adhesion_kpa,42,0.17251362188350894,0.358318515405345,0.7735874839858988,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
-LOC134720973,dlog_adhesion_kpa,42,0.1657341732909624,0.504736991009072,0.7735874839858988,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
-LOC134716385,dlog_adhesion_kpa,42,-0.05552152718453302,0.5053941885264259,0.7735874839858988,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134720932,dlog_adhesion_kpa,42,-0.03676747069548413,0.5549226312541727,0.7735874839858988,Byssal peroxidase-like protein 2
-LOC134721315,dlog_adhesion_kpa,42,-0.07181992877266745,0.4266232163138809,0.7735874839858988,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
-LOC134695001,dlog_adhesion_kpa,42,0.09499820523740954,0.5536540271325099,0.7735874839858988,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
-LOC134710997,dlog_adhesion_kpa,42,0.05650582542782764,0.5218830429996419,0.7735874839858988,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
-LOC134691221,dlog_adhesion_kpa,42,0.07538186819170636,0.7771598154061881,0.873143637475831,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
-LOC134697127,dlog_adhesion_kpa,42,-0.4418822497407917,0.0360644034152864,0.2959101272939799,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134722070,dlog_adhesion_kpa,42,-0.17594790316865588,0.18911148195963032,0.7735874839858988,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
-LOC134721046,dlog_adhesion_kpa,42,-0.086242449402411,0.7502423210268422,0.873143637475831,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
-LOC134705706,dlog_adhesion_kpa,42,-0.3828006128952016,5.897077621020186e-4,0.033613342439815064,Collagen alpha-1(V) chain
-LOC134715908,dlog_adhesion_kpa,42,-0.2767366181621895,0.23528912540269578,0.7735874839858988,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
-LOC134720677,dlog_adhesion_kpa,42,0.20119675794232061,0.25671393167324114,0.7735874839858988,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
-LOC134725897,dlog_adhesion_kpa,42,0.08238166399134961,0.4926159697266972,0.7735874839858988,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
-LOC134697168,dlog_adhesion_kpa,42,-0.03726814427437846,0.8590912332001277,0.9068185239334682,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
-LOC134686763,dlog_adhesion_kpa,42,-0.0011916597009298693,0.9953428493950113,0.9953428493950113,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
+LOC134722124,dlog_adhesion_kpa,42,0.033831232132546546,0.7965520903288266,0.8731436374758292,Hypoxia up-regulated protein 1
+LOC134706576,dlog_adhesion_kpa,42,0.16208314019289688,0.46676407743562265,0.7735874839858999,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)"
+LOC134725152,dlog_adhesion_kpa,42,-0.4218568863318971,0.012923344263025263,0.24554354099748,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
+LOC134712215,dlog_adhesion_kpa,42,-0.4179359219771766,0.017418371105991242,0.2482117882603752,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
+LOC134711376,dlog_adhesion_kpa,42,-0.057939946021184914,0.7806930756700754,0.8731436374758292,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+LOC134725758,dlog_adhesion_kpa,42,0.12803042500897968,0.4313525442909246,0.7735874839858999,Peroxiredoxin-1 (EC 1.11.1.24) (Thioredoxin-dependent peroxiredoxin 1)
+LOC134695781,dlog_adhesion_kpa,42,0.13783395321205974,0.43365009574996105,0.7735874839858999,97 kDa heat shock protein (Heat shock protein 110)
+LOC134685659,dlog_adhesion_kpa,42,0.1941559880286618,0.38798366018035346,0.7735874839858999,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"
+LOC134721501,dlog_adhesion_kpa,42,0.08947040627031515,0.5086993585284804,0.7735874839858999,Lysine--tRNA ligase (EC 2.7.7.-) (EC 6.1.1.6) (Lysyl-tRNA synthetase) (LysRS)
+LOC134714392,dlog_adhesion_kpa,42,-0.06471694772634096,0.6726371803477611,0.8731436374758292,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase alpha subunit) (PheRS)
+LOC134728203,dlog_adhesion_kpa,42,0.07382640007686955,0.688529368676871,0.8731436374758292,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+LOC134721377,dlog_adhesion_kpa,42,0.052450181528091666,0.7878875088930171,0.8731436374758292,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)"
+LOC134709977,dlog_adhesion_kpa,42,-0.339617086396067,0.2589950602637952,0.7735874839858999,Heat shock protein HSP 90-alpha
+LOC134716333,dlog_adhesion_kpa,42,-0.1664990050414497,0.5438116119690216,0.7735874839858999,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+LOC134680973,dlog_adhesion_kpa,42,-0.10655424923147482,0.22381230953119793,0.7735874839858999,Collagen alpha-6(VI) chain
+LOC134716384,dlog_adhesion_kpa,42,-0.10806504302780418,0.40744834351826575,0.7735874839858999,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134708353,dlog_adhesion_kpa,42,-0.4099991014666832,0.03633984019399754,0.2959101272939799,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8)
+LOC134684257,dlog_adhesion_kpa,42,-0.06043013753655638,0.7111456222465209,0.8731436374758292,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]"
+LOC134722108,dlog_adhesion_kpa,42,-0.0028158736942960833,0.9815253451432535,0.9953428493950118,Collagen alpha-1(XXI) chain
+LOC134695253,dlog_adhesion_kpa,42,0.18101958477563773,0.20272127290470154,0.7735874839858999,Collagen alpha-3(VI) chain
+LOC134716146,dlog_adhesion_kpa,42,-0.20814965373178998,0.13235250641209884,0.7735874839858999,Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)
+LOC134715482,dlog_adhesion_kpa,42,0.1643989349945886,0.5564401200600333,0.7735874839858999,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA)
+LOC134682955,dlog_adhesion_kpa,42,0.17251362188350897,0.35831851540534476,0.7735874839858999,Endoplasmin (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1)
+LOC134720973,dlog_adhesion_kpa,42,0.1657341732909629,0.5047369910090707,0.7735874839858999,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13)
+LOC134716385,dlog_adhesion_kpa,42,-0.055521527184533015,0.5053941885264259,0.7735874839858999,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134720932,dlog_adhesion_kpa,42,-0.036767470695484125,0.5549226312541728,0.7735874839858999,Byssal peroxidase-like protein 2
+LOC134721315,dlog_adhesion_kpa,42,-0.07181992877266742,0.4266232163138809,0.7735874839858999,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20)
+LOC134695001,dlog_adhesion_kpa,42,0.09499820523740951,0.5536540271325102,0.7735874839858999,DnaJ homolog subfamily B member 11 (APOBEC1-binding protein 2) (ABBP-2) (ER-associated DNAJ) (ER-associated Hsp40 co-chaperone) (Endoplasmic reticulum DNA J domain-containing protein 3) (ER-resident protein ERdj3) (ERdj3) (ERj3p)
+LOC134710997,dlog_adhesion_kpa,42,0.05650582542782763,0.5218830429996422,0.7735874839858999,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
+LOC134691221,dlog_adhesion_kpa,42,0.07538186819170567,0.7771598154061901,0.8731436374758292,Glutathione S-transferase A (GST-A) (EC 2.5.1.18) (GST class-theta)
+LOC134697127,dlog_adhesion_kpa,42,-0.44188224974079193,0.0360644034152864,0.2959101272939799,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134722070,dlog_adhesion_kpa,42,-0.17594790316865588,0.18911148195963035,0.7735874839858999,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)"
+LOC134721046,dlog_adhesion_kpa,42,-0.08624244940241116,0.7502423210268417,0.8731436374758292,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain]
+LOC134705706,dlog_adhesion_kpa,42,-0.3828006128952016,5.897077621020162e-4,0.033613342439814925,Collagen alpha-1(V) chain
+LOC134715908,dlog_adhesion_kpa,42,-0.27673661816218975,0.23528912540269542,0.7735874839858999,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
+LOC134720677,dlog_adhesion_kpa,42,0.2011967579423207,0.2567139316732408,0.7735874839858999,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R)
+LOC134725897,dlog_adhesion_kpa,42,0.08238166399134958,0.4926159697266973,0.7735874839858999,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase)
+LOC134697168,dlog_adhesion_kpa,42,-0.037268144274378384,0.8590912332001279,0.9068185239334684,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)
+LOC134686763,dlog_adhesion_kpa,42,-0.0011916597009297304,0.9953428493950118,0.9953428493950118,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37)
 LOC134711515,dlog_adhesion_kpa,42,-0.5123781486840013,0.002240262124951789,0.063847470561126,Collagen alpha-2(IV) chain
-LOC134687560,dlog_adhesion_kpa,42,-0.012203198614474556,0.9578830465942445,0.9927151573794898,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
-LOC134720928,dlog_adhesion_kpa,42,-0.08041498605409374,0.4295223029001758,0.7735874839858988,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
-LOC134711985,dlog_adhesion_kpa,42,0.12250969289576233,0.418690317978748,0.7735874839858988,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
-LOC134715354,dlog_adhesion_kpa,42,-0.02459189114901272,0.8444124236971817,0.9068185239334682,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
-LOC134693874,dlog_adhesion_kpa,42,-0.39066930613449385,0.07360899130926107,0.5244640630784851,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
+LOC134687560,dlog_adhesion_kpa,42,-0.012203198614473878,0.9578830465942468,0.9927151573794922,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1)
+LOC134720928,dlog_adhesion_kpa,42,-0.0804149860540938,0.42952230290017523,0.7735874839858999,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter)
+LOC134711985,dlog_adhesion_kpa,42,0.12250969289576236,0.4186903179787478,0.7735874839858999,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B)
+LOC134715354,dlog_adhesion_kpa,42,-0.024591891149012907,0.8444124236971806,0.9068185239334684,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma)
+LOC134693874,dlog_adhesion_kpa,42,-0.39066930613449385,0.07360899130926093,0.5244640630784841,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide]
