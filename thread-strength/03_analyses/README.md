@@ -7,7 +7,7 @@ hand-curated; the raw inputs live in `../02_data/`.
 |---|---|---|
 | `thread-summary-raw-output.xlsx` | `1_extract_tensometer_data.Rmd` | Every extracted trace. Sheets: `data`, `coverage`, `pairing`. |
 | `extract-tensometer-data/QC_plots/<source_folder>/` | `1_extract_tensometer_data.Rmd` | Per-trace loess QC plots, named after the source file |
-| `assemble-thread-summary/` | `2_assemble_thread_summary.Rmd` | `thread-summary-candidate.xlsx`, the curation-ready table |
+| `assemble-thread-summary/` | `2_assemble_thread_summary.Rmd` | `thread-summary-candidate.xlsx` (curation-ready table) and `pad-area-worklist.xlsx` (sheets `to_measure` and `pairing_gaps`) |
 | `thread-summary.xlsx` | **manual curation** | The curated table script 3 reads. Not regenerable. |
 | `analyze-thread-strength/` | `3_analyze_thread_strength.Rmd` | Adhesion distribution panels, one before/after panel per day-3 arm, `STATS_*.csv`, `DIAG_lmer_residuals.png`, and `RUN_provenance.txt` recording the `INCLUDE_LAB_REFERENCE` setting behind the run |
 

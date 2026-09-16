@@ -11,6 +11,7 @@ Inputs consumed by the scripts in `../01_code/`. Do not write outputs here; outp
 | `tensometer_output/03_post_OA/`, `04_post_OW/`, `05_post_DO/` | Day 3. Stressor arms | `1_extract_tensometer_data.Rmd` |
 | `pictures/{control,treatment}/` | Microscope images used to measure plaque area (`pad_area`) | manual measurement |
 | `mussel-treatment-key.csv` | Mussel tag -> arm, species, RNA flag | `1_extract_tensometer_data.Rmd` |
+| `pad_area_measurements.xlsx` | Hand-measured plaque area and failure mode, one row per trace | `2_assemble_thread_summary.Rmd` |
 
 ## Trace files
 
@@ -24,6 +25,20 @@ instrument behaviour at the start of a pull and is read as zero.
 
 `mussel` + `thread` is not unique across the dataset; 45 animals were pulled both before and
 after exposure. The unique key includes the folder.
+
+## pad_area_measurements.xlsx
+
+The only file in this folder you edit by hand. One row per extracted trace, keyed on
+`mussel` + `thread` + `thread_trt`, with `pad_area` (mm^2) and `failure` blank where not yet
+measured. Filter on a blank `pad_area` to find the outstanding work; the rows already exist,
+so you fill cells rather than add rows.
+
+It carries only what it is the source of truth for. `species`, `group`, `mussel_trt` and
+`day` were removed: the first three are owned by `mussel-treatment-key.csv` and the last by
+the tensometer subfolder, and a second copy is a copy that can drift.
+
+`2_assemble_thread_summary.Rmd` reports which traces are still outstanding and whether a
+microscope image for each exists in `pictures/`.
 
 ## mussel-treatment-key.csv
 

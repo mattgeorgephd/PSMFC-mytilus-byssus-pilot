@@ -10,38 +10,43 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE)
 
 ## What this script does
 
-Takes the trace-level output of `1_extract_tensometer_data.Rmd` and produces a
-**curation-ready candidate** in the column shape of `03_analyses/thread-summary.xlsx`, so the
-manual curation step is a review rather than a retype.
+Joins the trace-level output of `1_extract_tensometer_data.Rmd` to the plaque measurements in
+`02_data/pad_area_measurements.xlsx`, computes adhesion, and writes a **curation-ready
+candidate** so the manual step is a review rather than a retype.
 
-It carries forward the two columns that cannot be computed from a trace, `pad_area` and
-`failure`, from whatever rows already exist in `thread-summary.xlsx`, and reports exactly
-which traces still need a plaque measurement.
+It also writes two worklists: which traces still need a plaque measured (and whether a
+microscope image for them exists in the repository), and which animals that ought to pair
+before/after still do not.
 
 ```
-1_extract_tensometer_data.Rmd  ->  03_analyses/thread-summary-raw-output.xlsx   (375 traces)
+1_extract_tensometer_data.Rmd  ->  03_analyses/thread-summary-raw-output.xlsx   (every trace)
+              +  02_data/pad_area_measurements.xlsx                            (hand-measured)
 2_assemble_thread_summary.Rmd  ->  03_analyses/assemble-thread-summary/
                                      thread-summary-candidate.xlsx
-   (manual curation: add pad_area / failure, drop bad runs)
+                                     pad-area-worklist.xlsx
+   (manual: drop bad runs against the QC plots)
                                ->  03_analyses/thread-summary.xlsx
 3_analyze_thread_strength.Rmd  ->  03_analyses/analyze-thread-strength/
 ```
 
-### What changed, and why
+### Where each fact comes from
 
-The previous version joined four extraction files
-(`max_force_{control,treatment}.xlsx`, `integral_{control,treatment}.xlsx`) plus
-`morphometrics/02_data/morphometrics.xlsx` and
-`02_data/GOOGLESHEET-PSMFC-mytilus-byssus-pilot-threads.xlsx`. None of those paths exist any
-more. The mussel-level metadata now arrives already joined by script 1 from
-`02_data/mussel-treatment-key.csv`, and there is a single extraction output instead of four.
+One fact, one source. Nothing is copied into two files where the copies could drift.
 
-`group` is gone. It was fully recoverable from `thread_trt`, and its value `control` meant
-"day 0 or 1" while `mussel_trt == "control"` means the control tank arm, which is a different
-thing. `phase` (`lab` / `pre` / `post`) replaces it and does not collide.
+| fact | grain | source |
+|---|---|---|
+| `max_force`, `integral`, `max_displacement` | thread | the trace itself, via script 1 |
+| `thread_trt`, `phase`, `day` | thread | the tensometer subfolder, via script 1 |
+| `species`, `mussel_trt`, `rna_sequenced` | mussel | `02_data/mussel-treatment-key.csv`, via script 1 |
+| `pad_area`, `failure` | thread | `02_data/pad_area_measurements.xlsx` |
+
+`pad_area_measurements.xlsx` therefore carries only what it is the source of truth for:
+`mussel`, `thread`, `thread_trt`, `pad_area`, `failure`, `notes`. Its previous `species`,
+`group`, `mussel_trt` and `day` columns were second copies of facts owned elsewhere and have
+been removed. They were verified to agree before removal.
 
 **Nothing is excluded here.** Every extracted trace is carried through so bad runs can be
-reviewed against their QC plots and removed by hand.
+reviewed against their QC plots and removed deliberately.
 
 ## Load packages
 
@@ -56,13 +61,16 @@ sapply(load.lib, require, character = TRUE)
 ## Paths
 
 ```{r paths}
-raw_xlsx     <- here::here("03_analyses", "thread-summary-raw-output.xlsx")
-curated_xlsx <- here::here("03_analyses", "thread-summary.xlsx")   # the hand-curated file
-out_dir      <- here::here("03_analyses", "assemble-thread-summary")
+raw_xlsx <- here::here("03_analyses", "thread-summary-raw-output.xlsx")
+pad_xlsx <- here::here("02_data", "pad_area_measurements.xlsx")
+pic_root <- here::here("02_data", "pictures")
+out_dir  <- here::here("03_analyses", "assemble-thread-summary")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 if (!file.exists(raw_xlsx))
   stop("Not found:\n  ", raw_xlsx, "\nRun 1_extract_tensometer_data.Rmd first.")
+if (!file.exists(pad_xlsx))
+  stop("Not found:\n  ", pad_xlsx)
 ```
 
 ## Helper: canonical mussel tag
@@ -86,93 +94,138 @@ traces <- read_excel(raw_xlsx, sheet = "data") %>%
          thread = as.integer(thread),
          note   = replace_na(as.character(note), ""))
 
+folder_order <- unique(traces$source_folder)
+
 message("Traces: ", nrow(traces), " | unique mussels: ", n_distinct(traces$mussel))
 
 if (!all(c("species", "mussel_trt", "rna_sequenced") %in% names(traces)))
   warning("The extraction output has no mussel-level columns. Run 0_build_mussel_key.Rmd ",
           "and re-run script 1, or those columns will be blank in the candidate file.")
 
-traces %>% count(source_folder, thread_trt, phase, day) %>% knitr::kable()
+print(knitr::kable(traces %>% count(source_folder, thread_trt, phase, day)))
 ```
 
-## 2. Carry forward plaque area and failure mode
+## 2. Join the plaque measurements
 
-`pad_area` (plaque cross-sectional area, mm^2) and `failure` are measured from the microscope
-images in `02_data/pictures/`; they cannot be derived from a force trace. Any row already
-present in `thread-summary.xlsx` is reused so those measurements are not lost or re-entered.
+`pad_area` (plaque cross-sectional area, mm^2) and `failure` are measured by hand from the
+microscope images in `02_data/pictures/`; they cannot be derived from a force trace.
 
-The join key is `mussel` + `thread` + `thread_trt`. That triple is unique on both sides, and
-it has to include `thread_trt`: 45 animals were pulled before and after exposure, so
-`mussel` + `thread` alone matches two different traces.
+The join key is `mussel` + `thread` + `thread_trt`. It has to include `thread_trt`: 45
+animals were pulled before and after exposure, so `mussel` + `thread` alone matches two
+different traces and would silently duplicate rows.
 
 ```{r}
-have_curated <- file.exists(curated_xlsx)
+pad <- read_excel(pad_xlsx, sheet = "data")
 
-if (have_curated) {
-  curated <- read_excel(curated_xlsx, sheet = "data") %>%
-    transmute(mussel        = norm_id(mussel_ID),
-              thread        = as.integer(thread_num),
-              thread_trt    = as.character(thread_trt),
-              pad_area      = as.numeric(pad_area),
-              failure       = as.character(failure),
-              prior_max_force = as.numeric(max_force))
-
-  dup <- curated %>% count(mussel, thread, thread_trt) %>% filter(n > 1)
-  if (nrow(dup) > 0)
-    warning(nrow(dup), " duplicated key(s) in ", basename(curated_xlsx),
-            "; the first of each is used.")
-  curated <- curated %>% distinct(mussel, thread, thread_trt, .keep_all = TRUE)
-
-  traces <- traces %>% left_join(curated, by = c("mussel", "thread", "thread_trt"))
-
-  orphan <- curated %>%
-    anti_join(traces, by = c("mussel", "thread", "thread_trt"))
-  if (nrow(orphan) > 0)
-    warning(nrow(orphan), " row(s) in ", basename(curated_xlsx),
-            " have no matching trace: ",
-            paste(paste0(orphan$mussel, "_", orphan$thread, " (", orphan$thread_trt, ")"),
-                  collapse = ", "))
-} else {
-  warning("No ", basename(curated_xlsx), " found; pad_area and failure will be blank.")
-  traces <- traces %>% mutate(pad_area = NA_real_, failure = NA_character_,
-                              prior_max_force = NA_real_)
+# Accept the old column spellings so an older copy of the file still joins.
+ren <- c(mussel_ID = "mussel", thread_num = "thread")
+for (from in names(ren)) {
+  to <- ren[[from]]
+  if (from %in% names(pad) && !to %in% names(pad))
+    names(pad)[names(pad) == from] <- to
 }
+
+need_cols <- c("mussel", "thread", "thread_trt", "pad_area")
+if (length(setdiff(need_cols, names(pad))) > 0)
+  stop(basename(pad_xlsx), " is missing column(s): ",
+       paste(setdiff(need_cols, names(pad)), collapse = ", "),
+       "\nColumns present: ", paste(names(pad), collapse = ", "))
+
+# Optional columns: create them empty if the file does not carry them, so the transmute
+# below never has to branch on the schema.
+if (!"failure" %in% names(pad)) pad$failure <- NA_character_
+if (!"notes"   %in% names(pad)) pad$notes   <- NA_character_
+
+pad <- pad %>%
+  transmute(mussel     = norm_id(mussel),
+            thread     = as.integer(thread),
+            thread_trt = as.character(thread_trt),
+            pad_area   = suppressWarnings(as.numeric(pad_area)),
+            failure    = as.character(failure),
+            pad_notes  = as.character(notes))
+
+dup <- pad %>% count(mussel, thread, thread_trt) %>% filter(n > 1)
+if (nrow(dup) > 0) {
+  warning(nrow(dup), " duplicated key(s) in ", basename(pad_xlsx),
+          "; the first of each is used. Fix the source file.")
+  knitr::kable(dup) %>% print()
+  pad <- pad %>% distinct(mussel, thread, thread_trt, .keep_all = TRUE)
+}
+
+# Rows in the measurement file that match no trace: a typo, or a trace that was deleted.
+orphan <- pad %>% anti_join(traces, by = c("mussel", "thread", "thread_trt"))
+if (nrow(orphan) > 0) {
+  warning(nrow(orphan), " row(s) in ", basename(pad_xlsx), " match no trace.")
+  knitr::kable(orphan %>% select(mussel, thread, thread_trt, pad_area)) %>% print()
+}
+
+# Traces with no row at all in the measurement file (as opposed to a row with a blank value).
+missing_rows <- traces %>% anti_join(pad, by = c("mussel", "thread", "thread_trt"))
+if (nrow(missing_rows) > 0)
+  message(nrow(missing_rows), " trace(s) have no row in ", basename(pad_xlsx),
+          "; they appear in the worklist below and can be pasted in.")
+
+traces <- traces %>% left_join(pad, by = c("mussel", "thread", "thread_trt"))
+
+message("Plaque measurements joined: ", sum(!is.na(traces$pad_area)), " of ", nrow(traces))
 ```
 
-### Does the freshly extracted peak force match what the curated file recorded?
+## 3. Which microscope image belongs to each trace
 
-A disagreement here is not a rounding artifact. It means the curated value came from a
-different file, or was edited by hand, and it propagated into `adhesion_kpa`. Check any row
-listed below against its QC plot before trusting the curated number.
+The picture folders are split `control` / `treatment`, matching the pre/post split, and a
+single image sometimes covers several threads (`T020_01-02-03.png`). Both are handled here so
+the worklist can say whether a trace is measurable from what is in the repository.
 
 ```{r}
-force_check <- traces %>%
-  filter(!is.na(prior_max_force)) %>%
-  mutate(diff = max_force - prior_max_force) %>%
-  filter(abs(diff) > 1e-9) %>%
-  arrange(desc(abs(diff))) %>%
-  select(source_folder, file, mussel, thread, thread_trt,
-         max_force_new = max_force, max_force_curated = prior_max_force, diff)
+scan_pictures <- function(root) {
+  sides <- c("control", "treatment")
+  rows  <- list()
+  for (side in sides) {
+    d <- file.path(root, side)
+    if (!dir.exists(d)) next
+    for (f in list.files(d)) {
+      m <- regmatches(f, regexec("^([A-Za-z]+[0-9]+)_([0-9-]+)\\.", f))[[1]]
+      if (length(m) == 0) next
+      threads <- suppressWarnings(as.integer(strsplit(m[3], "-", fixed = TRUE)[[1]]))
+      threads <- threads[!is.na(threads)]
+      if (length(threads) == 0) next
+      rows[[length(rows) + 1L]] <- tibble(mussel   = norm_id(m[2]),
+                                          thread   = threads,
+                                          pic_side = side,
+                                          picture  = file.path("02_data", "pictures", side, f))
+    }
+  }
+  if (length(rows) == 0) return(tibble(mussel = character(), thread = integer(),
+                                       pic_side = character(), picture = character()))
+  bind_rows(rows) %>%
+    group_by(mussel, thread, pic_side) %>%
+    summarise(picture = paste(unique(picture), collapse = "; "), .groups = "drop")
+}
 
-message("Curated rows compared: ", sum(!is.na(traces$prior_max_force)),
-        " | disagreeing: ", nrow(force_check))
-if (nrow(force_check) > 0) knitr::kable(force_check)
+pictures <- scan_pictures(pic_root)
+message("Indexed ", nrow(pictures), " mussel/thread/side picture entries.")
+
+# Pre-exposure threads are photographed into pictures/control/, day-3 threads into
+# pictures/treatment/.
+traces <- traces %>%
+  mutate(pic_side = if_else(thread_trt %in% c("baseline", "lab_control"),
+                            "control", "treatment")) %>%
+  left_join(pictures, by = c("mussel", "thread", "pic_side")) %>%
+  mutate(picture_status = if_else(is.na(picture), "missing", "available"))
 ```
 
-## 3. Derive adhesion
+## 4. Derive adhesion and assemble the candidate
 
 ```{r}
 # If script 1 ran without the mussel key, these columns are absent. Create them empty rather
-# than failing, so the candidate file still builds and the gap is visible as blank cells.
+# than failing, so the candidate still builds and the gap is visible as blank cells.
 for (col in c("species", "mussel_trt", "rna_sequenced"))
   if (!col %in% names(traces)) traces[[col]] <- NA_character_
 
 summary_tbl <- traces %>%
-  mutate(
-    adhesion_kpa = max_force / pad_area * 1000,       # N / mm^2 -> kPa
-    sort_ID      = paste0(mussel, "_", thread)
-  ) %>%
-  arrange(match(source_folder, unique(traces$source_folder)), mussel, thread) %>%
+  mutate(adhesion_kpa = max_force / pad_area * 1000,       # N / mm^2 -> kPa
+         sort_ID      = paste0(mussel, "_", thread)) %>%
+  arrange(match(source_folder, folder_order), mussel, thread) %>%
   transmute(species, sort_ID,
             mussel_ID  = mussel,
             thread_num = thread,
@@ -182,58 +235,130 @@ summary_tbl <- traces %>%
             max_force, integral, max_displacement,
             pad_area, adhesion_kpa, failure,
             rna_sequenced,
+            pad_notes, picture_status,
             source_folder, file)                       # provenance, drop before pasting
+
+message("Candidate rows: ", nrow(summary_tbl),
+        " | with adhesion_kpa: ", sum(!is.na(summary_tbl$adhesion_kpa)))
 ```
 
-## 4. What still needs measuring
+## 5. Worklist: what still needs a plaque measured
 
 ```{r}
-summary_tbl %>%
-  group_by(source_folder, thread_trt) %>%
-  summarise(traces          = n(),
-            have_pad_area   = sum(!is.na(pad_area)),
-            need_pad_area   = sum(is.na(pad_area)),
-            have_failure    = sum(!is.na(failure)),
-            .groups = "drop") %>%
-  knitr::kable()
+worklist <- traces %>%
+  filter(is.na(pad_area)) %>%
+  arrange(match(source_folder, folder_order), mussel, thread) %>%
+  transmute(mussel, thread, thread_trt, phase, mussel_trt,
+            source_folder, file,
+            qc_plot = file.path("03_analyses", "extract-tensometer-data", "QC_plots",
+                                source_folder, sub("\\.txt$", ".jpg", file, ignore.case = TRUE)),
+            picture_status, picture)
 
-message("Total traces needing a plaque measurement: ", sum(is.na(summary_tbl$pad_area)))
+cat("Traces still needing a plaque measurement:", nrow(worklist), "\n")
+print(knitr::kable(worklist %>%
+  count(source_folder, thread_trt, picture_status) %>%
+  pivot_wider(names_from = picture_status, values_from = n, values_fill = 0)))
+
+no_pic <- worklist %>% filter(picture_status == "missing")
+if (nrow(no_pic) > 0) {
+  message(nrow(no_pic), " of those have NO microscope image in the repository and cannot be ",
+          "measured from what is committed here.")
+  no_pic %>% count(mussel, name = "traces_without_an_image") %>% knitr::kable() %>% print()
+}
 ```
 
-## 5. Pairing, by arm
+## 6. Pairing: which animals that should pair still do not
 
-Adhesion contrasts rest on animals measured at both `pre` and `post`. An unbalanced arm is
-what makes a per-arm marginal mean from a random-intercept model unreliable, so look here
-before fitting one.
+Three distinct situations, and only the first is fixable by measuring.
+
+  - `pair_blocked_unmeasured` : the animal has traces at BOTH pre and post, but at least one
+    side has no plaque measurement, so it cannot enter an adhesion pair. Fixable, provided an
+    image exists.
+  - `missing_pre_trace`  : day-3 threads exist, but no pre-exposure trace was ever recorded.
+  - `missing_post_trace` : pre-exposure threads exist, but no day-3 trace was ever recorded.
 
 ```{r}
-summary_tbl %>%
+by_side <- traces %>%
   filter(phase %in% c("pre", "post")) %>%
-  distinct(mussel_ID, mussel_trt, phase) %>%
-  count(mussel_ID, mussel_trt, name = "n_phases") %>%
-  count(mussel_trt, paired = n_phases == 2L) %>%
-  pivot_wider(names_from = paired, values_from = n,
-              names_prefix = "paired_", values_fill = 0) %>%
-  knitr::kable()
+  group_by(mussel, mussel_trt, phase) %>%
+  summarise(traces = n(), measured = sum(!is.na(pad_area)), .groups = "drop")
+
+wide <- by_side %>%
+  pivot_wider(names_from = phase, values_from = c(traces, measured), values_fill = 0)
+for (col in c("traces_pre", "traces_post", "measured_pre", "measured_post"))
+  if (!col %in% names(wide)) wide[[col]] <- 0L
+
+wide <- wide %>%
+  mutate(trace_paired = traces_pre > 0 & traces_post > 0,
+         pair_usable  = measured_pre > 0 & measured_post > 0,
+         # Held as its own column rather than recomputed inside summarise(): within one
+         # summarise(), a later expression sees the value an earlier one just created, so
+         # `sum(trace_paired & !pair_usable)` there would silently use the scalar count.
+         blocked_flag = trace_paired & !pair_usable,
+         gap_type = case_when(
+           trace_paired & !pair_usable          ~ "pair_blocked_unmeasured",
+           traces_post > 0 & traces_pre  == 0   ~ "missing_pre_trace",
+           traces_pre  > 0 & traces_post == 0   ~ "missing_post_trace",
+           TRUE                                 ~ "ok"))
+
+# Can the blocked ones actually be fixed? Only if the unmeasured side has an image.
+pic_by_side <- traces %>%
+  filter(phase %in% c("pre", "post"), is.na(pad_area)) %>%
+  group_by(mussel, phase) %>%
+  summarise(images = sum(picture_status == "available"), .groups = "drop") %>%
+  pivot_wider(names_from = phase, values_from = images,
+              names_prefix = "images_missing_side_", values_fill = 0)
+
+pairing_gaps <- wide %>%
+  select(-blocked_flag) %>%
+  left_join(pic_by_side, by = "mussel") %>%
+  mutate(across(starts_with("images_missing_side_"), ~ replace_na(.x, 0L))) %>%
+  filter(gap_type != "ok") %>%
+  arrange(gap_type, mussel_trt, mussel)
+
+cat("\nPairing status by arm:\n")
+print(knitr::kable(wide %>%
+  group_by(mussel_trt) %>%
+  summarise(mussels      = n(),
+            trace_paired = sum(trace_paired),
+            usable_pairs = sum(pair_usable),
+            blocked      = sum(blocked_flag),
+            .groups = "drop")))
+
+cat("\nGaps:\n")
+print(knitr::kable(pairing_gaps %>% count(gap_type, mussel_trt) %>%
+  pivot_wider(names_from = mussel_trt, values_from = n, values_fill = 0)))
+
+blocked <- pairing_gaps %>% filter(gap_type == "pair_blocked_unmeasured")
+if (nrow(blocked) > 0) {
+  cat("\nAnimals with traces on both sides but no usable adhesion pair:\n")
+  blocked %>%
+    select(mussel, mussel_trt, traces_pre, measured_pre, traces_post, measured_post,
+           images_missing_side_pre, images_missing_side_post) %>%
+    knitr::kable() %>% print()
+}
 ```
 
-## 6. Write the candidate
-
-Columns match `thread-summary.xlsx` apart from the retired `group` (replaced by `phase`) and
-three additions: `note`, `max_displacement`, and the `source_folder` / `file` provenance pair.
-Drop the last two before pasting if you want an exact column match.
+## 7. Write the outputs
 
 ```{r}
 write.xlsx(list(data = summary_tbl),
            file = file.path(out_dir, "thread-summary-candidate.xlsx"),
            colNames = TRUE, overwrite = TRUE)
 
+write.xlsx(list(to_measure = worklist, pairing_gaps = pairing_gaps),
+           file = file.path(out_dir, "pad-area-worklist.xlsx"),
+           colNames = TRUE, overwrite = TRUE)
+
 message("Wrote ", file.path(out_dir, "thread-summary-candidate.xlsx"),
         " (", nrow(summary_tbl), " rows).")
+message("Wrote ", file.path(out_dir, "pad-area-worklist.xlsx"),
+        " (", nrow(worklist), " to measure, ", nrow(pairing_gaps), " pairing gaps).")
 ```
 
-Review this against the QC plots in
+Review the candidate against the QC plots in
 `03_analyses/extract-tensometer-data/QC_plots/<source_folder>/<file>.jpg`, using `note`,
-`failure` and the force-disagreement table in section 2 to spot bad runs. Remove what should
-be excluded and save the result as `03_analyses/thread-summary.xlsx` (sheet `data`) for
-script 3.
+`failure` and `picture_status` to spot bad runs. Remove what should be excluded and save the
+result as `03_analyses/thread-summary.xlsx` (sheet `data`) for script 3. Drop
+`source_folder`, `file`, `pad_notes` and `picture_status` before saving if you want the
+narrower column set script 3 previously used; script 3 ignores extra columns either way.
