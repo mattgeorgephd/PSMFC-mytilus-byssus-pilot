@@ -1,0 +1,7 @@
+generated       : 2026-09-15 21:03:47
+input           : 03_analyses/thread-summary.xlsx
+INCLUDE_LAB_REFERENCE : FALSE
+threads analysed: 375
+threads dropped (no pad_area): 0
+baseline pool   : 60 mussels
+lmer data       : 337 threads, 74 mussels
