@@ -1,0 +1,7 @@
+code,tissue,treatment,n_samples,genes_after_filter,n_DEG_rederived,countmatrix_matches_master,countmatrix_gene_ids_lost,full_rows_disk,full_rows_new,full_same_genes,full_baseMean_maxrel,full_lfc_maxabs,full_padj_maxabs,siggene_rows_disk,siggene_rows_new,siggene_same_genes,siggene_baseMean_maxrel,siggene_lfc_maxabs,siggene_padj_maxabs,full_table_consistent,siggene_consistent,full_table_file,siggene_file
+FOA,Foot,OA,24,7913,80,TRUE,TRUE,7913,7913,TRUE,4.97e-15,4.69e-7,6.73e-8,80,80,TRUE,3.38e-15,3.57e-11,3.64e-12,TRUE,TRUE,FOA_TC_apeglm.csv,FOA_TC_siggene.csv
+FOW,Foot,OW,24,8224,153,TRUE,FALSE,8224,8224,TRUE,4.9e-15,6.6e-7,4.44e-8,153,153,TRUE,4.65e-15,4.95e-11,5.41e-12,TRUE,TRUE,FOW_TC_apeglm.csv,FOW_TC_siggene.csv
+FDO,Foot,DO,22,7889,351,TRUE,FALSE,7889,7889,TRUE,4.95e-15,1.27e-6,4.3e-7,351,351,TRUE,4.32e-15,1.18e-10,1.73e-12,TRUE,TRUE,FDO_TC_apeglm.csv,FDO_TC_siggene_apeglm.csv
+GOA,Gill,OA,24,11047,711,TRUE,TRUE,11047,11047,TRUE,4.96e-15,1.46e-7,3.45e-7,711,711,TRUE,4.74e-15,3.9e-8,7.89e-8,TRUE,TRUE,GOA_TC.csv,GOA_TC_siggene.csv
+GOW,Gill,OW,24,11037,175,TRUE,FALSE,11037,11037,TRUE,4.97e-15,2.39e-7,9.73e-7,175,175,TRUE,4.48e-15,8.57e-12,6.19e-14,TRUE,TRUE,GOW_TC_apeglm.csv,GOW_TC_siggene_apeglm.csv
+GDO,Gill,DO,23,11002,307,TRUE,FALSE,11002,11002,TRUE,4.85e-15,5.11e-15,5.55e-16,307,307,TRUE,4.74e-15,4.72e-8,1.38e-11,TRUE,TRUE,GDO_TC_apeglm.csv,GDO_TC_siggene_apeglm.csv

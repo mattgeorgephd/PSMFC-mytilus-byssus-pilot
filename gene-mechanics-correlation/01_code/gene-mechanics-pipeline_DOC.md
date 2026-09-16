@@ -103,6 +103,29 @@ analysis (block C) uses the mixed model for level metrics and the weighted regre
 change metrics; the permutation (block D) now runs for `max_force`, `pad_area` and
 `dlog_adhesion_kpa` and writes `permutation_best_hit_<T>.csv`.
 
+### Script 21 writes its diagnostics (block E)
+
+Both diagnostics used to print to the console only. They are now files in
+`03_analyses/gene_mechanics/`:
+
+- `detection_floor_flags_<T>.csv`: one row per tested gene (candidate set plus the DEG union
+  read back from `assoc_DEGunion_<T>.csv`), with `n_at_floor`, `frac_samples_at_floor` and
+  `floor_flag` = `exclude` (> 0.40, `FLOOR_EXCLUDE`), `caution` (> 0.20, `FLOOR_CAUTION`) or
+  `ok`. Drop `exclude` genes before interpreting any hit.
+- `influence_top_hits_<T>.csv`: the three best candidate hits per metric (`N_INFLUENCE_HITS`;
+  ranking by `p_mixed` for level metrics and `p_wls` for change metrics), each refitted as the
+  weighted per-animal regression with and without its most influential animal. Columns:
+  `most_influential_mussel`, `max_cooks_D`, `cook_threshold_4n`, `cooks_flag` (`D>1`,
+  `D>4/n`, `ok`), `slope`, `slope_without_mussel`, `p_without_mussel`, `slope_change_frac`,
+  and `influence_flag` = `fragile` when the hit loses p < 0.05 without that animal or its
+  slope moves by more than half, else `robust`. The 4/n screen fires for the maximum of ~44
+  Cook's distances in almost every fit, so `influence_flag` is the column to read.
+
+On the current data the foot collagen V and IV associations with the change in adhesion are
+`robust`; the HSP70-12B adhesion hit (T030) and the Peroxiredoxin-5 extension hit (T040) are
+`fragile`; in gill, T047 (the gill-only animal) is the most influential point for every
+change-metric hit involving Byssal peroxidase-like protein 2.
+
 ### Script 22 reconciles against script 1's extraction, not raw folders
 
 `raw_post` / `raw_pre` counts come from `thread-summary-raw-output.xlsx`. New flag
@@ -148,6 +171,8 @@ directions and control-referenced changes into `paired_sample_manifest.csv`.
 | `assoc_candidate_WLS_<T>.csv` | script 21 weighted per-animal regression, all metrics; **the reported test for change metrics** |
 | `module_associations_<T>.csv` | five pathway modules × seven metrics |
 | `permutation_best_hit_<T>.csv` | search-corrected p for the best candidate hit, three metrics |
+| `detection_floor_flags_<T>.csv` | every tested gene: fraction of paired samples at the VST floor, `floor_flag` |
+| `influence_top_hits_<T>.csv` | top three candidate hits per metric with leave-one-out slope and p, `influence_flag` |
 | `assoc_candidate_BASELINEADJ_<T>.csv` | ANCOVA mixed model, level metrics |
 | `candidate_heatmap_<T>.png`, `top_candidate_scatter_<T>.png`, `best_hit_per_metric_scatter_<T>.png` | figures; the last is the best candidate gene per metric, coloured by arm |
 

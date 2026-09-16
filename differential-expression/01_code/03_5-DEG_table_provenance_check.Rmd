@@ -1,0 +1,207 @@
+---
+title: "03_5 - DEG table provenance check"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+params:
+  rewrite_stale: false   # TRUE = overwrite any full results table or DEG list that the check finds stale
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Why this script exists
+
+Scripts `02_5_DESeq_*` and `03-TC_shrinkage_filtration.Rmd` write two files per contrast:
+the full apeglm-shrunk results table (`<X>_TC_apeglm.csv`, or `GOA_TC.csv` for gill OA) and
+the DEG list filtered at `padj < 0.05` (`<X>_TC_siggene*.csv`). Nothing guarantees that the
+two files on disk came from the same DESeq2 fit: they are written by separate chunks, the
+count matrix has been re-cleaned since the first runs (T051F/T051G were removed for QC in
+`01_5-gene_count_matrix.Rmd`), and the full tables are not read by any downstream script, so
+a stale one goes unnoticed.
+
+This script re-derives every treatment-vs-treatment-control contrast from the **committed**
+inputs, using the same steps as `02_5` and `03`: subset the master matrix
+`02_data/gene_count_matrix_clean.csv` to the samples in `<X>_TC_treatmentinfo.csv`,
+`DESeq()` on all genes, keep genes with >= 10 counts in at least a third of samples, then
+`lfcShrink(type = "apeglm")` on coefficient 2. It compares the result with both files on
+disk and writes one row per contrast to `03_analyses/DEG_lists/DEG_provenance_check.csv`.
+
+The per-contrast `<X>_TC_countmatrix.csv` files are checked against the master-matrix subset
+rather than used as input, because two of them (`FOA`, `GOA`) were written after a
+`data.frame()` conversion that replaced the gene IDs with row numbers.
+
+With `params$rewrite_stale = TRUE` it also overwrites any file that fails the check, in the
+same `write.table(row.names = FALSE)` format script 03 uses, so `04-File_joining.Rmd` and
+everything after it read a consistent pair.
+
+Two deliberate differences from the original scripts:
+
+- The reference level is set explicitly (`factor(treatment, levels = c("control", <trt>))`).
+  The originals pass `treatment` as character and rely on R's locale collation to make
+  `control` the reference; in a C locale `DO`, `OA` and `OW` sort before `control`, coefficient
+  2 becomes `control_vs_<trt>`, and every log2 fold change flips sign silently.
+- Only the apeglm estimator is run. The `normal` and `ashr` shrinkage columns of
+  `gene_counts_<X>_TC.csv` are not regenerated here; that file is left untouched.
+
+Run time: about 30 s per contrast (six contrasts).
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+suppressPackageStartupMessages({ library(DESeq2); library(apeglm); library(tidyverse) })
+REWRITE_STALE <- isTRUE(params$rewrite_stale)
+PADJ_CUTOFF   <- 0.05
+```
+
+# Contrasts and their files on disk
+
+```{r contrasts}
+contrasts <- tribble(
+  ~code,  ~dir,   ~trt,  ~full_table,          ~siggene,
+  "FOA",  "Foot", "OA",  "FOA_TC_apeglm.csv",  "FOA_TC_siggene.csv",
+  "FOW",  "Foot", "OW",  "FOW_TC_apeglm.csv",  "FOW_TC_siggene.csv",
+  "FDO",  "Foot", "DO",  "FDO_TC_apeglm.csv",  "FDO_TC_siggene_apeglm.csv",
+  "GOA",  "Gill", "OA",  "GOA_TC.csv",         "GOA_TC_siggene.csv",
+  "GOW",  "Gill", "OW",  "GOW_TC_apeglm.csv",  "GOW_TC_siggene_apeglm.csv",
+  "GDO",  "Gill", "DO",  "GDO_TC_apeglm.csv",  "GDO_TC_siggene_apeglm.csv"
+) %>% mutate(countmatrix   = sprintf("%s_TC_countmatrix.csv", code),
+             treatmentinfo = sprintf("%s_TC_treatmentinfo.csv", code))
+knitr::kable(contrasts)
+```
+
+# Readers that tolerate the on-disk formats
+
+The per-contrast files were written by different calls (`write.table` with space separators
+for four contrasts, `write.csv` for the two hypoxia contrasts; treatment tables with or
+without a leading index column), so read by inspecting the first line.
+
+```{r readers}
+master <- as.matrix(read.csv(file.path(dat, "gene_count_matrix_clean.csv"),
+                             row.names = 1, check.names = FALSE))
+cat("Master count matrix:", nrow(master), "genes x", ncol(master), "samples\n")
+
+read_countmatrix <- function(path) {
+  first <- readLines(path, n = 1)
+  m <- if (grepl(",", first, fixed = TRUE))
+         read.csv(path, row.names = 1, check.names = FALSE)
+       else read.table(path, header = TRUE, sep = " ", row.names = 1, check.names = FALSE)
+  as.matrix(m)
+}
+read_treatmentinfo <- function(path) {
+  d <- read.table(path, header = TRUE, sep = " ", stringsAsFactors = FALSE)
+  if (!"sample.1" %in% names(d)) stop("no `sample.1` column in ", path)
+  d <- d[, c("sample.1", "tissue", "treatment", "day")]
+  rownames(d) <- d$sample.1
+  d
+}
+read_results <- function(path) read.table(path, header = TRUE, sep = " ", stringsAsFactors = FALSE)
+```
+
+# Re-derive each contrast and compare
+
+```{r rederive}
+rederive <- function(row) {
+  d  <- file.path(deg, row$dir)
+  ti <- read_treatmentinfo(file.path(d, row$treatmentinfo))
+  missing <- setdiff(ti$sample.1, colnames(master))
+  if (length(missing) > 0)
+    stop(row$code, ": sample(s) in treatmentinfo but not in the master matrix: ",
+         paste(missing, collapse = ", "))
+  cm <- master[, ti$sample.1, drop = FALSE]                    # what 02_5 does
+  ti$treatment <- factor(ti$treatment, levels = c("control", row$trt))
+  stopifnot(!anyNA(ti$treatment))
+
+  ## does the committed per-contrast matrix hold the same counts? (row names may be lost)
+  disk <- read_countmatrix(file.path(d, row$countmatrix))
+  cm_ok <- identical(dim(disk), dim(cm)) && identical(colnames(disk), colnames(cm)) &&
+           isTRUE(all.equal(unname(disk), unname(cm), check.attributes = FALSE))
+  cm_ids_lost <- !identical(rownames(disk), rownames(cm))
+
+  dds  <- DESeqDataSetFromMatrix(cm, ti, ~ treatment)
+  dds  <- DESeq(dds, quiet = TRUE)
+  keep <- rowSums(counts(dds) >= 10) >= ncol(cm) / 3          # same filter as 02_5
+  ddsf <- dds[keep, ]
+  stopifnot(resultsNames(ddsf)[2] == sprintf("treatment_%s_vs_control", row$trt))
+  res  <- lfcShrink(ddsf, coef = 2, type = "apeglm", quiet = TRUE)
+  full <- data.frame(gene = rownames(res), as.data.frame(res), row.names = NULL)
+  sig  <- full %>% filter(!is.na(padj), padj < PADJ_CUTOFF)
+  list(full = full, sig = sig, n_samples = ncol(cm), n_kept = sum(keep),
+       countmatrix_matches_master = cm_ok, countmatrix_gene_ids_lost = cm_ids_lost)
+}
+
+compare_tables <- function(new, old, label) {
+  shared <- intersect(new$gene, old$gene)
+  m <- inner_join(new, old, by = "gene", suffix = c("_new", "_old"))
+  tibble(
+    !!paste0(label, "_rows_disk")   := nrow(old),
+    !!paste0(label, "_rows_new")    := nrow(new),
+    !!paste0(label, "_same_genes")  := setequal(new$gene, old$gene),
+    !!paste0(label, "_baseMean_maxrel") := signif(max(abs(m$baseMean_new - m$baseMean_old) / m$baseMean_old), 3),
+    !!paste0(label, "_lfc_maxabs")  := signif(max(abs(m$log2FoldChange_new - m$log2FoldChange_old)), 3),
+    !!paste0(label, "_padj_maxabs") := signif(max(abs(m$padj_new - m$padj_old), na.rm = TRUE), 3)
+  )
+}
+
+results <- vector("list", nrow(contrasts))
+for (i in seq_len(nrow(contrasts))) {
+  row <- contrasts[i, ]
+  d   <- file.path(deg, row$dir)
+  cat("\n==", row$code, "==\n")
+  rd  <- rederive(row)
+  old_full <- read_results(file.path(d, row$full_table))
+  old_sig  <- read_results(file.path(d, row$siggene))
+  cmp_full <- compare_tables(rd$full, old_full, "full")
+  cmp_sig  <- compare_tables(rd$sig,  old_sig,  "siggene")
+  ## "consistent" = same gene universe and values agree to numerical noise (baseMean is
+  ## version-stable; log2FC and padj can drift slightly between DESeq2/apeglm releases)
+  full_ok <- cmp_full$full_same_genes && cmp_full$full_baseMean_maxrel < 1e-6
+  sig_ok  <- cmp_sig$siggene_same_genes && cmp_sig$siggene_baseMean_maxrel < 1e-6
+  results[[i]] <- bind_cols(
+    tibble(code = row$code, tissue = row$dir, treatment = row$trt,
+           n_samples = rd$n_samples, genes_after_filter = rd$n_kept,
+           n_DEG_rederived = nrow(rd$sig),
+           countmatrix_matches_master = rd$countmatrix_matches_master,
+           countmatrix_gene_ids_lost  = rd$countmatrix_gene_ids_lost),
+    cmp_full, cmp_sig,
+    tibble(full_table_consistent = full_ok, siggene_consistent = sig_ok,
+           full_table_file = row$full_table, siggene_file = row$siggene))
+  cat(sprintf("samples %d | genes after filter %d | DEGs %d | count matrix %s | full table %s | DEG list %s\n",
+              rd$n_samples, rd$n_kept, nrow(rd$sig),
+              ifelse(rd$countmatrix_matches_master, "matches master", "DIFFERS from master"),
+              ifelse(full_ok, "consistent", "STALE"), ifelse(sig_ok, "consistent", "STALE")))
+
+  if (REWRITE_STALE) {
+    if (!full_ok) {
+      write.table(rd$full, file.path(d, row$full_table), row.names = FALSE)
+      cat("  rewrote", row$full_table, "\n")
+    }
+    if (!sig_ok) {
+      write.table(rd$sig, file.path(d, row$siggene), row.names = FALSE)
+      cat("  rewrote", row$siggene, "\n")
+    }
+  }
+}
+check <- bind_rows(results)
+write_csv(check, file.path(deg, "DEG_provenance_check.csv"))
+```
+
+# Summary
+
+```{r summary}
+check %>%
+  select(code, n_samples, genes_after_filter, n_DEG_rederived, countmatrix_matches_master,
+         full_rows_disk, full_same_genes, full_baseMean_maxrel, full_table_consistent,
+         siggene_rows_disk, siggene_same_genes, siggene_baseMean_maxrel, siggene_consistent) %>%
+  knitr::kable()
+cat(if (REWRITE_STALE) "\nStale files were rewritten (params$rewrite_stale = TRUE); re-run 04-File_joining.Rmd next.\n"
+    else "\nCheck only (params$rewrite_stale = FALSE). Knit with rewrite_stale = TRUE to overwrite stale files.\n")
+```
+
+`n_DEG_rederived` is the number to quote in the manuscript for each contrast (one row per
+gene, before any annotation join). The `*_rows_disk` columns are what is on disk now; the
+`*_consistent` columns say whether that file came from the same fit as the committed inputs.

@@ -85,14 +85,14 @@ write.csv(run_log, file.path(html_dir, "run_log.csv"), row.names = FALSE)
 
 Nothing in the code. What differs is the data:
 
-- The gill count matrix has 59 samples against 58 for foot, and two animals (T047, T051)
-  have gill but no foot RNA, so the gill paired set is 45 animals (43 with baselines) against
-  44 (42) for foot.
+- The gill count matrix has 59 samples against 58 for foot, and T047 has gill but no foot
+  RNA, so the gill paired set is 45 animals (43 with baselines) against 44 (42) for foot.
+  T051G is listed in `Gill/G_treatmentinfo.csv` but was removed from the count matrix for QC
+  (`01_5-gene_count_matrix.Rmd`); script 20 drops it with a message.
 - `Gill/G_treatmentinfo.csv` codes the day-3 control arm as `control_3` and has no leading
   index column; script 20 and 22 normalise both.
-- The DEG union is built from the tissue's own `*_TC_siggene*` files. For gill, the register
-  notes two DESeq2 runs on disk for the hypoxia contrast (`GDO_TC_siggene_apeglm.csv`, 307
-  genes, is not a subset of `GDO_TC_apeglm.csv`); the union uses the `siggene` file as it
-  does for foot.
+- The DEG union is built from the tissue's own `*_TC_siggene*` files, which
+  `differential-expression/01_code/03_5-DEG_table_provenance_check.Rmd` verifies are
+  reproduced exactly from the committed inputs for all six contrasts.
 - The foot is the byssus-producing organ. A gill association is a systemic-state readout,
   not a mechanism at the site of thread production, and should be framed that way.

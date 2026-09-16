@@ -11,6 +11,7 @@ source(here::here("01_code", "_paths.R"))
 ### Load libraries
 ```{r}
 library(dplyr)
+library(readr)      # read_csv (the script did not load it; it only ran in sessions with tidyverse attached)
 library(ggplot2)
 library(gridExtra)
 ```

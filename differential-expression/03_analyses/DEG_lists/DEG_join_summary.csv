@@ -1,0 +1,7 @@
+code,tissue,n_DEG_genes,n_merged_rows,n_ID_rows,n_unID_rows,n_genes_annotated,n_genes_unannotated,n_mito_DEGs,mito_DEGs
+FDO,Foot,351,460,361,99,252,99,0,
+GDO,Gill,307,409,301,108,199,108,0,
+FOA,Foot,80,92,72,20,60,20,0,
+GOA,Gill,711,835,587,248,463,248,5,ND2;ND1;CYTB;ATP6;ND6
+FOW,Foot,153,201,152,49,104,49,0,
+GOW,Gill,175,251,198,53,122,53,0,

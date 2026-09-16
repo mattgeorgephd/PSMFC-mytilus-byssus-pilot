@@ -1,0 +1,22 @@
+metric,LOC_ID,ranking_model,p_rank,n,most_influential_mussel,max_cooks_D,cook_threshold_4n,cooks_flag,slope,slope_without_mussel,p_without_mussel,slope_change_frac,influence_flag,protein_name
+max_force,LOC134711376,mixed,0.0106,45,T033,0.208,0.089,D>4/n,-0.0574,-0.073,0.0015,0.272,robust,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+max_force,LOC134715908,mixed,0.0334,45,T038,0.316,0.089,D>4/n,0.06119,0.08928,0.00356,0.459,robust,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-)
+max_force,LOC134716333,mixed,0.0407,45,T029,0.116,0.089,D>4/n,-0.07002,-0.06883,0.0301,0.017,robust,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+pad_area,LOC134720932,mixed,0.0136,45,T019,0.096,0.089,D>4/n,-0.2304,-0.2662,0.0048,0.155,robust,Byssal peroxidase-like protein 2
+pad_area,LOC134728203,mixed,0.0424,45,T058,0.093,0.089,D>4/n,-0.5594,-0.5096,0.0563,0.089,fragile,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+pad_area,LOC134711376,mixed,0.0433,45,T058,0.122,0.089,D>4/n,-0.5761,-0.6197,0.0231,0.076,robust,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha)
+adhesion_kpa,LOC134728203,mixed,0.00903,45,T030,0.225,0.089,D>4/n,26.18,20.71,0.0228,0.209,robust,"Serine--tRNA ligase, cytoplasmic (EC 6.1.1.11) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)"
+adhesion_kpa,LOC134720932,mixed,0.0102,45,T030,0.21,0.089,D>4/n,8.875,8.982,0.00269,0.012,robust,Byssal peroxidase-like protein 2
+adhesion_kpa,LOC134706345,mixed,0.0169,45,T030,0.21,0.089,D>4/n,23.91,19.34,0.0325,0.191,robust,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+max_displacement,LOC134710997,mixed,0.00214,45,T040,0.382,0.089,D>4/n,-0.01576,-0.01003,0.0691,0.363,fragile,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
+max_displacement,LOC134707468,mixed,0.0329,45,T040,0.518,0.089,D>4/n,0.0209,0.008026,0.431,0.616,fragile,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)
+max_displacement,LOC134725152,mixed,0.0933,45,T040,0.238,0.089,D>4/n,0.02059,0.01273,0.259,0.382,robust,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)"
+dlog_max_force,LOC134716333,wls,0.00121,44,T039,0.16,0.091,D>4/n,-0.7758,-0.7921,4.08e-4,0.021,robust,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)"
+dlog_max_force,LOC134714791,wls,0.00715,44,T037,0.224,0.091,D>4/n,0.4343,0.5512,0.00116,0.269,robust,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+dlog_max_force,LOC134699268,wls,0.0109,44,T039,0.125,0.091,D>4/n,0.3323,0.3247,0.00843,0.023,robust,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)"
+dlog_pad_area,LOC134711515,wls,0.0114,44,T128,0.107,0.091,D>4/n,0.2474,0.2201,0.0181,0.111,robust,Collagen alpha-2(IV) chain
+dlog_pad_area,LOC134705706,wls,0.0157,44,T128,0.107,0.091,D>4/n,0.1616,0.1435,0.0241,0.112,robust,Collagen alpha-1(V) chain
+dlog_pad_area,LOC134712215,wls,0.0347,44,T057,0.196,0.091,D>4/n,0.2048,0.2766,0.0103,0.35,robust,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 2) (HIF-PH2) (HIF-prolyl hydroxylase 2) (HPH-2) (Prolyl hydroxylase domain-containing protein 2) (PHD2)
+dlog_adhesion_kpa,LOC134714791,wls,0.0102,44,T037,0.302,0.091,D>4/n,0.475,0.6311,9.88e-4,0.329,robust,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)"
+dlog_adhesion_kpa,LOC134706345,wls,0.0147,44,T111,0.161,0.091,D>4/n,0.4436,0.4325,0.0109,0.025,robust,Glycine--tRNA ligase (EC 6.1.1.14) (Diadenosine tetraphosphate synthetase) (Ap4A synthetase) (EC 2.7.7.-) (Glycyl-tRNA synthetase) (GlyRS) (Glycyl-tRNA synthetase 1)
+dlog_adhesion_kpa,LOC134685659,wls,0.0155,44,T037,0.184,0.091,D>4/n,0.5219,0.6511,0.00312,0.248,robust,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)"

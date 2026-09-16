@@ -581,6 +581,7 @@ LOC134695419,Dystonin (Bullous pemphigoid antigen 1) (BPA) (Dystonia musculorum 
 LOC134710997,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)"
 LOC134711899,Ectonucleoside triphosphate diphosphohydrolase 1 (EC 3.6.1.5) (ATP diphosphohydrolase) (ATP-DPH) (ATPDase) (Ecto-ATP diphosphohydrolase 1) (Ecto-ATPDase 1) (Ecto-ATPase 1) (Ecto-apyrase) (Lymphoid cell activation antigen) (Nucleoside triphosphate diphosphohydrolase 1) (NTPDase1) (CD antigen CD39) [Cleaved into: Ectonucleoside triphosphate diphosphohydrolase 1 27 kDa subunit; Ectonucleoside triphosphate diphosphohydrolase 1 54 kDa subunit]
 LOC134725483,Glutamyl aminopeptidase (EAP) (EC 3.4.11.7) (Aminopeptidase A) (AP-A) (CD antigen CD249)
+ND2,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2)
 LOC134695717,Copper-transporting ATPase 1 (EC 7.2.2.8) (Copper pump 1) (Menkes disease-associated protein homolog)
 LOC134722020,NEDD4-like E3 ubiquitin-protein ligase WWP1 (EC 2.3.2.26) (HECT-type E3 ubiquitin transferase WWP1) (WW domain-containing protein 1)
 LOC134692413,Exosome complex component 10 (EC 3.1.13.-)
@@ -655,6 +656,7 @@ LOC134704117,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cyt
 LOC134725826,Tubulin polymerization-promoting protein family member 3
 LOC134697058,"Carbonyl reductase [NADPH] 1 (EC 1.1.1.184) (15-hydroxyprostaglandin dehydrogenase [NADP(+)]) (EC 1.1.1.196, EC 1.1.1.197) (20-beta-hydroxysteroid dehydrogenase) (Alcohol dehydrogenase [NAD(P)+] CBR1) (EC 1.1.1.71) (NADPH-dependent carbonyl reductase 1) (Prostaglandin 9-ketoreductase) (PG-9-KR) (Prostaglandin-E(2) 9-reductase) (EC 1.1.1.189) (Short chain dehydrogenase/reductase family 21C member 1)"
 LOC134715721,Transient receptor potential cation channel subfamily M member 3 (Long transient receptor potential channel 3) (LTrpC-3) (LTrpC3) (Melastatin-2) (MLSN2)
+ND1,NADH-ubiquinone oxidoreductase chain 1 (EC 7.1.1.2) (NADH dehydrogenase subunit 1)
 LOC134718888,"Unconventional myosin-Va (Dilute myosin heavy chain, non-muscle) (Myosin heavy chain 12) (Myosin-12) (Myoxin)"
 LOC134707405,"ATP synthase F(0) complex subunit C2, mitochondrial (ATP synthase lipid-binding protein) (ATP synthase membrane subunit c locus 2) (ATP synthase proteolipid P2) (ATPase protein 9) (ATPase subunit c)"
 LOC134690485,"Solute carrier family 25 member 3 (Phosphate carrier protein, mitochondrial) (Phosphate transport protein) (PTP)"
@@ -710,6 +712,7 @@ LOC134710604,Centrosomal protein of 170 kDa protein B (Centrosomal protein 170B)
 LOC134715557,ATPase family AAA domain-containing protein 2B
 LOC134703143,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III)
 LOC134726293,BUB3-interacting and GLEBS motif-containing protein ZNF207 (BuGZ) (xBuGZ) (Zinc finger protein 207)
+CYTB,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit)
 LOC134704441,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit)
 LOC134726508,Splicing factor U2AF 50 kDa subunit (U2 auxiliary factor 50 kDa subunit) (U2 snRNP auxiliary factor large subunit)
 LOC134691016,Sortilin (Neurotensin receptor 3) (NTR3) (mNTR3)
@@ -847,6 +850,7 @@ LOC134711515,Collagen alpha-2(IV) chain
 LOC134685676,Aldehyde dehydrogenase family 3 member B1 (EC 1.2.1.28) (EC 1.2.1.5) (EC 1.2.1.7)
 LOC134703817,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II)
 LOC134725530,Ubiquitin-conjugating enzyme E2-17 kDa (EC 2.3.2.23) (E2 ubiquitin-conjugating enzyme D1) (Protein effete) (Ubiquitin carrier protein) (Ubiquitin-protein ligase)
+ATP6,ATP synthase subunit a (F-ATPase protein 6)
 LOC134704249,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II)
 LOC134687472,Src substrate cortactin (Amplaxin) (Oncogene EMS1)
 LOC134703360,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III)
@@ -902,6 +906,7 @@ LOC134702139,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydroge
 LOC134688449,Cathepsin L (EC 3.4.22.15) [Cleaved into: Cathepsin L heavy chain; Cathepsin L light chain]
 LOC134720002,Inter-alpha-trypsin inhibitor heavy chain H2 (ITI heavy chain H2) (ITI-HC2) (Inter-alpha-inhibitor heavy chain 2) (Inter-alpha-trypsin inhibitor complex component II) (Serum-derived hyaluronan-associated protein) (SHAP)
 LOC134697352,E3 ubiquitin-protein ligase MYCBP2 (EC 2.3.2.33) (Myc-binding protein 2) (Protein associated with Myc)
+ND6,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6)
 LOC134703803,ATP synthase subunit a (F-ATPase protein 6)
 LOC134711670,Cdc42 homolog
 LOC134696665,StAR-related lipid transfer protein 13 (START domain-containing protein 13) (StARD13)

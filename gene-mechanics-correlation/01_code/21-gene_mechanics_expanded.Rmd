@@ -317,30 +317,107 @@ their correlations are driven by detection, not biology (e.g. the multidrug-resi
 in the script-20 scatter pile-up at x ~ 3.5). Flag and optionally drop them. Also report the
 most influential animal per top hit (Cook's distance) so you know if one mussel drives a fit.
 
-```{r diagnostics}
-floor_val <- min(vp)
-frac_at_floor <- apply(vp[candidates$LOC_ID, paired$sample, drop = FALSE], 1,
-                       function(x) mean(abs(x - floor_val) < 1e-6))
-floor_flag <- tibble(LOC_ID = candidates$LOC_ID,
-                     protein_name = candidates$protein_name,
-                     frac_samples_at_floor = round(frac_at_floor, 2)) %>%
-  arrange(desc(frac_samples_at_floor))
-cat("Candidate genes most affected by detection floor (consider excluding > ~0.4):\n")
-floor_flag %>% filter(frac_samples_at_floor > 0.2) %>% as.data.frame() %>% print()
+Both tables are written to `03_analyses/gene_mechanics/` so the report and any downstream
+filter can use them without re-running this script:
 
-## influence: top hit per metric, which mussel has the largest Cook's distance
-top_by_metric <- res_cand_mixed %>% group_by(metric) %>% slice_min(p_mixed, n = 1) %>% ungroup()
-infl <- pmap_dfr(top_by_metric, function(LOC_ID, metric, ...) {
-  x <- as.numeric(vp[match(LOC_ID, rownames(vp)), paired$sample])
-  fm <- lm(paired[[metric]] ~ x + paired$treatment)
-  cd <- cooks.distance(fm)
-  tibble(metric = metric, LOC_ID = LOC_ID,
-         most_influential_mussel = paired$mussel[which.max(cd)],
-         max_cooks_D = round(max(cd), 2),
-         cook_threshold_4n = round(4 / nrow(paired), 2))
-})
-cat("\nMost influential animal for each top hit (flag if max_cooks_D > 4/n):\n")
-as.data.frame(infl) %>% print()
+- `detection_floor_flags_<T>.csv`: one row per tested gene (candidate set and DEG union),
+  with the fraction of paired samples at the VST floor and a `floor_flag` of `exclude`
+  (> 0.4), `caution` (> 0.2) or `ok`.
+- `influence_top_hits_<T>.csv`: the three best candidate hits per metric (mixed model for
+  level metrics, weighted regression for change metrics) with the most influential animal,
+  its Cook's distance, the slope and p after dropping that animal, and an `influence_flag`
+  (`fragile` when the hit loses p < 0.05 or its slope moves by more than half).
+
+```{r diagnostics}
+FLOOR_EXCLUDE <- 0.40   # fraction of paired samples at the VST floor above which a gene is dropped
+FLOOR_CAUTION <- 0.20   # ... above which it is reported with a caution flag
+
+floor_val <- min(vp)
+## tested universe = candidate set + DEG union (the DEG-union LOC_IDs come from script 20's
+## assoc_DEGunion_<T>.csv handoff when present, otherwise only the candidates are flagged)
+deg_union_file <- file.path(OUT_DIR, sprintf("assoc_DEGunion_%s.csv", TISSUE))
+deg_union_ids <- if (file.exists(deg_union_file))
+  unique(read_csv(deg_union_file, show_col_types = FALSE)$LOC_ID) else character(0)
+tested <- bind_rows(
+  tibble(LOC_ID = candidates$LOC_ID, gene_set = "candidate"),
+  tibble(LOC_ID = setdiff(deg_union_ids, candidates$LOC_ID), gene_set = "DEG_union")
+) %>% filter(LOC_ID %in% rownames(vp))
+
+n_at_floor <- apply(vp[tested$LOC_ID, paired$sample, drop = FALSE], 1,
+                    function(x) sum(abs(x - floor_val) < 1e-6))
+floor_flag <- tested %>%
+  mutate(n_samples             = nrow(paired),
+         n_at_floor            = unname(n_at_floor),
+         frac_samples_at_floor = round(n_at_floor / nrow(paired), 3),
+         floor_flag            = case_when(frac_samples_at_floor > FLOOR_EXCLUDE ~ "exclude",
+                                           frac_samples_at_floor > FLOOR_CAUTION ~ "caution",
+                                           TRUE                                  ~ "ok")) %>%
+  left_join(annot, by = "LOC_ID") %>%
+  select(LOC_ID, protein_name, gene_set, n_samples, n_at_floor, frac_samples_at_floor, floor_flag) %>%
+  arrange(desc(frac_samples_at_floor), LOC_ID)
+write_csv(floor_flag, file.path(OUT_DIR, sprintf("detection_floor_flags_%s.csv", TISSUE)))
+
+cat("Detection-floor summary (", nrow(floor_flag), " tested genes):\n", sep = "")
+print(table(gene_set = floor_flag$gene_set, floor_flag = floor_flag$floor_flag))
+cat("\nCandidate genes above the caution threshold (drop 'exclude' before interpretation):\n")
+floor_flag %>% filter(gene_set == "candidate", floor_flag != "ok") %>%
+  as.data.frame() %>% print()
+
+## influence: best hits per metric, which mussel has the largest Cook's distance.
+## Level metrics take their ranking from the mixed model (block A); change metrics from the
+## weighted regression (block B). Cook's D is computed on the per-animal regression with the
+## same weights the WLS used, which is the fit the permutation test is built on.
+N_INFLUENCE_HITS <- 3
+top_level  <- res_cand_mixed %>% filter(metric %in% LEVEL_METRICS) %>%
+  group_by(metric) %>% slice_min(p_mixed, n = N_INFLUENCE_HITS, with_ties = FALSE) %>% ungroup() %>%
+  transmute(metric, LOC_ID, ranking_model = "mixed", p_rank = p_mixed)
+top_change <- res_cand_wls %>% filter(metric %in% CHANGE_METRICS) %>%
+  group_by(metric) %>% slice_min(p_wls, n = N_INFLUENCE_HITS, with_ties = FALSE) %>% ungroup() %>%
+  transmute(metric, LOC_ID, ranking_model = "wls", p_rank = p_wls)
+top_hits <- bind_rows(top_level, top_change)
+
+infl <- pmap_dfr(top_hits, function(metric, LOC_ID, ranking_model, p_rank) {
+  dat <- data.frame(y = paired[[metric]],
+                    x = as.numeric(vp[match(LOC_ID, rownames(vp)), paired$sample]),
+                    treatment = paired$treatment, w = wls_weight(metric),
+                    mussel = paired$mussel)
+  dat <- dat[stats::complete.cases(dat), ]
+  fm  <- lm(y ~ x + treatment, data = dat, weights = w)
+  cd  <- cooks.distance(fm)
+  ## slope after dropping the most influential animal: how much of the fit is one mussel
+  fm_drop <- lm(y ~ x + treatment, data = dat[-which.max(cd), ], weights = w)
+  b_all  <- unname(coef(fm)["x"]); b_drop <- unname(coef(fm_drop)["x"])
+  p_drop <- summary(fm_drop)$coefficients["x", "Pr(>|t|)"]
+  tibble(metric, LOC_ID, ranking_model, p_rank = signif(p_rank, 3),
+         n                       = nrow(dat),
+         most_influential_mussel = dat$mussel[which.max(cd)],
+         max_cooks_D             = round(max(cd), 3),
+         cook_threshold_4n       = round(4 / nrow(dat), 3),
+         ## the max of n Cook's distances exceeds 4/n in almost every fit of this size, so
+         ## that screen alone is uninformative here; D > 1 is the conventional "one point
+         ## moves the fit" level (Cook & Weisberg 1982)
+         cooks_flag              = case_when(max(cd) > 1            ~ "D>1",
+                                             max(cd) > 4 / nrow(dat) ~ "D>4/n",
+                                             TRUE                     ~ "ok"),
+         slope                   = signif(b_all, 4),
+         slope_without_mussel    = signif(b_drop, 4),
+         p_without_mussel        = signif(p_drop, 3),
+         slope_change_frac       = round(abs(b_drop - b_all) / abs(b_all), 3),
+         ## "fragile": the result depends on one animal (loses p < 0.05, or the slope moves
+         ## by more than half) - report such a hit with the leave-one-out slope beside it
+         influence_flag          = ifelse((p_rank < 0.05 & p_drop >= 0.05) |
+                                            abs(b_drop - b_all) / abs(b_all) > 0.5,
+                                          "fragile", "robust"))
+}) %>% left_join(annot, by = "LOC_ID") %>%
+  mutate(metric = factor(metric, levels = metrics)) %>% arrange(metric, p_rank) %>%
+  mutate(metric = as.character(metric))
+write_csv(infl, file.path(OUT_DIR, sprintf("influence_top_hits_%s.csv", TISSUE)))
+
+cat("\nMost influential animal for the top", N_INFLUENCE_HITS, "hits per metric",
+    "('fragile' = loses p < 0.05 or slope moves > 50% when that animal is dropped):\n")
+infl %>% select(metric, LOC_ID, ranking_model, p_rank, most_influential_mussel, max_cooks_D,
+                cooks_flag, slope, slope_without_mussel, p_without_mussel, influence_flag) %>%
+  as.data.frame() %>% print()
 ```
 
 ---
@@ -387,20 +464,3 @@ res_adj %>% group_by(metric) %>% slice_min(p, n = 5) %>% ungroup() %>%
   as.data.frame() %>% print()
 ```
 
-```{r close, echo=FALSE, results='asis'}
-cat("
-**Reading these results together**
-
-- Compare `p_mixed` (block A) with script-20's `p_lm` for the LEVEL metrics. Where they
-  diverge, trust the mixed model; divergence means single-plaque animals were driving the
-  original p. For the CHANGE metrics the reported test is the weighted regression in block B.
-- The module table (block C) is your best-powered test. If, say, `HIF_hypoxia` vs
-  `max_force` is significant after BH while no single gene is, that is a stronger and more
-  defensible statement than any individual correlation.
-- The permutation p (block D) is the number to quote when asked 'is your best hit real?'.
-- Genes flagged at the detection floor (block E) should be dropped before interpretation.
-- None of this raises the ceiling set by n = 44; it makes the inference honest and tells you
-  which signals merit a powered follow-up (paired RNA + mechanics on more animals, or qPCR
-  of the HIF/oxidative module against thread strength in a larger cohort).
-")
-```
