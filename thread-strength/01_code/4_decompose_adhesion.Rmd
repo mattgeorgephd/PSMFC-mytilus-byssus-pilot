@@ -1,0 +1,307 @@
+---
+title: "4_decompose_adhesion"
+author: "Matt George"
+date: "2026-09-16"
+output: html_document
+---
+
+<!--
+PURPOSE
+  Adhesion (kPa) is a ratio: peak force / plaque area. Script 3 models the ratio. This
+  script models the two parts separately, plus extension at break, so that an arm whose
+  force collapses while its plaques shrink is not read as "no different" from an arm whose
+  force holds while its plaques grow, just because the two ratios happen to fall by the
+  same fraction.
+
+  On the log scale the decomposition is exact:
+      log(adhesion) = log(max_force) - log(pad_area)
+  so the fitted change in log-adhesion is the difference of the fitted changes in
+  log-force and log-area. Every model below is the same model as script 3's mixed model,
+  with a different response.
+
+INPUT
+  03_analyses/thread-summary.xlsx, sheet "data" - the same curated table script 3 reads.
+  Same schema normalisation, same phase logic, same exclusion of the lab-reference animals
+  from the models (they have no before/after position).
+
+OUTPUT  03_analyses/decompose-adhesion/
+  STATS_decomp_typeIII_ANOVA.csv       arm, timepoint, interaction - one block per response
+  STATS_decomp_within_arm_change.csv   post vs baseline within each arm, per response,
+                                       back-transformed to a ratio for the logged responses
+  STATS_decomp_paired_by_arm.csv       per-animal paired change, per arm, per response
+  STATS_failure_mode.csv               failure-mode counts by thread treatment + chi-square
+  FIG_paired_change_by_metric.png      paired % change with 95% CI, one panel per response
+  FIG_failure_mode_by_arm.png          failure-mode composition by thread treatment
+-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Load packages; theme; palette
+```{r message=FALSE, warning=FALSE}
+rm(list = ls())
+
+load.lib <- c("readxl", "tidyverse", "lme4", "lmerTest", "emmeans", "broom", "here")
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+for (lib in install.lib) install.packages(lib, dependencies = TRUE)
+sapply(load.lib, require, character = TRUE)
+
+my_theme <- theme(line             = element_line(linewidth = 1.0),
+                  rect             = element_rect(linewidth = 1.0),
+                  text             = element_text(size = 13, color = "black"),
+                  panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text        = element_text(size = 12, color = "black"),
+                  panel.border     = element_rect(color = "black", fill = NA, linewidth = 1.0),
+                  strip.background = element_rect(fill = "grey92", color = "black"),
+                  strip.text       = element_text(size = 12, face = "bold"),
+                  legend.key       = element_blank(),
+                  legend.position  = "none")
+
+# Same palette as script 3, keyed on the ARM here (mussel_trt), because every panel below is
+# a within-animal contrast and the animal's arm is the grouping that matters.
+arm_colors <- c("control" = "#7FB3D5", "OA" = "#4CAF50", "OW" = "#fdae61", "DO" = "#9884a3")
+
+out_dir <- here::here("03_analyses", "decompose-adhesion")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+```
+
+### Load and normalise (identical to script 3)
+```{r}
+thread_plot <- read_excel(here::here("03_analyses", "thread-summary.xlsx"),
+                          sheet = "data", col_names = TRUE)
+
+ren <- c(mussel_ID = "mussel", thread_num = "thread", treatment = "thread_trt")
+for (from in names(ren)) {
+  to <- ren[[from]]
+  if (from %in% names(thread_plot) && !to %in% names(thread_plot))
+    names(thread_plot)[names(thread_plot) == from] <- to
+}
+need <- c("mussel", "thread", "thread_trt", "mussel_trt", "max_force", "pad_area",
+          "max_displacement")
+if (length(setdiff(need, names(thread_plot))) > 0)
+  stop("thread-summary.xlsx is missing: ", paste(setdiff(need, names(thread_plot)), collapse = ", "))
+
+if (!"phase" %in% names(thread_plot))
+  thread_plot$phase <- dplyr::case_when(thread_plot$thread_trt == "lab_control" ~ "lab",
+                                        thread_plot$thread_trt == "baseline"    ~ "pre",
+                                        TRUE                                    ~ "post")
+
+norm_id <- function(x) {
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
+}
+
+dat <- thread_plot %>%
+  mutate(mussel       = norm_id(mussel),
+         adhesion_kpa = max_force / pad_area * 1000) %>%
+  filter(!is.na(adhesion_kpa), phase %in% c("pre", "post")) %>%
+  mutate(timepoint  = factor(if_else(phase == "pre", "baseline", "post"),
+                             levels = c("baseline", "post")),
+         mussel_trt = factor(mussel_trt, levels = c("control", "OA", "OW", "DO")),
+         mussel     = factor(mussel))
+
+if (any(is.na(dat$mussel_trt)))
+  stop("Unrecognised mussel_trt value(s): ",
+       paste(unique(thread_plot$mussel_trt[!thread_plot$mussel_trt %in% levels(dat$mussel_trt)]),
+             collapse = ", "))
+
+cat("Threads in models:", nrow(dat), "| mussels:", n_distinct(dat$mussel), "\n")
+dat %>% count(mussel_trt, timepoint) %>%
+  pivot_wider(names_from = timepoint, values_from = n, values_fill = 0) %>% knitr::kable()
+```
+
+### The four responses
+```{r}
+# Logged where the quantity is positive and right-skewed, so that a change is a ratio and
+# the force/area decomposition of adhesion is additive. Extension stays on its own scale.
+responses <- tibble::tribble(
+  ~response,           ~column,            ~transform, ~label,
+  "adhesion_kpa",      "adhesion_kpa",     "log",      "Adhesion (kPa)",
+  "max_force",         "max_force",        "log",      "Peak force (N)",
+  "pad_area",          "pad_area",         "log",      "Plaque area (mm^2)",
+  "max_displacement",  "max_displacement", "none",     "Extension at break (mm)"
+)
+```
+
+### Mixed model per response: arm x timepoint, random intercept for mussel
+```{r warning=FALSE}
+fit_one <- function(col, transform) {
+  y <- if (transform == "log") paste0("log(", col, ")") else col
+  f <- as.formula(paste0(y, " ~ mussel_trt * timepoint + (1 | mussel)"))
+  lmer(f, data = dat)
+}
+
+fits <- pmap(responses, function(response, column, transform, label)
+  list(response = response, label = label, transform = transform,
+       fit = fit_one(column, transform)))
+names(fits) <- responses$response
+
+# Type III ANOVA, one block per response
+anova_tbl <- map_dfr(fits, function(x)
+  as.data.frame(anova(x$fit)) %>%
+    tibble::rownames_to_column("term") %>%
+    mutate(response = x$response, scale = x$transform, .before = 1))
+knitr::kable(anova_tbl %>% select(response, scale, term, NumDF, DenDF, `F value`, `Pr(>F)`),
+             digits = 4)
+write.csv(anova_tbl, file.path(out_dir, "STATS_decomp_typeIII_ANOVA.csv"), row.names = FALSE)
+
+# Within-arm change, post vs baseline. For logged responses `type = "response"` returns the
+# post/baseline RATIO with its CI; for extension it is the raw difference.
+change_tbl <- map_dfr(fits, function(x) {
+  # The formula is built programmatically inside fit_one(), so the model call holds the symbol
+  # `f` rather than the literal `log(...)`, and emmeans cannot see the transformation on its
+  # own. Declare it explicitly, otherwise `type = "response"` silently returns the log scale.
+  emm <- if (x$transform == "log")
+           emmeans(x$fit, ~ timepoint | mussel_trt, tran = "log")
+         else
+           emmeans(x$fit, ~ timepoint | mussel_trt)
+  ctr <- if (x$transform == "log")
+           contrast(emm, method = "revpairwise", type = "response")   # post / baseline, a ratio
+         else
+           contrast(emm, method = "revpairwise")                      # post - baseline
+  out <- as.data.frame(ctr)
+  if (x$transform == "log") {
+    ci  <- as.data.frame(confint(ctr, type = "response"))
+    out <- out %>% mutate(lower.CL = ci$lower.CL, upper.CL = ci$upper.CL,
+                          pct_change = 100 * (ratio - 1))
+  }
+  out %>% mutate(response = x$response, scale = x$transform, .before = 1)
+})
+knitr::kable(change_tbl, digits = 4)
+write.csv(change_tbl, file.path(out_dir, "STATS_decomp_within_arm_change.csv"), row.names = FALSE)
+```
+
+### Per-animal paired change, per arm, per response
+```{r warning=FALSE}
+# One value per animal per timepoint (the mean of its threads), then post - pre. This is the
+# same unit of replication as script 3's paired tests; it is repeated here for every response
+# so the decomposition can be read off one table.
+per_mussel <- dat %>%
+  group_by(mussel, mussel_trt, timepoint) %>%
+  summarise(across(c(adhesion_kpa, max_force, pad_area, max_displacement), mean),
+            .groups = "drop")
+
+paired <- per_mussel %>%
+  pivot_wider(names_from = timepoint,
+              values_from = c(adhesion_kpa, max_force, pad_area, max_displacement)) %>%
+  filter(!is.na(adhesion_kpa_baseline), !is.na(adhesion_kpa_post))
+
+paired_tbl <- map_dfr(responses$response, function(r) {
+  paired %>%
+    group_by(mussel_trt) %>%
+    summarise(response   = r,
+              n_pairs    = n(),
+              mean_pre   = mean(.data[[paste0(r, "_baseline")]]),
+              mean_post  = mean(.data[[paste0(r, "_post")]]),
+              delta      = mean(.data[[paste0(r, "_post")]] - .data[[paste0(r, "_baseline")]]),
+              pct_change = 100 * delta / mean_pre,
+              ci_low     = if (n() >= 2) t.test(.data[[paste0(r, "_post")]] - .data[[paste0(r, "_baseline")]])$conf.int[1] else NA_real_,
+              ci_high    = if (n() >= 2) t.test(.data[[paste0(r, "_post")]] - .data[[paste0(r, "_baseline")]])$conf.int[2] else NA_real_,
+              paired_t_p = if (n() >= 2) t.test(.data[[paste0(r, "_post")]], .data[[paste0(r, "_baseline")]], paired = TRUE)$p.value else NA_real_,
+              wilcoxon_p = if (n() >= 2) suppressWarnings(wilcox.test(.data[[paste0(r, "_post")]], .data[[paste0(r, "_baseline")]], paired = TRUE)$p.value) else NA_real_,
+              .groups = "drop") %>%
+    mutate(pct_ci_low  = 100 * ci_low  / mean_pre,
+           pct_ci_high = 100 * ci_high / mean_pre)
+})
+
+knitr::kable(paired_tbl %>%
+               select(response, mussel_trt, n_pairs, mean_pre, mean_post, delta, pct_change,
+                      paired_t_p, wilcoxon_p),
+             digits = 3)
+write.csv(paired_tbl, file.path(out_dir, "STATS_decomp_paired_by_arm.csv"), row.names = FALSE)
+```
+
+### Figure: paired % change by arm, one panel per response
+```{r fig.width=9, fig.height=6, warning=FALSE}
+plot_dat <- paired_tbl %>%
+  mutate(response   = factor(response, levels = responses$response,
+                             labels = responses$label),
+         mussel_trt = factor(mussel_trt, levels = c("control", "OA", "OW", "DO")))
+
+p_change <- ggplot(plot_dat, aes(x = mussel_trt, y = pct_change)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_errorbar(aes(ymin = pct_ci_low, ymax = pct_ci_high),
+                width = 0.18, linewidth = 0.7, color = "black") +
+  geom_point(aes(fill = mussel_trt), shape = 21, size = 4, stroke = 0.8, color = "black") +
+  geom_text(aes(label = paste0("n=", n_pairs), y = pct_ci_high), vjust = -0.8, size = 3.2) +
+  facet_wrap(~ response, scales = "free_y", nrow = 2) +
+  scale_fill_manual(values = arm_colors) +
+  scale_y_continuous(expand = expansion(mult = c(0.08, 0.22))) +
+  labs(x = NULL, y = "Paired change, day 3 vs baseline (%)") +
+  my_theme
+p_change
+
+ggsave(file.path(out_dir, "FIG_paired_change_by_metric.png"), plot = p_change,
+       dpi = 600, width = 9, height = 6, units = "in")
+```
+
+### Failure mode by thread treatment
+```{r fig.width=8, fig.height=4.5, warning=FALSE}
+fm <- thread_plot %>%
+  filter(!is.na(failure)) %>%
+  mutate(failure    = factor(failure, levels = c("cohesive", "peeling", "tearing", "thread")),
+         thread_trt = factor(thread_trt, levels = c("lab_control", "baseline",
+                                                    "treatment_control", "OA", "OW", "DO")))
+
+fm_counts <- fm %>% count(thread_trt, failure) %>%
+  group_by(thread_trt) %>% mutate(pct = 100 * n / sum(n)) %>% ungroup()
+knitr::kable(fm_counts %>% select(-pct) %>%
+               pivot_wider(names_from = failure, values_from = n, values_fill = 0))
+
+# Does failure-mode composition differ among the four day-3 arms?
+post_fm <- fm %>% filter(phase == "post") %>% droplevels()   # drop the empty pre/lab levels
+fm_table <- table(post_fm$thread_trt, post_fm$failure)
+chi <- suppressWarnings(chisq.test(fm_table))
+cat("Chi-square, failure mode x day-3 arm: X2 =", round(chi$statistic, 2),
+    " df =", chi$parameter, " p =", signif(chi$p.value, 3), "\n")
+if (any(chi$expected < 5))
+  cat("Some expected counts < 5; Fisher's exact p =",
+      signif(fisher.test(fm_table, simulate.p.value = TRUE, B = 10000)$p.value, 3), "\n")
+
+# Adhesion by failure mode, for interpretation of the composition shift
+adh_by_fm <- thread_plot %>%
+  mutate(adhesion_kpa = max_force / pad_area * 1000) %>%
+  filter(!is.na(failure), !is.na(adhesion_kpa)) %>%
+  group_by(failure) %>%
+  summarise(threads = n(), mean_kpa = mean(adhesion_kpa), median_kpa = median(adhesion_kpa),
+            .groups = "drop")
+knitr::kable(adh_by_fm, digits = 1)
+
+write.csv(bind_rows(fm_counts %>% mutate(table = "counts_by_thread_trt"),
+                    tibble(table = "chi_square_day3", statistic = unname(chi$statistic),
+                           df = unname(chi$parameter), p = chi$p.value)),
+          file.path(out_dir, "STATS_failure_mode.csv"), row.names = FALSE)
+
+failure_fill <- c("cohesive" = "#4C72B0", "peeling" = "#DD8452",
+                  "tearing"  = "#8C8C8C", "thread"  = "#2F2F2F")
+p_fm <- ggplot(fm_counts, aes(x = thread_trt, y = pct, fill = failure)) +
+  geom_col(width = 0.7, color = "white", linewidth = 0.6) +
+  geom_text(data = fm_counts %>% filter(pct >= 8),
+            aes(label = paste0(round(pct), "%")),
+            position = position_stack(vjust = 0.5), size = 3.2, color = "white") +
+  scale_fill_manual(values = failure_fill, name = "Failure mode") +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 100.5)) +
+  labs(x = NULL, y = "Threads (%)") +
+  my_theme + theme(legend.position = "right",
+                   axis.text.x = element_text(angle = 25, hjust = 1))
+p_fm
+
+ggsave(file.path(out_dir, "FIG_failure_mode_by_arm.png"), plot = p_fm,
+       dpi = 600, width = 8, height = 4.5, units = "in")
+```
+
+### Provenance
+```{r}
+writeLines(c(paste0("generated : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             paste0("input     : 03_analyses/thread-summary.xlsx"),
+             paste0("threads in models : ", nrow(dat)),
+             paste0("mussels in models : ", n_distinct(dat$mussel)),
+             paste0("paired animals    : ", nrow(paired))),
+           file.path(out_dir, "RUN_provenance.txt"))
+print("done")
+```

@@ -1,7 +1,7 @@
 # 1_extract_tensometer_data.Rmd
 
 Reads every raw tensometer trace under `02_data/tensometer_output/`, joins the mussel key,
-and writes one trace-level table to `03_analyses/thread-summary-raw-output.xlsx`.
+and writes one trace-level table to `03_analyses/extract-tensometer-data/thread-summary-raw-output.xlsx`.
 
 Run it from inside `thread-strength.Rproj`. Run `0_build_mussel_key.Rmd` first if the
 morphometrics workbook has changed.
@@ -92,7 +92,7 @@ control tank arm* and `thread_trt == "treatment_control"` is a third thing. `pha
 
 ## 3. Output
 
-`03_analyses/thread-summary-raw-output.xlsx`, three sheets. `data` is sheet 1, so
+`03_analyses/extract-tensometer-data/thread-summary-raw-output.xlsx`, three sheets. `data` is sheet 1, so
 `read_excel(path)` with no `sheet` argument gets the trace table.
 
 ### Sheet `data`, one row per trace

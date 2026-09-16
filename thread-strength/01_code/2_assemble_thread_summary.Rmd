@@ -19,7 +19,7 @@ microscope image for them exists in the repository), and which animals that ough
 before/after still do not.
 
 ```
-1_extract_tensometer_data.Rmd  ->  03_analyses/thread-summary-raw-output.xlsx   (every trace)
+1_extract_tensometer_data.Rmd  ->  03_analyses/extract-tensometer-data/thread-summary-raw-output.xlsx
               +  02_data/pad_area_measurements.xlsx                            (hand-measured)
 2_assemble_thread_summary.Rmd  ->  03_analyses/assemble-thread-summary/
                                      thread-summary-candidate.xlsx
@@ -61,7 +61,7 @@ sapply(load.lib, require, character = TRUE)
 ## Paths
 
 ```{r paths}
-raw_xlsx <- here::here("03_analyses", "thread-summary-raw-output.xlsx")
+raw_xlsx <- here::here("03_analyses", "extract-tensometer-data", "thread-summary-raw-output.xlsx")
 pad_xlsx <- here::here("02_data", "pad_area_measurements.xlsx")
 pic_root <- here::here("02_data", "pictures")
 out_dir  <- here::here("03_analyses", "assemble-thread-summary")

@@ -12,9 +12,10 @@ thread-strength/
 ├── thread-strength.Rproj              open this first; it anchors here::here()
 ├── 01_code/
 │   ├── 0_build_mussel_key.Rmd         morphometrics -> 02_data/mussel-treatment-key.csv
-│   ├── 1_extract_tensometer_data.Rmd  raw traces    -> 03_analyses/thread-summary-raw-output.xlsx
+│   ├── 1_extract_tensometer_data.Rmd  raw traces    -> 03_analyses/extract-tensometer-data/
 │   ├── 2_assemble_thread_summary.Rmd  raw output    -> curation-ready candidate
 │   ├── 3_analyze_thread_strength.Rmd  curated table -> adhesion plots + stats
+│   ├── 4_decompose_adhesion.Rmd       curated table -> force / area / extension models
 │   ├── rename_tensometer_folders.sh   one-off folder rename helper (dry run by default)
 │   └── *_DOC.md                       companion documentation, one per script
 ├── 02_data/
@@ -22,11 +23,12 @@ thread-strength/
 │   ├── pictures/{control,treatment}/        microscope images, source of pad_area
 │   └── mussel-treatment-key.csv             mussel tag -> arm, species, rna flag
 └── 03_analyses/
-    ├── thread-summary-raw-output.xlsx       output of script 1 (every trace, nothing dropped)
-    ├── thread-summary.xlsx                  hand-curated table, input to script 3
-    ├── extract-tensometer-data/QC_plots/    per-trace loess QC jpgs, by source folder
-    ├── assemble-thread-summary/             output of script 2
-    └── analyze-thread-strength/             output of script 3
+    ├── thread-summary.xlsx                  curated table, input to script 3
+    ├── extract-tensometer-data/             output of script 1: thread-summary-raw-output.xlsx
+    │   └── QC_plots/<source_folder>/        per-trace loess QC jpgs
+    ├── assemble-thread-summary/             output of script 2: candidate + pad-area worklist
+    ├── analyze-thread-strength/             output of script 3: figures + STATS_*.csv
+    └── decompose-adhesion/                  output of script 4: force / area / extension models
 ```
 
 ## Tensometer folder layout
@@ -78,11 +80,14 @@ The old `group` column is retired: it was fully recoverable from `thread_trt`, a
    must resolve to this folder.
 2. `01_code/0_build_mussel_key.Rmd` — only needed when the morphometrics workbook changes.
 3. `01_code/1_extract_tensometer_data.Rmd` — reads every trace, writes
-   `03_analyses/thread-summary-raw-output.xlsx` and the QC plots.
+   `03_analyses/extract-tensometer-data/thread-summary-raw-output.xlsx` and the QC plots.
 4. `01_code/2_assemble_thread_summary.Rmd` — writes the curation candidate.
 5. Curate by hand: add `pad_area` and `failure`, drop bad runs against the QC plots, save as
    `03_analyses/thread-summary.xlsx` (sheet `data`).
-6. `01_code/3_analyze_thread_strength.Rmd`.
+6. `01_code/3_analyze_thread_strength.Rmd` — adhesion (kPa) figures and models.
+7. `01_code/4_decompose_adhesion.Rmd` — the same models on peak force, plaque area and
+   extension separately. Read this alongside script 3: on this dataset the stressor effect
+   is in the components and cancels in the ratio.
 
 ## The manual step
 

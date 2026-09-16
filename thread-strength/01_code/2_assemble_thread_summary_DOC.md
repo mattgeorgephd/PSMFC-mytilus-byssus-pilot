@@ -6,7 +6,7 @@ writes a curation-ready candidate plus two worklists.
 ## Pipeline position
 
 ```
-1_extract_tensometer_data.Rmd  ->  03_analyses/thread-summary-raw-output.xlsx   (every trace)
+1_extract_tensometer_data.Rmd  ->  03_analyses/extract-tensometer-data/thread-summary-raw-output.xlsx
               +  02_data/pad_area_measurements.xlsx                            (hand-measured)
 2_assemble_thread_summary.Rmd  ->  03_analyses/assemble-thread-summary/
                                      thread-summary-candidate.xlsx

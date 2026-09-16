@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Walks every subfolder of `02_data/tensometer_output/`, reads each raw force/displacement
 trace, joins the mussel key, and writes **one** trace-level table to
-`03_analyses/thread-summary-raw-output.xlsx`.
+`03_analyses/extract-tensometer-data/thread-summary-raw-output.xlsx`.
 
 Nothing is excluded. Every trace that parses is exported alongside a QC plot, so bad runs
 get curated later against the evidence rather than dropped silently here. That file is the
@@ -87,7 +87,7 @@ my_theme <- theme(line              = element_line(linewidth = 1.2),
 tens_root <- here::here("02_data", "tensometer_output")
 key_csv   <- here::here("02_data", "mussel-treatment-key.csv")
 qc_root   <- here::here("03_analyses", "extract-tensometer-data", "QC_plots")
-xlsx_out  <- here::here("03_analyses", "thread-summary-raw-output.xlsx")
+xlsx_out  <- here::here("03_analyses", "extract-tensometer-data", "thread-summary-raw-output.xlsx")
 
 if (!dir.exists(tens_root))
   stop("Cannot find:\n  ", tens_root,
