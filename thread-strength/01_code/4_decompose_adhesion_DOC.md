@@ -66,8 +66,38 @@ silently returns the log scale. The first draft of this script had exactly that 
 | `STATS_decomp_paired_by_arm.csv` | per-animal paired change (mean of threads per timepoint), per arm per response, with 95% CI and paired t / Wilcoxon |
 | `STATS_failure_mode.csv` | failure-mode counts by thread treatment; chi-square and Fisher for the day-3 arms |
 | `FIG_paired_change_by_metric.png` | paired % change with 95% CI, one panel per response |
+| `FIG_animal_response_force_vs_area.png` | every paired animal: change in force against change in area |
+| `mussel_response_classification.csv` | per-animal response, see below |
 | `FIG_failure_mode_by_arm.png` | failure-mode composition by thread treatment |
 | `RUN_provenance.txt` | timestamp and n at each step |
+
+## Per-animal response classification (handoff to gene-mechanics)
+
+`mussel_response_classification.csv`, one row per animal with day-3 threads (59), change
+columns populated for the 45 with baselines (`paired = TRUE`). Per metric (adhesion, force,
+area, extension): `_pre`, `_post`, `_change` (log-ratio; plain difference for extension),
+`_pct_change`, `_direction` (`decreased` / `increased`), `_vs_control` (the animal's %
+change minus the control arm's mean % change) and `_rel_direction`
+(`below_control` / `above_control`).
+
+Two reference frames because they answer different questions. The raw direction says
+whether this animal's threads got weaker. Every arm fell ~20% in adhesion, so an animal
+that fell 20% is typical; the control-referenced frame asks whether it fell *more than the
+control trajectory*, which is the stress-specific question.
+
+Composite: `response_class` is `weaker` if both force and adhesion decreased, `stronger` if
+both increased, else `mixed`; `response_score` is the mean standardised log-ratio across
+force, area and adhesion (higher = held up better). Extension is reported but excluded from
+the composite because its direction is not a strength direction.
+
+Current split of the 45 paired animals: control 5 weaker / 1 stronger / 4 mixed; OA 7/2/2;
+OW 8/2/2; DO 7/2/3. Force fell in 10 of 12 OW and 10 of 12 DO animals against 6 of 10
+control; plaque area fell in 11 of 12 DO and 9 of 12 OW against 4 of 10 control and 3 of 11
+OA. `FIG_animal_response_force_vs_area.png` shows every paired animal on the two axes;
+warming and hypoxia animals occupy the lower-left quadrant.
+
+Script 20 in `gene-mechanics-correlation/` joins the class, score, directions and
+control-referenced changes into its paired manifest.
 
 ## Failure mode
 

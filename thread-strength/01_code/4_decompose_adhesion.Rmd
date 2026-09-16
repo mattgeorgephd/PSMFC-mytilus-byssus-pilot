@@ -240,6 +240,144 @@ ggsave(file.path(out_dir, "FIG_paired_change_by_metric.png"), plot = p_change,
        dpi = 600, width = 9, height = 6, units = "in")
 ```
 
+### Per-animal response classification (handoff to gene-mechanics-correlation)
+
+Which animals made **weaker** threads at day 3 than at baseline, and which made
+**stronger**, on each of the four metrics above. One row per animal that produced day-3
+threads; the change columns are populated only for animals that also have baseline threads
+(`paired = TRUE`), because a change needs a before.
+
+Two reference frames are given side by side, because they answer different questions:
+
+  - `<metric>_direction`     : raw sign of the animal's own change, `decreased` / `increased`.
+                               This is "did this animal's threads get weaker".
+  - `<metric>_vs_control`    : the animal's % change minus the control arm's mean % change,
+                               and its sign as `below_control` / `above_control`.
+                               Every arm fell ~20% in adhesion, so an animal that fell 20% is
+                               typical, not a poor responder. This frame asks "weaker than the
+                               control trajectory", which is the stress-specific question.
+
+The composite `response_class` uses the two metrics that define attachment strength, peak
+force and adhesion: `weaker` if both decreased, `stronger` if both increased, `mixed`
+otherwise. `response_score` is the mean of the animal's standardised log-ratios across
+force, area and adhesion (higher = held up better), a single continuous number for the
+correlation pipeline. Extension is reported but kept out of the composite; its direction is
+not a strength direction.
+
+Written to `03_analyses/decompose-adhesion/mussel_response_classification.csv`. Script 20 in
+`gene-mechanics-correlation/` reads it.
+
+```{r}
+# Per-animal means at each timepoint, every animal with day-3 threads
+resp_cols <- c("adhesion_kpa", "max_force", "pad_area", "max_displacement")
+pm_all <- dat %>%
+  group_by(mussel, mussel_trt, timepoint) %>%
+  summarise(n_threads = n(), across(all_of(resp_cols), mean), .groups = "drop")
+
+post_side <- pm_all %>% filter(timepoint == "post") %>%
+  select(mussel, mussel_trt, n_threads_post = n_threads, all_of(resp_cols)) %>%
+  rename_with(~ paste0(.x, "_post"), all_of(resp_cols))
+pre_side  <- pm_all %>% filter(timepoint == "baseline") %>%
+  select(mussel, n_threads_pre = n_threads, all_of(resp_cols)) %>%
+  rename_with(~ paste0(.x, "_pre"), all_of(resp_cols))
+
+resp <- post_side %>%
+  left_join(pre_side, by = "mussel") %>%
+  mutate(paired = !is.na(n_threads_pre),
+         n_threads_pre = replace_na(n_threads_pre, 0L))
+
+# Change columns. Log-ratio for the positive, right-skewed metrics (matches the models above);
+# plain difference for extension. % change for all four, on the raw scale.
+for (m in resp_cols) {
+  pre <- resp[[paste0(m, "_pre")]]; post <- resp[[paste0(m, "_post")]]
+  resp[[paste0(m, "_pct_change")]] <- 100 * (post - pre) / pre
+  resp[[paste0(m, "_change")]] <- if (m == "max_displacement") post - pre else log(post / pre)
+  resp[[paste0(m, "_direction")]] <- case_when(is.na(pre) ~ NA_character_,
+                                               post < pre ~ "decreased",
+                                               post > pre ~ "increased",
+                                               TRUE       ~ "unchanged")
+}
+
+# Control-referenced frame: subtract the control arm's mean % change on each metric
+ctrl_mean <- resp %>% filter(paired, mussel_trt == "control") %>%
+  summarise(across(ends_with("_pct_change"), ~ mean(.x, na.rm = TRUE)))
+if (nrow(ctrl_mean) == 0 || any(is.na(ctrl_mean[1, ])))
+  warning("Control arm has no paired animals; *_vs_control columns will be NA.", call. = FALSE)
+for (m in resp_cols) {
+  ref <- if (nrow(ctrl_mean)) ctrl_mean[[paste0(m, "_pct_change")]] else NA_real_
+  resp[[paste0(m, "_vs_control")]] <- resp[[paste0(m, "_pct_change")]] - ref
+  resp[[paste0(m, "_rel_direction")]] <- case_when(
+    is.na(resp[[paste0(m, "_vs_control")]]) ~ NA_character_,
+    resp[[paste0(m, "_vs_control")]] < 0    ~ "below_control",
+    TRUE                                    ~ "above_control")
+}
+
+# Composite class and score
+zs <- function(x) if (sum(!is.na(x)) > 1) as.numeric(scale(x)) else x * NA_real_
+resp <- resp %>%
+  mutate(response_class = case_when(
+           !paired ~ NA_character_,
+           max_force_direction == "decreased" & adhesion_kpa_direction == "decreased" ~ "weaker",
+           max_force_direction == "increased" & adhesion_kpa_direction == "increased" ~ "stronger",
+           TRUE ~ "mixed"),
+         response_score = rowMeans(cbind(zs(max_force_change), zs(pad_area_change),
+                                         zs(adhesion_kpa_change)), na.rm = FALSE)) %>%
+  arrange(mussel_trt, mussel)
+
+# Tidy column order: identity, pairing, then one block per metric, then the composite
+ordered_cols <- c("mussel", "mussel_trt", "paired", "n_threads_pre", "n_threads_post",
+  unlist(lapply(resp_cols, function(m) paste0(m, c("_pre", "_post", "_change", "_pct_change",
+                                                    "_direction", "_vs_control", "_rel_direction")))),
+  "response_class", "response_score")
+resp <- resp %>% select(all_of(ordered_cols))
+
+write_csv(resp, file.path(out_dir, "mussel_response_classification.csv"), na = "")
+message("Wrote mussel_response_classification.csv: ", nrow(resp), " animals with day-3 threads, ",
+        sum(resp$paired), " paired.")
+
+cat("\nResponse class by arm (paired animals):\n")
+resp %>% filter(paired) %>% count(mussel_trt, response_class) %>%
+  pivot_wider(names_from = response_class, values_from = n, values_fill = 0) %>%
+  knitr::kable() %>% print()
+
+cat("\nDirection by arm and metric (paired animals, n decreased / n paired):\n")
+resp %>% filter(paired) %>%
+  group_by(mussel_trt) %>%
+  summarise(n = n(),
+            adhesion  = sum(adhesion_kpa_direction == "decreased"),
+            force     = sum(max_force_direction == "decreased"),
+            area      = sum(pad_area_direction == "decreased"),
+            extension = sum(max_displacement_direction == "decreased"),
+            .groups = "drop") %>%
+  knitr::kable() %>% print()
+```
+
+### Figure: every paired animal, change in force against change in plaque area
+```{r fig.width=7.5, fig.height=6, warning=FALSE}
+# The animal-level view of the dichotomy in the panel figure above. Bottom-left = smaller
+# plaques holding less force; top-right = larger plaques holding more.
+resp_p <- resp %>% filter(paired) %>%
+  mutate(mussel_trt = factor(mussel_trt, levels = c("control", "OA", "OW", "DO")))
+
+p_animal <- ggplot(resp_p, aes(x = 100 * (exp(pad_area_change) - 1),
+                                y = 100 * (exp(max_force_change) - 1))) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  geom_point(aes(fill = mussel_trt, shape = response_class), size = 3.6, stroke = 0.7,
+             color = "black") +
+  geom_text(aes(label = mussel), size = 2.4, vjust = -1.1, check_overlap = TRUE) +
+  scale_fill_manual(values = arm_colors, name = "Arm",
+                    guide = guide_legend(override.aes = list(shape = 21))) +
+  scale_shape_manual(values = c(weaker = 25, stronger = 24, mixed = 21), name = "Response") +
+  labs(x = "Plaque area, day 3 vs baseline (%)",
+       y = "Peak force, day 3 vs baseline (%)") +
+  my_theme + theme(legend.position = "right")
+p_animal
+
+ggsave(file.path(out_dir, "FIG_animal_response_force_vs_area.png"), plot = p_animal,
+       dpi = 600, width = 7.5, height = 6, units = "in")
+```
+
 ### Failure mode by thread treatment
 ```{r fig.width=8, fig.height=4.5, warning=FALSE}
 fm <- thread_plot %>%
@@ -301,7 +439,8 @@ writeLines(c(paste0("generated : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
              paste0("input     : 03_analyses/thread-summary.xlsx"),
              paste0("threads in models : ", nrow(dat)),
              paste0("mussels in models : ", n_distinct(dat$mussel)),
-             paste0("paired animals    : ", nrow(paired))),
+             paste0("paired animals    : ", nrow(paired)),
+             paste0("classified animals: ", nrow(resp), " (", sum(resp$paired), " paired)")),
            file.path(out_dir, "RUN_provenance.txt"))
 print("done")
 ```

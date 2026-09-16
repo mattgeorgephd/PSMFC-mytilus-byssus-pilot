@@ -9,7 +9,7 @@ hand-curated; the raw inputs live in `../02_data/`.
 | `extract-tensometer-data/QC_plots/<source_folder>/` | `1_extract_tensometer_data.Rmd` | Per-trace loess QC plots, named after the source file |
 | `assemble-thread-summary/` | `2_assemble_thread_summary.Rmd` | `thread-summary-candidate.xlsx` (curation-ready table) and `pad-area-worklist.xlsx` (sheets `to_measure` and `pairing_gaps`) |
 | `thread-summary.xlsx` | **manual curation** | The curated table script 3 reads. Not regenerable. |
-| `decompose-adhesion/` | `4_decompose_adhesion.Rmd` | Arm × timepoint models on peak force, plaque area and extension separately; paired-change figure; failure-mode composition |
+| `decompose-adhesion/` | `4_decompose_adhesion.Rmd` | Arm × timepoint models on peak force, plaque area and extension separately; paired-change figure; per-animal response classification (`mussel_response_classification.csv`, read by gene-mechanics script 20); failure-mode composition |
 | `analyze-thread-strength/` | `3_analyze_thread_strength.Rmd` | Adhesion distribution panels, one before/after panel per day-3 arm, `STATS_*.csv`, `DIAG_lmer_residuals.png`, and `RUN_provenance.txt` recording the `INCLUDE_LAB_REFERENCE` setting behind the run |
 
 ## Notes

@@ -30,13 +30,24 @@ It produces:
    union** (genes already found to respond to any stressor).
 4. Diagnostic plots (top-hit scatterplots, candidate-gene correlation heatmap).
 
-> **READ THIS FIRST - power.** The paired set is small: n = 31 animals (OA = 12, OW = 12,
-> DO = 7). Within any single treatment n is 7-12. This analysis is **exploratory and
-> hypothesis-generating, not confirmatory.** Treat raw p-values as ranking signals, expect
-> few or no hits to survive FDR correction, and do not write causal language from it.
-> Tag-seq sampling was destructive (foot/gill removed), so expression and the *post-stress*
-> threads come from the same animal at the same timepoint; this is association, not a
-> demonstrated mechanism.
+> **READ THIS FIRST - power.** The paired set is small: with the full thread dataset and the
+> day-3 control arm included, n = 44 animals (control = 10, OA = 12, OW = 12, DO = 10), 42 of
+> them with baseline threads. Within any single arm n is 10-12. This analysis is
+> **exploratory and hypothesis-generating, not confirmatory.** Treat raw p-values as ranking
+> signals, expect few or no hits to survive FDR correction, and do not write causal language
+> from it. Tag-seq sampling was destructive (foot/gill removed), so expression and the
+> *post-stress* threads come from the same animal at the same timepoint; this is association,
+> not a demonstrated mechanism.
+
+> **Which metric to read first.** On the full dataset the stressor effect is in **peak force
+> and plaque area separately**, not in their ratio: adhesion (kPa) falls ~20% in every arm
+> including control (arm x timepoint p = 0.55), while force (p = 0.0005) and area
+> (p < 0.0001) split warming/hypoxia from control/acidification
+> (`thread-strength/01_code/4_decompose_adhesion.Rmd`). A gene associated with plaque size
+> is invisible against the ratio. `max_force` and `pad_area` are therefore the primary
+> targets here; `adhesion_kpa` is retained as the material-strength readout. The
+> change-from-baseline metrics (`dlog_*`) ask the sharper question: does expression track
+> how much *this animal's* attachment moved from its own baseline.
 
 ---
 
@@ -50,8 +61,23 @@ data from the **main** repo and expression data from the **expression** repo.
 TISSUE        <- "F"          # "F" = foot (byssus-producing organ; default), "G" = gill
 MIN_COUNT     <- 5            # gene kept if count > MIN_COUNT in >= 1/3 of paired samples
 FDR_ALPHA     <- 0.10         # BH threshold for flagging
-ADJUST_FOR_BASELINE <- TRUE  # TRUE = add each animal's pre-stress thread metric as a
-                              #        covariate (n drops to animals with baseline threads)
+ADJUST_FOR_BASELINE <- TRUE   # TRUE = add each animal's pre-stress thread metric as a
+                              #        covariate for the LEVEL metrics (n drops to animals
+                              #        with baseline threads). The dlog_* CHANGE metrics
+                              #        never use it; the baseline is inside the response.
+INCLUDE_CONTROL_ARM <- TRUE   # TRUE = the day-3 common-garden control animals (T126-T135)
+                              #        are part of the paired set, as a fourth treatment
+                              #        level. They have foot RNA, day-3 threads and baseline
+                              #        threads. Their own ~20% decline is the null trajectory
+                              #        a stress-specific expression signal must beat.
+                              # FALSE = stressor arms only (the pre-2026-09 behaviour).
+
+## ---- mechanical metrics -------------------------------------------------------------
+## LEVEL metrics: per-animal mean of its day-3 plaques.
+## CHANGE metrics: log(day-3 mean / baseline mean) per animal; NA where no baseline.
+## Order here is the reporting order. Force and area first, deliberately (see above).
+LEVEL_METRICS  <- c("max_force", "pad_area", "adhesion_kpa", "max_displacement")
+CHANGE_METRICS <- c("dlog_max_force", "dlog_pad_area", "dlog_adhesion_kpa")
 
 ## ---- candidate gene keywords (regex, case-insensitive) ------------------------------
 ## Grouped by biology; edit freely. Matched against UniProt "protein_name".
@@ -92,7 +118,9 @@ CANDIDATE_KEYWORDS <- paste(
 
 ```{r libs}
 ## Load Packages
-load.lib <- c("dbplyr","tidyverse","readxl","openxlsx","lubridate","DESeq2","here")
+## DESeq2 first, tidyverse LAST: S4Vectors/IRanges (pulled in by DESeq2) mask dplyr's
+## rename(), count(), first() and desc(). Loading tidyverse after them restores dplyr's.
+load.lib <- c("DESeq2","readxl","openxlsx","here","tidyverse")
 install.lib <- load.lib[!load.lib %in% installed.packages()]
 for(lib in install.lib) install.packages(lib, dependencies = TRUE)
 sapply(load.lib, require, character = TRUE)
@@ -114,10 +142,17 @@ find_repo_root <- function(start = here::here()) {
 }
 repo_root   <- find_repo_root()
 DE_DIR      <- file.path(repo_root, "differential-expression")          # expression-side inputs
-THREAD_FILE <- file.path(repo_root, "thread-strength", "02_data",
-                         "thread-summary-trossulus-clean.xlsx")         # curated thread summary (trossulus)
+## The curated thread table produced by thread-strength scripts 1-2 and hand-reviewed; and
+## the per-animal response classification produced by thread-strength script 4.
+THREAD_FILE   <- file.path(repo_root, "thread-strength", "03_analyses", "thread-summary.xlsx")
+RESPONSE_FILE <- file.path(repo_root, "thread-strength", "03_analyses", "decompose-adhesion",
+                           "mussel_response_classification.csv")
 OUT_DIR     <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "gene_mechanics")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+
+if (!file.exists(THREAD_FILE))
+  stop("Thread summary not found:\n  ", THREAD_FILE,
+       "\nRun thread-strength scripts 1 and 2 and curate 03_analyses/thread-summary.xlsx.")
 
 ## Canonicalize a mussel tag to one 3-digit form (T55 -> T055) so the thread side and the
 ## expression side cannot split on zero-padding when joined.
@@ -127,41 +162,68 @@ norm_id <- function(x) {
   num <- suppressWarnings(as.integer(gsub("[^0-9].*$", "", gsub("^[^0-9]+", "", x))))
   ifelse(is.na(num), NA_character_, sprintf("%s%03d", pre, num))
 }
+
+## Read the curated thread table under either the current or the older column names, and
+## make sure `phase` exists. thread_trt = what the THREAD was built in; mussel_trt = the arm
+## the ANIMAL was assigned to; phase = lab / pre / post. The older `treatment == "control"`
+## convention pooled baseline threads with the day-3 control arm and is not used here.
+read_thread_summary <- function(path) {
+  d <- readxl::read_excel(path, sheet = "data")
+  ren <- c(mussel_ID = "mussel", thread_num = "thread", treatment = "thread_trt")
+  for (from in names(ren)) {
+    to <- ren[[from]]
+    if (from %in% names(d) && !to %in% names(d)) names(d)[names(d) == from] <- to
+  }
+  need <- c("mussel", "thread_trt", "mussel_trt", "max_force", "pad_area")
+  if (length(setdiff(need, names(d))) > 0)
+    stop("thread-summary.xlsx is missing: ", paste(setdiff(need, names(d)), collapse = ", "))
+  if (!"phase" %in% names(d))
+    d$phase <- dplyr::case_when(d$thread_trt == "lab_control" ~ "lab",
+                                d$thread_trt == "baseline"    ~ "pre",
+                                TRUE                          ~ "post")
+  if (!"max_displacement" %in% names(d)) d$max_displacement <- NA_real_
+  d %>%
+    mutate(mussel       = norm_id(mussel),
+           adhesion_kpa = max_force / pad_area * 1000) %>%   # recomputed, never trusted from the sheet
+    filter(!is.na(adhesion_kpa))
+}
 ```
 
 ---
 
 # 1. Build the paired-sample table
 
-Thread metrics are averaged per animal across its 3-5 post-stress plaques. The Tag-seq
-treatment assignment (the authoritative one) comes from the foot `treatmentinfo` file;
-control animals (day 0 and day 3) are not part of the correlation because they were not
-stressed.
+Thread metrics are averaged per animal across its day-3 plaques. The Tag-seq treatment
+assignment (the authoritative one) comes from the foot `treatmentinfo` file. With
+`INCLUDE_CONTROL_ARM = TRUE` the day-3 control animals enter as their own treatment level;
+the day-0 lab-reference animals never do (they have no day-3 threads).
 
 ```{r paired}
-## ---- thread mechanics: per-animal post-stress means ---------------------------------
-thread_path <- THREAD_FILE
-thr_raw <- read_excel(thread_path, sheet = "data") %>% mutate(mussel = norm_id(mussel))
+## ---- thread mechanics: per-animal day-3 means and per-animal baseline means ----------
+thr_raw <- read_thread_summary(THREAD_FILE)
 
 post_stress <- thr_raw %>%
-  filter(treatment %in% c("OA", "OW", "DO")) %>%
-  group_by(mussel, treatment) %>%
+  filter(phase == "post") %>%
+  group_by(mussel, treatment = mussel_trt) %>%
   summarise(
-    n_plaques    = n(),
-    max_force    = mean(max_force,    na.rm = TRUE),  # N, absolute holding force
-    adhesion_kpa = mean(adhesion_kpa, na.rm = TRUE),  # kPa, force / plaque area
-    pad_area     = mean(pad_area,     na.rm = TRUE),  # mm^2, plaque size
+    n_plaques        = n(),
+    max_force        = mean(max_force,        na.rm = TRUE),  # N, absolute holding force
+    pad_area         = mean(pad_area,         na.rm = TRUE),  # mm^2, plaque size
+    adhesion_kpa     = mean(adhesion_kpa,     na.rm = TRUE),  # kPa, force / plaque area
+    max_displacement = mean(max_displacement, na.rm = TRUE),  # mm, extension at break
     .groups = "drop"
   )
 
-## pre-stress ("control" rows are the same animals' baseline threads) - optional covariate
+## pre-exposure baseline: the same animals' own threads before the exposure began
 baseline <- thr_raw %>%
-  filter(treatment == "control") %>%
+  filter(phase == "pre") %>%
   group_by(mussel) %>%
   summarise(
-    base_max_force    = mean(max_force,    na.rm = TRUE),
-    base_adhesion_kpa = mean(adhesion_kpa, na.rm = TRUE),
-    base_pad_area     = mean(pad_area,     na.rm = TRUE),
+    n_plaques_base        = n(),
+    base_max_force        = mean(max_force,        na.rm = TRUE),
+    base_pad_area         = mean(pad_area,         na.rm = TRUE),
+    base_adhesion_kpa     = mean(adhesion_kpa,     na.rm = TRUE),
+    base_max_displacement = mean(max_displacement, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -169,20 +231,52 @@ baseline <- thr_raw %>%
 fti <- read.table(file.path(DE_DIR, "03_analyses", "DEG_lists", "Foot", "F_treatmentinfo.csv"),
                   header = TRUE, sep = " ", stringsAsFactors = FALSE)
 names(fti)[1] <- "sample_id"
+arms_kept <- if (INCLUDE_CONTROL_ARM) c("control", "OA", "OW", "DO") else c("OA", "OW", "DO")
 fti <- fti %>%
   mutate(mussel = norm_id(sub("F$", "", sample_id))) %>%
-  filter(day == 3, treatment != "control") %>%        # day-3 stressor animals only
+  filter(day == 3, treatment %in% arms_kept) %>%       # day-3 animals only
   distinct(mussel, treatment)
 
 ## ---- assemble paired table ----------------------------------------------------------
 paired <- post_stress %>%
-  inner_join(fti, by = c("mussel", "treatment")) %>%
-  left_join(baseline, by = "mussel") %>%
-  mutate(sample = paste0(mussel, TISSUE),            # expression column name for chosen tissue
-         treatment = factor(treatment, levels = c("OA", "OW", "DO")))
+  inner_join(fti, by = c("mussel", "treatment")) %>%   # the join also checks the two
+  left_join(baseline, by = "mussel") %>%               # sources agree on the arm
+  mutate(
+    dlog_max_force    = log(max_force    / base_max_force),     # CHANGE metrics: log ratio
+    dlog_pad_area     = log(pad_area     / base_pad_area),      # day-3 / baseline, per animal
+    dlog_adhesion_kpa = log(adhesion_kpa / base_adhesion_kpa),  # NA where no baseline
+    sample    = paste0(mussel, TISSUE),                # expression column name for chosen tissue
+    treatment = factor(treatment, levels = arms_kept)
+  )
+
+## Arm disagreement between the thread key and the Tag-seq metadata would drop an animal
+## silently at the inner_join above; make that loud.
+arm_clash <- post_stress %>%
+  inner_join(fti %>% dplyr::rename(rna_treatment = treatment), by = "mussel") %>%
+  dplyr::filter(treatment != rna_treatment)
+if (nrow(arm_clash) > 0) {
+  warning(nrow(arm_clash), " animal(s) carry different arms in thread-summary and F_treatmentinfo; ",
+          "excluded: ", paste(arm_clash$mussel, collapse = ", "))
+  print(arm_clash)
+}
+
+## ---- per-animal response classification from thread-strength script 4 ----------------
+if (file.exists(RESPONSE_FILE)) {
+  resp <- read_csv(RESPONSE_FILE, show_col_types = FALSE) %>%
+    mutate(mussel = norm_id(mussel)) %>%
+    select(mussel, response_class, response_score,
+           ends_with("_direction"), ends_with("_vs_control"))
+  paired <- paired %>% left_join(resp, by = "mussel")
+} else {
+  warning("Response classification not found (", RESPONSE_FILE,
+          "); run thread-strength/01_code/4_decompose_adhesion.Rmd. Continuing without it.")
+}
 
 cat("Paired animals:", nrow(paired), "\n")
 print(table(paired$treatment))
+cat("With baseline threads (for CHANGE metrics and ADJUST_FOR_BASELINE):",
+    sum(!is.na(paired$base_max_force)), "\n")
+if ("response_class" %in% names(paired)) print(table(paired$treatment, paired$response_class))
 write_csv(paired, file.path(OUT_DIR, "paired_sample_manifest.csv"))
 ```
 
@@ -269,9 +363,14 @@ write_csv(data.frame(LOC_ID = rownames(vp), vp, check.names = FALSE),
           file.path(OUT_DIR, sprintf("vst_paired_%s.csv", TISSUE)))            # genes x paired samples (VST)
 write_csv(annot,      file.path(OUT_DIR, "annotation_map.csv"))                # LOC_ID -> protein_name
 write_csv(candidates, file.path(OUT_DIR, sprintf("candidate_genes_%s.csv", TISSUE)))  # candidate set
-write_csv(thr_raw %>% filter(treatment %in% c("OA", "OW", "DO"), mussel %in% paired$mussel) %>%
-            select(mussel, treatment, max_force, adhesion_kpa, pad_area),
-          file.path(OUT_DIR, sprintf("thread_plaques_paired_%s.csv", TISSUE)))  # raw plaques, paired animals
+write_csv(thr_raw %>% filter(phase == "post", mussel %in% paired$mussel) %>%
+            transmute(mussel, treatment = mussel_trt, phase, thread_trt,
+                      max_force, pad_area, adhesion_kpa, max_displacement),
+          file.path(OUT_DIR, sprintf("thread_plaques_paired_%s.csv", TISSUE)))  # raw day-3 plaques, paired animals
+write_csv(tibble(metric = c(LEVEL_METRICS, CHANGE_METRICS),
+                 type   = c(rep("level", length(LEVEL_METRICS)), rep("change", length(CHANGE_METRICS))),
+                 arms   = paste(arms_kept, collapse = ";")),
+          file.path(OUT_DIR, "metrics_config.csv"))                              # so 21 uses the same list
 ```
 
 ---
@@ -306,19 +405,22 @@ For every gene we fit, controlling for treatment:
 * **Robust:** partial Spearman correlation of expression vs metric, treatment partialled
   out (rank-residualisation). Reported as `rho_partial`.
 
-Run across three mechanical metrics (`max_force`, `adhesion_kpa`, `pad_area`). BH
-correction is applied **within each gene set x metric** combination.
+Run across the LEVEL metrics (`max_force`, `pad_area`, `adhesion_kpa`, `max_displacement`)
+and the CHANGE metrics (`dlog_*`, each animal's log day-3/baseline ratio). BH correction is
+applied **within each gene set x metric** combination. The partial Spearman is computed on
+exactly the animals the linear model used.
 
 ```{r assoc_fns}
-metrics <- c("max_force", "adhesion_kpa", "pad_area")
+metrics <- c(LEVEL_METRICS, CHANGE_METRICS)
+is_change <- function(metric) metric %in% CHANGE_METRICS
 
-# design matrix for treatment (used to residualise)
-trtX <- model.matrix(~ treatment, data = paired)
-
-partial_spearman <- function(x, y) {
-  # rank-based partial correlation, treatment partialled out
-  rx <- residuals(lm(rank(x) ~ trtX - 1))
-  ry <- residuals(lm(rank(y) ~ trtX - 1))
+partial_spearman <- function(x, y, treatment) {
+  # rank-based partial correlation, treatment partialled out, on complete cases only
+  ok <- stats::complete.cases(x, y, treatment)
+  if (sum(ok) < 6) return(NA_real_)
+  X  <- model.matrix(~ treatment, data = data.frame(treatment = droplevels(treatment[ok])))
+  rx <- residuals(lm(rank(x[ok]) ~ X - 1))
+  ry <- residuals(lm(rank(y[ok]) ~ X - 1))
   suppressWarnings(cor(rx, ry, method = "pearson"))   # corr of ranks' residuals
 }
 
@@ -326,24 +428,25 @@ test_gene <- function(loc, metric) {
   x <- as.numeric(vp[match(loc, rownames(vp)), paired$sample])
   y <- paired[[metric]]
   dat <- data.frame(y = y, x = x, treatment = paired$treatment)
-  if (ADJUST_FOR_BASELINE) {
-    bcol <- paste0("base_", metric)
-    dat$base <- paired[[bcol]]
+  if (ADJUST_FOR_BASELINE && !is_change(metric)) {
+    dat$base <- paired[[paste0("base_", metric)]]
     dat <- dat[stats::complete.cases(dat), ]
     fm <- tryCatch(lm(y ~ x + treatment + base, data = dat), error = function(e) NULL)
   } else {
+    dat <- dat[stats::complete.cases(dat), ]
     fm <- tryCatch(lm(y ~ x + treatment, data = dat), error = function(e) NULL)
   }
-  if (is.null(fm)) return(NULL)
+  if (is.null(fm) || nrow(dat) < 6) return(NULL)
   co <- summary(fm)$coefficients
   if (!"x" %in% rownames(co)) return(NULL)
   tibble(
-    LOC_ID     = loc,
-    metric     = metric,
-    n          = nrow(dat),
-    slope      = co["x", "Estimate"],
-    p_lm       = co["x", "Pr(>|t|)"],
-    rho_partial = partial_spearman(x, y)
+    LOC_ID      = loc,
+    metric      = metric,
+    metric_type = if (is_change(metric)) "change" else "level",
+    n           = nrow(dat),
+    slope       = co["x", "Estimate"],
+    p_lm        = co["x", "Pr(>|t|)"],
+    rho_partial = partial_spearman(dat$x, dat$y, dat$treatment)
   )
 }
 
@@ -370,11 +473,12 @@ write_csv(res_deg,  file.path(OUT_DIR, sprintf("assoc_DEGunion_%s.csv",  TISSUE)
 
 cat("\n================ CANDIDATE GENES: top associations per metric ================\n")
 res_cand %>%
-  group_by(metric) %>% slice_min(p_lm, n = 8) %>% ungroup() %>%
+  mutate(metric = factor(metric, levels = metrics)) %>%
+  group_by(metric) %>% slice_min(p_lm, n = 6) %>% ungroup() %>%
   mutate(across(c(slope, rho_partial), ~round(., 3)),
          p_lm = signif(p_lm, 2), q_lm = signif(q_lm, 2)) %>%
-  select(metric, LOC_ID, protein_name, slope, p_lm, q_lm, rho_partial) %>%
-  print(n = 24)
+  select(metric, metric_type, n, LOC_ID, protein_name, slope, p_lm, q_lm, rho_partial) %>%
+  print(n = 42)
 
 cat("\n================ DEG-UNION: genes passing BH <", FDR_ALPHA, "================\n")
 hits <- res_deg %>% filter(q_lm < FDR_ALPHA) %>% arrange(metric, p_lm)
@@ -404,7 +508,8 @@ hm <- res_cand %>%
   pivot_wider(names_from = metric, values_from = rho_partial) %>%
   arrange(desc(abs(max_force)))
 
-hm_long <- hm %>% pivot_longer(-label, names_to = "metric", values_to = "rho")
+hm_long <- hm %>% pivot_longer(-label, names_to = "metric", values_to = "rho") %>%
+  mutate(metric = factor(metric, levels = metrics))
 ggplot(hm_long, aes(metric, factor(label, levels = rev(hm$label)), fill = rho)) +
   geom_tile(color = "white") +
   geom_text(aes(label = sprintf("%.2f", rho)), size = 3) +
@@ -460,19 +565,25 @@ cat("
 
 **Caveats baked into the design (do not skip in the manuscript):**
 
-1. n = 31 (OA 12 / OW 12 / DO 7). Within-treatment correlations are not interpretable on
-   their own; the pooled-with-covariate model borrows strength across treatments but
-   confounds treatment-level expression shifts with attachment differences.
+1. n = 44 with the control arm (control 10 / OA 12 / OW 12 / DO 10), 42 with baselines.
+   Within-arm correlations are not interpretable on their own; the pooled-with-covariate
+   model borrows strength across arms but confounds arm-level expression shifts with
+   attachment differences.
 2. Multiple testing: the candidate set (~tens of genes) is the defensible test; the
    DEG-union (hundreds) is screening only.
 3. Destructive sampling: expression and post-stress threads are the same animal/timepoint,
    so this is contemporaneous association, not a predictive or causal link.
-4. `pad_area` and `max_force` move together; `adhesion_kpa` (area-normalised) is the
-   stricter material-strength readout and tends to show weaker associations - that pattern
-   is itself informative (stress acts more on plaque size than on intrinsic strength).
-5. Set `ADJUST_FOR_BASELINE <- TRUE` to re-run using each animal's pre-stress thread
-   strength as a covariate (tests whether expression tracks the *change* in attachment);
-   this drops the few animals lacking baseline threads.
+4. `pad_area` and `max_force` carry the stressor signal; `adhesion_kpa` (their ratio) does
+   not, because on this dataset every arm including control falls ~20% in kPa while force
+   and area split warming/hypoxia from control/acidification. Read force and area first.
+5. The `dlog_*` CHANGE metrics are each animal's log(day-3 / baseline) and need no baseline
+   covariate; they are the direct test of whether expression tracks how much attachment
+   moved. `ADJUST_FOR_BASELINE` applies to the LEVEL metrics only (ANCOVA on the day-3 level
+   with baseline as covariate), a related but different question.
+6. With `INCLUDE_CONTROL_ARM = TRUE` the control animals contribute a fourth treatment level.
+   An expression-mechanics association that holds within the control arm as well is about
+   attachment biology in general, not about the stress response; that distinction is worth
+   checking by hand for any top hit (scatter by arm).
 ")
 sessionInfo()
 ```

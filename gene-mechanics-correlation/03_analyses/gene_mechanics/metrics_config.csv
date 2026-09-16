@@ -1,0 +1,8 @@
+metric,type,arms
+max_force,level,control;OA;OW;DO
+pad_area,level,control;OA;OW;DO
+adhesion_kpa,level,control;OA;OW;DO
+max_displacement,level,control;OA;OW;DO
+dlog_max_force,change,control;OA;OW;DO
+dlog_pad_area,change,control;OA;OW;DO
+dlog_adhesion_kpa,change,control;OA;OW;DO

@@ -4,3 +4,6 @@
 .Rhistory
 .Rproj.user/
 ~$*
+
+# patch files are delivered into the chat and applied locally; never commit them
+*.patch

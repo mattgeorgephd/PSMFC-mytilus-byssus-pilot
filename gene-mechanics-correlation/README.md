@@ -5,35 +5,49 @@ manuscript gene/mechanics interaction results (Section 3.4). Correlates per-samp
 candidate gene families (HIF, HSP, peroxidase, foot/byssus proteins) with post-stress thread
 measurements.
 
-Combines your `20-gene_mechanics_correlation.Rmd` with Grace's `11-byssal_thread_by_sample.Rmd`.
-
 ## Layout
 
 ```
 gene-mechanics-correlation/
 ├── gene-mechanics-correlation.Rproj
 ├── 01_code/
-│   ├── 20-gene_mechanics_correlation.Rmd    your correlation analysis
-│   └── 11-byssal_thread_by_sample.Rmd       Grace's per-sample thread/expression joining
+│   ├── 20-gene_mechanics_correlation.Rmd    paired table, VST, per-gene association
+│   ├── 21-gene_mechanics_expanded.Rmd       mixed models, modules, permutation, diagnostics
+│   ├── 22-rna_thread_manifest_and_expression_tables.Rmd
+│   ├── 23-byssus_foot_gene_list_expression.Rmd
+│   ├── gene-mechanics-pipeline_DOC.md       how the four chain together; results; config
+│   └── 11-byssal_thread_by_sample.Rmd       Grace's legacy per-sample joining (not in the chain)
 ├── 02_data/
 │   └── HIF_GCM.csv, HSP_GCM.csv, perox_GCM.csv, foot_byss_GCM.csv   gene-family count matrices
 └── 03_analyses/
-    └── foot_byss_gene_plot.pdf, gill_byss_gene_plot.pdf
+    ├── gene_mechanics/     scripts 20-21
+    ├── expr_tables/        script 22
+    └── byssus_genes/       script 23
 ```
+
+Run 20 → 21 → 22 → 23, after `thread-strength` scripts 1 to 4. Each script reads the
+previous one's CSV handoffs; none shares an R session with another.
 
 ## Inputs (cross-folder)
 
-This folder reads the gene-family count matrices in `02_data/`, the full count matrix and DEG
-lists from `../differential-expression/`, and the thread measurements from `../thread-strength/`.
-Being cross-cutting, its phase-4 rewrite will use a `repo_root` pointer (like summary-plots).
+All paths resolve from a `repo_root` found by walking up from `here::here()`.
 
-## Status
+| input | from |
+|---|---|
+| `thread-strength/03_analyses/thread-summary.xlsx` | curated threads, scripts 1-2 |
+| `thread-strength/03_analyses/decompose-adhesion/mussel_response_classification.csv` | per-animal response, script 4 |
+| `thread-strength/03_analyses/extract-tensometer-data/thread-summary-raw-output.xlsx` | every extracted trace, script 1 |
+| `differential-expression/02_data/gene_count_matrix_clean.csv` | counts |
+| `differential-expression/03_analyses/DEG_lists/` | Tag-seq arm per sample, DEG lists, annotation |
 
-Per prior analysis: 31 paired animals (foot transcriptome + post-stress thread measurements)
-across three treatment groups; no gene-mechanics correlation survives FDR correction, with HIF-1a
-the strongest raw signal but sensitive to thread-count weighting. Treat the transcriptome-to-
-attachment link as a working hypothesis until this analysis is finalized.
+## Status (16 September 2026)
 
-## Runnability (phase 4 pending)
+44 paired animals (control 10, OA 12, OW 12, DO 10), 42 with baselines. Peak force and
+plaque area are the primary metrics; adhesion (their ratio) hides the stressor effect on this
+dataset. Change-from-baseline metrics (`dlog_*`) are tested alongside the day-3 levels.
 
-Scripts carry original paths and are not yet repointed to this layout.
+Nothing on the level metrics survives correction. On the change in adhesion, Collagen
+alpha-1(V) reaches q = 0.034 with a permutation-corrected p of 0.054 and the same sign and
+rank without the control arm; the collagen module is q = 0.052. Treat as
+hypothesis-strengthening, not established. Details and caveats in
+`01_code/gene-mechanics-pipeline_DOC.md`.

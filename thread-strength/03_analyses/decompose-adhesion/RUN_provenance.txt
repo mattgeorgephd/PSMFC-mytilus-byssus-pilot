@@ -1,5 +1,6 @@
-generated : 2026-09-15 22:30:03
+generated : 2026-09-15 23:47:10
 input     : 03_analyses/thread-summary.xlsx
 threads in models : 337
 mussels in models : 74
 paired animals    : 45
+classified animals: 59 (45 paired)

@@ -8,4 +8,6 @@
 | `foot_byss_GCM.csv` | Foot/byssus protein gene-family count matrix |
 
 The full gene count matrix and DEG lists are read cross-folder from
-`../../differential-expression/`; thread measurements from `../../thread-strength/`.
+`../../differential-expression/`; thread measurements from
+`../../thread-strength/03_analyses/` (the curated summary, script 4's per-animal response
+classification, and script 1's extraction output).
