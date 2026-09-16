@@ -7,6 +7,8 @@ output:
     toc: true
     toc_float: true
     code_folding: show
+params:
+  tissue: "F"   # "F" foot (default) or "G" gill
 ---
 
 ```{r setup, include=FALSE}
@@ -25,13 +27,17 @@ so misses collagens, plaque proteins, tyrosinases, and cross-linkers. It also **
 generic antioxidant peroxidases / peroxiredoxins and monoamine/polyamine oxidases, which a
 naive "peroxidase|amine oxidase" filter wrongly pulls in.
 
-Reads script 22's `rna_thread_manifest.csv` for the mussel set, so run 22 first. All paths resolve automatically.
+Reads script 22's `rna_thread_manifest_<T>.csv` for the mussel set, so run 22 first. All paths resolve automatically.
 
 ```{r config}
 suppressPackageStartupMessages({ library(DESeq2); library(readxl); library(here); library(tidyverse) })
 
 ## ---- analysis options --------------------------------------------------------------
-TISSUE      <- "F"                 # "F" foot (default) or "G" gill
+## Tissue comes from the knit parameter (`params$tissue`, default "F") so the same script
+## serves foot and gill; the driver 24-run_gene_mechanics_by_tissue.Rmd renders both.
+## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
+TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
+stopifnot(TISSUE %in% c("F", "G"))
 HI_CONF_ONLY <- FALSE             # TRUE = keep only confident blast annotations (pident>=40 & evalue<1e-10)
 KEEP_CATEGORIES <- c("byssal_structural","byssal_accessory","collagen",
                      "crosslink_curing","collagen_biosynth","ecm_adhesion")
@@ -116,9 +122,9 @@ byss$n_DE <- rowSums(!is.na(byss[, grep("_log2FC$", names(byss))]))
 
 ```{r expr}
 ## thread-having mussel set: from script 22's reconciliation handoff (run 22 first)
-man_path <- file.path(EXPR_DIR, "rna_thread_manifest.csv")
+man_path <- file.path(EXPR_DIR, sprintf("rna_thread_manifest_%s.csv", TISSUE))
 if (!file.exists(man_path))
-  stop("rna_thread_manifest.csv not found in ", EXPR_DIR, " - run script 22 first.")
+  stop("rna_thread_manifest_", TISSUE, ".csv not found in ", EXPR_DIR, " - run script 22 first.")
 manifest <- read_csv(man_path, show_col_types = FALSE)
 thread_mussels <- if (USE_RAW_THREAD_SET) {
   manifest %>% filter(raw_post > 0 | raw_pre > 0) %>% pull(mussel)

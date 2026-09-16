@@ -1,0 +1,98 @@
+---
+title: "24 - Run the gene-mechanics chain for foot and gill"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  tissues: ["F", "G"]     # which tissues to run; one or both
+  scripts: [20, 21, 22, 23]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Scripts 20 to 23 are parameterised by tissue (`params$tissue`, default `"F"`). This driver
+renders them in order for each tissue requested, so the gill analysis is the same code as the
+foot analysis with one parameter changed, and the two cannot drift apart.
+
+Every output of 20 to 23 is tissue-suffixed (`_F` / `_G`), except `annotation_map.csv`,
+which is a tissue-independent LOC-to-protein map. Rendered HTML reports land in
+`03_analyses/knit_html/`.
+
+Knit this file, or run the chunk below, from inside `gene-mechanics-correlation.Rproj`.
+Each render starts a fresh environment, exactly as knitting the script by hand would.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+
+code_dir <- here::here("01_code")
+html_dir <- here::here("03_analyses", "knit_html")
+dir.create(html_dir, showWarnings = FALSE, recursive = TRUE)
+
+script_files <- c(
+  `20` = "20-gene_mechanics_correlation.Rmd",
+  `21` = "21-gene_mechanics_expanded.Rmd",
+  `22` = "22-rna_thread_manifest_and_expression_tables.Rmd",
+  `23` = "23-byssus_foot_gene_list_expression.Rmd"
+)
+tissues <- toupper(params$tissues)
+scripts <- script_files[as.character(params$scripts)]
+stopifnot(all(tissues %in% c("F", "G")), all(!is.na(scripts)))
+
+## Each script is rendered in its OWN R process. Calling rmarkdown::render() from inside a
+## knit does not work (the child's `setup` chunk collides with this document's in knitr's
+## label registry), and a fresh process is anyway the faithful equivalent of knitting each
+## script by hand: nothing leaks between scripts or between tissues.
+rscript <- file.path(R.home("bin"), if (.Platform$OS.type == "windows") "Rscript.exe" else "Rscript")
+
+render_in_new_process <- function(rmd, tissue, out_html, log_file) {
+  job <- tempfile(fileext = ".R")
+  writeLines(sprintf(
+    'rmarkdown::render(%s, params = list(tissue = %s), output_file = %s, output_dir = %s, quiet = TRUE)',
+    shQuote(normalizePath(rmd, winslash = "/")), shQuote(tissue),
+    shQuote(out_html), shQuote(normalizePath(html_dir, winslash = "/"))), job)
+  status <- system2(rscript, shQuote(job), stdout = log_file, stderr = log_file)
+  unlink(job)
+  status == 0
+}
+
+log <- list()
+for (tissue in tissues) {
+  for (s in scripts) {
+    stem <- tools::file_path_sans_ext(s)
+    out  <- sprintf("%s_%s.html", stem, tissue)
+    logf <- file.path(html_dir, sprintf("%s_%s.log", stem, tissue))
+    message(sprintf("==== %s  tissue = %s ====", s, tissue))
+    t0 <- Sys.time()
+    ok <- render_in_new_process(file.path(code_dir, s), tissue, out, logf)
+    if (!ok) message("FAILED; see ", logf)
+    log[[length(log) + 1]] <- data.frame(
+      tissue = tissue, script = s, ok = ok,
+      minutes = round(as.numeric(difftime(Sys.time(), t0, units = "mins")), 1),
+      html = if (ok) file.path("03_analyses", "knit_html", out) else NA_character_)
+    if (!ok) { message("Stopping the ", tissue, " chain; later scripts depend on this one."); break }
+  }
+}
+run_log <- do.call(rbind, log)
+print(run_log)
+write.csv(run_log, file.path(html_dir, "run_log.csv"), row.names = FALSE)
+```
+
+# What differs between the tissues
+
+Nothing in the code. What differs is the data:
+
+- The gill count matrix has 59 samples against 58 for foot, and two animals (T047, T051)
+  have gill but no foot RNA, so the gill paired set is 45 animals (43 with baselines) against
+  44 (42) for foot.
+- `Gill/G_treatmentinfo.csv` codes the day-3 control arm as `control_3` and has no leading
+  index column; script 20 and 22 normalise both.
+- The DEG union is built from the tissue's own `*_TC_siggene*` files. For gill, the register
+  notes two DESeq2 runs on disk for the hypoxia contrast (`GDO_TC_siggene_apeglm.csv`, 307
+  genes, is not a subset of `GDO_TC_apeglm.csv`); the union uses the `siggene` file as it
+  does for foot.
+- The foot is the byssus-producing organ. A gill association is a systemic-state readout,
+  not a mechanism at the site of thread production, and should be framed that way.

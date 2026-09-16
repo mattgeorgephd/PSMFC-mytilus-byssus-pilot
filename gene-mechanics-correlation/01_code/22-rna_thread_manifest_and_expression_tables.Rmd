@@ -7,6 +7,8 @@ output:
     toc: true
     toc_float: true
     code_folding: show
+params:
+  tissue: "F"   # "F" foot (default) or "G" gill
 ---
 
 ```{r setup, include=FALSE}
@@ -29,7 +31,11 @@ This script reads script 20's `annotation_map.csv` handoff, so run 20 first. All
 suppressPackageStartupMessages({ library(DESeq2); library(readxl); library(here); library(tidyverse) })
 
 ## ---- analysis options --------------------------------------------------------------
-TISSUE      <- "F"                  # "F" foot (default) or "G" gill
+## Tissue comes from the knit parameter (`params$tissue`, default "F") so the same script
+## serves foot and gill; the driver 24-run_gene_mechanics_by_tissue.Rmd renders both.
+## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
+TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
+stopifnot(TISSUE %in% c("F", "G"))
 TREATMENTS  <- c("OA", "OW", "DO")  # contrasts to tabulate
 N_TOP       <- 25                   # genes per direction
 SIG_ONLY    <- TRUE                 # rank within significant DEGs (padj<0.05); FALSE = all genes
@@ -104,10 +110,17 @@ rna_tab <- tibble(col = rna_cols) %>%
   group_by(mussel) %>% summarise(rna_tissues = paste(sort(unique(tissue)), collapse = ""),
                                  .groups = "drop")
 
-## RNA treatment/day (foot treatmentinfo is authoritative; same animal => same treatment)
-ti <- read.table(file.path(DE_DIR, "03_analyses", "DEG_lists", "Foot", "F_treatmentinfo.csv"),
-                 header = TRUE, sep = " ") %>%
-  mutate(mussel = sub("F$", "", `...1`)) %>% distinct(mussel, treatment, day)
+## RNA treatment/day for the chosen tissue. The gill file codes the day-3 control arm as
+## "control_3" and lacks the leading index column; both are normalised here.
+ti_file <- file.path(DE_DIR, "03_analyses", "DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"),
+                     sprintf("%s_treatmentinfo.csv", TISSUE))
+ti <- read.table(ti_file, header = TRUE, sep = " ", stringsAsFactors = FALSE)
+names(ti)[1] <- "sample_id"
+ti <- ti %>%
+  mutate(mussel    = sub(paste0(TISSUE, "$"), "", as.character(sample_id)),
+         treatment = sub("_3$", "", treatment),
+         day       = as.integer(day)) %>%
+  distinct(mussel, treatment, day)
 
 ## curated summary presence (day-3 threads and pre-exposure baselines)
 thr_raw <- read_thread_summary(THREAD_FILE) %>% mutate(mn = mussel)
@@ -132,7 +145,7 @@ manifest <- rna_tab %>%
          no_post_trace      = !is.na(day) & day == 3 & raw_post == 0) %>% # sequenced at day 3, never pulled
   arrange(treatment, mn)
 
-write_csv(manifest, file.path(OUT_DIR, "rna_thread_manifest.csv"))
+write_csv(manifest, file.path(OUT_DIR, sprintf("rna_thread_manifest_%s.csv", TISSUE)))
 
 cat("RNA-sequenced mussels with post-stress thread data, by treatment:\n")
 manifest %>% filter(in_summary_post > 0) %>%
@@ -283,7 +296,7 @@ if (!is.null(tables[[1]]))
 cat("
 **Outputs (in ", OUT_DIR, "):**
 
-- `rna_thread_manifest.csv` - every sequenced mussel: RNA tissues, treatment/day, curated
+- `rna_thread_manifest_<tissue>.csv` - every sequenced mussel: RNA tissues, treatment/day, curated
   summary presence (day-3 & baseline), extracted-trace counts by phase, and the
   `poststress_missing` / `baseline_missing` (extracted but not curated) and `no_post_trace`
   (sequenced at day 3 but never pulled) flags.

@@ -7,6 +7,8 @@ output:
     toc: true
     toc_float: true
     code_folding: show
+params:
+  tissue: "F"   # "F" foot (default) or "G" gill
 ---
 
 ```{r setup, include=FALSE}
@@ -34,7 +36,7 @@ This script:
   driven by zeros) and influential animals.
 
 > **Prerequisite:** run script 20 first. This script no longer shares 20's R session; it
-> reads 20's CSV handoffs (`paired_sample_manifest`, `vst_paired_<T>`, `annotation_map`,
+> reads 20's CSV handoffs (`paired_sample_manifest_<T>`, `vst_paired_<T>`, `annotation_map`,
 > `candidate_genes_<T>`, `thread_plaques_paired_<T>`) from `03_analyses/gene_mechanics/`.
 
 ```{r setup_inputs}
@@ -42,7 +44,11 @@ suppressPackageStartupMessages({ library(tidyverse); library(lmerTest); library(
 ## lmerTest::lmer gives Satterthwaite p-values
 
 ## ---- config: must match the values script 20 ran with ------------------------------
-TISSUE    <- "F"                                   # "F" foot (default) or "G" gill
+## Tissue comes from the knit parameter (`params$tissue`, default "F") so the same script
+## serves foot and gill; the driver 24-run_gene_mechanics_by_tissue.Rmd renders both.
+## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
+TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
+stopifnot(TISSUE %in% c("F", "G"))
 FDR_ALPHA <- 0.10
 ## The metric list and the treatment levels are read from script 20's metrics_config.csv
 ## handoff below, so the two scripts cannot drift apart.
@@ -61,13 +67,13 @@ OUT_DIR <- IN_DIR                                  # 21 writes alongside 20's ou
 need <- function(f) { p <- file.path(IN_DIR, f)
   if (!file.exists(p)) stop("Missing ", f, " - run script 20 first (it writes this)."); p }
 
-mcfg <- read_csv(need("metrics_config.csv"), show_col_types = FALSE)
+mcfg <- read_csv(need(sprintf("metrics_config_%s.csv", TISSUE)), show_col_types = FALSE)
 metrics        <- mcfg$metric
 LEVEL_METRICS  <- mcfg$metric[mcfg$type == "level"]
 CHANGE_METRICS <- mcfg$metric[mcfg$type == "change"]
 arms_kept      <- strsplit(mcfg$arms[1], ";", fixed = TRUE)[[1]]
 
-paired <- read_csv(need("paired_sample_manifest.csv"), show_col_types = FALSE) %>%
+paired <- read_csv(need(sprintf("paired_sample_manifest_%s.csv", TISSUE)), show_col_types = FALSE) %>%
   mutate(treatment = factor(treatment, levels = arms_kept))
 candidates <- read_csv(need(sprintf("candidate_genes_%s.csv", TISSUE)), show_col_types = FALSE)
 annot      <- read_csv(need("annotation_map.csv"), show_col_types = FALSE)

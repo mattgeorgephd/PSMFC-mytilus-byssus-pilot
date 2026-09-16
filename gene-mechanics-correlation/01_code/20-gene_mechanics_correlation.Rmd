@@ -7,6 +7,8 @@ output:
     toc: true
     toc_float: true
     code_folding: show
+params:
+  tissue: "F"   # "F" foot (default) or "G" gill
 ---
 
 ```{r setup, include=FALSE}
@@ -58,7 +60,11 @@ data from the **main** repo and expression data from the **expression** repo.
 
 ```{r config}
 ## ---- analysis options ---------------------------------------------------------------
-TISSUE        <- "F"          # "F" = foot (byssus-producing organ; default), "G" = gill
+## Tissue comes from the knit parameter (`params$tissue`, default "F") so the same script
+## serves foot and gill; the driver 24-run_gene_mechanics_by_tissue.Rmd renders both.
+## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
+TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
+stopifnot(TISSUE %in% c("F", "G"))
 MIN_COUNT     <- 5            # gene kept if count > MIN_COUNT in >= 1/3 of paired samples
 FDR_ALPHA     <- 0.10         # BH threshold for flagging
 ADJUST_FOR_BASELINE <- TRUE   # TRUE = add each animal's pre-stress thread metric as a
@@ -227,13 +233,25 @@ baseline <- thr_raw %>%
     .groups = "drop"
   )
 
-## ---- Tag-seq treatment assignment (definitive) --------------------------------------
-fti <- read.table(file.path(DE_DIR, "03_analyses", "DEG_lists", "Foot", "F_treatmentinfo.csv"),
-                  header = TRUE, sep = " ", stringsAsFactors = FALSE)
-names(fti)[1] <- "sample_id"
+## ---- Tag-seq treatment assignment (definitive), for the chosen tissue ----------------
+## The gill file codes the day-3 control arm as "control_3" and has no leading index column;
+## read_treatmentinfo() normalises both so the two tissues look identical downstream.
+read_treatmentinfo <- function(tissue) {
+  f <- file.path(DE_DIR, "03_analyses", "DEG_lists",
+                 ifelse(tissue == "F", "Foot", "Gill"),
+                 sprintf("%s_treatmentinfo.csv", tissue))
+  if (!file.exists(f)) stop("treatmentinfo not found: ", f)
+  d <- read.table(f, header = TRUE, sep = " ", stringsAsFactors = FALSE)
+  names(d)[1] <- "sample_id"
+  d %>%
+    mutate(sample_id = as.character(sample_id),
+           mussel    = norm_id(sub(paste0(tissue, "$"), "", sample_id)),
+           treatment = sub("_3$", "", treatment),          # control_3 -> control
+           day       = as.integer(day)) %>%
+    select(sample_id, mussel, treatment, day)
+}
 arms_kept <- if (INCLUDE_CONTROL_ARM) c("control", "OA", "OW", "DO") else c("OA", "OW", "DO")
-fti <- fti %>%
-  mutate(mussel = norm_id(sub("F$", "", sample_id))) %>%
+fti <- read_treatmentinfo(TISSUE) %>%
   filter(day == 3, treatment %in% arms_kept) %>%       # day-3 animals only
   distinct(mussel, treatment)
 
@@ -272,12 +290,24 @@ if (file.exists(RESPONSE_FILE)) {
           "); run thread-strength/01_code/4_decompose_adhesion.Rmd. Continuing without it.")
 }
 
+## An animal can be in treatmentinfo without a column in the count matrix (a library that
+## was dropped at QC). Drop it here, loudly, rather than fail at the VST step.
+cm_cols <- colnames(read.csv(file.path(DE_DIR, "02_data", "gene_count_matrix_clean.csv"),
+                             nrows = 1, check.names = FALSE))
+no_expr <- paired %>% filter(!sample %in% cm_cols)
+if (nrow(no_expr) > 0) {
+  message(nrow(no_expr), " paired animal(s) have no ", TISSUE,
+          " column in the count matrix and are dropped: ",
+          paste(no_expr$mussel, collapse = ", "))
+  paired <- paired %>% filter(sample %in% cm_cols)
+}
+
 cat("Paired animals:", nrow(paired), "\n")
 print(table(paired$treatment))
 cat("With baseline threads (for CHANGE metrics and ADJUST_FOR_BASELINE):",
     sum(!is.na(paired$base_max_force)), "\n")
 if ("response_class" %in% names(paired)) print(table(paired$treatment, paired$response_class))
-write_csv(paired, file.path(OUT_DIR, "paired_sample_manifest.csv"))
+write_csv(paired, file.path(OUT_DIR, sprintf("paired_sample_manifest_%s.csv", TISSUE)))
 ```
 
 ---
@@ -302,10 +332,7 @@ cm_tissue <- cm[, tissue_cols, drop = FALSE]
 
 ## minimal colData (treatment per sample, for dispersion modelling)
 mussel_of  <- norm_id(sub(paste0(TISSUE, "$"), "", colnames(cm_tissue)))
-all_meta <- read.table(file.path(DE_DIR, "03_analyses", "DEG_lists", "Foot", "F_treatmentinfo.csv"),
-                        header = TRUE, sep = " ", stringsAsFactors = FALSE)
-names(all_meta)[1] <- "sample_id"
-all_meta <- all_meta %>% mutate(mussel = norm_id(sub("F$", "", sample_id)))
+all_meta <- read_treatmentinfo(TISSUE)
 coldata <- data.frame(mussel = mussel_of) %>%
   left_join(all_meta %>% distinct(mussel, treatment, day), by = "mussel") %>%
   mutate(grp = ifelse(is.na(treatment), "unk", paste0(treatment, "_d", day)))
@@ -357,7 +384,7 @@ print(as.data.frame(candidates))
 
 ```{r exports}
 ## ---- handoff CSVs for downstream scripts (21 reads all; 22 reads annotation_map) -----
-## paired_sample_manifest.csv was written above; these add the rest so 21 can run on its
+## paired_sample_manifest_<T>.csv was written above; these add the rest so 21 can run on its
 ## own instead of sharing this R session's objects.
 write_csv(data.frame(LOC_ID = rownames(vp), vp, check.names = FALSE),
           file.path(OUT_DIR, sprintf("vst_paired_%s.csv", TISSUE)))            # genes x paired samples (VST)
@@ -370,7 +397,7 @@ write_csv(thr_raw %>% filter(phase == "post", mussel %in% paired$mussel) %>%
 write_csv(tibble(metric = c(LEVEL_METRICS, CHANGE_METRICS),
                  type   = c(rep("level", length(LEVEL_METRICS)), rep("change", length(CHANGE_METRICS))),
                  arms   = paste(arms_kept, collapse = ";")),
-          file.path(OUT_DIR, "metrics_config.csv"))                              # so 21 uses the same list
+          file.path(OUT_DIR, sprintf("metrics_config_%s.csv", TISSUE)))          # so 21 uses the same list
 ```
 
 ---
@@ -547,6 +574,43 @@ ggplot(plot_df, aes(expr, max_force)) +
   theme_bw(base_size = 11)
 ggsave(file.path(OUT_DIR, sprintf("top_candidate_scatter_%s.png", TISSUE)),
        width = 9, height = 7, dpi = 150)
+```
+
+## 6.3 The strongest candidate hit for each metric, coloured by arm
+
+One panel per metric, the single best candidate gene for that metric. Colouring by arm is
+the check that matters: an association driven by one arm sitting at one end of both axes is
+an arm effect, not a gene effect.
+
+```{r scatter_best, fig.height=8}
+best_per_metric <- res_cand %>%
+  mutate(metric = factor(metric, levels = metrics)) %>%
+  group_by(metric) %>% slice_min(p_lm, n = 1, with_ties = FALSE) %>% ungroup()
+
+best_df <- pmap_dfr(best_per_metric %>% select(LOC_ID, metric, p_lm, q_lm), function(LOC_ID, metric, p_lm, q_lm) {
+  m <- as.character(metric)
+  tibble(metric = m,
+         panel  = sprintf("%s\n%s\np = %s, q = %s", m,
+                          substr(annot$protein_name[match(LOC_ID, annot$LOC_ID)], 1, 34),
+                          signif(p_lm, 2), signif(q_lm, 2)),
+         expr   = as.numeric(vp[match(LOC_ID, rownames(vp)), paired$sample]),
+         y      = paired[[m]],
+         treatment = paired$treatment)
+}) %>% filter(!is.na(y)) %>%
+  mutate(panel = factor(panel, levels = unique(panel)))
+
+arm_cols <- c(control = "#7FB3D5", OA = "#4CAF50", OW = "#fdae61", DO = "#9884a3")
+ggplot(best_df, aes(expr, y)) +
+  geom_smooth(method = "lm", se = TRUE, color = "grey40", linewidth = 0.6) +
+  geom_point(aes(fill = treatment), shape = 21, size = 2.6, stroke = 0.5, color = "black") +
+  facet_wrap(~ panel, scales = "free", ncol = 3) +
+  scale_fill_manual(values = arm_cols, name = "Arm") +
+  labs(x = "VST expression", y = "Mechanical metric",
+       title = sprintf("Best candidate gene per metric (%s, n = %d)",
+                       ifelse(TISSUE == "F", "foot", "gill"), nrow(paired))) +
+  theme_bw(base_size = 10) + theme(strip.text = element_text(size = 7.5))
+ggsave(file.path(OUT_DIR, sprintf("best_hit_per_metric_scatter_%s.png", TISSUE)),
+       width = 10, height = 8.5, dpi = 150)
 ```
 
 ---

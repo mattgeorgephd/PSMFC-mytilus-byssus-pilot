@@ -1,8 +1,29 @@
 # Gene-mechanics correlation pipeline, scripts 20 to 23
 
-Links foot (or gill) gene expression at day 3 to the same animal's byssal thread mechanics.
+Links foot or gill gene expression at day 3 to the same animal's byssal thread mechanics.
 Four chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
-session. Run in order: **20 → 21 → 22 → 23**, after thread-strength scripts 1 to 4.
+session, parameterised by tissue. Run in order **20 → 21 → 22 → 23**, after thread-strength
+scripts 1 to 4, or knit **24-run_gene_mechanics_by_tissue.Rmd**, which renders all four for
+foot and gill.
+
+## Running for a tissue
+
+Each of 20 to 23 has a knit parameter in its YAML header:
+
+```yaml
+params:
+  tissue: "F"   # "F" foot (default) or "G" gill
+```
+
+`TISSUE` is read from `params$tissue`, falling back to `"F"` when the script is run chunk by
+chunk outside a knit. Driver 24 renders each script **in its own R process** (nested
+`rmarkdown::render()` collides on knitr's chunk-label registry) and writes the HTML reports
+and a `run_log.csv` to `03_analyses/knit_html/`, which is git-ignored.
+
+Every output is tissue-suffixed (`_F` / `_G`) except `annotation_map.csv`, a tissue-independent
+LOC-to-protein map. The gill treatmentinfo codes the day-3 control arm as `control_3` and has no
+leading index column; scripts 20 and 22 normalise both. An animal with a treatmentinfo row but no
+count-matrix column is dropped with a message rather than a hard stop.
 
 ```
 thread-strength/03_analyses/thread-summary.xlsx                     curated threads (scripts 1-2)
@@ -119,8 +140,8 @@ directions and control-referenced changes into `paired_sample_manifest.csv`.
 
 | file | contents |
 |---|---|
-| `paired_sample_manifest.csv` | the 44 animals: arm, day-3 and baseline means, `dlog_*`, response class and score |
-| `metrics_config.csv` | metric list, type, arm levels |
+| `paired_sample_manifest_<T>.csv` | the paired animals: arm, day-3 and baseline means, `dlog_*`, response class and score |
+| `metrics_config_<T>.csv` | metric list, type, arm levels |
 | `vst_paired_<T>.csv`, `annotation_map.csv`, `candidate_genes_<T>.csv`, `thread_plaques_paired_<T>.csv` | handoffs |
 | `assoc_candidate_<T>.csv`, `assoc_DEGunion_<T>.csv` | script 20 per-gene lm, all seven metrics |
 | `assoc_candidate_MIXED_<T>.csv` | script 21 thread-level mixed model, level metrics |
@@ -128,16 +149,30 @@ directions and control-referenced changes into `paired_sample_manifest.csv`.
 | `module_associations_<T>.csv` | five pathway modules × seven metrics |
 | `permutation_best_hit_<T>.csv` | search-corrected p for the best candidate hit, three metrics |
 | `assoc_candidate_BASELINEADJ_<T>.csv` | ANCOVA mixed model, level metrics |
-| `candidate_heatmap_<T>.png`, `top_candidate_scatter_<T>.png` | figures |
+| `candidate_heatmap_<T>.png`, `top_candidate_scatter_<T>.png`, `best_hit_per_metric_scatter_<T>.png` | figures; the last is the best candidate gene per metric, coloured by arm |
 
 ### `03_analyses/expr_tables/` (script 22) and `03_analyses/byssus_genes/` (script 23)
 
-Unchanged in shape; the companion `sample_metadata_<T>.csv` files now carry all four arms
-and `max_displacement`.
+`rna_thread_manifest_<T>.csv` is now tissue-suffixed. The companion `sample_metadata_<T>.csv`
+files carry all four arms and `max_displacement`.
 
 ---
 
-## 4. Results on the current data (foot, 16 September 2026)
+## 4. Results on the current data (16 September 2026)
+
+Full write-up with tables and figures: `gene-mechanics-correlation/gene-mechanics-results-report.docx`.
+
+### Gill
+
+Paired animals 45 (control 10, OA 12, OW 12, DO 11); 43 with baselines; 63 candidate genes;
+1,009 DEG-union genes. **Nothing survives.** Best single-gene association is Peroxiredoxin-1
+against adhesion level (q = 0.093); modules `oxidative_detox` (q = 0.072) and `HIF_hypoxia`
+(q = 0.096) against peak-force level, both negative. Permutation p = 0.41 (force), 0.33
+(area), 0.88 (change in adhesion). The foot's collagen signal has no gill counterpart
+(best q on the change in adhesion = 0.78). Gill is the systemic tissue; its weak leads read
+as general stress state, not thread building.
+
+### Foot
 
 Paired animals 44 (control 10, OA 12, OW 12, DO 10); 42 with baselines. 57 candidate genes,
 523 DEG-union genes, 9,974 genes after the expression filter.
@@ -178,7 +213,8 @@ candidate q of 0.29 and a minimum module q of 0.20.
 - **T047** has a foot RNA column and day-3 threads but no row in `F_treatmentinfo.csv`, so it
   is excluded from the paired set. Pre-existing; not introduced here.
 - **T136, T137** are sequenced day-3 control animals with no day-3 trace on disk.
-- The gill arm (`TISSUE = "G"`) has not been run.
+- The gill DEG union rests on `GDO_TC_siggene_apeglm.csv`, one of two DESeq2 runs on disk for
+  that contrast (register §2); unresolved in the differential-expression module.
 
 ---
 
@@ -193,3 +229,5 @@ candidate q of 0.29 and a minimum module q of 0.20.
 | 21 | `NPERM` | 1000 | |
 | 22 | `USE_RAW_THREAD_SET` | TRUE | any extracted trace vs curated only |
 | 23 | `USE_RAW_THREAD_SET` | FALSE | |
+| 20-23 | `params$tissue` | "F" | foot or gill |
+| 24 | `params$tissues`, `params$scripts` | both, all four | what the driver renders |

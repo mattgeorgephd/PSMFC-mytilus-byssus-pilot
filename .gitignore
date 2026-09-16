@@ -7,3 +7,6 @@
 
 # patch files are delivered into the chat and applied locally; never commit them
 *.patch
+
+# rendered HTML from the gene-mechanics driver (24): regenerable, ~20 MB
+gene-mechanics-correlation/03_analyses/knit_html/
