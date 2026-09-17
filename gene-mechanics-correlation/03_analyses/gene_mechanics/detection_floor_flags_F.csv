@@ -1,22 +1,33 @@
 LOC_ID,protein_name,gene_set,n_samples,n_at_floor,frac_samples_at_floor,floor_flag
+LOC134719452,Foot protein 15,candidate,45,29,0.644,exclude
+LOC134709805,Foot protein-4 variant-1,candidate,45,28,0.622,exclude
+LOC134686938,Byssal tyrosinase-like protein-1,candidate,45,27,0.6,exclude
+LOC134706002,Foot protein 11,candidate,45,27,0.6,exclude
 LOC134707467,Dual oxidase 1 (EC 1.11.1.-) (EC 1.6.3.1),candidate,45,27,0.6,exclude
+LOC134709435,Foot protein 10,candidate,45,26,0.578,exclude
+LOC134719757,Foot protein 2,candidate,45,23,0.511,exclude
 LOC134683202,Basic phospholipase A2 1 (svPLA2) (EC 3.1.1.4) (Phosphatidylcholine 2-acylhydrolase),DEG_union,45,22,0.489,exclude
 LOC134688483,NA,DEG_union,45,22,0.489,exclude
 LOC134708006,High-affinity choline transporter 1,DEG_union,45,21,0.467,exclude
+LOC134711497,Foot protein 12,candidate,45,21,0.467,exclude
 LOC134720928,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter),candidate,45,21,0.467,exclude
 LOC134708396,NA,DEG_union,45,18,0.4,caution
 LOC134720932,Byssal peroxidase-like protein 2,candidate,45,18,0.4,caution
 LOC134686701,NA,DEG_union,45,17,0.378,caution
+LOC134711496,Foot protein 10,candidate,45,17,0.378,caution
 LOC134710193,NA,DEG_union,45,16,0.356,caution
 LOC134725897,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase),candidate,45,16,0.356,caution
+LOC134711495,Foot protein 12,candidate,45,15,0.333,caution
 LOC134687228,Intraflagellar transport protein 88 homolog (Recessive polycystic kidney disease protein Tg737) (Tetratricopeptide repeat protein 10) (TPR repeat protein 10) (TgN(Imorpk)737Rpw),DEG_union,45,13,0.289,caution
 LOC134706618,NA,DEG_union,45,13,0.289,caution
 LOC134710563,NA,DEG_union,45,13,0.289,caution
+LOC134710785,Foot protein 12,candidate,45,12,0.267,caution
 LOC134716384,ACDC (Byssal EP-like protein 1) (EP-protein-1),candidate,45,12,0.267,caution
 LOC134708263,NA,DEG_union,45,11,0.244,caution
 LOC134715354,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma),candidate,45,11,0.244,caution
 LOC134722070,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)",candidate,45,11,0.244,caution
 LOC134725866,NA,DEG_union,45,11,0.244,caution
+LOC134708000,Foot protein 13,candidate,45,10,0.222,caution
 LOC134696041,NA,DEG_union,45,9,0.2,ok
 LOC134707077,NA,DEG_union,45,9,0.2,ok
 LOC134714500,Uncharacterized protein C18H10.09,DEG_union,45,9,0.2,ok
@@ -27,6 +38,7 @@ LOC134721871,DNA ligase (EC 6.5.1.1) (Polydeoxyribonucleotide synthase [ATP]),DE
 LOC134685015,ETS-related transcription factor Elf-5 (E74-like factor 5),DEG_union,45,7,0.156,ok
 LOC134692001,NA,DEG_union,45,7,0.156,ok
 LOC134697300,Byssal HSP-like protein 1,candidate,45,7,0.156,ok
+LOC134715434,Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1),candidate,45,7,0.156,ok
 LOC134722108,Collagen alpha-1(XXI) chain,candidate,45,7,0.156,ok
 LOC134683549,NA,DEG_union,45,6,0.133,ok
 LOC134687271,NA,DEG_union,45,6,0.133,ok
@@ -38,6 +50,7 @@ LOC134697127,Heat shock 70 kDa protein 12B (Heat shock protein family A member 1
 LOC134706903,Putative ferric-chelate reductase 1 homolog (DmSDR2) (EC 1.-.-.-),DEG_union,45,5,0.111,ok
 LOC134707468,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein),candidate,45,5,0.111,ok
 LOC134716385,ACDC (Byssal EP-like protein 1) (EP-protein-1),candidate,45,5,0.111,ok
+LOC134718845,Precollagen D,candidate,45,5,0.111,ok
 LOC134721144,Cytochrome P450 10 (EC 1.14.-.-) (CYPX),DEG_union,45,5,0.111,ok
 LOC134725734,DNA damage-inducible transcript 4-like protein,DEG_union,45,5,0.111,ok
 LOC134688288,"ATP-dependent RNA helicase DEAH12, chloroplastic (EC 3.6.4.13)",DEG_union,45,4,0.089,ok
@@ -137,6 +150,7 @@ LOC134683324,Lamin tail domain-containing protein 1 (Intermediate filament tail 
 LOC134683381,NA,DEG_union,45,0,0,ok
 LOC134683452,"1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase delta-4 (EC 3.1.4.11) (Phosphoinositide phospholipase C-delta-4) (Phospholipase C-delta-4) (PLC-delta-4)",DEG_union,45,0,0,ok
 LOC134683634,Syntenin-1 (Scaffold protein Pbp1) (Syndecan-binding protein 1),DEG_union,45,0,0,ok
+LOC134683831,Byssal protein-1,candidate,45,0,0,ok
 LOC134683926,Dynein axonemal intermediate chain 3 (Testis development protein NYD-SP29) (WD repeat-containing protein 63),DEG_union,45,0,0,ok
 LOC134684209,DnaJ homolog subfamily C member 14,DEG_union,45,0,0,ok
 LOC134684257,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]",candidate,45,0,0,ok
@@ -462,6 +476,7 @@ LOC134718519,NA,DEG_union,45,0,0,ok
 LOC134718520,NA,DEG_union,45,0,0,ok
 LOC134718956,Meiosis-specific nuclear structural protein 1,DEG_union,45,0,0,ok
 LOC134719254,Ras-like GTP-binding protein RHO,DEG_union,45,0,0,ok
+LOC134719453,Foot protein 15,candidate,45,0,0,ok
 LOC134719614,Lysine-specific demethylase 5A (EC 1.14.11.67) (Histone demethylase JARID1A) (Jumonji/ARID domain-containing protein 1A) (Retinoblastoma-binding protein 2) (RBBP-2) ([histone H3]-trimethyl-L-lysine(4) demethylase 5A),DEG_union,45,0,0,ok
 LOC134720381,DnaJ homolog subfamily C member 2,DEG_union,45,0,0,ok
 LOC134720609,NA,DEG_union,45,0,0,ok

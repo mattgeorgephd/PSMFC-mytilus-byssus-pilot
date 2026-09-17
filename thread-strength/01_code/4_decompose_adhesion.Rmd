@@ -30,6 +30,7 @@ OUTPUT  03_analyses/decompose-adhesion/
                                        back-transformed to a ratio for the logged responses
   STATS_decomp_paired_by_arm.csv       per-animal paired change, per arm, per response
   STATS_failure_mode.csv               failure-mode counts by thread treatment + chi-square
+                                       + Fisher's exact (Monte Carlo) p for the day-3 arms
   FIG_paired_change_by_metric.png      paired % change with 95% CI, one panel per response
   FIG_failure_mode_by_arm.png          failure-mode composition by thread treatment
 -->
@@ -397,9 +398,14 @@ fm_table <- table(post_fm$thread_trt, post_fm$failure)
 chi <- suppressWarnings(chisq.test(fm_table))
 cat("Chi-square, failure mode x day-3 arm: X2 =", round(chi$statistic, 2),
     " df =", chi$parameter, " p =", signif(chi$p.value, 3), "\n")
-if (any(chi$expected < 5))
-  cat("Some expected counts < 5; Fisher's exact p =",
-      signif(fisher.test(fm_table, simulate.p.value = TRUE, B = 10000)$p.value, 3), "\n")
+# Fisher's exact test (Monte Carlo, B draws) is always computed and written beside the
+# chi-square, because several expected counts are below 5 and the chi-square approximation
+# is the weaker of the two here. FISHER_B and the seed are recorded in the output row.
+FISHER_B <- 10000
+set.seed(20260916)
+fisher_p <- fisher.test(fm_table, simulate.p.value = TRUE, B = FISHER_B)$p.value
+cat("Fisher's exact (Monte Carlo, B =", FISHER_B, ") p =", signif(fisher_p, 3),
+    if (any(chi$expected < 5)) " <- some expected counts < 5, prefer this p" else "", "\n")
 
 # Adhesion by failure mode, for interpretation of the composition shift
 adh_by_fm <- thread_plot %>%
@@ -412,7 +418,14 @@ knitr::kable(adh_by_fm, digits = 1)
 
 write.csv(bind_rows(fm_counts %>% mutate(table = "counts_by_thread_trt"),
                     tibble(table = "chi_square_day3", statistic = unname(chi$statistic),
-                           df = unname(chi$parameter), p = chi$p.value)),
+                           df = unname(chi$parameter), p = chi$p.value,
+                           min_expected_count = min(chi$expected),
+                           note = ifelse(any(chi$expected < 5),
+                                         "expected counts < 5: read fisher_exact_day3", "")),
+                    tibble(table = "fisher_exact_day3", statistic = NA_real_, df = NA_real_,
+                           p = fisher_p, min_expected_count = min(chi$expected),
+                           note = sprintf("Monte Carlo, B = %d, seed 20260916; %d threads, %d arms x %d modes",
+                                          FISHER_B, sum(fm_table), nrow(fm_table), ncol(fm_table)))),
           file.path(out_dir, "STATS_failure_mode.csv"), row.names = FALSE)
 
 failure_fill <- c("cohesive" = "#4C72B0", "peeling" = "#DD8452",

@@ -1,0 +1,126 @@
+---
+title: "02_6 - DESeq2 sensitivity: one four-level model per tissue"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Why this script exists
+
+The primary DEG lists (`02_5_DESeq_*`, `03-TC_shrinkage_filtration`) come from **six separate
+two-group fits**: each stressor's 12 day-3 animals against the same 12 day-3 control animals,
+per tissue. That re-uses the control group three times and estimates the dispersion three
+times from 22-24 samples. The alternative is **one model per tissue with a four-level
+`treatment` factor** (control, OA, OW, DO; 46-47 samples): the dispersion is estimated once
+from every day-3 sample, the control group is used once, and the three stressor contrasts
+are extracted from the same fit with `lfcShrink(coef = "treatment_<X>_vs_control")`.
+
+This is a sensitivity analysis. The six two-group fits stay the primary result until the
+manuscript decides; this script reports how much the DEG lists move, so that decision is
+made on numbers rather than on habit. Expect the four-level model to shift the counts (a
+shared dispersion helps low-count genes in the smaller contrasts and hurts genes whose
+variance differs between arms), not to change which stressor has the largest effect.
+
+Steps per tissue: subset the master matrix to the day-3 samples in `treatmentinfo_clean.csv`;
+`DESeqDataSetFromMatrix(~ treatment)` with `control` as the reference level; `DESeq()`; keep
+genes with >= 10 counts in at least a third of the samples (the same filter as `02_5`, now
+applied over all four arms); `lfcShrink(type = "apeglm")` per stressor coefficient; DEGs at
+`padj < 0.05`. Outputs go to `03_analyses/DEG_lists/sensitivity_fourlevel/` and never
+overwrite the primary files.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+suppressPackageStartupMessages({ library(DESeq2); library(apeglm); library(tidyverse) })
+OUT <- file.path(deg, "sensitivity_fourlevel")
+dir.create(OUT, showWarnings = FALSE, recursive = TRUE)
+PADJ_CUTOFF <- 0.05
+ARMS <- c("control", "OA", "OW", "DO")          # reference first: coefficient names depend on it
+
+master <- as.matrix(read.csv(file.path(dat, "gene_count_matrix_clean.csv"),
+                             row.names = 1, check.names = FALSE))
+ti <- read.csv(file.path(dat, "treatmentinfo_clean.csv"), row.names = 1, stringsAsFactors = FALSE)
+cat("Master count matrix:", nrow(master), "genes x", ncol(master), "samples\n")
+
+## the primary DEG lists, for the comparison
+primary_siggene <- function(tissue, trt) {
+  d <- file.path(deg, ifelse(tissue == "F", "Foot", "Gill"))
+  f <- list.files(d, pattern = sprintf("^%s%s_TC_siggene.*\\.csv$", tissue, trt), full.names = TRUE)
+  if (!length(f)) return(character(0))
+  read.table(f[1], header = TRUE, sep = " ", stringsAsFactors = FALSE)$gene
+}
+```
+
+# One four-level fit per tissue
+
+```{r fit}
+fit_tissue <- function(tissue) {
+  cd <- ti %>% filter(tissue == !!tissue, day == 3, treatment %in% ARMS)
+  cd <- cd[cd$sample.1 %in% colnames(master), ]
+  cd$treatment <- factor(cd$treatment, levels = ARMS)          # explicit reference level
+  rownames(cd) <- cd$sample.1
+  cm <- master[, cd$sample.1, drop = FALSE]
+  cat(sprintf("\n== %s: %d samples (%s)\n", tissue, ncol(cm),
+              paste(sprintf("%s %d", names(table(cd$treatment)), as.integer(table(cd$treatment))), collapse = ", ")))
+  dds <- DESeqDataSetFromMatrix(cm, cd, ~ treatment)
+  dds <- DESeq(dds, quiet = TRUE)
+  keep <- rowSums(counts(dds) >= 10) >= ncol(cm) / 3            # same filter as 02_5, all arms
+  ddsf <- dds[keep, ]
+  stopifnot(resultsNames(ddsf)[1] == "Intercept",
+            all(sprintf("treatment_%s_vs_control", ARMS[-1]) %in% resultsNames(ddsf)))
+  res <- map(ARMS[-1], function(trt) {
+    coefn <- sprintf("treatment_%s_vs_control", trt)
+    r <- lfcShrink(ddsf, coef = coefn, type = "apeglm", quiet = TRUE)
+    full <- data.frame(gene = rownames(r), as.data.frame(r), row.names = NULL)
+    sig  <- full %>% filter(!is.na(padj), padj < PADJ_CUTOFF)
+    code <- paste0(tissue, trt)
+    write.table(full, file.path(OUT, sprintf("%s_TC4_apeglm.csv", code)),  row.names = FALSE)
+    write.table(sig,  file.path(OUT, sprintf("%s_TC4_siggene.csv", code)), row.names = FALSE)
+    prim <- primary_siggene(tissue, trt)
+    tibble(code = code, tissue = tissue, treatment = trt, n_samples_fit = ncol(cm),
+           genes_after_filter = sum(keep),
+           n_DEG_fourlevel = nrow(sig), n_DEG_primary_pairwise = length(prim),
+           n_shared = length(intersect(sig$gene, prim)),
+           n_only_fourlevel = length(setdiff(sig$gene, prim)),
+           n_only_pairwise  = length(setdiff(prim, sig$gene)),
+           jaccard = ifelse(length(union(sig$gene, prim)) > 0,
+                            length(intersect(sig$gene, prim)) / length(union(sig$gene, prim)), NA_real_),
+           n_up_fourlevel = sum(sig$log2FoldChange > 0), n_down_fourlevel = sum(sig$log2FoldChange < 0))
+  }) %>% bind_rows()
+  ## which genes changed status, with both padj values, for the reader who wants to look
+  print(as.data.frame(res))
+  res
+}
+cmp <- bind_rows(fit_tissue("F"), fit_tissue("G"))
+write_csv(cmp, file.path(OUT, "fourlevel_vs_pairwise_DEG_counts.csv"))
+knitr::kable(cmp)
+```
+
+# Reading the comparison
+
+`n_DEG_primary_pairwise` is the manuscript number (six separate fits, verified by
+`03_5-DEG_table_provenance_check.Rmd`); `n_DEG_fourlevel` is the same contrast from the
+shared-dispersion model. `jaccard` is the overlap of the two DEG lists. A contrast whose
+list shrinks or grows by more than about a third under the shared dispersion is one whose
+DEG count depends on the modelling choice and should be reported with that caveat (or with
+both numbers). The direction split (`n_up_fourlevel`, `n_down_fourlevel`) is there because
+the foot lists are dominated by down-regulation under OA and the shared dispersion should
+not change that.
+
+```{r provenance}
+writeLines(c(paste0("generated : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             "design    : ~ treatment, levels control, OA, OW, DO (one fit per tissue, day-3 samples)",
+             "filter    : >= 10 counts in >= 1/3 of the tissue's day-3 samples",
+             "shrinkage : apeglm, coef = treatment_<X>_vs_control",
+             paste0("padj      : < ", PADJ_CUTOFF),
+             paste0("R / DESeq2 / apeglm : ", R.version.string, " / ", as.character(packageVersion("DESeq2")),
+                    " / ", as.character(packageVersion("apeglm")))),
+           file.path(OUT, "RUN_provenance.txt"))
+```

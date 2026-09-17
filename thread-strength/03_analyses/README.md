@@ -10,14 +10,22 @@ hand-curated; the raw inputs live in `../02_data/`.
 | `assemble-thread-summary/` | `2_assemble_thread_summary.Rmd` | `thread-summary-candidate.xlsx` (curation-ready table) and `pad-area-worklist.xlsx` (sheets `to_measure` and `pairing_gaps`) |
 | `thread-summary.xlsx` | **manual curation** | The curated table script 3 reads. Not regenerable. |
 | `decompose-adhesion/` | `4_decompose_adhesion.Rmd` | Arm × timepoint models on peak force, plaque area and extension separately; paired-change figure; per-animal response classification (`mussel_response_classification.csv`, read by gene-mechanics script 20); failure-mode composition |
-| `analyze-thread-strength/` | `3_analyze_thread_strength.Rmd` | Adhesion distribution panels, one before/after panel per day-3 arm, `STATS_*.csv`, `DIAG_lmer_residuals.png`, and `RUN_provenance.txt` recording the `INCLUDE_LAB_REFERENCE` setting behind the run |
+| `analyze-thread-strength/` | `3_analyze_thread_strength.Rmd` | Adhesion distribution panels, one before/after panel per day-3 arm (lab-reference animals as their own cluster), `STATS_*.csv` including the lab-reference check, baseline balance by future arm and repeatability (`STATS_lab_reference_check.csv`, `STATS_baseline_balance.csv`, `STATS_repeatability.csv`) and the arm-vs-day-3-control columns in `STATS_within_arm_beforeafter.csv`, `DIAG_lmer_residuals.png`, and `RUN_provenance.txt` recording the `INCLUDE_LAB_REFERENCE` setting behind the run |
 
 ## Notes
 
 Script 3 has one configuration decision, `INCLUDE_LAB_REFERENCE`, set at the top of the
 script. It governs whether the day-0 lab-reference animals count as part of the baseline
-reference pool, and it changes the two-sample p-values. `RUN_provenance.txt` records which
-setting produced the files in `analyze-thread-strength/`, so a folder is never ambiguous.
+reference pool, and it changes the two-sample p-values. It is FALSE, warns if set TRUE, and
+`RUN_provenance.txt` records which setting produced the files in `analyze-thread-strength/`,
+so a folder is never ambiguous.
+
+The two controls: **treatment control** (`mussel_trt == "control"`, T126-T137, day 3 in the
+system under ambient conditions) is the reference for a stressor effect (the mixed-model
+interaction, the `vs_ctrl_*` columns, the DESeq2 TC contrasts). **Lab control**
+(`phase == "lab"`, T001-T012, day 0, never in the system) is a descriptive comparison group
+for handling and time in the system (`STATS_lab_reference_check.csv`); it is never a
+baseline and enters no model.
 
 Some older files in `analyze-thread-strength/` (the `.pptx` decks and a few
 `*_MeanThreads.png` variants) were exported manually or by code paths currently commented

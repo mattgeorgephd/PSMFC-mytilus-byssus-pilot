@@ -142,3 +142,32 @@ Added `library(readr)`: the script calls `read_csv()` but loaded only `dplyr`, `
 - `with_GO_terms/` holds an older copy of the `_sigs_*` trio that nothing reads.
 - The zenodo files are the merged (gene x hit) tables, so a gene with several BLAST hits is
   deposited several times; a `distinct(gene)` version would be the honest deposit.
+
+## 17 September 2026: LC contrasts, explicit factor levels, sensitivity scripts
+
+**`03_5` now covers the eight LC (day-0 lab control) contrasts** (`params$families`,
+default both families; `family`, `reference` and `design` columns in
+`DEG_provenance_check.csv`). Same steps as for TC; for `FTC_LC` / `GTC_LC` both groups are
+`treatment == "control"`, so the design is `~ day` with levels `0`, `3` and the coefficient is
+`day_3_vs_0`. Result: FOA_LC, FOW_LC, FTC_LC, GOA_LC, GOW_LC and GTC_LC reproduce exactly
+(baseMean to 5e-15, log2FC to < 3e-4); **FDO_LC and GDO_LC were stale** (7,245 and 10,909
+rows on disk against 7,240 and 10,904 re-derived: the five-extra-genes signature of the
+pre-QC fit that still held T051F / T051G, as for `GDO_TC` above) and were rewritten with
+`rewrite_stale = TRUE`. Their DEG counts moved from 1,047 to 1,563 (FDO_LC) and from 1,994
+to 2,458 (GDO_LC). Nothing in the active pipeline reads the LC lists, so no downstream file
+changed; any figure or table built from the old hypoxia LC tables (the 16 September talk
+deck's day-0 byssal-gene column for hypoxia) should be regenerated. The provenance file
+gains a `rewritten_this_run` column.
+
+**Explicit factor levels in every `02_5_DESeq_*` script.** Each `DESeqDataSetFromMatrix()`
+is now preceded by `factor(..., levels = c("control", <trt>))` (four-level tables:
+`c("control", "OA", "OW", "DO")`; `day`: `c("0", "3")`; `tissue`: `c("F", "G")`) and
+followed by a `stopifnot()` on `resultsNames()`, so coefficient 2 is `<trt>_vs_control` in
+every locale. The PCA legends that listed labels in alphabetical order (control, Hypoxia,
+OA, OW) were reordered to the new level order. `02_5_DESeq_Gill_LC_genome.Rmd` also read the
+GOA_LC count matrix as its treatment table (`GOA_LC_countmatrix.csv`); fixed to
+`GOA_LC_treatmentinfo.csv`, which is the file the committed GOA_LC tables reproduce from.
+
+**Sensitivity scripts** (`01_7-secretion_state`, `02_6-DESeq_fourlevel_sensitivity`,
+`02_7-DESeq_foot_TC_secretion_sensitivity`, the last gated off by `USE_SECRETION_STATE`):
+see `README.md`. None writes into `Foot/` or `Gill/`.

@@ -4,6 +4,15 @@ output: html_document
 date: "2024-06-15"
 ---
 
+<!--
+THE TWO CONTROLS (added 2026-09-17; see README.md "The two controls")
+  TC = TREATMENT CONTROL: the day-3 animals held under ambient conditions in the same
+  system and for the same time as the stressor arms. Every contrast in this script compares
+  a stressor's day-3 animals with them, so the coefficient is the stressor effect net of time
+  in the system, handling and byssal secretion state. These are the DEG lists of record.
+  LC = LAB CONTROL: the day-0 animals; contrasts against them (02_5_DESeq_*_LC_genome.Rmd)
+  carry the time-in-system component as well and are context, not stressor effects.
+-->
 ```{r paths, include=FALSE}
 source(here::here("01_code", "_paths.R"))
 ```
@@ -80,12 +89,20 @@ F_TC_countmatrix <- data.frame(F_TC_countmatrix)
 write.table(F_TC_countmatrix, file = file.path(deg, "Foot/F_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
+# Explicit factor levels. The originals passed the grouping variable as character and let
+# R's locale collation pick the reference level; in a C locale "DO", "OA" and "OW" sort
+# before "control", coefficient 2 becomes control_vs_<trt>, and every log2 fold change
+# flips sign silently. The stopifnot() after DESeq() guards the coefficient name.
+F_TC_treatmentinfo$treatment <- factor(F_TC_treatmentinfo$treatment, levels = c("control", "OA", "OW", "DO"))
+
 dds25 <- DESeqDataSetFromMatrix(countData = F_TC_countmatrix,
                               colData = F_TC_treatmentinfo,
                               design = ~ treatment)
 
 dds25 <- DESeq(dds25)
 resultsNames(dds25) # lists the coefficients
+stopifnot(resultsNames(dds25)[2] == "treatment_OA_vs_control",
+          all(c("treatment_OW_vs_control", "treatment_DO_vs_control") %in% resultsNames(dds25)))
 
 # graph dds results
 PCAdata <- plotPCA(vst(dds25), intgroup = c("treatment"), returnData=TRUE)
@@ -97,7 +114,7 @@ ggplot(PCAdata, aes(PC1, PC2, color=treatment)) +
   coord_fixed()+
   stat_ellipse(level = 0.95)+
   theme_classic()+
-  scale_color_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  scale_color_manual(labels = c("Treatment control", "Ocean acidification", "Ocean warming", "Hypoxia"), values = c("purple", "red", "orange", "green"))   # label order = factor levels (control, OA, OW, DO)+
   guides(color=guide_legend("Treatment"))+
   theme(axis.text = element_text(size =18, color = "black"))+
   theme(axis.title = element_text(size =20, color = "black"))+
@@ -124,12 +141,22 @@ TC_countmatrix <- data.frame(TC_countmatrix)
 write.table(TC_countmatrix, file = file.path(deg, "TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
+# Explicit factor levels. The originals passed the grouping variable as character and let
+# R's locale collation pick the reference level; in a C locale "DO", "OA" and "OW" sort
+# before "control", coefficient 2 becomes control_vs_<trt>, and every log2 fold change
+# flips sign silently. The stopifnot() after DESeq() guards the coefficient name.
+TC_treatmentinfo$treatment <- factor(TC_treatmentinfo$treatment, levels = c("control", "OA", "OW", "DO"))
+TC_treatmentinfo$tissue <- factor(TC_treatmentinfo$tissue, levels = c("F", "G"))
+
 dds26 <- DESeqDataSetFromMatrix(countData = TC_countmatrix,
                               colData = TC_treatmentinfo,
                               design = ~ treatment + tissue + tissue:treatment)
 
 dds26 <- DESeq(dds26)
 resultsNames(dds26) # lists the coefficients
+stopifnot(resultsNames(dds26)[2] == "treatment_OA_vs_control",
+          all(c("treatment_OW_vs_control", "treatment_DO_vs_control") %in% resultsNames(dds26)))
+stopifnot("tissue_G_vs_F" %in% resultsNames(dds26))
 
 # graph dds results
 PCAdata <- plotPCA(vst(dds26), intgroup = c("tissue", "treatment"), returnData=TRUE)
@@ -141,7 +168,7 @@ ggplot(PCAdata, aes(PC1, PC2, color=treatment, shape = tissue)) +
   coord_fixed()+
   stat_ellipse(level = 0.95)+
   theme_classic()+
-  scale_color_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  scale_color_manual(labels = c("Treatment control", "Ocean acidification", "Ocean warming", "Hypoxia"), values = c("purple", "red", "orange", "green"))   # label order = factor levels (control, OA, OW, DO)+
   scale_shape_manual(labels = c("Foot", "Gill"), values = c("circle", "triangle"))+
   guides(color=guide_legend("Treatment"), shape = guide_legend("Tissue"))+
   theme(axis.text = element_text(size =18, color = "black"))+
@@ -165,12 +192,19 @@ FOA_TC_countmatrix <- data.frame(FOA_TC_countmatrix)
 write.table(FOA_TC_countmatrix, file = file.path(deg, "Foot/FOA_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
+# Explicit factor levels. The originals passed the grouping variable as character and let
+# R's locale collation pick the reference level; in a C locale "DO", "OA" and "OW" sort
+# before "control", coefficient 2 becomes control_vs_<trt>, and every log2 fold change
+# flips sign silently. The stopifnot() after DESeq() guards the coefficient name.
+FOA_TC_treatmentinfo$treatment <- factor(FOA_TC_treatmentinfo$treatment, levels = c("control", "OA"))
+
 dds9 <- DESeqDataSetFromMatrix(countData = FOA_TC_countmatrix,
                               colData = FOA_TC_treatmentinfo,
                               design = ~ treatment)
 
 dds9 <- DESeq(dds9)
 resultsNames(dds9) # lists the coefficients
+stopifnot(resultsNames(dds9)[2] == "treatment_OA_vs_control")   # guards the sign of every log2FC
 
 # graph dds results
 PCAdata <- plotPCA(vst(dds9), intgroup = c("treatment"), returnData=TRUE)
@@ -206,12 +240,19 @@ FOW_TC_countmatrix <- subset(gene_count_matrix_clean, select=(FOW_TC_treatmentin
 write.table(FOW_TC_countmatrix, file = file.path(deg, "Foot/FOW_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
+# Explicit factor levels. The originals passed the grouping variable as character and let
+# R's locale collation pick the reference level; in a C locale "DO", "OA" and "OW" sort
+# before "control", coefficient 2 becomes control_vs_<trt>, and every log2 fold change
+# flips sign silently. The stopifnot() after DESeq() guards the coefficient name.
+FOW_TC_treatmentinfo$treatment <- factor(FOW_TC_treatmentinfo$treatment, levels = c("control", "OW"))
+
 dds10 <- DESeqDataSetFromMatrix(countData = FOW_TC_countmatrix,
                               colData = FOW_TC_treatmentinfo,
                               design = ~ treatment)
 
 dds10 <- DESeq(dds10)
 resultsNames(dds10) # lists the coefficients
+stopifnot(resultsNames(dds10)[2] == "treatment_OW_vs_control")   # guards the sign of every log2FC
 
 # graph dds results
 PCAdata <- plotPCA(vst(dds10), intgroup = c("treatment"), returnData=TRUE)
@@ -248,12 +289,19 @@ FDO_TC_countmatrix <- subset(gene_count_matrix_clean, select=(FDO_TC_treatmentin
 write.table(FDO_TC_countmatrix, file = file.path(deg, "Foot/FDO_TC_countmatrix.csv"))
 
 # CaTCulate DESeq object
+# Explicit factor levels. The originals passed the grouping variable as character and let
+# R's locale collation pick the reference level; in a C locale "DO", "OA" and "OW" sort
+# before "control", coefficient 2 becomes control_vs_<trt>, and every log2 fold change
+# flips sign silently. The stopifnot() after DESeq() guards the coefficient name.
+FDO_TC_treatmentinfo$treatment <- factor(FDO_TC_treatmentinfo$treatment, levels = c("control", "DO"))
+
 dds11 <- DESeqDataSetFromMatrix(countData = FDO_TC_countmatrix,
                               colData = FDO_TC_treatmentinfo,
                               design = ~ treatment)
 
 dds11 <- DESeq(dds11)
 resultsNames(dds11) # lists the coefficients
+stopifnot(resultsNames(dds11)[2] == "treatment_DO_vs_control")   # guards the sign of every log2FC
 
 # graph dds results
 PCAdata <- plotPCA(vst(dds11), intgroup = c("treatment"), returnData=TRUE)

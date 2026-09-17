@@ -9,6 +9,7 @@ output:
     code_folding: show
 params:
   rewrite_stale: false   # TRUE = overwrite any full results table or DEG list that the check finds stale
+  families: ["TC", "LC"] # which contrast families to re-derive
 ---
 
 ```{r setup, include=FALSE}
@@ -25,12 +26,24 @@ count matrix has been re-cleaned since the first runs (T051F/T051G were removed 
 `01_5-gene_count_matrix.Rmd`), and the full tables are not read by any downstream script, so
 a stale one goes unnoticed.
 
-This script re-derives every treatment-vs-treatment-control contrast from the **committed**
-inputs, using the same steps as `02_5` and `03`: subset the master matrix
-`02_data/gene_count_matrix_clean.csv` to the samples in `<X>_TC_treatmentinfo.csv`,
-`DESeq()` on all genes, keep genes with >= 10 counts in at least a third of samples, then
-`lfcShrink(type = "apeglm")` on coefficient 2. It compares the result with both files on
-disk and writes one row per contrast to `03_analyses/DEG_lists/DEG_provenance_check.csv`.
+This script re-derives every contrast from the **committed** inputs, using the same steps as
+`02_5` and `03`: subset the master matrix `02_data/gene_count_matrix_clean.csv` to the
+samples in `<X>_<TC|LC>_treatmentinfo.csv`, `DESeq()` on all genes, keep genes with >= 10
+counts in at least a third of samples, then `lfcShrink(type = "apeglm")` on the contrast
+coefficient. It compares the result with both files on disk and writes one row per contrast
+to `03_analyses/DEG_lists/DEG_provenance_check.csv`.
+
+Two families of contrast are covered (`family` column):
+
+- **TC** (six): each stressor's day-3 animals against the **day-3 treatment control**
+  (`~ treatment`, reference `control`). These are the stressor effects of record.
+- **LC** (eight): each stressor's day-3 animals, and the day-3 treatment control itself,
+  against the **day-0 lab control** (`~ treatment`, reference `control` = day 0; for
+  `FTC_LC` / `GTC_LC` the design is `~ day`, reference `0`). A day-0 comparison measures time
+  in the system + handling + byssal secretion state as well as the stressor, so these tables
+  are context, not stressor effects (see `README.md`, "The two controls"). They were
+  unverified until 17 September 2026; `FTC_LC` in particular carries an interpretive claim
+  (the plaque-protein genes are down in the day-3 control vs day 0), so it is checked here.
 
 The per-contrast `<X>_TC_countmatrix.csv` files are checked against the master-matrix subset
 rather than used as input, because two of them (`FOA`, `GOA`) were written after a
@@ -49,19 +62,21 @@ Two deliberate differences from the original scripts:
 - Only the apeglm estimator is run. The `normal` and `ashr` shrinkage columns of
   `gene_counts_<X>_TC.csv` are not regenerated here; that file is left untouched.
 
-Run time: about 30 s per contrast (six contrasts).
+Run time: about 30 s per contrast (fourteen contrasts). `params$families` restricts the run
+(`"TC"`, `"LC"`, or both).
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
 suppressPackageStartupMessages({ library(DESeq2); library(apeglm); library(tidyverse) })
 REWRITE_STALE <- isTRUE(params$rewrite_stale)
+FAMILIES      <- if (!is.null(params$families)) params$families else c("TC", "LC")
 PADJ_CUTOFF   <- 0.05
 ```
 
 # Contrasts and their files on disk
 
 ```{r contrasts}
-contrasts <- tribble(
+tc <- tribble(
   ~code,  ~dir,   ~trt,  ~full_table,          ~siggene,
   "FOA",  "Foot", "OA",  "FOA_TC_apeglm.csv",  "FOA_TC_siggene.csv",
   "FOW",  "Foot", "OW",  "FOW_TC_apeglm.csv",  "FOW_TC_siggene.csv",
@@ -69,9 +84,31 @@ contrasts <- tribble(
   "GOA",  "Gill", "OA",  "GOA_TC.csv",         "GOA_TC_siggene.csv",
   "GOW",  "Gill", "OW",  "GOW_TC_apeglm.csv",  "GOW_TC_siggene_apeglm.csv",
   "GDO",  "Gill", "DO",  "GDO_TC_apeglm.csv",  "GDO_TC_siggene_apeglm.csv"
-) %>% mutate(countmatrix   = sprintf("%s_TC_countmatrix.csv", code),
-             treatmentinfo = sprintf("%s_TC_treatmentinfo.csv", code))
-knitr::kable(contrasts)
+) %>% mutate(family = "TC", design_var = "treatment", ref_level = "control",
+             countmatrix   = sprintf("%s_TC_countmatrix.csv", code),
+             treatmentinfo = sprintf("%s_TC_treatmentinfo.csv", code),
+             reference = "day-3 treatment control")
+## LC: stressor (or day-3 control) vs the day-0 lab control. In the *TC_LC files both groups
+## carry treatment == "control", so the design is ~ day (levels 0, 3) and the coefficient
+## is day_3_vs_0; elsewhere it is ~ treatment with control = day 0.
+lc <- tribble(
+  ~code,     ~dir,   ~trt,      ~design_var,  ~ref_level,
+  "FOA_LC",  "Foot", "OA",      "treatment",  "control",
+  "FOW_LC",  "Foot", "OW",      "treatment",  "control",
+  "FDO_LC",  "Foot", "DO",      "treatment",  "control",
+  "FTC_LC",  "Foot", "3",       "day",        "0",
+  "GOA_LC",  "Gill", "OA",      "treatment",  "control",
+  "GOW_LC",  "Gill", "OW",      "treatment",  "control",
+  "GDO_LC",  "Gill", "DO",      "treatment",  "control",
+  "GTC_LC",  "Gill", "3",       "day",        "0"
+) %>% mutate(family = "LC",
+             full_table    = sprintf("%s_apeglm.csv", code),
+             siggene       = sprintf("%s_siggene.csv", code),
+             countmatrix   = sprintf("%s_countmatrix.csv", code),
+             treatmentinfo = sprintf("%s_treatmentinfo.csv", code),
+             reference = "day-0 lab control")
+contrasts <- bind_rows(tc, lc) %>% filter(family %in% FAMILIES)
+knitr::kable(contrasts %>% select(code, family, dir, trt, design_var, ref_level, full_table, siggene, reference))
 ```
 
 # Readers that tolerate the on-disk formats
@@ -113,8 +150,9 @@ rederive <- function(row) {
     stop(row$code, ": sample(s) in treatmentinfo but not in the master matrix: ",
          paste(missing, collapse = ", "))
   cm <- master[, ti$sample.1, drop = FALSE]                    # what 02_5 does
-  ti$treatment <- factor(ti$treatment, levels = c("control", row$trt))
-  stopifnot(!anyNA(ti$treatment))
+  ## explicit reference level, whichever variable the contrast is on (treatment or day)
+  ti[[row$design_var]] <- factor(as.character(ti[[row$design_var]]), levels = c(row$ref_level, row$trt))
+  stopifnot(!anyNA(ti[[row$design_var]]), nlevels(droplevels(ti[[row$design_var]])) == 2)
 
   ## does the committed per-contrast matrix hold the same counts? (row names may be lost)
   disk <- read_countmatrix(file.path(d, row$countmatrix))
@@ -122,11 +160,12 @@ rederive <- function(row) {
            isTRUE(all.equal(unname(disk), unname(cm), check.attributes = FALSE))
   cm_ids_lost <- !identical(rownames(disk), rownames(cm))
 
-  dds  <- DESeqDataSetFromMatrix(cm, ti, ~ treatment)
+  dds  <- DESeqDataSetFromMatrix(cm, ti, reformulate(row$design_var))
   dds  <- DESeq(dds, quiet = TRUE)
   keep <- rowSums(counts(dds) >= 10) >= ncol(cm) / 3          # same filter as 02_5
   ddsf <- dds[keep, ]
-  stopifnot(resultsNames(ddsf)[2] == sprintf("treatment_%s_vs_control", row$trt))
+  coefn <- sprintf("%s_%s_vs_%s", row$design_var, row$trt, row$ref_level)
+  stopifnot(resultsNames(ddsf)[2] == coefn)
   res  <- lfcShrink(ddsf, coef = 2, type = "apeglm", quiet = TRUE)
   full <- data.frame(gene = rownames(res), as.data.frame(res), row.names = NULL)
   sig  <- full %>% filter(!is.na(padj), padj < PADJ_CUTOFF)
@@ -162,7 +201,8 @@ for (i in seq_len(nrow(contrasts))) {
   full_ok <- cmp_full$full_same_genes && cmp_full$full_baseMean_maxrel < 1e-6
   sig_ok  <- cmp_sig$siggene_same_genes && cmp_sig$siggene_baseMean_maxrel < 1e-6
   results[[i]] <- bind_cols(
-    tibble(code = row$code, tissue = row$dir, treatment = row$trt,
+    tibble(code = row$code, family = row$family, tissue = row$dir, treatment = row$trt,
+           reference = row$reference, design = paste0("~ ", row$design_var),
            n_samples = rd$n_samples, genes_after_filter = rd$n_kept,
            n_DEG_rederived = nrow(rd$sig),
            countmatrix_matches_master = rd$countmatrix_matches_master,
@@ -175,6 +215,7 @@ for (i in seq_len(nrow(contrasts))) {
               ifelse(rd$countmatrix_matches_master, "matches master", "DIFFERS from master"),
               ifelse(full_ok, "consistent", "STALE"), ifelse(sig_ok, "consistent", "STALE")))
 
+  results[[i]]$rewritten_this_run <- FALSE
   if (REWRITE_STALE) {
     if (!full_ok) {
       write.table(rd$full, file.path(d, row$full_table), row.names = FALSE)
@@ -184,17 +225,25 @@ for (i in seq_len(nrow(contrasts))) {
       write.table(rd$sig, file.path(d, row$siggene), row.names = FALSE)
       cat("  rewrote", row$siggene, "\n")
     }
+    results[[i]]$rewritten_this_run <- !full_ok || !sig_ok
   }
 }
 check <- bind_rows(results)
-write_csv(check, file.path(deg, "DEG_provenance_check.csv"))
+## keep the rows of any family that was not re-run this time, so the file stays complete
+prev_file <- file.path(deg, "DEG_provenance_check.csv")
+if (file.exists(prev_file) && !all(c("TC", "LC") %in% FAMILIES)) {
+  prev <- read_csv(prev_file, show_col_types = FALSE)
+  if (!"family" %in% names(prev)) prev$family <- "TC"      # files written before the LC rows existed
+  check <- bind_rows(check, prev %>% filter(!family %in% FAMILIES))
+}
+write_csv(check, prev_file)
 ```
 
 # Summary
 
 ```{r summary}
 check %>%
-  select(code, n_samples, genes_after_filter, n_DEG_rederived, countmatrix_matches_master,
+  select(code, family, n_samples, genes_after_filter, n_DEG_rederived, countmatrix_matches_master,
          full_rows_disk, full_same_genes, full_baseMean_maxrel, full_table_consistent,
          siggene_rows_disk, siggene_same_genes, siggene_baseMean_maxrel, siggene_consistent) %>%
   knitr::kable()

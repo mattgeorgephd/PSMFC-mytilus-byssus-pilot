@@ -1,8 +1,8 @@
-metric,type,arms
-max_force,level,control;OA;OW;DO
-pad_area,level,control;OA;OW;DO
-adhesion_kpa,level,control;OA;OW;DO
-max_displacement,level,control;OA;OW;DO
-dlog_max_force,change,control;OA;OW;DO
-dlog_pad_area,change,control;OA;OW;DO
-dlog_adhesion_kpa,change,control;OA;OW;DO
+metric,type,tier,arms,covariates,use_secretion_state,adjust_for_baseline
+max_force,level,primary,control;OA;OW;DO,treatment,FALSE,TRUE
+pad_area,level,primary,control;OA;OW;DO,treatment,FALSE,TRUE
+adhesion_kpa,level,exploratory,control;OA;OW;DO,treatment,FALSE,TRUE
+max_displacement,level,exploratory,control;OA;OW;DO,treatment,FALSE,TRUE
+dlog_max_force,change,primary,control;OA;OW;DO,treatment,FALSE,TRUE
+dlog_pad_area,change,primary,control;OA;OW;DO,treatment,FALSE,TRUE
+dlog_adhesion_kpa,change,exploratory,control;OA;OW;DO,treatment,FALSE,TRUE

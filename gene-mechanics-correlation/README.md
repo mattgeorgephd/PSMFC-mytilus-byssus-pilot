@@ -12,7 +12,7 @@ gene-mechanics-correlation/
 ├── gene-mechanics-correlation.Rproj
 ├── 01_code/
 │   ├── 20-gene_mechanics_correlation.Rmd    paired table, VST, per-gene association
-│   ├── 21-gene_mechanics_expanded.Rmd       mixed models, modules, permutation, diagnostics
+│   ├── 21-gene_mechanics_expanded.Rmd       weighted regression (reported), mixed models, modules, permutation, best hits
 │   ├── 22-rna_thread_manifest_and_expression_tables.Rmd
 │   ├── 23-byssus_foot_gene_list_expression.Rmd
 │   ├── 24-run_gene_mechanics_by_tissue.Rmd  renders 20-23 for foot and gill
@@ -45,15 +45,25 @@ All paths resolve from a `repo_root` found by walking up from `here::here()`.
 | `differential-expression/02_data/gene_count_matrix_clean.csv` | counts |
 | `differential-expression/03_analyses/DEG_lists/` | Tag-seq arm per sample, DEG lists, annotation |
 
-## Status (16 September 2026)
+## Status (17 September 2026)
 
-44 paired animals (control 10, OA 12, OW 12, DO 10), 42 with baselines. Peak force and
-plaque area are the primary metrics; adhesion (their ratio) hides the stressor effect on this
-dataset. Change-from-baseline metrics (`dlog_*`) are tested alongside the day-3 levels.
+45 foot / 46 gill paired animals (control 11, OA 12, OW 12, DO 10-11), 44 / 45 with
+baselines. Peak force and plaque area and their change from baseline are the declared
+primary metrics (`PRIMARY_METRICS`, `tier` column in every output); adhesion, extension and
+the change in adhesion are exploratory. The reported test for every metric is the
+plaque-count-weighted per-animal regression, and every gene set (73 foot / 66 gill
+candidates including the byssal structural genes, six modules, the DEG union) carries a
+10,000-shuffle permutation p per metric, family-wide and for the primary family
+(`03_analyses/gene_mechanics/best_hits_<T>.csv`, `permutation_summary_<T>.csv`).
 
-Foot: nothing on the level metrics survives correction. On the change in adhesion, Collagen
-alpha-1(V) reaches q = 0.034 with a permutation-corrected p of 0.054 and the same sign and
-rank without the control arm; the collagen module is q = 0.052. Gill (n = 45): nothing
-survives, and the collagen signal has no counterpart there. Treat as
-hypothesis-strengthening, not established. Details in `gene-mechanics-results-report.docx`
-and `01_code/gene-mechanics-pipeline_DOC.md`.
+**Nothing survives the search in either tissue.** Foot: best candidate PDE8B vs the change
+in force q = 0.088, family-wide permutation p = 0.38 (primary family 0.26); best module
+HIF vs the change in area q = 0.077, family-wide 0.34; DEG union 0.70. Gill: candidates
+0.77, modules 0.89, DEG union 0.25 (Arp2/3 subunit vs the change in force, q = 0.038 within
+the metric, permutation 0.077). The `byssal_structural` module is unrelated to every metric
+(foot best p = 0.18): the plaque-protein genes mark thread secretion, not strength. The
+byssal secretion state (`differential-expression/01_code/01_7-secretion_state.Rmd`) is
+joined into the manifest and can be switched on as a covariate (`USE_SECRETION_STATE`,
+default FALSE). Details in `01_code/gene-mechanics-pipeline_DOC.md` §4;
+`gene-mechanics-results-report.docx` predates the corrected thread table and the
+permutation changes.

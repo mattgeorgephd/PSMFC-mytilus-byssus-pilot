@@ -33,13 +33,18 @@ It produces:
 4. Diagnostic plots (top-hit scatterplots, candidate-gene correlation heatmap).
 
 > **READ THIS FIRST - power.** The paired set is small: with the full thread dataset and the
-> day-3 control arm included, n = 44 animals (control = 10, OA = 12, OW = 12, DO = 10), 42 of
-> them with baseline threads. Within any single arm n is 10-12. This analysis is
-> **exploratory and hypothesis-generating, not confirmatory.** Treat raw p-values as ranking
-> signals, expect few or no hits to survive FDR correction, and do not write causal language
-> from it. Tag-seq sampling was destructive (foot/gill removed), so expression and the
+> day-3 control arm included, n = 45 foot animals (control = 11, OA = 12, OW = 12, DO = 10),
+> 44 of them with baseline threads (gill: 46 / 45). Within any single arm n is 10-12. This
+> analysis is **exploratory and hypothesis-generating, not confirmatory.** Treat raw p-values
+> as ranking signals, expect few or no hits to survive FDR correction, and do not write causal
+> language from it. Tag-seq sampling was destructive (foot/gill removed), so expression and the
 > *post-stress* threads come from the same animal at the same timepoint; this is association,
 > not a demonstrated mechanism.
+
+> **The search is declared here, not in the write-up.** `PRIMARY_METRICS` below names the
+> metrics that form the confirmatory family (candidate genes x primary metrics); every other
+> metric is labelled `exploratory` in every output table (`tier` column), and script 21's
+> permutation reports a separate search-corrected p for the primary family.
 
 > **Which metric to read first.** On the full dataset the stressor effect is in **peak force
 > and plaque area separately**, not in their ratio: adhesion (kPa) falls ~20% in every arm
@@ -77,6 +82,20 @@ INCLUDE_CONTROL_ARM <- TRUE   # TRUE = the day-3 common-garden control animals (
                               #        threads. Their own ~20% decline is the null trajectory
                               #        a stress-specific expression signal must beat.
                               # FALSE = stressor arms only (the pre-2026-09 behaviour).
+USE_SECRETION_STATE <- FALSE  # TRUE = add each animal's byssal SECRETION STATE (on/off; the
+                              #        foot plaque-protein module, computed per foot sample by
+                              #        differential-expression/01_code/01_7-secretion_state.Rmd
+                              #        and read from SECRETION_STATE_FILE) as a nuisance
+                              #        covariate in every per-gene regression, beside
+                              #        treatment. With ~10 of 46 day-3 animals "on", any
+                              #        candidate that co-varies with that module would
+                              #        otherwise pick up secretion state, not mechanics.
+                              #        Script 21 reads the same choice from metrics_config and
+                              #        permutes within arm x state. Gill animals take the
+                              #        state of their own foot sample.
+                              # FALSE (default) = treatment is the only covariate; the state
+                              #        is still joined into the manifest for inspection when
+                              #        the file exists, but enters no model.
 
 ## ---- mechanical metrics -------------------------------------------------------------
 ## LEVEL metrics: per-animal mean of its day-3 plaques.
@@ -84,12 +103,21 @@ INCLUDE_CONTROL_ARM <- TRUE   # TRUE = the day-3 common-garden control animals (
 ## Order here is the reporting order. Force and area first, deliberately (see above).
 LEVEL_METRICS  <- c("max_force", "pad_area", "adhesion_kpa", "max_displacement")
 CHANGE_METRICS <- c("dlog_max_force", "dlog_pad_area", "dlog_adhesion_kpa")
+## PRIMARY metrics: the pre-declared confirmatory family. Force and area carry the stressor
+## signal (script 4), so their day-3 levels and their changes from baseline are primary;
+## adhesion (their ratio), extension and the adhesion change are exploratory. Every output
+## table carries a `tier` column with this label; script 21 permutes the primary family
+## separately from the whole search.
+PRIMARY_METRICS <- c("max_force", "pad_area", "dlog_max_force", "dlog_pad_area")
+stopifnot(all(PRIMARY_METRICS %in% c(LEVEL_METRICS, CHANGE_METRICS)))
 
 ## ---- candidate gene keywords (regex, case-insensitive) ------------------------------
 ## Grouped by biology; edit freely. Matched against UniProt "protein_name".
 CANDIDATE_KEYWORDS <- paste(
-  # byssal structural / adhesive proteins
+  # byssal structural / adhesive proteins (plaque proteins, thread core, cuticle)
   "byss", "foot protein", "Mefp", "adhesive plaque", "polyphenolic",
+  "byssal protein-", "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
+  "byssal peroxidase", "byssal HSP", "byssal calumenin", "byssal protease inhibitor",
   # collagens / preCols (byssal thread core)
   "collagen",
   # plaque-curing / cross-linking enzymes
@@ -155,6 +183,17 @@ RESPONSE_FILE <- file.path(repo_root, "thread-strength", "03_analyses", "decompo
                            "mussel_response_classification.csv")
 OUT_DIR     <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "gene_mechanics")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+## Per-animal byssal secretion state (differential-expression script 01_7). Joined into the
+## manifest whenever it exists; used as a covariate only when USE_SECRETION_STATE is TRUE.
+SECRETION_STATE_FILE <- file.path(DE_DIR, "02_data", "secretion_state.csv")
+## Genome-wide BLAST annotation (best UniProt hit per LOC), used only to add the byssal
+## structural genes to the candidate set: the DEG-derived annotation map below covers
+## stress-responsive genes and does not reach the plaque proteins, which respond to time in
+## the system rather than to any stressor (see 03_analyses/README.md).
+MASTER_ANNOT_FILE <- file.path(repo_root, "blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
+BYSSAL_STRUCTURAL_REGEX <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-",
+                                 "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
+                                 sep = "|")
 
 if (!file.exists(THREAD_FILE))
   stop("Thread summary not found:\n  ", THREAD_FILE,
@@ -302,6 +341,38 @@ if (nrow(no_expr) > 0) {
   paired <- paired %>% filter(sample %in% cm_cols)
 }
 
+## ---- byssal secretion state (foot plaque-protein module, script 01_7) -----------------
+## One state per ANIMAL, taken from its foot sample, so the gill analysis uses the same
+## label. Joined for inspection whenever the file exists; a model covariate only when
+## USE_SECRETION_STATE is TRUE.
+if (file.exists(SECRETION_STATE_FILE)) {
+  sec <- read_csv(SECRETION_STATE_FILE, show_col_types = FALSE) %>%
+    mutate(mussel = norm_id(mussel)) %>%
+    filter(!is.na(mussel)) %>%
+    distinct(mussel, .keep_all = TRUE) %>%
+    select(mussel, secretion_score, secretion_state)
+  paired <- paired %>% left_join(sec, by = "mussel")
+  cat("Secretion state joined:", sum(!is.na(paired$secretion_state)), "of", nrow(paired),
+      "animals labelled (", sum(paired$secretion_state == "on", na.rm = TRUE), "on ).\n")
+} else {
+  paired$secretion_score <- NA_real_; paired$secretion_state <- NA_character_
+  if (USE_SECRETION_STATE)
+    stop("USE_SECRETION_STATE is TRUE but ", SECRETION_STATE_FILE, " does not exist; ",
+         "run differential-expression/01_code/01_7-secretion_state.Rmd first.")
+}
+if (USE_SECRETION_STATE) {
+  no_state <- paired %>% filter(is.na(secretion_state))
+  if (nrow(no_state) > 0) {
+    warning(nrow(no_state), " paired animal(s) have no secretion state and are dropped ",
+            "because USE_SECRETION_STATE = TRUE: ", paste(no_state$mussel, collapse = ", "))
+    paired <- paired %>% filter(!is.na(secretion_state))
+  }
+  paired <- paired %>% mutate(secretion_state = factor(secretion_state, levels = c("off", "on")))
+  print(table(arm = paired$treatment, secretion_state = paired$secretion_state))
+}
+## the nuisance terms every regression below controls for; script 21 reads the same list
+COVARIATES <- if (USE_SECRETION_STATE) c("treatment", "secretion_state") else "treatment"
+
 cat("Paired animals:", nrow(paired), "\n")
 print(table(paired$treatment))
 cat("With baseline threads (for CHANGE metrics and ADJUST_FOR_BASELINE):",
@@ -371,14 +442,42 @@ annot <- map_dfr(sig_files, ~ {
   if (is.null(d) || !all(c("LOC_ID", "protein_name") %in% names(d))) return(NULL)
   d %>% select(LOC_ID, protein_name)
 }) %>% distinct(LOC_ID, .keep_all = TRUE)
-annot <- as_tibble(annot)
-cat("Annotated LOCs:", nrow(annot), "\n")
+annot <- as_tibble(annot) %>% mutate(annotation_source = "TC_DEG_sigs")
+cat("Annotated LOCs (from the TC DEG tables):", nrow(annot), "\n")
+
+## The byssal structural genes (plaque proteins, preCols, byssal EP/ACDC, the plaque-curing
+## tyrosinase) are not DEGs in any treatment-vs-control contrast, so the map above never
+## reaches them. Add every expressed gene whose best genome-wide BLAST hit matches
+## BYSSAL_STRUCTURAL_REGEX, from the master annotation table, so that they enter the
+## candidate set and script 21's byssal_structural module explicitly.
+if (file.exists(MASTER_ANNOT_FILE)) {
+  master <- read_delim(MASTER_ANNOT_FILE, delim = "\t", show_col_types = FALSE,
+                       col_select = c("gene", "bitscore", "Protein.names")) %>%
+    transmute(LOC_ID = str_extract(as.character(gene), "LOC\\d+"),
+              bitscore = suppressWarnings(as.numeric(bitscore)),
+              protein_name = as.character(Protein.names)) %>%
+    filter(!is.na(LOC_ID), !is.na(protein_name)) %>%
+    arrange(desc(bitscore)) %>% distinct(LOC_ID, .keep_all = TRUE)          # best hit per LOC
+  byssal_add <- master %>%
+    filter(grepl(BYSSAL_STRUCTURAL_REGEX, protein_name, ignore.case = TRUE),
+           LOC_ID %in% rownames(vp), !LOC_ID %in% annot$LOC_ID) %>%
+    transmute(LOC_ID, protein_name, annotation_source = "genome_blast_byssal")
+  annot <- bind_rows(annot, byssal_add)
+  cat("Byssal structural genes added from the genome annotation (expressed, not TC DEGs):",
+      nrow(byssal_add), "\n")
+  print(as.data.frame(byssal_add))
+} else {
+  warning("Master annotation not found (", MASTER_ANNOT_FILE, "); the byssal structural genes ",
+          "enter the candidate set only where they are TC DEGs.", call. = FALSE)
+}
 
 ## candidate gene set = annotated genes whose protein name matches the keyword list
 candidates <- annot %>%
   filter(grepl(CANDIDATE_KEYWORDS, protein_name, ignore.case = TRUE)) %>%
-  filter(LOC_ID %in% rownames(vp))
-cat("Candidate (byssal/stress) genes present & expressed:", nrow(candidates), "\n")
+  filter(LOC_ID %in% rownames(vp)) %>%
+  mutate(byssal_structural = grepl(BYSSAL_STRUCTURAL_REGEX, protein_name, ignore.case = TRUE))
+cat("Candidate (byssal/stress) genes present & expressed:", nrow(candidates),
+    "( of which byssal structural:", sum(candidates$byssal_structural), ")\n")
 print(as.data.frame(candidates))
 ```
 
@@ -396,7 +495,12 @@ write_csv(thr_raw %>% filter(phase == "post", mussel %in% paired$mussel) %>%
           file.path(OUT_DIR, sprintf("thread_plaques_paired_%s.csv", TISSUE)))  # raw day-3 plaques, paired animals
 write_csv(tibble(metric = c(LEVEL_METRICS, CHANGE_METRICS),
                  type   = c(rep("level", length(LEVEL_METRICS)), rep("change", length(CHANGE_METRICS))),
-                 arms   = paste(arms_kept, collapse = ";")),
+                 tier   = ifelse(c(LEVEL_METRICS, CHANGE_METRICS) %in% PRIMARY_METRICS,
+                                 "primary", "exploratory"),
+                 arms   = paste(arms_kept, collapse = ";"),
+                 covariates          = paste(COVARIATES, collapse = ";"),
+                 use_secretion_state = USE_SECRETION_STATE,
+                 adjust_for_baseline = ADJUST_FOR_BASELINE),
           file.path(OUT_DIR, sprintf("metrics_config_%s.csv", TISSUE)))          # so 21 uses the same list
 ```
 
@@ -440,12 +544,16 @@ exactly the animals the linear model used.
 ```{r assoc_fns}
 metrics <- c(LEVEL_METRICS, CHANGE_METRICS)
 is_change <- function(metric) metric %in% CHANGE_METRICS
+tier_of   <- function(metric) ifelse(metric %in% PRIMARY_METRICS, "primary", "exploratory")
 
-partial_spearman <- function(x, y, treatment) {
-  # rank-based partial correlation, treatment partialled out, on complete cases only
-  ok <- stats::complete.cases(x, y, treatment)
+## nuisance design shared by every fit: treatment, plus the secretion state when enabled
+nuis_formula <- reformulate(COVARIATES)                       # ~ treatment [+ secretion_state]
+
+partial_spearman <- function(x, y, nuis) {
+  # rank-based partial correlation, nuisance covariates partialled out, complete cases only
+  ok <- stats::complete.cases(x, y, nuis)
   if (sum(ok) < 6) return(NA_real_)
-  X  <- model.matrix(~ treatment, data = data.frame(treatment = droplevels(treatment[ok])))
+  X  <- model.matrix(nuis_formula, data = droplevels(nuis[ok, , drop = FALSE]))
   rx <- residuals(lm(rank(x[ok]) ~ X - 1))
   ry <- residuals(lm(rank(y[ok]) ~ X - 1))
   suppressWarnings(cor(rx, ry, method = "pearson"))   # corr of ranks' residuals
@@ -454,14 +562,16 @@ partial_spearman <- function(x, y, treatment) {
 test_gene <- function(loc, metric) {
   x <- as.numeric(vp[match(loc, rownames(vp)), paired$sample])
   y <- paired[[metric]]
-  dat <- data.frame(y = y, x = x, treatment = paired$treatment)
+  dat <- data.frame(y = y, x = x, paired[, COVARIATES, drop = FALSE])
   if (ADJUST_FOR_BASELINE && !is_change(metric)) {
     dat$base <- paired[[paste0("base_", metric)]]
     dat <- dat[stats::complete.cases(dat), ]
-    fm <- tryCatch(lm(y ~ x + treatment + base, data = dat), error = function(e) NULL)
+    fm <- tryCatch(lm(reformulate(c("x", COVARIATES, "base"), response = "y"), data = dat),
+                   error = function(e) NULL)
   } else {
     dat <- dat[stats::complete.cases(dat), ]
-    fm <- tryCatch(lm(y ~ x + treatment, data = dat), error = function(e) NULL)
+    fm <- tryCatch(lm(reformulate(c("x", COVARIATES), response = "y"), data = dat),
+                   error = function(e) NULL)
   }
   if (is.null(fm) || nrow(dat) < 6) return(NULL)
   co <- summary(fm)$coefficients
@@ -470,10 +580,11 @@ test_gene <- function(loc, metric) {
     LOC_ID      = loc,
     metric      = metric,
     metric_type = if (is_change(metric)) "change" else "level",
+    tier        = tier_of(metric),
     n           = nrow(dat),
     slope       = co["x", "Estimate"],
     p_lm        = co["x", "Pr(>|t|)"],
-    rho_partial = partial_spearman(dat$x, dat$y, dat$treatment)
+    rho_partial = partial_spearman(dat$x, dat$y, dat[, COVARIATES, drop = FALSE])
   )
 }
 
@@ -504,7 +615,7 @@ res_cand %>%
   group_by(metric) %>% slice_min(p_lm, n = 6) %>% ungroup() %>%
   mutate(across(c(slope, rho_partial), ~round(., 3)),
          p_lm = signif(p_lm, 2), q_lm = signif(q_lm, 2)) %>%
-  select(metric, metric_type, n, LOC_ID, protein_name, slope, p_lm, q_lm, rho_partial) %>%
+  select(metric, metric_type, tier, n, LOC_ID, protein_name, slope, p_lm, q_lm, rho_partial) %>%
   print(n = 42)
 
 cat("\n================ DEG-UNION: genes passing BH <", FDR_ALPHA, "================\n")
@@ -629,12 +740,19 @@ cat("
 
 **Caveats baked into the design (do not skip in the manuscript):**
 
-1. n = 44 with the control arm (control 10 / OA 12 / OW 12 / DO 10), 42 with baselines.
-   Within-arm correlations are not interpretable on their own; the pooled-with-covariate
-   model borrows strength across arms but confounds arm-level expression shifts with
-   attachment differences.
-2. Multiple testing: the candidate set (~tens of genes) is the defensible test; the
-   DEG-union (hundreds) is screening only.
+1. n = 45 foot / 46 gill with the control arm (control 11 / OA 12 / OW 12 / DO 10-11), 44 / 45
+   with baselines. Within-arm correlations are not interpretable on their own; the
+   pooled-with-covariate model borrows strength across arms but confounds arm-level
+   expression shifts with attachment differences.
+2. Multiple testing: the candidate set (~tens of genes) x PRIMARY_METRICS is the declared
+   confirmatory family (`tier = primary`); the remaining metrics and the DEG-union
+   (hundreds) are exploratory / screening. Script 21 gives every family a
+   search-corrected permutation p; quote q only beside it.
+7. `USE_SECRETION_STATE` (default FALSE) adds the animal's byssal secretion state (on/off,
+   from differential-expression script 01_7) as a nuisance covariate. It is off by default
+   because the state is itself an expression-derived quantity measured on the same sample;
+   turn it on as a sensitivity analysis when a candidate co-varies with the plaque-protein
+   module (`byssal_structural = TRUE` in candidate_genes_<T>.csv).
 3. Destructive sampling: expression and post-stress threads are the same animal/timepoint,
    so this is contemporaneous association, not a predictive or causal link.
 4. `pad_area` and `max_force` carry the stressor signal; `adhesion_kpa` (their ratio) does
@@ -650,4 +768,50 @@ cat("
    checking by hand for any top hit (scatter by arm).
 ")
 sessionInfo()
+```
+
+# 8. Provenance
+
+`RUN_provenance_<T>.txt` records the configuration behind every file in
+`03_analyses/gene_mechanics/` (the thread-strength scripts keep the same kind of file), and
+the git commit that last touched the thread input, so a result can always be traced to the
+thread table it was computed from. Script 21 appends its own block.
+
+```{r provenance}
+git_last_commit <- function(path) {
+  ## guarded: no git, not a repo, or an untracked file all yield "unavailable"
+  if (!nzchar(Sys.which("git")) || !file.exists(path)) return("unavailable")
+  out <- tryCatch(suppressWarnings(
+           system2("git", c("-C", shQuote(dirname(path)), "log", "-n", "1",
+                            shQuote("--format=%h %cs"), "--", shQuote(basename(path))),
+                   stdout = TRUE, stderr = FALSE)),
+         error = function(e) character(0))
+  if (length(out) == 0 || !is.null(attr(out, "status")) || !nzchar(out[1])) "unavailable" else out[1]
+}
+prov <- file.path(OUT_DIR, sprintf("RUN_provenance_%s.txt", TISSUE))
+writeLines(c(
+  "[20-gene_mechanics_correlation.Rmd]",
+  paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+  paste0("tissue               : ", TISSUE),
+  paste0("thread input         : ", THREAD_FILE),
+  paste0("thread input commit  : ", git_last_commit(THREAD_FILE)),
+  paste0("response input       : ", RESPONSE_FILE, " (", ifelse(file.exists(RESPONSE_FILE), "present", "absent"), ")"),
+  paste0("count matrix         : ", file.path(DE_DIR, "02_data", "gene_count_matrix_clean.csv")),
+  paste0("INCLUDE_CONTROL_ARM  : ", INCLUDE_CONTROL_ARM),
+  paste0("ADJUST_FOR_BASELINE  : ", ADJUST_FOR_BASELINE),
+  paste0("USE_SECRETION_STATE  : ", USE_SECRETION_STATE),
+  paste0("covariates           : ", paste(COVARIATES, collapse = " + ")),
+  paste0("PRIMARY_METRICS      : ", paste(PRIMARY_METRICS, collapse = ", ")),
+  paste0("LEVEL_METRICS        : ", paste(LEVEL_METRICS, collapse = ", ")),
+  paste0("CHANGE_METRICS       : ", paste(CHANGE_METRICS, collapse = ", ")),
+  paste0("MIN_COUNT / FDR_ALPHA: ", MIN_COUNT, " / ", FDR_ALPHA),
+  paste0("paired animals       : ", nrow(paired), " (", paste(sprintf("%s %d", names(table(paired$treatment)),
+                                                                     as.integer(table(paired$treatment))), collapse = ", "), ")"),
+  paste0("with baseline        : ", sum(!is.na(paired$base_max_force))),
+  paste0("genes tested         : ", nrow(vp)),
+  paste0("candidate genes      : ", nrow(candidates), " (byssal structural ", sum(candidates$byssal_structural), ")"),
+  paste0("DEG union genes      : ", length(deg_union)),
+  paste0("R / DESeq2           : ", R.version.string, " / ", as.character(packageVersion("DESeq2")))),
+  prov)
+cat(readLines(prov), sep = "\n")
 ```

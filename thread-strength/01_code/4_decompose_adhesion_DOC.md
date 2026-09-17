@@ -64,7 +64,7 @@ silently returns the log scale. The first draft of this script had exactly that 
 | `STATS_decomp_typeIII_ANOVA.csv` | arm, timepoint, interaction; one block per response |
 | `STATS_decomp_within_arm_change.csv` | post vs baseline per arm per response. For logged responses: `ratio`, its 95% CI, and `pct_change` |
 | `STATS_decomp_paired_by_arm.csv` | per-animal paired change (mean of threads per timepoint), per arm per response, with 95% CI and paired t / Wilcoxon |
-| `STATS_failure_mode.csv` | failure-mode counts by thread treatment; chi-square and Fisher for the day-3 arms |
+| `STATS_failure_mode.csv` | failure-mode counts by thread treatment; chi-square (with the minimum expected count) and, since 17 September 2026, a `fisher_exact_day3` row (Monte Carlo, B = 10,000, fixed seed) for the day-3 arms: chi-square p = 0.029, Fisher p = 0.019 |
 | `FIG_paired_change_by_metric.png` | paired % change with 95% CI, one panel per response |
 | `FIG_animal_response_force_vs_area.png` | every paired animal: change in force against change in area |
 | `mussel_response_classification.csv` | per-animal response, see below |

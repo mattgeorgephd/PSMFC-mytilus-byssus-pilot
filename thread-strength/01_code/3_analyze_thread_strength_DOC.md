@@ -195,15 +195,18 @@ Written to `03_analyses/analyze-thread-strength/`.
 | file | contents |
 |---|---|
 | `BP_*.png` | four distribution panels |
-| `LineBox_{CONTROL,OA,OW,DO}_*.png` | before/after panels, one per day-3 arm |
+| `LineBox_{CONTROL,OA,OW,DO}_*.png` | before/after panels, one per day-3 arm; since 17 September 2026 with the day-0 lab-reference animals as their own grey cluster at the far left (`SHOW_LAB_REFERENCE_IN_PANELS`), never pooled into the baseline |
 | `DIAG_lmer_residuals.png` | **new.** Q-Q and residuals-vs-fitted for the adhesion model |
 | `STATS_between_arm_day3_{ANOVA,TukeyHSD,KruskalWallis}.csv` | Kruskal-Wallis is **new** to disk |
-| `STATS_within_arm_beforeafter.csv` | now carries a `baseline_pool` column recording the toggle |
+| `STATS_within_arm_beforeafter.csv` | carries a `baseline_pool` column recording the toggle; since 17 September 2026 also `n_ctrl_post`, `delta_vs_ctrl`, `vs_ctrl_welch_p`, `vs_ctrl_mannwhit_p`: each stressor arm's day-3 animals against the **day-3 treatment control** (the reference the mixed model and the DESeq2 contrasts use), beside the pooled-baseline columns `welch_p` / `mannwhit_p`, which answer a different question |
+| `STATS_lab_reference_check.csv` | **17 September 2026.** Per metric (adhesion, force, area, extension), per-mussel means: lab (day 0) vs pre-exposure (day 1), day-3 control vs pre-exposure, lab vs day-3 control; Welch and Mann-Whitney |
+| `STATS_baseline_balance.csv` | **17 September 2026.** Per-mussel baseline by FUTURE arm (n, mean, sd, median), one-way ANOVA and Kruskal-Wallis per metric: the randomisation check behind the paired design |
+| `STATS_repeatability.csv` | **17 September 2026.** ICC from the arm x timepoint mixed model's variance components (adhesion raw and log, log force, log area, extension) and the per-arm Pearson / Spearman correlation of the paired animals' baseline and day-3 per-mussel means |
 | `STATS_lmer_typeIII_ANOVA.csv` | **new.** Both the raw and the log model (register items 5 and 6) |
 | `STATS_lmer_fixed_effects.csv`, `..._log.csv` | the log version is **new** |
 | `STATS_lmer_marginal_means.csv` | **new.** Arm means at post and at baseline |
 | `STATS_lmer_within_arm_change.csv`, `STATS_lmer_arm_contrasts.csv` | unchanged |
-| `RUN_provenance.txt` | **new.** Timestamp, toggle state, n at each filtering step |
+| `RUN_provenance.txt` | Timestamp, toggle states, n at each filtering step, package versions |
 
 Everything that was print-only is now on disk. That closes register items §1.5 (log-adhesion
 model) and §1.6 (Type III ANOVA and emmeans marginal means).
@@ -230,3 +233,35 @@ model) and §1.6 (Type III ANOVA and emmeans marginal means).
 lighten the violin fill. ggplot2 3.5 emits `Duplicated aesthetics after name standardisation:
 fill` for this. The panel still renders. This is pre-existing and was not changed, because
 rewriting it would alter the appearance of a figure you have already been working from.
+
+---
+
+## 9. 17 September 2026: the two controls as outputs
+
+Three checks that justify the design were by-products of the figures or lived only in
+this document; they are now tables (Statistics 3 in the script, files above):
+
+- **Lab-reference check.** The day-0 lab-reference animals, the day-1 pre-exposure
+  animals and the day-3 treatment-control animals agree on adhesion (77.0, 77.3, 79.5 kPa;
+  Welch p = 0.97 / 0.76), force (p = 0.37 / 0.49) and area (p = 0.27 / 0.49). Extension is
+  the exception: the lab animals' threads extended further than the pre-exposure (0.19 vs
+  0.14 mm, p = 0.02) and the day-3 control threads (p = 0.03).
+- **Baseline balance by future arm.** Adhesion (control 89, OA 78, OW 74, DO 71 kPa;
+  ANOVA p = 0.19) and force (p = 0.67) are balanced. **Plaque area is not** (control 2.8,
+  OA 3.0, OW 3.7, DO 3.7 mm2; ANOVA p = 0.006, Kruskal p = 0.006), nor is extension
+  (p = 0.02): the animals that went on to the warming and hypoxia arms had larger baseline
+  plaques. The paired change in area (control +10 %, OA +7 %, OW -18 %, DO -37 %) therefore
+  starts from unequal baselines, and part of the within-arm change in area can be regression
+  to the mean. The between-arm comparison at day 3 (`STATS_decomp_typeIII_ANOVA.csv`,
+  arm x timepoint interaction) is the estimate to lead with for area; quote the paired %
+  change beside its baseline.
+- **Repeatability.** ICC of the per-mussel random intercept is low: 0.21 (adhesion),
+  0.23 (log adhesion), 0.18 (log force), 0.38 (log area), 0.13 (extension); the per-arm
+  baseline-to-day-3 correlations of the paired animals are near zero for adhesion and force
+  (control 0.00, OA -0.02, OW 0.29, DO 0.41 for adhesion). Pairing removes little
+  between-animal variance on this dataset; the paired tests gain their power from the
+  per-mussel means, not from the pairing itself, and the mixed model's random intercept is
+  doing correspondingly little work.
+
+`INCLUDE_LAB_REFERENCE = TRUE` now warns loudly; the day-0 animals appear in every line+box
+panel as their own labelled cluster and enter no pool and no model.

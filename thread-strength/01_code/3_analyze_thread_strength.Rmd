@@ -52,6 +52,18 @@ FIGURE CONVENTION FOR THE LINE+BOX PANELS (one per arm)
   - A panel is now built for the CONTROL arm too, not only OA/OW/DO. Whether it
     has connecting lines depends on whether the T126-T135 baselines have been
     curated with a plaque area; the script reports the pair count either way.
+  - Far-left grey cluster = the day-0 lab-reference animals, labelled "lab (day 0)"
+    (SHOW_LAB_REFERENCE_IN_PANELS). They are shown for comparison only: never in the
+    baseline pool, never paired, never in a model.
+
+THE TWO CONTROLS (see also 03_analyses/README.md)
+  - treatment_control / mussel_trt == "control": day-3 animals held three days under
+    ambient conditions in the same system as the stressor arms. This is the reference
+    for a STRESSOR effect (mixed-model interaction, vs_ctrl_* columns in 1b, DESeq2 TC).
+  - lab_control / phase == "lab": day-0 animals that never entered the experimental
+    system. They measure time in system + handling (+ secretion state, on the
+    expression side) and are confounded with all three; a descriptive comparison
+    group only (Statistics 3a), never a baseline.
 -->
 
 ```{r setup, include=FALSE}
@@ -127,6 +139,16 @@ dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 # pair) and it does NOT affect the mixed model, which is always restricted to
 # phase %in% c("pre", "post").
 INCLUDE_LAB_REFERENCE <- FALSE
+if (isTRUE(INCLUDE_LAB_REFERENCE))
+  warning("INCLUDE_LAB_REFERENCE = TRUE: the day-0 lab-reference animals are being POOLED ",
+          "into the baseline reference. Every two-sample p in 1b and the left cluster of ",
+          "every line+box panel then confound 'stressor' with 'being in the system at all'. ",
+          "This is the legacy behaviour and is not the analysis of record.", call. = FALSE)
+
+# Show the day-0 lab-reference animals in the line+box panels as their OWN labelled group
+# (grey cluster at the far left, "lab (day 0)"), never merged into the baseline cluster.
+# Ignored when INCLUDE_LAB_REFERENCE is TRUE (they are then inside the baseline pool).
+SHOW_LAB_REFERENCE_IN_PANELS <- TRUE
 ```
 
 ### Load data set; derive adhesion and timepoint
@@ -358,29 +380,51 @@ make_line_box <- function(trt_code, trt_label = trt_code,
                           y_breaks = seq(0, 200, 25), y_lim = c(0, 210)) {
 
   base_col <- treatment_colors[["baseline"]]
+  lab_col  <- treatment_colors[["lab_control"]]
   trt_col  <- if (trt_code %in% names(treatment_colors)) treatment_colors[[trt_code]] else "grey60"
-  box_w <- 0.22; box_ctrl_x <- 0.60; box_trt_x <- 2.40
+  box_w <- 0.22; box_ctrl_x <- 0.60; box_trt_x <- 2.40; box_lab_x <- -0.40
 
   ctrl <- baseline_pool %>% mutate(side = "control", xbase = 1, xbox = box_ctrl_x)
   trt  <- per_mussel_means %>% filter(phase == "post", thread_trt == trt_code) %>%
           mutate(side = "treatment", xbase = 2, xbox = box_trt_x)
+  # Day-0 lab-reference animals as their own cluster at the far left (x = 0). They are a
+  # descriptive group only: never pooled with the baseline, never paired, never modelled.
+  show_lab <- isTRUE(SHOW_LAB_REFERENCE_IN_PANELS) && !isTRUE(INCLUDE_LAB_REFERENCE)
+  lab  <- if (show_lab) per_mussel_means %>% filter(phase == "lab") %>%
+            mutate(side = "lab", xbase = 0, xbox = box_lab_x) else per_mussel_means[0, ]
+  show_lab <- show_lab && nrow(lab) > 0
 
   if (nrow(trt) == 0) {
     warning("No day-3 threads for arm '", trt_code, "'; panel skipped.", call. = FALSE)
     return(NULL)
   }
 
-  dat <- bind_rows(ctrl, trt) %>%
+  dat <- bind_rows(lab, ctrl, trt) %>%
          left_join(mussel_offsets, by = "mussel") %>%
          mutate(xpos = xbase + xoff)
 
   # Connecting lines only for mussels present on both sides (true repeated measures).
   paired_ids <- intersect(as.character(ctrl$mussel), as.character(trt$mussel))
-  lines_dat  <- dat %>% filter(as.character(mussel) %in% paired_ids)
+  lines_dat  <- dat %>% filter(side != "lab", as.character(mussel) %in% paired_ids)
   message(trt_code, ": ", nrow(trt), " day-3 mussels, ", length(paired_ids),
-          " paired to a baseline.")
+          " paired to a baseline", if (show_lab) paste0("; ", nrow(lab), " lab-reference animals shown") else "", ".")
+
+  x_breaks <- if (show_lab) c(0, 1, 2) else c(1, 2)
+  x_labels <- if (show_lab) c("lab\n(day 0)", "baseline", trt_label) else c("baseline", trt_label)
+  x_limits <- if (show_lab) c(-0.6, 2.6) else c(0.4, 2.6)
 
   ggplot() +
+    { if (show_lab) geom_boxplot(data = filter(dat, side == "lab"),
+                                 aes(x = xbox, y = adh_mean, group = 1),
+                                 width = box_w, fill = lab_col, color = "black",
+                                 linewidth = 0.7, alpha = 0.55, outlier.shape = NA) } +
+    { if (show_lab) geom_errorbar(data = filter(dat, side == "lab"),
+                                  aes(x = xpos, ymin = adh_mean - adh_se, ymax = adh_mean + adh_se),
+                                  width = 0.04, linewidth = 0.6, color = "black", na.rm = TRUE) } +
+    { if (show_lab) geom_point(data = filter(dat, side == "lab"),
+                               aes(x = xpos, y = adh_mean), size = 3, color = lab_col) } +
+    { if (show_lab) geom_point(data = filter(dat, side == "lab"),
+                               aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") } +
     geom_line(data = lines_dat,
               aes(x = xpos, y = adh_mean, group = mussel),
               color = "grey55", linewidth = 0.6, alpha = 0.8) +
@@ -406,8 +450,7 @@ make_line_box <- function(trt_code, trt_label = trt_code,
                aes(x = xpos, y = adh_mean), size = 3, color = trt_col) +
     geom_point(data = filter(dat, side == "treatment"),
                aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") +
-    scale_x_continuous(breaks = c(1, 2), labels = c("baseline", trt_label),
-                       limits = c(0.4, 2.6)) +
+    scale_x_continuous(breaks = x_breaks, labels = x_labels, limits = x_limits) +
     scale_y_continuous(breaks = y_breaks, limits = y_lim) +
     xlab(NULL) + ylab(NULL) + my_theme
 }
@@ -465,6 +508,12 @@ STATISTICS
       animals have no before/after position, so including them would make the
       arm-by-timepoint interaction unestimable for their level.
     - Every table that was previously print-only is now written to disk.
+    - 1b now also compares each arm's day-3 animals with the DAY-3 TREATMENT CONTROL
+      (vs_ctrl_welch_p, vs_ctrl_mannwhit_p, delta_vs_ctrl), the reference the mixed model
+      and the expression contrasts use; welch_p / mannwhit_p keep comparing with the pooled
+      pre-exposure baseline, which is a different question.
+    - Statistics 3 writes the lab-reference check, the baseline balance by future arm and
+      the repeatability (ICC, per-arm pre/post correlation) that the paired design relies on.
 
   Parametric and non-parametric versions are reported side by side rather than relying on an
   automatic transform, so the reader can see both. Sample sizes are small; results are
@@ -504,17 +553,23 @@ if (n_distinct(post_means$thread_trt) < 2) {
 
 ### Statistics 1b: within-arm before/after, per arm (per-mussel means)
 ```{r warning=FALSE}
-# Two complementary questions per arm:
-#   PAIRED  : did the animals measured at both timepoints change? (matches the connecting
-#             lines; uses only paired mussels, so n is small)
-#   2-SAMPLE: does the arm's day-3 distribution differ from the baseline reference pool?
-#             (matches the boxes; uses all pool animals and all arm animals)
+# Three complementary questions per arm:
+#   PAIRED    : did the animals measured at both timepoints change? (matches the connecting
+#               lines; uses only paired mussels, so n is small)
+#   2-SAMPLE  : does the arm's day-3 distribution differ from the baseline reference pool?
+#               (matches the boxes; uses all pool animals and all arm animals). NOTE the
+#               reference here is the pooled pre-exposure baseline of ALL arms, not the
+#               day-3 control arm; it is the "before" of the before/after picture.
+#   VS CONTROL: does the arm's day-3 distribution differ from the DAY-3 TREATMENT CONTROL
+#               (the reference the mixed model's interaction and the DESeq2 contrasts use)?
+#               Columns vs_ctrl_*; NA for the control arm itself.
 #
-# Both are computed for EVERY day-3 arm, including the control arm. Nothing is assumed
+# All are computed for EVERY day-3 arm, including the control arm. Nothing is assumed
 # about which arms can be paired; n_pairs is reported and the paired columns are NA when
 # there are fewer than two pairs.
 
 baseline_means <- baseline_pool
+control_post   <- per_mussel_means %>% filter(phase == "post", thread_trt == "treatment_control")
 
 run_arm_tests <- function(trt_code) {
   post_x <- per_mussel_means %>% filter(phase == "post", thread_trt == trt_code)
@@ -528,7 +583,11 @@ run_arm_tests <- function(trt_code) {
                 n_pairs    = nrow(paired),
                 n_base     = nrow(baseline_means),
                 n_post     = nrow(post_x),
-                delta_mean = if (nrow(paired) >= 1) mean(paired$post - paired$base) else NA_real_)
+                n_ctrl_post = nrow(control_post),
+                delta_mean = if (nrow(paired) >= 1) mean(paired$post - paired$base) else NA_real_,
+                # arm day-3 mean minus the day-3 control mean (the between-arm effect at day 3)
+                delta_vs_ctrl = if (trt_code != "treatment_control" && nrow(control_post) >= 1)
+                                  mean(post_x$adh_mean) - mean(control_post$adh_mean) else NA_real_)
 
   # Paired tests (need >= 2 pairs)
   if (nrow(paired) >= 2) {
@@ -546,11 +605,21 @@ run_arm_tests <- function(trt_code) {
   } else {
     res$welch_p <- NA_real_; res$mannwhit_p <- NA_real_
   }
+
+  # Two-sample tests: day-3 treatment control vs this arm's day-3 (need >= 2 per side)
+  if (trt_code != "treatment_control" && nrow(post_x) >= 2 && nrow(control_post) >= 2) {
+    res$vs_ctrl_welch_p    <- t.test(post_x$adh_mean, control_post$adh_mean, var.equal = FALSE)$p.value
+    res$vs_ctrl_mannwhit_p <- suppressWarnings(
+      wilcox.test(post_x$adh_mean, control_post$adh_mean, paired = FALSE)$p.value)
+  } else {
+    res$vs_ctrl_welch_p <- NA_real_; res$vs_ctrl_mannwhit_p <- NA_real_
+  }
   res
 }
 
 within_arm <- bind_rows(lapply(day3_arms, run_arm_tests)) %>%
-  mutate(baseline_pool = if (INCLUDE_LAB_REFERENCE) "pre + lab" else "pre only")
+  mutate(baseline_pool     = if (INCLUDE_LAB_REFERENCE) "pre + lab" else "pre only",
+         vs_ctrl_reference = "day-3 treatment_control (per-mussel means)")
 print(as.data.frame(within_arm))
 
 unpaired_arms <- within_arm %>% filter(n_pairs < 2) %>% pull(arm)
@@ -661,15 +730,154 @@ write.csv(as.data.frame(pairs(emm_post, adjust = "tukey")),
 write.csv(bind_rows(as.data.frame(emm_post)  %>% mutate(timepoint = "post"),
                     as.data.frame(emm_base)  %>% mutate(timepoint = "baseline")),
           file.path(out_dir, "STATS_lmer_marginal_means.csv"), row.names = FALSE)
+```
 
-# Provenance: which configuration produced the files in this folder.
+### Statistics 3: the two controls, baseline balance, and repeatability
+```{r warning=FALSE}
+# Three checks that justify the design, written out as tables rather than left as
+# by-products of the figures. All on PER-MUSSEL MEANS (one value per mussel per phase), for
+# adhesion, peak force, plaque area and extension.
+#
+#   3a  LAB-REFERENCE CHECK (STATS_lab_reference_check.csv)
+#       The day-0 lab-reference animals (T001-T012) never entered the experimental system;
+#       the day-1 pre-exposure animals had been in the shared holding system for a day; the
+#       day-3 treatment-control animals spent three days in a tank under ambient conditions.
+#       If handling and time in the system did not move attachment, the three groups should
+#       agree. Welch t and Mann-Whitney per metric: lab vs pre, day-3 control vs pre,
+#       lab vs day-3 control.
+#   3b  BASELINE BALANCE (STATS_baseline_balance.csv)
+#       Arms were assigned at random after the baseline pull, so the per-mussel baseline
+#       should not differ by FUTURE arm. One-way ANOVA and Kruskal-Wallis per metric. This is
+#       the per-mussel companion of the lmer `emm_base` randomization check above and the
+#       justification for reading the within-animal change.
+#   3c  REPEATABILITY (STATS_repeatability.csv)
+#       Pairing only buys power if an animal's attachment is repeatable. Two views:
+#       - ICC from the mixed model's variance components, var(mussel) / (var(mussel) +
+#         var(residual)), for the same arm x timepoint model as Statistics 2 (thread level;
+#         logged metrics as in script 4);
+#       - per-arm Pearson and Spearman correlation of the paired animals' baseline and day-3
+#         per-mussel means.
+
+metric_cols <- intersect(c("adhesion_kpa", "max_force", "pad_area", "max_displacement"),
+                         names(thread_plot))   # extension is optional in the curated table
+pm_metrics <- thread_plot %>%
+  group_by(mussel, phase, mussel_trt) %>%
+  summarise(n_threads = n(), across(all_of(metric_cols), ~ mean(.x, na.rm = TRUE)),
+            .groups = "drop") %>%
+  mutate(across(all_of(metric_cols), ~ ifelse(is.nan(.x), NA_real_, .x)))
+
+two_sample <- function(a, b) {
+  ok <- length(a[!is.na(a)]) >= 2 && length(b[!is.na(b)]) >= 2
+  tibble(n_a = sum(!is.na(a)), n_b = sum(!is.na(b)),
+         mean_a = mean(a, na.rm = TRUE), mean_b = mean(b, na.rm = TRUE),
+         median_a = median(a, na.rm = TRUE), median_b = median(b, na.rm = TRUE),
+         diff_a_minus_b = mean(a, na.rm = TRUE) - mean(b, na.rm = TRUE),
+         welch_p    = if (ok) t.test(a, b, var.equal = FALSE)$p.value else NA_real_,
+         wilcoxon_p = if (ok) suppressWarnings(wilcox.test(a, b, paired = FALSE)$p.value) else NA_real_)
+}
+
+# ---- 3a lab-reference check ------------------------------------------------------------
+grp_lab  <- pm_metrics %>% filter(phase == "lab")
+grp_pre  <- pm_metrics %>% filter(phase == "pre")
+grp_ctrl <- pm_metrics %>% filter(phase == "post", mussel_trt == "control")
+lab_check <- bind_rows(lapply(metric_cols, function(m) bind_rows(
+  two_sample(grp_lab[[m]],  grp_pre[[m]])  %>% mutate(comparison = "lab_day0_vs_pre_day1"),
+  two_sample(grp_ctrl[[m]], grp_pre[[m]])  %>% mutate(comparison = "control_day3_vs_pre_day1"),
+  two_sample(grp_lab[[m]],  grp_ctrl[[m]]) %>% mutate(comparison = "lab_day0_vs_control_day3")) %>%
+  mutate(metric = m, .before = 1))) %>%
+  mutate(unit = "per-mussel mean", .after = comparison)
+print(as.data.frame(lab_check %>% mutate(across(where(is.numeric), ~ signif(.x, 3)))))
+write.csv(lab_check, file.path(out_dir, "STATS_lab_reference_check.csv"), row.names = FALSE)
+
+# ---- 3b baseline balance by future arm -----------------------------------------------
+base_by_arm <- grp_pre %>% filter(mussel_trt %in% c("control", "OA", "OW", "DO")) %>%
+  mutate(mussel_trt = droplevels(mussel_trt))
+balance <- bind_rows(lapply(metric_cols, function(m) {
+  d <- base_by_arm %>% filter(!is.na(.data[[m]]))
+  if (n_distinct(d$mussel_trt) < 2) return(NULL)
+  a <- anova(lm(reformulate("mussel_trt", response = m), data = d))
+  k <- kruskal.test(reformulate("mussel_trt", response = m), data = d)
+  d %>% group_by(future_arm = mussel_trt) %>%
+    summarise(n = n(), mean = mean(.data[[m]]), sd = sd(.data[[m]]), median = median(.data[[m]]),
+              .groups = "drop") %>%
+    mutate(metric = m, .before = 1) %>%
+    mutate(anova_F = a[["F value"]][1], anova_df = paste(a$Df, collapse = ","), anova_p = a[["Pr(>F)"]][1],
+           kruskal_H = unname(k$statistic), kruskal_p = k$p.value)
+}))
+print(as.data.frame(balance %>% mutate(across(where(is.numeric), ~ signif(.x, 3)))))
+write.csv(balance, file.path(out_dir, "STATS_baseline_balance.csv"), row.names = FALSE)
+
+# ---- 3c repeatability: ICC and per-arm pre/post correlation ---------------------------
+icc_from <- function(fit) {
+  vc <- as.data.frame(VarCorr(fit))
+  v_m <- vc$vcov[vc$grp == "mussel"]; v_r <- vc$vcov[vc$grp == "Residual"]
+  c(icc = v_m / (v_m + v_r), var_mussel = v_m, var_residual = v_r)
+}
+icc_specs <- tibble::tribble(
+  ~metric,            ~scale, ~response,
+  "adhesion_kpa",     "raw",  "adhesion_kpa",
+  "adhesion_kpa",     "log",  "log(adhesion_kpa)",
+  "max_force",        "log",  "log(max_force)",
+  "pad_area",         "log",  "log(pad_area)",
+  "max_displacement", "raw",  "max_displacement"
+)
+icc_tbl <- bind_rows(lapply(seq_len(nrow(icc_specs)), function(i) {
+  sp <- icc_specs[i, ]
+  if (!sp$metric %in% names(dat_lmer)) return(NULL)
+  d  <- dat_lmer %>% filter(!is.na(.data[[sp$metric]]))
+  fit <- tryCatch(suppressWarnings(lmer(as.formula(paste0(sp$response, " ~ mussel_trt * timepoint + (1 | mussel)")),
+                                        data = d)), error = function(e) NULL)
+  if (is.null(fit)) return(NULL)
+  v <- icc_from(fit)
+  tibble(metric = sp$metric, scale = sp$scale, statistic = "ICC_mussel_lmer", arm = "all",
+         n = n_distinct(d$mussel), n_threads = nrow(d),
+         value = unname(v["icc"]), var_mussel = unname(v["var_mussel"]),
+         var_residual = unname(v["var_residual"]), p = NA_real_)
+}))
+
+paired_pm <- pm_metrics %>% filter(phase %in% c("pre", "post")) %>%
+  select(mussel, mussel_trt, phase, all_of(metric_cols)) %>%
+  pivot_wider(names_from = phase, values_from = all_of(metric_cols)) %>%
+  filter(!is.na(adhesion_kpa_pre), !is.na(adhesion_kpa_post))
+corr_tbl <- bind_rows(lapply(metric_cols, function(m) {
+  bind_rows(lapply(c(levels(droplevels(paired_pm$mussel_trt)), "all"), function(a) {
+    d <- if (a == "all") paired_pm else paired_pm %>% filter(mussel_trt == a)
+    x <- d[[paste0(m, "_pre")]]; y <- d[[paste0(m, "_post")]]
+    ok <- !is.na(x) & !is.na(y); x <- x[ok]; y <- y[ok]
+    if (length(x) < 3) return(NULL)
+    pe <- suppressWarnings(cor.test(x, y, method = "pearson"))
+    sp <- suppressWarnings(cor.test(x, y, method = "spearman", exact = FALSE))
+    bind_rows(tibble(metric = m, scale = "raw", statistic = "corr_pre_post_pearson", arm = a,
+                     n = length(x), n_threads = NA_integer_, value = unname(pe$estimate),
+                     var_mussel = NA_real_, var_residual = NA_real_, p = pe$p.value),
+              tibble(metric = m, scale = "raw", statistic = "corr_pre_post_spearman", arm = a,
+                     n = length(x), n_threads = NA_integer_, value = unname(sp$estimate),
+                     var_mussel = NA_real_, var_residual = NA_real_, p = sp$p.value))
+  }))
+}))
+repeatability <- bind_rows(icc_tbl, corr_tbl)
+print(as.data.frame(repeatability %>% mutate(across(where(is.numeric), ~ signif(.x, 3)))))
+write.csv(repeatability, file.path(out_dir, "STATS_repeatability.csv"), row.names = FALSE)
+```
+
+### Provenance
+```{r}
+# Which configuration produced the files in this folder.
 writeLines(c(paste0("generated       : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
              paste0("input           : 03_analyses/thread-summary.xlsx"),
              paste0("INCLUDE_LAB_REFERENCE : ", INCLUDE_LAB_REFERENCE),
+             paste0("SHOW_LAB_REFERENCE_IN_PANELS : ", SHOW_LAB_REFERENCE_IN_PANELS),
              paste0("threads analysed: ", nrow(thread_plot)),
              paste0("threads dropped (no pad_area): ", nrow(no_pad)),
              paste0("baseline pool   : ", n_distinct(baseline_pool$mussel), " mussels"),
+             paste0("lab reference   : ", n_distinct(grp_lab$mussel), " mussels (day 0, shown, never pooled)"),
+             paste0("day-3 control   : ", n_distinct(grp_ctrl$mussel), " mussels"),
              paste0("lmer data       : ", nrow(dat_lmer), " threads, ",
-                    n_distinct(dat_lmer$mussel), " mussels")),
+                    n_distinct(dat_lmer$mussel), " mussels"),
+             paste0("paired animals  : ", nrow(paired_pm), " (pre and post per-mussel means)"),
+             paste0("R / lme4 / lmerTest / emmeans : ", R.version.string, " / ",
+                    as.character(packageVersion("lme4")), " / ",
+                    as.character(packageVersion("lmerTest")), " / ",
+                    as.character(packageVersion("emmeans")))),
            file.path(out_dir, "RUN_provenance.txt"))
 ```

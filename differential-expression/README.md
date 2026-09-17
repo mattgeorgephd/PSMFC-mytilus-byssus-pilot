@@ -23,10 +23,45 @@ differential-expression/
 
 `01_5-gene_count_matrix` (assemble counts) then `02_5_DESeq_*` (per tissue x contrast) then
 `03-*_Shrinkage_filtration` (apeglm shrinkage + filtering) then
-`03_5-DEG_table_provenance_check` (re-derives each contrast from the committed inputs and
-flags or rewrites stale result tables) then `04-File_joining` (merge with GO; writes
-`DEG_join_summary.csv`, the source of the per-contrast DEG counts) then `12-DEG_venn`,
+`03_5-DEG_table_provenance_check` (re-derives each contrast, TC and LC, from the committed
+inputs and flags or rewrites stale result tables) then `04-File_joining` (merge with GO;
+writes `DEG_join_summary.csv`, the source of the per-contrast DEG counts) then `12-DEG_venn`,
 `12-Volcano-plots`, `15-number_DEGS`, `16-top_DEGs`, `19-DEG_list_cleanup`.
+
+Side scripts (added 17 September 2026), none of which changes the primary lists:
+
+- `01_7-secretion_state` labels every foot sample `on` / `off` for the byssal
+  plaque-protein module (mfp-2, mfp-4, foot proteins 10/12/15, tyrosinase-like 1), writes
+  `02_data/secretion_state.csv`, tests whether "on" differs by arm (Fisher) and summarises
+  the module at day 0 vs day 3 (`DEG_lists/secretion_state_*`). Run it after `01_5`.
+- `02_6-DESeq_fourlevel_sensitivity` fits one four-level model per tissue (`~ treatment`
+  over all day-3 samples, shared dispersion) and compares each stressor's DEG list with the
+  pairwise fit of record (`DEG_lists/sensitivity_fourlevel/`).
+- `02_7-DESeq_foot_TC_secretion_sensitivity` refits the foot stressor contrasts with the
+  secretion state as a covariate (`~ secretion_state + treatment`). **Gated:
+  `USE_SECRETION_STATE <- FALSE` at the top of the script; nothing runs until it is set
+  TRUE.** The same flag in `gene-mechanics-correlation/01_code/20-*.Rmd` controls whether the
+  state enters the gene-mechanics regressions; both default to off.
+
+## The two controls
+
+The design has two controls and they answer different questions. Read every contrast
+against this table.
+
+| control | animals | what a contrast against it measures | used for |
+|---|---|---|---|
+| **TC, treatment control** (`*_TC_*`; `treatment == "control" & day == 3`) | T126-T137, held three days under ambient conditions in the same system as the stressor arms | the stressor effect, net of time in the system, handling and secretion state | the DEG lists of record (`<X>_TC_siggene*.csv`), the gene-mechanics DEG union, enrichment |
+| **LC, lab control** (`*_LC_*`; `treatment == "control" & day == 0`) | T001-T012, sampled before entering the system | the stressor **plus** three days in the system, handling, and the byssal secretion state (day-0 animals are almost all actively secreting thread; day-3 animals mostly are not, in every arm) | the time axis only: `FTC_LC` / `GTC_LC` (day-3 control vs day 0) isolate the non-stressor component; the stressor-vs-day-0 tables are context, not stressor effects |
+
+The LC output prefixes keep their historical names; renaming them (e.g. `*_vsDay0_*`) would
+break nothing in the active pipeline (no downstream script reads them) but would break the
+provenance file and the paths in `03-LC_Shrinkage_filtration`, so the roles are documented
+here and in the script headers instead. On 17 September 2026 the LC tables were re-derived
+for the first time (`03_5`, family `LC`): six of eight reproduce exactly; `FDO_LC` and
+`GDO_LC` on disk were pre-QC fits that still included T051F / T051G (the same stale-fit
+signature as `GDO_TC` on 16 September: five extra genes after the count filter) and were
+rewritten from the committed 22- and 23-sample inputs (DEG counts 1,047 -> 1,563 and
+1,994 -> 2,458).
 
 `03_5` and `04` are documented in `01_code/DEG-lists-provenance_DOC.md`, including the
 16 September 2026 findings: the gill-hypoxia full table was a stale pre-QC fit (rewritten;
@@ -39,9 +74,12 @@ placed here as the DE input, per the established handoff.
 ## Runnability
 
 Paths are resolved through `01_code/_paths.R` (`here::here()` anchored on the `.Rproj`).
-`03_5`, `04` and `16` knit cleanly from a fresh session. The `02_5_DESeq_*` scripts still
-carry interactive-session assumptions (see `DEG-lists-provenance_DOC.md`: in particular they
-rely on locale sort order to make `control` the reference level). `DEG_lists/` is both
+`03_5`, `04`, `16`, `01_7`, `02_6` and `02_7` knit cleanly from a fresh session. The
+`02_5_DESeq_*` scripts still carry interactive-session assumptions (see
+`DEG-lists-provenance_DOC.md`); since 17 September 2026 every `DESeqDataSetFromMatrix()` in
+them is preceded by an explicit `factor(..., levels = c("control", ...))` (or `day` levels
+`0`, `3`; `tissue` levels `F`, `G`) and followed by a `stopifnot(resultsNames(dds)[2] == ...)`
+guard, so the reference level no longer depends on locale sort order. `DEG_lists/` is both
 written by the DESeq scripts and read back by the joining and summary scripts, so it is an
 intermediate hub; `DEG_provenance_check.csv` records whether its result tables match their
 inputs.

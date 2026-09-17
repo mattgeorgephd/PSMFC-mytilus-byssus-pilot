@@ -1,7 +1,12 @@
-generated       : 2026-09-16 14:29:01
+generated       : 2026-09-17 16:50:37
 input           : 03_analyses/thread-summary.xlsx
 INCLUDE_LAB_REFERENCE : FALSE
+SHOW_LAB_REFERENCE_IN_PANELS : TRUE
 threads analysed: 380
 threads dropped (no pad_area): 0
 baseline pool   : 61 mussels
+lab reference   : 12 mussels (day 0, shown, never pooled)
+day-3 control   : 11 mussels
 lmer data       : 342 threads, 74 mussels
+paired animals  : 47 (pre and post per-mussel means)
+R / lme4 / lmerTest / emmeans : R version 4.2.2 (2022-10-31 ucrt) / 1.1.31 / 3.1.3 / 1.8.4.1

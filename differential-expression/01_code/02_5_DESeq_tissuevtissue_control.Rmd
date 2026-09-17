@@ -67,12 +67,19 @@ write.table(FG_TC_countmatrix, file = file.path(deg, "FG_TC_countmatrix.csv"))
 #doesn't save correctly, need to figure this out
 
 # CaTCulate DESeq object
+# Explicit factor levels. The originals passed the grouping variable as character and let
+# R's locale collation pick the reference level; in a C locale "DO", "OA" and "OW" sort
+# before "control", coefficient 2 becomes control_vs_<trt>, and every log2 fold change
+# flips sign silently. The stopifnot() after DESeq() guards the coefficient name.
+FG_TC_treatmentinfo$tissue <- factor(FG_TC_treatmentinfo$tissue, levels = c("F", "G"))
+
 dds30 <- DESeqDataSetFromMatrix(countData = FG_TC_countmatrix,
                               colData = FG_TC_treatmentinfo,
                               design = ~ tissue)
 
 dds30 <- DESeq(dds30)
 resultsNames(dds30) # lists the coefficients
+stopifnot(resultsNames(dds30)[2] == "tissue_G_vs_F")   # foot is the reference
 
 PCAdata <- plotPCA(vst(dds30), intgroup = c("tissue"), returnData=TRUE)
 percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
@@ -106,12 +113,19 @@ write.table(FG_LC_countmatrix, file = file.path(deg, "FG_LC_countmatrix.csv"))
 #doesn't save correctly, need to figure this out
 
 # CaTCulate DESeq object
+# Explicit factor levels. The originals passed the grouping variable as character and let
+# R's locale collation pick the reference level; in a C locale "DO", "OA" and "OW" sort
+# before "control", coefficient 2 becomes control_vs_<trt>, and every log2 fold change
+# flips sign silently. The stopifnot() after DESeq() guards the coefficient name.
+FG_LC_treatmentinfo$tissue <- factor(FG_LC_treatmentinfo$tissue, levels = c("F", "G"))
+
 dds31 <- DESeqDataSetFromMatrix(countData = FG_LC_countmatrix,
                               colData = FG_LC_treatmentinfo,
                               design = ~ tissue)
 
 dds31 <- DESeq(dds31)
 resultsNames(dds31) # lists the coefficients
+stopifnot(resultsNames(dds31)[2] == "tissue_G_vs_F")   # foot is the reference
 
 PCAdata <- plotPCA(vst(dds31), intgroup = c("tissue"), returnData=TRUE)
 percentVar <- round(100*attr(PCAdata, "percentVar")) #plot PCA of samples with all data
