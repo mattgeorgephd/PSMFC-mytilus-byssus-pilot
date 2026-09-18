@@ -229,9 +229,11 @@ files carry all four arms and `max_displacement`.
 ## 4. Results on the current data (18 September 2026, ANCOVA)
 
 Thread input: `thread-summary.xlsx` at commit `9454963`. Genome-wide candidate map, floor
-genes excluded, `USE_SECRETION_STATE = FALSE`, the ANCOVA above as the reported test. All
-figures are from the sandbox run (R 4.3.3, DESeq2 1.42.0); a re-run on the analysis machine
-changes p-values in the trailing digits only.
+genes excluded, `USE_SECRETION_STATE = FALSE`, the ANCOVA above as the reported test. The
+committed tables are the run of 18 September 2026 on the analysis machine (R 4.2.2, DESeq2
+1.38.3, lme4 1.1-31); an independent run under R 4.3.3 / DESeq2 1.42.0 / lme4 1.1-35
+reproduced every ANCOVA p-value to a relative 1e-13 and every mixed-model p-value to 2e-6,
+so the figures below hold to the two significant figures quoted.
 
 ### Foot
 

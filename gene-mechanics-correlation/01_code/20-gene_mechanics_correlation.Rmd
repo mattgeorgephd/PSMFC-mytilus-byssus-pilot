@@ -90,15 +90,16 @@ EXCLUDE_FLOOR_GENES <- TRUE
 INCLUDE_CONTROL_ARM <- TRUE   # TRUE = the day-3 common-garden control animals (T126-T137)
                               #        are part of the paired set, as a fourth treatment
                               #        level. They have foot RNA, day-3 threads and baseline
-                              #        threads. Their own ~20% decline is the null trajectory
-                              #        a stress-specific expression signal must beat.
+                              #        threads. Their own three-day trajectory (adhesion -9%,
+                              #        force 0%, area +10%; thread-strength script 4) is the
+                              #        null a stress-specific expression signal must beat.
                               # FALSE = stressor arms only.
 USE_SECRETION_STATE <- FALSE  # TRUE = add each animal's byssal SECRETION STATE (on/off; the
                               #        foot plaque-protein module, computed per foot sample by
                               #        differential-expression/01_code/01_7-secretion_state.Rmd
                               #        and read from SECRETION_STATE_FILE) as a nuisance
                               #        covariate in every per-gene regression, beside
-                              #        treatment. With ~10 of 46 day-3 animals "on", any
+                              #        treatment. With 15 of 45 foot animals "on", any
                               #        candidate that co-varies with that module would
                               #        otherwise pick up secretion state, not mechanics.
                               #        Script 21 reads the same choice from metrics_config.
@@ -742,18 +743,24 @@ hm <- res_cand %>%
 
 hm_long <- hm %>% pivot_longer(-label, names_to = "metric", values_to = "rho") %>%
   mutate(metric = factor(metric, levels = metrics))
+short_label <- function(m) sub(" \\(.*\\)$", "", label_of(m))    # "Peak force (N)" -> "Peak force"
 ggplot(hm_long, aes(metric, factor(label, levels = rev(hm$label)), fill = rho)) +
   geom_tile(color = "white") +
   geom_text(aes(label = sprintf("%.2f", rho)), size = 3) +
   scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
                        midpoint = 0, limits = c(-1, 1)) +
+  scale_x_discrete(labels = short_label, position = "top") +
   labs(x = NULL, y = NULL, fill = "partial\nSpearman",
-       title = sprintf("Candidate gene expression vs plaque mechanics (%s, n=%d; top %d of %d genes)",
-                       ifelse(TISSUE=="F","foot","gill"), nrow(paired), nrow(hm), nrow(candidates))) +
+       title = "Candidate gene expression vs plaque mechanics",
+       subtitle = sprintf("%s, n = %d animals with baseline; top %d of %d candidate genes by smallest p",
+                          ifelse(TISSUE == "F", "foot", "gill"), sum(!is.na(paired$base_max_force)),
+                          nrow(hm), nrow(candidates))) +
   theme_minimal(base_size = 11) +
-  theme(axis.text.y = element_text(size = 8))
+  theme(axis.text.y = element_text(size = 8),
+        axis.text.x = element_text(size = 9, angle = 20, hjust = 0),
+        plot.title.position = "plot")
 ggsave(file.path(OUT_DIR, sprintf("candidate_heatmap_%s.png", TISSUE)),
-       width = 7, height = 8, dpi = 150)
+       width = 7.5, height = 8.5, dpi = 150, bg = "white")   # theme_minimal has no background: force one
 ```
 
 ## 6.2 Scatterplots for the strongest candidate hits (vs peak force)
@@ -789,15 +796,17 @@ plot_df <- map_dfr(top_loci, function(loc) {
   mutate(facet = factor(paste0(substr(protein, 1, 30), "\n", LOC_ID),
                         levels = unique(paste0(substr(protein, 1, 30), "\n", LOC_ID))))
 
+arm_cols <- c(control = "#7FB3D5", OA = "#4CAF50", OW = "#fdae61", DO = "#9884a3")   # shared by 6.2 and 6.3
 ggplot(plot_df, aes(expr, y)) +
   geom_smooth(method = "lm", se = TRUE, color = "grey40", linewidth = 0.6) +
-  geom_point(aes(color = treatment), size = 2) +
+  geom_point(aes(fill = treatment), shape = 21, size = 2.4, stroke = 0.5, color = "black") +
   facet_wrap(~ facet, scales = "free_x") +
+  scale_fill_manual(values = arm_cols, name = "Arm") +
   labs(x = "VST expression", y = adjusted_label("max_force"),
        title = "Top candidate genes vs peak force (line = pooled fit)") +
   theme_bw(base_size = 11)
 ggsave(file.path(OUT_DIR, sprintf("top_candidate_scatter_%s.png", TISSUE)),
-       width = 9, height = 7, dpi = 150)
+       width = 9, height = 7, dpi = 150, bg = "white")
 ```
 
 ## 6.3 The strongest candidate hit for each metric, coloured by arm
@@ -825,7 +834,6 @@ best_df <- pmap_dfr(best_per_metric %>% select(LOC_ID, metric, p_lm, q_lm, q_fam
 }) %>% filter(!is.na(y)) %>%
   mutate(panel = factor(panel, levels = unique(panel)))
 
-arm_cols <- c(control = "#7FB3D5", OA = "#4CAF50", OW = "#fdae61", DO = "#9884a3")
 ggplot(best_df, aes(expr, y)) +
   geom_smooth(method = "lm", se = TRUE, color = "grey40", linewidth = 0.6) +
   geom_point(aes(fill = treatment), shape = 21, size = 2.6, stroke = 0.5, color = "black") +
@@ -836,7 +844,7 @@ ggplot(best_df, aes(expr, y)) +
                        ifelse(TISSUE == "F", "foot", "gill"), sum(!is.na(paired$base_max_force)))) +
   theme_bw(base_size = 10) + theme(strip.text = element_text(size = 7.5))
 ggsave(file.path(OUT_DIR, sprintf("best_hit_per_metric_scatter_%s.png", TISSUE)),
-       width = 9, height = 8.5, dpi = 150)
+       width = 9, height = 8.5, dpi = 150, bg = "white")
 ```
 
 ---
