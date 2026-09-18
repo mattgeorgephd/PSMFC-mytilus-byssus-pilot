@@ -1,8 +1,24 @@
 # PSMFC-mytilus-byssus-pilot
 
-Test
+Byssal thread attachment of *Mytilus trossulus* under ocean acidification, warming and
+hypoxia: tensometer pull tests before and after a 3-day exposure, foot and gill Tag-seq, and
+the link between the two.
 
 ![](https://github.com/mattgeorgephd/PSMFC-mytilus-byssus-pilot/blob/f94ca00ef9a731939870577f6a2d111a2137e92a/reports/Figure1.png)
+
+# Analysis folders
+
+Each is self-contained with its own `.Rproj`, `01_code/`, `02_data/`, `03_analyses/` and a
+README; run them in this order.
+
+| folder | what it does | run |
+|---|---|---|
+| `thread-strength/` | trace extraction, curation, adhesion / force / area / extension models, the two controls, failure mode | scripts 1-4 by hand (`README.md`) |
+| `differential-expression/` | DESeq2 contrasts (six stressor-vs-control of record, eight vs day 0), provenance check, secretion state, sensitivity fits, annotation join | `01_code/20-run_differential_expression.Rmd` |
+| `gene-mechanics-correlation/` | per-animal expression x mechanics, permutation-corrected, foot and gill | `01_code/24-run_gene_mechanics_by_tissue.Rmd` |
+| `blast/`, `gene-annotation/`, `enrichment/` | genome annotation and GO enrichment behind the DEG tables | see each README |
+| `sequence-alignment/`, `iso-seq-transcriptome/` | read alignment and the Iso-seq transcriptome | see each README |
+| `morphometrics/`, `respirometry/`, `treatment_conditions/`, `experiment_plan/` | animal measurements, respirometry, tank conditions, design | data and notes |
 
 # Pertinent documents
 ## General
@@ -13,7 +29,7 @@ Test
 1. [Thread testing tutorial](https://monicaklopp.github.io/Thread-Testing-01-Notebook-Post/)
 2. [Sam's RNA extraction notebook entries](https://robertslab.github.io/sams-notebook/2022/01/13/Project-Summary-Matt-George-PSMFC-Mytilus-Byssus-Project.html)
 3. [RNA sample List](https://docs.google.com/spreadsheets/d/1PDVSGuCGeYQr6Rdl6u5M4L5vcQS1EgUQl7UjvLYDlBg/edit?usp=sharing)
-4. [PSMFC Semi-annual report](https://github.com/mattgeorgephd/PSMFC-mytilus-byssus-pilot/blob/main/reports/20211115_PSMFC_Semi-annual_report.pdf)
+4. [PSMFC project reports](https://github.com/mattgeorgephd/PSMFC-mytilus-byssus-pilot/tree/main/reports)
 
 ## Datasets
 1. [Tagseq dataset](https://docs.google.com/spreadsheets/d/1zZ6L05j-SyYJbzzQI_kBafFaReE4Ysp_9bORdbBu_r8/edit#gid=1302342348)
@@ -21,10 +37,6 @@ Test
 3. [RNA extraction results](https://docs.google.com/spreadsheets/d/1HizNOIfhSjppHDQrWLGiJhuDZKO8c-qm9JAz0Z5QIIQ/edit?usp=sharing)
 4. [Mussel plaque area](https://docs.google.com/spreadsheets/d/1AaStDX_XVuMl8XxUTYageePXyVtqKqtjcnJR2YDtGM4/edit?usp=sharing)
 5. [Mussel qPCR musings](https://docs.google.com/spreadsheets/d/1-BqoD61wa1P5QbTdN6qaLXa9tnb_gKvf47h5KVIY_UE/edit?usp=sharing)
-
-## Analysis
-1.Thread strength [analysis]()
-2. Transcriptome [annotation](https://github.com/mattgeorgephd/PSMFC-mytilus-byssus-pilot/blob/main/code/06-annotation.Rmd)
 
 ## Github Issues
 7. [RNA extraction github issue](https://github.com/RobertsLab/resources/issues/1352)

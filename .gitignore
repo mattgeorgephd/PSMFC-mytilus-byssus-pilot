@@ -10,3 +10,6 @@
 
 # rendered HTML from the gene-mechanics driver (24): regenerable, ~20 MB
 gene-mechanics-correlation/03_analyses/knit_html/
+
+# rendered HTML and logs from the differential-expression batch driver (20): regenerable
+differential-expression/03_analyses/knit_html/

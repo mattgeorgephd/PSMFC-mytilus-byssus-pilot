@@ -106,26 +106,26 @@ morphometrics record: for a `post` folder the thread condition and the animal's 
 agree, and a disagreement means a file is filed under the wrong folder. It is `NA` for `pre`,
 where the two legitimately differ.
 
-The legacy rows keep this script working **before** the folder rename is applied. Delete them
-once `rename_tensometer_folders.sh` has been run and pushed.
+The second block of rows accepts the phase-first folder spellings, so the folders can be
+renamed without touching the script; only folders that exist are used.
 
 ```{r}
 folder_labels <- tibble::tribble(
   ~source_folder,          ~thread_trt,          ~phase, ~day, ~expect_mussel_trt,
-  # --- current layout ---------------------------------------------------------------
-  "00_lab_reference",      "lab_control",        "lab",   0L,  "lab_control",
-  "01_pre_exposure",       "baseline",           "pre",   1L,  NA_character_,
-  "02_post_control",       "treatment_control",  "post",  3L,  "control",
-  "03_post_OA",            "OA",                 "post",  3L,  "OA",
-  "04_post_OW",            "OW",                 "post",  3L,  "OW",
-  "05_post_DO",            "DO",                 "post",  3L,  "DO",
-  # --- legacy names, pre-rename (safe to delete once renamed) ------------------------
+  # --- folder names in use ----------------------------------------------------------
   "00_laboratory_control", "lab_control",        "lab",   0L,  "lab_control",
   "00_baseline",           "baseline",           "pre",   1L,  NA_character_,
   "01_treatment_control",  "treatment_control",  "post",  3L,  "control",
   "02_OA_treatment",       "OA",                 "post",  3L,  "OA",
   "03_OW_treatment",       "OW",                 "post",  3L,  "OW",
-  "04_DO_treatment",       "DO",                 "post",  3L,  "DO"
+  "04_DO_treatment",       "DO",                 "post",  3L,  "DO",
+  # --- phase-first spellings, accepted should the folders ever be renamed --------------
+  "00_lab_reference",      "lab_control",        "lab",   0L,  "lab_control",
+  "01_pre_exposure",       "baseline",           "pre",   1L,  NA_character_,
+  "02_post_control",       "treatment_control",  "post",  3L,  "control",
+  "03_post_OA",            "OA",                 "post",  3L,  "OA",
+  "04_post_OW",            "OW",                 "post",  3L,  "OW",
+  "05_post_DO",            "DO",                 "post",  3L,  "DO"
 )
 
 # Fallback for a folder that is not in the map. Deliberately crude, and always warned about,
@@ -153,7 +153,7 @@ if (length(novel) > 0) {
   folder_labels <- bind_rows(folder_labels, bind_rows(lapply(novel, derive_label)))
 }
 
-# Keep only folders that exist, in on-disk order. This is what makes the legacy rows harmless:
+# Keep only folders that exist, in on-disk order. This is what makes the alternate rows harmless:
 # the old and new names never coexist.
 folder_labels <- folder_labels %>%
   filter(source_folder %in% folders) %>%

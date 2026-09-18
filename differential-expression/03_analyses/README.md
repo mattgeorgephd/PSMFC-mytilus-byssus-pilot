@@ -11,7 +11,6 @@
 | `DEG_lists/DEG_join_summary.csv` | `04-File_joining` | Per contrast: DEG genes, merged rows, annotated / unannotated genes, mitochondrial DEGs. **Report `n_DEG_genes`, not merged rows.** |
 | `DEG_lists/DAVID_lists/`, `DEG_lists/REVIGO_lists/` | `enrichment/01_code/07-*`, `09-*` | Accession and GO-ID lists submitted to DAVID / REVIGO |
 | `DEG_lists/goslims_genome/` | `gene-annotation/01_code/06-get_GOSlims` | GO-slim mappings per contrast |
-| `DEG_lists/with_GO_terms/` | (older run of `04`) | Superseded copy of the `_sigs_*` trio; nothing reads it |
 
 `DEG_lists/` is an intermediate: the DESeq scripts write it and the joining, venn, volcano,
 counts, and top-genes scripts read it back. Enrichment (in `../../enrichment/`) and the

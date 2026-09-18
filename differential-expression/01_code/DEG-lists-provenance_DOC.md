@@ -139,7 +139,6 @@ Added `library(readr)`: the script calls `read_csv()` but loaded only `dplyr`, `
   against 3,963, so `Revigo_results/` for hypoxia reflects older DEG files.
 - `09-*REVIGO.Rmd` builds its background from `02_data/gene_count_matrix_clean` (no
   extension), the pre-QC 131-sample matrix that still contains T051F/T051G.
-- `with_GO_terms/` holds an older copy of the `_sigs_*` trio that nothing reads.
 - The zenodo files are the merged (gene x hit) tables, so a gene with several BLAST hits is
   deposited several times; a `distinct(gene)` version would be the honest deposit.
 
@@ -171,3 +170,11 @@ GOA_LC count matrix as its treatment table (`GOA_LC_countmatrix.csv`); fixed to
 **Sensitivity scripts** (`01_7-secretion_state`, `02_6-DESeq_fourlevel_sensitivity`,
 `02_7-DESeq_foot_TC_secretion_sensitivity`, the last gated off by `USE_SECRETION_STATE`):
 see `README.md`. None writes into `Foot/` or `Gill/`.
+
+## 18 September 2026: batch driver, volcano script
+
+`20-run_differential_expression.Rmd` renders the headless scripts in dependency order, each
+in its own R process, and logs per step. `12-Volcano-plots.Rmd` read the `_sigs_merged.csv`
+files with `read_table()` and quoted column names, the format they had before `04` was
+rewritten; it now uses `read_csv()` and plain names and knits. `with_GO_terms/`, the
+pre-rewrite copy of the `_sigs_*` trio that nothing read, is deleted.

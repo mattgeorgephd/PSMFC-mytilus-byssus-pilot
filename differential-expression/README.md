@@ -4,16 +4,17 @@ DESeq2 differential expression of Tag-seq counts across treatments (OA, OW, DO) 
 gill tissue, using the HISAT2 + StringTie genome-based count matrix. This is the core
 expression analysis behind the manuscript DEG results.
 
-Absorbed from Grace Leuchtenberger's expression-analysis repo (now canonical here). The
-scripts carry their original paths and are not yet rewritten for this layout (see Runnability).
+Absorbed from Grace Leuchtenberger's expression-analysis repo (now canonical here). Paths
+resolve through `01_code/_paths.R`; see Runnability for which scripts knit headless.
 
 ## Layout
 
 ```
 differential-expression/
 ├── differential-expression.Rproj
-├── 01_code/                 15 scripts: count-matrix build, per-tissue/contrast DESeq2,
-│                            shrinkage/filtration, file joining, DEG venn/volcano, counts, top DEGs
+├── 01_code/                 count-matrix build, per-tissue/contrast DESeq2, shrinkage/filtration,
+│                            provenance check, secretion state, sensitivity fits, file joining,
+│                            DEG venn/volcano, counts, top DEGs, and the batch driver (20-*)
 ├── 02_data/                 count matrices, treatment design table, sample metadata
 └── 03_analyses/
     └── DEG_lists/           significant-DEG tables per tissue x contrast (Foot/, Gill/, GOterms_genome/)
@@ -28,7 +29,13 @@ inputs and flags or rewrites stale result tables) then `04-File_joining` (merge 
 writes `DEG_join_summary.csv`, the source of the per-contrast DEG counts) then `12-DEG_venn`,
 `12-Volcano-plots`, `15-number_DEGS`, `16-top_DEGs`, `19-DEG_list_cleanup`.
 
-Side scripts (added 17 September 2026), none of which changes the primary lists:
+`01_code/20-run_differential_expression.Rmd` runs every script that knits from a fresh
+session as a batch, each in its own R process, with a log per step in
+`03_analyses/knit_html/` (git-ignored): `01_7`, `03_5` (with `rewrite_stale`), `02_6`, `02_7`,
+`04`, `16`, `12-Volcano-plots`, `12-DEG_venn`, `15`, `19`. Run it after any change to the
+inputs or the DESeq scripts, then the gene-mechanics driver.
+
+Side scripts, none of which changes the primary lists:
 
 - `01_7-secretion_state` labels every foot sample `on` / `off` for the byssal
   plaque-protein module (mfp-2, mfp-4, foot proteins 10/12/15, tyrosinase-like 1), writes
@@ -74,12 +81,15 @@ placed here as the DE input, per the established handoff.
 ## Runnability
 
 Paths are resolved through `01_code/_paths.R` (`here::here()` anchored on the `.Rproj`).
-`03_5`, `04`, `16`, `01_7`, `02_6` and `02_7` knit cleanly from a fresh session. The
-`02_5_DESeq_*` scripts still carry interactive-session assumptions (see
-`DEG-lists-provenance_DOC.md`); since 17 September 2026 every `DESeqDataSetFromMatrix()` in
-them is preceded by an explicit `factor(..., levels = c("control", ...))` (or `day` levels
-`0`, `3`; `tissue` levels `F`, `G`) and followed by a `stopifnot(resultsNames(dds)[2] == ...)`
-guard, so the reference level no longer depends on locale sort order. `DEG_lists/` is both
+`03_5`, `04`, `16`, `19`, `12-Volcano-plots`, `01_7`, `02_6` and `02_7` knit cleanly from a
+fresh session (the batch driver runs them); `12-DEG_venn` and `15-number_DEGS` need `ggvenn`
+and `ggpattern` installed. `01_5` reads the raw StringTie matrix, which is not in the
+repository, so the clean matrix it produced is the committed input. The `02_5_DESeq_*`
+scripts are the original interactive DESeq2 runs: every `DESeqDataSetFromMatrix()` in them
+is preceded by an explicit `factor(..., levels = c("control", ...))` (or `day` levels `0`,
+`3`; `tissue` levels `F`, `G`) and followed by a `stopifnot(resultsNames(dds)[2] == ...)`
+guard, so the reference level does not depend on locale sort order, and `03_5` re-derives
+and verifies every table they produced. `DEG_lists/` is both
 written by the DESeq scripts and read back by the joining and summary scripts, so it is an
 intermediate hub; `DEG_provenance_check.csv` records whether its result tables match their
 inputs.

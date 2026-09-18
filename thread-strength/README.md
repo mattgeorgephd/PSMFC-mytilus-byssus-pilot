@@ -16,7 +16,6 @@ thread-strength/
 │   ├── 2_assemble_thread_summary.Rmd  raw output    -> curation-ready candidate
 │   ├── 3_analyze_thread_strength.Rmd  curated table -> adhesion plots + stats
 │   ├── 4_decompose_adhesion.Rmd       curated table -> force / area / extension models
-│   ├── rename_tensometer_folders.sh   one-off folder rename helper (dry run by default)
 │   └── *_DOC.md                       companion documentation, one per script
 ├── 02_data/
 │   ├── tensometer_output/<phase folders>/   raw force/displacement .txt traces
@@ -35,22 +34,18 @@ thread-strength/
 
 ```
 02_data/tensometer_output/
-├── 00_lab_reference/    day 0  T001-T012, never entered the experimental system
-├── 01_pre_exposure/     day 1  shared holding system, threads built before exposure
-├── 02_post_control/     day 3  common-garden control tank
-├── 03_post_OA/          day 3
-├── 04_post_OW/          day 3
-└── 05_post_DO/          day 3
+├── 00_laboratory_control/   day 0  T001-T012, never entered the experimental system
+├── 00_baseline/             day 1  shared holding system, threads built before exposure
+├── 01_treatment_control/    day 3  common-garden control tank
+├── 02_OA_treatment/         day 3
+├── 03_OW_treatment/         day 3
+└── 04_DO_treatment/         day 3
 ```
 
-Phase first, so the numeric prefix orders the experiment rather than fighting it. The
-previous names (`00_baseline`, `00_laboratory_control`, `01_treatment_control`,
-`02_OA_treatment`, ...) put two different phases under the same `00` prefix and made
-`treatment_control` read as "a treatment called control".
-
-`rename_tensometer_folders.sh` performs the rename with `git mv`. It is a dry run unless you
-pass `--apply`. Script 1 recognises both the old and the new names, so it works before and
-after; delete the legacy rows from its `folder_labels` table once the rename is pushed.
+Script 1 maps each folder to `thread_trt`, `phase` and `day` through its `folder_labels`
+table, which also accepts the phase-first spellings (`00_lab_reference`, `01_pre_exposure`,
+`02_post_control`, `03_post_OA`, `04_post_OW`, `05_post_DO`) should the folders ever be
+renamed. Only folders that exist are used.
 
 ## The label model
 
@@ -71,8 +66,6 @@ animal's arm in the folder path; that creates a second copy of the key that can 
 `phase` has three levels because the lab-reference animals are not pre-exposure baselines. A
 binary before/after would pool them and contaminate every paired contrast.
 
-The old `group` column is retired: it was fully recoverable from `thread_trt`, and its value
-`control` collided with both `mussel_trt == "control"` and `thread_trt == "treatment_control"`.
 
 ## How to run
 

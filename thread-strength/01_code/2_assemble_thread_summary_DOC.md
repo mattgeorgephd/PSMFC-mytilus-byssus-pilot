@@ -27,36 +27,25 @@ One fact, one source. Nothing is copied into two files where the copies could dr
 | `species`, `mussel_trt`, `rna_sequenced` | mussel | `mussel-treatment-key.csv`, via script 1 |
 | `pad_area`, `failure` | thread | `02_data/pad_area_measurements.xlsx` |
 
-### What changed in `pad_area_measurements.xlsx`
-
-The committed version carried `species`, `mussel_ID`, `thread_num`, `group`, `mussel_trt`,
-`thread_trt`, `day`, `pad_area`, `failure` for 299 rows. Four of those columns were second
-copies of facts owned elsewhere, and `group` was the retired column whose value `control`
-collided with two other meanings. They were checked against the key before removal:
-`mussel_trt` and `species` agreed on all 299 rows, and `day` is determined by the folder.
-
-The file is now:
+### `pad_area_measurements.xlsx`
 
 | column | meaning |
 |---|---|
 | `mussel` | canonical tag, prefix + zero-padded 3 digits |
 | `thread` | integer |
 | `thread_trt` | `lab_control`, `baseline`, `treatment_control`, `OA`, `OW`, `DO` |
-| `pad_area` | plaque cross-sectional area, mm². **Blank where not yet measured** |
+| `pad_area` | plaque cross-sectional area, mm². Blank where not yet measured |
 | `failure` | `cohesive`, `peeling`, `tearing`, `thread`. Blank where not yet measured |
 | `notes` | free text, yours |
 
-It now holds **all 375 rows**, one per extracted trace, sorted by folder then mussel then
-thread. The 299 measured values are unchanged, verified value-for-value. The 76 outstanding
-rows are present with blank `pad_area`, so filling them in is typing into existing cells
-rather than adding rows. Filter on a blank `pad_area` to find them.
-
-The script still accepts `mussel_ID` / `thread_num`, so an older copy of the file joins.
+One row per extracted trace (380), sorted by folder then mussel then thread; every row is
+measured. A new trace is added as a row with blank `pad_area`, and the worklist below finds
+it. The script still accepts `mussel_ID` / `thread_num`, so an older copy of the file joins.
 
 ## The join key
 
 `mussel` + `thread` + `thread_trt`. Verified unique on both sides. `thread_trt` is not
-optional: 45 animals were pulled before and after exposure, so `mussel` + `thread` alone
+optional: 47 animals were pulled before and after exposure, so `mussel` + `thread` alone
 matches two different traces and would silently duplicate rows.
 
 ## Picture matching
@@ -75,7 +64,7 @@ Written to `03_analyses/assemble-thread-summary/`.
 
 ### `thread-summary-candidate.xlsx`, sheet `data`
 
-375 rows, the shape script 3 expects, plus `pad_notes`, `picture_status`, `source_folder` and
+380 rows, the shape script 3 expects, plus `pad_notes`, `picture_status`, `source_folder` and
 `file` for provenance. Script 3 ignores extra columns, so it can be saved as
 `thread-summary.xlsx` as-is once the bad runs are removed.
 
@@ -92,40 +81,21 @@ Written to `03_analyses/assemble-thread-summary/`.
 
 ## Current state
 
-**Plaque measurements: 299 of 375 traces.**
-
-| folder | still needed | image available | image missing |
-|---|---|---|---|
-| `00_baseline` | 41 | 1 | 40 |
-| `00_laboratory_control` | 5 | 1 | 4 |
-| `01_treatment_control` | 3 | 2 | 1 |
-| `02_OA_treatment` | 7 | 0 | 7 |
-| `03_OW_treatment` | 5 | 1 | 4 |
-| `04_DO_treatment` | 15 | 0 | 15 |
-| **total** | **76** | **5** | **71** |
-
-**Only 5 of the 76 can be measured from the images in this repository.** Every one of the 299
-already-measured rows has a committed image, so the 71 are not a matching failure: those
-images are not in `02_data/pictures/`. `pictures/control/` covers T01–T58 only, with no T07;
-`pictures/treatment/` covers T14–T58, T89–T94 and T118–T135.
+**Plaque measurements: 380 of 380 traces.** `to_measure` is empty, and the candidate table
+equals `03_analyses/thread-summary.xlsx` value for value (force, area, failure mode,
+adhesion) for all 380 rows. 293 traces have a committed microscope image; the other 87 were
+measured from images that are not in `02_data/pictures/`.
 
 ### Pairing
 
-| arm | mussels | traces on both sides | usable adhesion pairs | blocked by measurement |
+| arm | animals with traces | traces on both sides | pre only | post only |
 |---|---|---|---|---|
-| DO | 20 | 12 | 9 | 3 |
-| OA | 18 | 11 | 9 | 2 |
-| OW | 24 | 12 | 12 | 0 |
-| control | 12 | 10 | **0** | **10** |
+| control | 12 | 11 | 1 (T137) | 0 |
+| OA | 18 | 12 | 5 | 1 |
+| OW | 24 | 12 | 2 | 10 |
+| DO | 20 | 12 | 6 | 2 |
 
-Fifteen animals have traces on both sides but no usable pair, and in **every one of them the
-missing side is the pre-exposure one**: T110, T111, T112 (DO); T118, T119 (OA); T126–T135
-(control). None of their pre-exposure images is in the repository.
-
-The control arm's ten pairs are the ones that matter most: they are the only route to a
-within-subject control contrast, and their absence is what makes the mixed model rank
-deficient in script 3.
-
-Separately, 15 animals have pre-exposure traces but no day-3 trace (including T136 and T137,
-the two day-3 control animals whose post pulls are missing), and 14 have day-3 traces but no
-pre-exposure trace.
+The 27 unpaired animals are all trace gaps (`missing_pre_trace`, `missing_post_trace`),
+not measurement gaps: 14 have a pre-exposure pull only (13 day-1 animals never re-pulled
+by design, plus T137) and 13 a day-3 pull only. The control arm's eleven pairs are what
+give the design a within-subject control contrast.

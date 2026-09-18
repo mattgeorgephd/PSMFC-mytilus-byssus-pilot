@@ -5,10 +5,10 @@ Inputs consumed by the scripts in `../01_code/`. Do not write outputs here; outp
 
 | Item | Description | Read by |
 |---|---|---|
-| `tensometer_output/00_lab_reference/` | Day 0. T001-T012, never entered the experimental system | `1_extract_tensometer_data.Rmd` |
-| `tensometer_output/01_pre_exposure/` | Day 1. Shared holding system, threads built before exposure | `1_extract_tensometer_data.Rmd` |
-| `tensometer_output/02_post_control/` | Day 3. Common-garden control tank | `1_extract_tensometer_data.Rmd` |
-| `tensometer_output/03_post_OA/`, `04_post_OW/`, `05_post_DO/` | Day 3. Stressor arms | `1_extract_tensometer_data.Rmd` |
+| `tensometer_output/00_laboratory_control/` | Day 0. T001-T012, never entered the experimental system | `1_extract_tensometer_data.Rmd` |
+| `tensometer_output/00_baseline/` | Day 1. Shared holding system, threads built before exposure | `1_extract_tensometer_data.Rmd` |
+| `tensometer_output/01_treatment_control/` | Day 3. Common-garden control tank | `1_extract_tensometer_data.Rmd` |
+| `tensometer_output/02_OA_treatment/`, `03_OW_treatment/`, `04_DO_treatment/` | Day 3. Stressor arms | `1_extract_tensometer_data.Rmd` |
 | `pictures/{control,treatment}/` | Microscope images used to measure plaque area (`pad_area`) | manual measurement |
 | `mussel-treatment-key.csv` | Mussel tag -> arm, species, RNA flag | `1_extract_tensometer_data.Rmd` |
 | `pad_area_measurements.xlsx` | Hand-measured plaque area and failure mode, one row per trace | `2_assemble_thread_summary.Rmd` |
@@ -23,7 +23,7 @@ Each file is **wide**: a `Time / Displacement / Force` header line followed by t
 tab-separated rows, one per channel. A literal `NaN` as the first Force sample is normal
 instrument behaviour at the start of a pull and is read as zero.
 
-`mussel` + `thread` is not unique across the dataset; 45 animals were pulled both before and
+`mussel` + `thread` is not unique across the dataset; 47 animals were pulled both before and
 after exposure. The unique key includes the folder.
 
 ## pad_area_measurements.xlsx
@@ -33,9 +33,9 @@ The only file in this folder you edit by hand. One row per extracted trace, keye
 measured. Filter on a blank `pad_area` to find the outstanding work; the rows already exist,
 so you fill cells rather than add rows.
 
-It carries only what it is the source of truth for. `species`, `group`, `mussel_trt` and
-`day` were removed: the first three are owned by `mussel-treatment-key.csv` and the last by
-the tensometer subfolder, and a second copy is a copy that can drift.
+It carries only what it is the source of truth for: `species`, `mussel_trt` and `day` are
+owned by `mussel-treatment-key.csv` and by the tensometer subfolder, and a second copy is a
+copy that can drift.
 
 `2_assemble_thread_summary.Rmd` reports which traces are still outstanding and whether a
 microscope image for each exists in `pictures/`.

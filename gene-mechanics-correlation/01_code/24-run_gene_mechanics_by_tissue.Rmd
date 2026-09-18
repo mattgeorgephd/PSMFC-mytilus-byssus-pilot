@@ -86,9 +86,12 @@ write.csv(run_log, file.path(html_dir, "run_log.csv"), row.names = FALSE)
 Nothing in the code. What differs is the data:
 
 - The gill count matrix has 59 samples against 58 for foot, and T047 has gill but no foot
-  RNA, so the gill paired set is 45 animals (43 with baselines) against 44 (42) for foot.
+  RNA, so the gill paired set is 46 animals (45 with baselines) against 45 (44) for foot.
   T051G is listed in `Gill/G_treatmentinfo.csv` but was removed from the count matrix for QC
   (`01_5-gene_count_matrix.Rmd`); script 20 drops it with a message.
+- The byssal secretion state (`differential-expression/02_data/secretion_state.csv`, from
+  DE script `01_7`) is measured on the foot sample and joined to both tissues by animal;
+  run the differential-expression batch driver first when that file is missing or stale.
 - `Gill/G_treatmentinfo.csv` codes the day-3 control arm as `control_3` and has no leading
   index column; script 20 and 22 normalise both.
 - The DEG union is built from the tissue's own `*_TC_siggene*` files, which

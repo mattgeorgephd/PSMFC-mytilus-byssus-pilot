@@ -10,33 +10,26 @@ Adhesion (kPa) = peak force / plaque area. On the log scale that is exactly
 `log(adhesion) = log(force) − log(area)`, so a fitted change in log-adhesion is the
 difference of the fitted changes in log-force and log-area.
 
-Script 3, on the full 375-thread dataset with the control arm paired, finds:
-
-- `timepoint` main effect on adhesion: F = 18.7, p < 0.0001. Everything declines.
-- `mussel_trt:timepoint` interaction on adhesion: F = 0.71, **p = 0.55**. No arm declines
-  differently from any other, including control.
-
-Read on its own that says "no stressor effect". Decomposed, the same data say something
-else entirely:
+Script 3, on the 342 pre/post threads (47 animals paired, every arm including control),
+finds an arm x timepoint interaction on log adhesion (p = 0.0057). Decomposed, the same
+data say where it comes from:
 
 | response (log scale) | arm × timepoint | control | OA | OW | DO |
 |---|---|---|---|---|---|
-| adhesion | p = 0.83 | −22% | −21% | −31% | −23% |
-| **peak force** | **p = 0.0005** | −12% | −18% | **−44%** | **−51%** |
-| **plaque area** | **p < 0.0001** | +12% | +7% | **−19%** | **−37%** |
-| extension at break | p = 0.0026 | −0.034 mm | −0.018 | +0.017 | +0.001 |
+| adhesion | p = 0.0057 | −9% | −36% | −45% | −14% |
+| **peak force** | **p = 0.00003** | 0% | −33% | **−55%** | **−46%** |
+| **plaque area** | **p < 0.0001** | +10% | +7% | **−18%** | **−37%** |
+| extension at break | p = 0.0013 | −0.027 mm | −0.022 | +0.022 | 0.000 |
 
-Percentages are mixed-model post/baseline ratios within each arm. Bold entries are
+Percentages are mixed-model post/baseline ratios within each arm
+(`STATS_decomp_within_arm_change.csv`); extension is a difference in mm. Bold entries are
 p < 0.001.
 
 Warming and hypoxia animals build **smaller plaques that hold with far less force**.
-Control and acidification animals build **slightly larger plaques that hold with slightly
-less force**. In every arm the two changes divide out to a similar ~20–30% fall in kPa,
-which is why the ratio shows no interaction. The stressor signal is in the components.
-
-This is consistent with the earlier top-line finding that warming was the most mechanically
-damaging stressor and that stress acts on plaque size, and it now has the control arm to
-anchor it.
+Control and acidification animals build slightly larger plaques; acidification animals'
+plaques hold a third less force, control animals' the same force. Adhesion (the ratio)
+carries the acidification and warming effects but hides most of the hypoxia effect, whose
+force and area both fall. Read force and area first; the ratio second.
 
 ## Input
 
@@ -73,8 +66,8 @@ silently returns the log scale. The first draft of this script had exactly that 
 
 ## Per-animal response classification (handoff to gene-mechanics)
 
-`mussel_response_classification.csv`, one row per animal with day-3 threads (59), change
-columns populated for the 45 with baselines (`paired = TRUE`). Per metric (adhesion, force,
+`mussel_response_classification.csv`, one row per animal with day-3 threads (60), change
+columns populated for the 47 with baselines (`paired = TRUE`). Per metric (adhesion, force,
 area, extension): `_pre`, `_post`, `_change` (log-ratio; plain difference for extension),
 `_pct_change`, `_direction` (`decreased` / `increased`), `_vs_control` (the animal's %
 change minus the control arm's mean % change) and `_rel_direction`
@@ -90,22 +83,23 @@ both increased, else `mixed`; `response_score` is the mean standardised log-rati
 force, area and adhesion (higher = held up better). Extension is reported but excluded from
 the composite because its direction is not a strength direction.
 
-Current split of the 45 paired animals: control 5 weaker / 1 stronger / 4 mixed; OA 7/2/2;
-OW 8/2/2; DO 7/2/3. Force fell in 10 of 12 OW and 10 of 12 DO animals against 6 of 10
-control; plaque area fell in 11 of 12 DO and 9 of 12 OW against 4 of 10 control and 3 of 11
-OA. `FIG_animal_response_force_vs_area.png` shows every paired animal on the two axes;
-warming and hypoxia animals occupy the lower-left quadrant.
+Current split of the 47 paired animals: control 4 weaker / 3 stronger / 4 mixed; OA 9/2/1;
+OW 10/1/1; DO 6/2/4. Force fell in 11 of 12 OW, 10 of 12 DO and 10 of 12 OA animals
+against 5 of 11 control; plaque area fell in 11 of 12 DO and 9 of 12 OW against 4 of 11
+control and 3 of 12 OA. `FIG_animal_response_force_vs_area.png` shows every paired animal on
+the two axes; warming and hypoxia animals occupy the lower-left quadrant.
 
 Script 20 in `gene-mechanics-correlation/` joins the class, score, directions and
 control-referenced changes into its paired manifest.
 
 ## Failure mode
 
-Among day-3 threads, failure-mode composition differs by arm: chi-square X² = 16.6,
-df = 9, p = 0.056; Fisher's exact (simulated) p = 0.044. Peeling threads hold at roughly
+Among the 181 day-3 threads, failure-mode composition differs by arm: chi-square
+X² = 18.6, df = 9, p = 0.029; Fisher's exact (Monte Carlo, B = 10,000) p = 0.019, the one
+to quote because several expected counts are below 5. Peeling threads hold at roughly
 55 kPa against 80 kPa for cohesive failures, so a shift toward peeling is a shift toward
 weaker attachment. DO has the most peeling (49%) and almost no tearing; the day-3 control
-arm has the most cohesive failures (61%).
+arm has the most cohesive failures (65%) and the least peeling (24%).
 
 ## Palette note
 

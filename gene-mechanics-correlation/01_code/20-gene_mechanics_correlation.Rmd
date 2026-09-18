@@ -72,16 +72,26 @@ TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue
 stopifnot(TISSUE %in% c("F", "G"))
 MIN_COUNT     <- 5            # gene kept if count > MIN_COUNT in >= 1/3 of paired samples
 FDR_ALPHA     <- 0.10         # BH threshold for flagging
+## Detection floor. A gene whose VST value sits at the floor (zero counts) in many paired
+## animals gives an association driven by presence/absence, not by expression level. Every
+## tested gene gets frac_at_floor and floor_flag (exclude > FLOOR_EXCLUDE, caution >
+## FLOOR_CAUTION); with EXCLUDE_FLOOR_GENES = TRUE the `exclude` genes are dropped from the
+## candidate and DEG-union families BEFORE testing, so BH and script 21's permutation run on
+## the family that can be interpreted. They stay listed (floor_flag, tested = FALSE) and they
+## still contribute to script 21's module scores.
+FLOOR_EXCLUDE <- 0.40
+FLOOR_CAUTION <- 0.20
+EXCLUDE_FLOOR_GENES <- TRUE
 ADJUST_FOR_BASELINE <- TRUE   # TRUE = add each animal's pre-stress thread metric as a
                               #        covariate for the LEVEL metrics (n drops to animals
                               #        with baseline threads). The dlog_* CHANGE metrics
                               #        never use it; the baseline is inside the response.
-INCLUDE_CONTROL_ARM <- TRUE   # TRUE = the day-3 common-garden control animals (T126-T135)
+INCLUDE_CONTROL_ARM <- TRUE   # TRUE = the day-3 common-garden control animals (T126-T137)
                               #        are part of the paired set, as a fourth treatment
                               #        level. They have foot RNA, day-3 threads and baseline
                               #        threads. Their own ~20% decline is the null trajectory
                               #        a stress-specific expression signal must beat.
-                              # FALSE = stressor arms only (the pre-2026-09 behaviour).
+                              # FALSE = stressor arms only.
 USE_SECRETION_STATE <- FALSE  # TRUE = add each animal's byssal SECRETION STATE (on/off; the
                               #        foot plaque-protein module, computed per foot sample by
                               #        differential-expression/01_code/01_7-secretion_state.Rmd
@@ -186,10 +196,25 @@ dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 ## Per-animal byssal secretion state (differential-expression script 01_7). Joined into the
 ## manifest whenever it exists; used as a covariate only when USE_SECRETION_STATE is TRUE.
 SECRETION_STATE_FILE <- file.path(DE_DIR, "02_data", "secretion_state.csv")
-## Genome-wide BLAST annotation (best UniProt hit per LOC), used only to add the byssal
-## structural genes to the candidate set: the DEG-derived annotation map below covers
-## stress-responsive genes and does not reach the plaque proteins, which respond to time in
-## the system rather than to any stressor (see 03_analyses/README.md).
+## ---- annotation map and candidate universe ------------------------------------------
+## CANDIDATE_ANNOTATION:
+##   "genome" (default) = every gene in the count matrix is annotated with its best UniProt
+##            hit (highest bitscore) from the genome-wide BLAST table MASTER_ANNOT_FILE, so
+##            any EXPRESSED gene whose name matches CANDIDATE_KEYWORDS is a candidate.
+##   "TC_DEG" = only genes that carry a name in the treatment-vs-control DEG tables
+##            (GOterms_genome/*_sigs_ID.csv) can be candidates, plus the byssal structural
+##            genes. That was the behaviour until 2026-09-18; it made "already a DEG in some
+##            contrast" a hidden entry condition for the candidate family.
+## The two sources agree on the name for 947 of the 969 DEG-annotated genes; the 22 that
+## differ are LOCs whose transcripts hit different proteins, and the genome map takes the
+## highest-scoring hit (the same rule script 23 uses).
+## CANDIDATE_MAX_EVALUE / CANDIDATE_MIN_PIDENT: BLAST-quality floor for a gene to be a
+## candidate under "genome" (the map itself keeps every hit, with pident and evalue columns).
+## On this table every keyword match already has evalue < 1e-10; pident >= 40 would cut the
+## foot candidates from ~226 to ~144 (script 23's HI_CONF_ONLY rule).
+CANDIDATE_ANNOTATION <- "genome"
+CANDIDATE_MAX_EVALUE <- 1e-10
+CANDIDATE_MIN_PIDENT <- 0
 MASTER_ANNOT_FILE <- file.path(repo_root, "blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
 BYSSAL_STRUCTURAL_REGEX <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-",
                                  "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
@@ -424,61 +449,96 @@ keep <- rowSums(counts_p > MIN_COUNT) >= ceiling(nrow(paired) / 3)
 vp <- vp[keep, , drop = FALSE]
 cat("Genes tested (after expression filter):", nrow(vp), "\n")
 cat("Duplicate LOC keys among tested genes:", sum(duplicated(rownames(vp))), "\n")  # should be ~0
+
+## detection floor per gene: fraction of paired animals at the VST minimum (zero counts)
+floor_val   <- min(vp)
+frac_floor  <- rowMeans(abs(vp - floor_val) < 1e-6)
+floor_flag_of <- function(ids) {
+  fr <- unname(frac_floor[match(ids, rownames(vp))])
+  tibble(LOC_ID = ids, frac_at_floor = round(fr, 3),
+         floor_flag = dplyr::case_when(fr > FLOOR_EXCLUDE ~ "exclude", fr > FLOOR_CAUTION ~ "caution", TRUE ~ "ok"),
+         tested = !(EXCLUDE_FLOOR_GENES & fr > FLOOR_EXCLUDE))
+}
 ```
 
 ---
 
 # 3. Annotation map (portable LOC -> protein name)
 
-Built from the genome-based annotated DEG files (`GOterms_genome/*_sigs_ID.csv`), which
-carry both the `LOC_ID` and the UniProt `protein_name`. This covers stress-responsive
-genes; unannotated genes are kept in the DEG-wide test but cannot be keyword-filtered.
+The map is the genome-wide BLAST table, best UniProt hit per LOC by bitscore
+(`CANDIDATE_ANNOTATION = "genome"`), with the hit's `pident` and `evalue` carried along so a
+weak annotation is visible wherever a name is printed. The treatment-vs-control DEG tables
+(`GOterms_genome/*_sigs_ID.csv`) are read as well: `in_TC_DEG_annotation` marks the genes
+they name, and with `CANDIDATE_ANNOTATION = "TC_DEG"` only those (plus the byssal structural
+genes) can enter the candidate set.
 
 ```{r annot}
+## names carried by the TC DEG tables (the pre-2026-09-18 universe)
 sig_files <- list.files(file.path(DE_DIR, "03_analyses", "DEG_lists", "GOterms_genome"),
                         pattern = "_sigs_ID\\.csv$", full.names = TRUE)
-annot <- map_dfr(sig_files, ~ {
+annot_deg <- map_dfr(sig_files, ~ {
   d <- tryCatch(read.csv(.x, stringsAsFactors = FALSE), error = function(e) NULL)
   if (is.null(d) || !all(c("LOC_ID", "protein_name") %in% names(d))) return(NULL)
   d %>% select(LOC_ID, protein_name)
-}) %>% distinct(LOC_ID, .keep_all = TRUE)
-annot <- as_tibble(annot) %>% mutate(annotation_source = "TC_DEG_sigs")
-cat("Annotated LOCs (from the TC DEG tables):", nrow(annot), "\n")
+}) %>% distinct(LOC_ID, .keep_all = TRUE) %>% as_tibble()
+cat("LOCs named in the TC DEG tables:", nrow(annot_deg), "\n")
 
-## The byssal structural genes (plaque proteins, preCols, byssal EP/ACDC, the plaque-curing
-## tyrosinase) are not DEGs in any treatment-vs-control contrast, so the map above never
-## reaches them. Add every expressed gene whose best genome-wide BLAST hit matches
-## BYSSAL_STRUCTURAL_REGEX, from the master annotation table, so that they enter the
-## candidate set and script 21's byssal_structural module explicitly.
-if (file.exists(MASTER_ANNOT_FILE)) {
-  master <- read_delim(MASTER_ANNOT_FILE, delim = "\t", show_col_types = FALSE,
-                       col_select = c("gene", "bitscore", "Protein.names")) %>%
-    transmute(LOC_ID = str_extract(as.character(gene), "LOC\\d+"),
-              bitscore = suppressWarnings(as.numeric(bitscore)),
-              protein_name = as.character(Protein.names)) %>%
-    filter(!is.na(LOC_ID), !is.na(protein_name)) %>%
-    arrange(desc(bitscore)) %>% distinct(LOC_ID, .keep_all = TRUE)          # best hit per LOC
+## genome-wide map: best hit per LOC
+if (!file.exists(MASTER_ANNOT_FILE))
+  stop("Master annotation not found: ", MASTER_ANNOT_FILE,
+       "\nIt is the source of the annotation map (CANDIDATE_ANNOTATION = \"genome\").")
+master <- read_delim(MASTER_ANNOT_FILE, delim = "\t", show_col_types = FALSE,
+                     col_select = c("gene", "pident", "evalue", "bitscore", "Protein.names")) %>%
+  ## key: the LOC id, or the gene symbol for the 13 mitochondrial genes (ND1, COX1, ...),
+  ## which is how the count matrix names them too
+  transmute(LOC_ID = dplyr::coalesce(str_extract(as.character(gene), "LOC\\d+"),
+                                     na_if(trimws(as.character(gene)), "")),
+            protein_name = as.character(Protein.names),
+            blast_pident = suppressWarnings(as.numeric(pident)),
+            blast_evalue = suppressWarnings(as.numeric(evalue)),
+            bitscore     = suppressWarnings(as.numeric(bitscore))) %>%
+  filter(!is.na(LOC_ID), !is.na(protein_name), nzchar(protein_name)) %>%
+  arrange(desc(bitscore)) %>% distinct(LOC_ID, .keep_all = TRUE) %>%           # best hit per LOC
+  select(-bitscore)
+cat("LOCs with a genome-wide best hit:", nrow(master), "\n")
+
+if (CANDIDATE_ANNOTATION == "genome") {
+  annot <- master %>%
+    mutate(annotation_source = "genome_blast",
+           in_TC_DEG_annotation = LOC_ID %in% annot_deg$LOC_ID)
+  cand_ok <- with(annot, blast_evalue <= CANDIDATE_MAX_EVALUE & blast_pident >= CANDIDATE_MIN_PIDENT)
+} else if (CANDIDATE_ANNOTATION == "TC_DEG") {
+  ## the DEG-table names, plus the byssal structural genes from the genome map (they are not
+  ## DEGs in any treatment-vs-control contrast, so the DEG tables never reach them)
   byssal_add <- master %>%
     filter(grepl(BYSSAL_STRUCTURAL_REGEX, protein_name, ignore.case = TRUE),
-           LOC_ID %in% rownames(vp), !LOC_ID %in% annot$LOC_ID) %>%
-    transmute(LOC_ID, protein_name, annotation_source = "genome_blast_byssal")
-  annot <- bind_rows(annot, byssal_add)
-  cat("Byssal structural genes added from the genome annotation (expressed, not TC DEGs):",
-      nrow(byssal_add), "\n")
-  print(as.data.frame(byssal_add))
-} else {
-  warning("Master annotation not found (", MASTER_ANNOT_FILE, "); the byssal structural genes ",
-          "enter the candidate set only where they are TC DEGs.", call. = FALSE)
-}
+           LOC_ID %in% rownames(vp), !LOC_ID %in% annot_deg$LOC_ID) %>%
+    mutate(annotation_source = "genome_blast_byssal")
+  annot <- bind_rows(annot_deg %>% mutate(annotation_source = "TC_DEG_sigs") %>%
+                       left_join(master %>% select(LOC_ID, blast_pident, blast_evalue), by = "LOC_ID"),
+                     byssal_add) %>%
+    mutate(in_TC_DEG_annotation = annotation_source == "TC_DEG_sigs")
+  cand_ok <- rep(TRUE, nrow(annot))
+} else stop("CANDIDATE_ANNOTATION must be \"genome\" or \"TC_DEG\"")
+annot$blast_ok <- !is.na(cand_ok) & cand_ok   # passes the BLAST-quality floor; script 21's modules use it too
+cat("Annotation map (", CANDIDATE_ANNOTATION, "):", nrow(annot), "LOCs, of which", sum(annot$blast_ok),
+    "pass the BLAST-quality floor\n")
 
-## candidate gene set = annotated genes whose protein name matches the keyword list
-candidates <- annot %>%
+## candidate gene set = annotated, expressed genes whose protein name matches the keyword list
+candidates <- annot %>% filter(blast_ok) %>%
   filter(grepl(CANDIDATE_KEYWORDS, protein_name, ignore.case = TRUE)) %>%
   filter(LOC_ID %in% rownames(vp)) %>%
   mutate(byssal_structural = grepl(BYSSAL_STRUCTURAL_REGEX, protein_name, ignore.case = TRUE))
+candidates <- candidates %>% left_join(floor_flag_of(candidates$LOC_ID), by = "LOC_ID")
 cat("Candidate (byssal/stress) genes present & expressed:", nrow(candidates),
-    "( of which byssal structural:", sum(candidates$byssal_structural), ")\n")
-print(as.data.frame(candidates))
+    "( byssal structural:", sum(candidates$byssal_structural),
+    "; named in the TC DEG tables:", sum(candidates$in_TC_DEG_annotation),
+    "; at the detection floor:", sum(candidates$floor_flag == "exclude"),
+    if (EXCLUDE_FLOOR_GENES) "excluded from the tested family" else "kept", ")\n")
+cat("Candidate genes tested:", sum(candidates$tested), "\n")
+print(as.data.frame(candidates %>% select(LOC_ID, protein_name, blast_pident, in_TC_DEG_annotation,
+                                          byssal_structural, frac_at_floor, floor_flag, tested) %>%
+                      mutate(protein_name = substr(protein_name, 1, 50))))
 ```
 
 ```{r exports}
@@ -500,7 +560,8 @@ write_csv(tibble(metric = c(LEVEL_METRICS, CHANGE_METRICS),
                  arms   = paste(arms_kept, collapse = ";"),
                  covariates          = paste(COVARIATES, collapse = ";"),
                  use_secretion_state = USE_SECRETION_STATE,
-                 adjust_for_baseline = ADJUST_FOR_BASELINE),
+                 adjust_for_baseline = ADJUST_FOR_BASELINE,
+                 exclude_floor_genes = EXCLUDE_FLOOR_GENES),
           file.path(OUT_DIR, sprintf("metrics_config_%s.csv", TISSUE)))          # so 21 uses the same list
 ```
 
@@ -523,7 +584,20 @@ deg_union <- map(deg_files, ~ {
   sub(".*\\|", "", sub("^gene-", "", g))
 }) %>% unlist() %>% unique()
 deg_union <- intersect(deg_union, rownames(vp))
-cat("DEG-union genes present & expressed:", length(deg_union), "\n")
+deg_union_tbl <- floor_flag_of(deg_union)
+cat("DEG-union genes present & expressed:", length(deg_union),
+    "| at the detection floor:", sum(deg_union_tbl$floor_flag == "exclude"),
+    "| tested:", sum(deg_union_tbl$tested), "\n")
+
+## the floor table for both universes, so downstream scripts and the report can read it
+write_csv(bind_rows(candidates %>% transmute(LOC_ID, gene_set = "candidate", frac_at_floor, floor_flag, tested),
+                    deg_union_tbl %>% filter(!LOC_ID %in% candidates$LOC_ID) %>%
+                      transmute(LOC_ID, gene_set = "DEG_union", frac_at_floor, floor_flag, tested)) %>%
+            left_join(annot %>% select(LOC_ID, protein_name), by = "LOC_ID") %>%
+            mutate(n_samples = nrow(paired), n_at_floor = round(frac_at_floor * nrow(paired))) %>%
+            select(LOC_ID, protein_name, gene_set, n_samples, n_at_floor, frac_at_floor, floor_flag, tested) %>%
+            arrange(desc(frac_at_floor), LOC_ID),
+          file.path(OUT_DIR, sprintf("detection_floor_flags_%s.csv", TISSUE)))
 ```
 
 ---
@@ -603,8 +677,10 @@ run_set <- function(loci, set_name) {
 ```
 
 ```{r run}
-res_cand <- run_set(candidates$LOC_ID, "candidate")
-res_deg  <- run_set(deg_union,        "DEG_union")
+res_cand <- run_set(candidates$LOC_ID[candidates$tested], "candidate") %>%
+  left_join(candidates %>% select(LOC_ID, frac_at_floor, floor_flag, byssal_structural), by = "LOC_ID")
+res_deg  <- run_set(deg_union_tbl$LOC_ID[deg_union_tbl$tested], "DEG_union") %>%
+  left_join(deg_union_tbl %>% select(LOC_ID, frac_at_floor, floor_flag), by = "LOC_ID")
 
 write_csv(res_cand, file.path(OUT_DIR, sprintf("assoc_candidate_%s.csv", TISSUE)))
 write_csv(res_deg,  file.path(OUT_DIR, sprintf("assoc_DEGunion_%s.csv",  TISSUE)))
@@ -637,10 +713,17 @@ if (nrow(hits) == 0) {
 
 ## 6.1 Candidate-gene correlation heatmap
 
-Partial Spearman (treatment-controlled) of every candidate gene against each metric.
+Partial Spearman (treatment-controlled) of candidate genes against each metric. With the
+genome-wide candidate set (~230 genes) the panel shows the `HEATMAP_MAX_GENES` genes with
+the strongest association on any metric (smallest `p_lm`); the full table is
+`assoc_candidate_<T>.csv`.
 
 ```{r heatmap, fig.height=7}
+HEATMAP_MAX_GENES <- 60
+hm_keep <- res_cand %>% group_by(LOC_ID) %>% summarise(best_p = min(p_lm), .groups = "drop") %>%
+  slice_min(best_p, n = HEATMAP_MAX_GENES, with_ties = FALSE) %>% pull(LOC_ID)
 hm <- res_cand %>%
+  filter(LOC_ID %in% hm_keep) %>%
   mutate(label = paste0(substr(protein_name, 1, 34), " (", LOC_ID, ")")) %>%
   select(label, metric, rho_partial) %>%
   pivot_wider(names_from = metric, values_from = rho_partial) %>%
@@ -654,8 +737,8 @@ ggplot(hm_long, aes(metric, factor(label, levels = rev(hm$label)), fill = rho)) 
   scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
                        midpoint = 0, limits = c(-1, 1)) +
   labs(x = NULL, y = NULL, fill = "partial\nSpearman",
-       title = sprintf("Candidate gene expression vs plaque mechanics (%s, n=%d)",
-                       ifelse(TISSUE=="F","foot","gill"), nrow(paired))) +
+       title = sprintf("Candidate gene expression vs plaque mechanics (%s, n=%d; top %d of %d genes)",
+                       ifelse(TISSUE=="F","foot","gill"), nrow(paired), nrow(hm), nrow(candidates))) +
   theme_minimal(base_size = 11) +
   theme(axis.text.y = element_text(size = 8))
 ggsave(file.path(OUT_DIR, sprintf("candidate_heatmap_%s.png", TISSUE)),
@@ -744,10 +827,10 @@ cat("
    with baselines. Within-arm correlations are not interpretable on their own; the
    pooled-with-covariate model borrows strength across arms but confounds arm-level
    expression shifts with attachment differences.
-2. Multiple testing: the candidate set (~tens of genes) x PRIMARY_METRICS is the declared
-   confirmatory family (`tier = primary`); the remaining metrics and the DEG-union
-   (hundreds) are exploratory / screening. Script 21 gives every family a
-   search-corrected permutation p; quote q only beside it.
+2. Multiple testing: the candidate set (~230 foot / ~280 gill genes under the genome-wide
+   map) x PRIMARY_METRICS is the declared confirmatory family (`tier = primary`); the
+   remaining metrics and the DEG-union (hundreds) are exploratory / screening. Script 21
+   gives every family a search-corrected permutation p; quote q only beside it.
 7. `USE_SECRETION_STATE` (default FALSE) adds the animal's byssal secretion state (on/off,
    from differential-expression script 01_7) as a nuisance covariate. It is off by default
    because the state is itself an expression-derived quantity measured on the same sample;
@@ -809,7 +892,14 @@ writeLines(c(
                                                                      as.integer(table(paired$treatment))), collapse = ", "), ")"),
   paste0("with baseline        : ", sum(!is.na(paired$base_max_force))),
   paste0("genes tested         : ", nrow(vp)),
-  paste0("candidate genes      : ", nrow(candidates), " (byssal structural ", sum(candidates$byssal_structural), ")"),
+  paste0("CANDIDATE_ANNOTATION : ", CANDIDATE_ANNOTATION, " (evalue <= ", CANDIDATE_MAX_EVALUE,
+         ", pident >= ", CANDIDATE_MIN_PIDENT, ")"),
+  paste0("annotation map       : ", nrow(annot), " LOCs (", MASTER_ANNOT_FILE, ")"),
+  paste0("candidate genes      : ", nrow(candidates), " (byssal structural ", sum(candidates$byssal_structural),
+         "; named in TC DEG tables ", sum(candidates$in_TC_DEG_annotation), ")"),
+  paste0("EXCLUDE_FLOOR_GENES  : ", EXCLUDE_FLOOR_GENES, " (exclude > ", FLOOR_EXCLUDE, ", caution > ", FLOOR_CAUTION, ")"),
+  paste0("candidates tested    : ", sum(candidates$tested), " (", sum(!candidates$tested), " at the detection floor)"),
+  paste0("DEG union tested     : ", sum(deg_union_tbl$tested), " of ", nrow(deg_union_tbl)),
   paste0("DEG union genes      : ", length(deg_union)),
   paste0("R / DESeq2           : ", R.version.string, " / ", as.character(packageVersion("DESeq2")))),
   prov)

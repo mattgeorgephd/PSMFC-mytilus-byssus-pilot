@@ -1,0 +1,109 @@
+---
+title: "20 - Run the differential-expression scripts as a batch"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  steps: ["01_7", "03_5", "02_6", "02_7", "04", "16", "12_venn", "12_volcano", "15", "19"]
+  rewrite_stale: true      # passed to 03_5: overwrite any result table it finds stale
+  stop_on_fail: false      # TRUE = stop the batch at the first failed step
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+The scripts in this folder that can run from a fresh session, in the order they depend on
+one another, each rendered in its own R process (as `gene-mechanics-correlation/01_code/24-*`
+does), with a log and an HTML report per step in `03_analyses/knit_html/` (git-ignored).
+Knit this file, or run the chunk below, from inside `differential-expression.Rproj`.
+
+| step | script | what it does | needs |
+|---|---|---|---|
+| `01_7` | `01_7-secretion_state.Rmd` | byssal secretion state per foot sample -> `02_data/secretion_state.csv`, Fisher tests, day-0 vs day-3 summary | count matrix, `treatmentinfo_clean.csv` |
+| `03_5` | `03_5-DEG_table_provenance_check.Rmd` | re-derives all 14 contrasts (6 TC, 8 LC) from the committed inputs and, with `rewrite_stale`, overwrites any result table that does not reproduce | DESeq2, apeglm; ~7 min |
+| `02_6` | `02_6-DESeq_fourlevel_sensitivity.Rmd` | one four-level model per tissue, DEG counts vs the pairwise lists | DESeq2, apeglm |
+| `02_7` | `02_7-DESeq_foot_TC_secretion_sensitivity.Rmd` | foot contrasts adjusted for secretion state; **does nothing unless `USE_SECRETION_STATE <- TRUE` inside that script** | `01_7` |
+| `04` | `04-File_joining.Rmd` | joins the DEG lists to the BLAST / GO annotation; writes `DEG_join_summary.csv` | `03_5` |
+| `16` | `16-top_DEGs.Rmd` | top-50 tables per contrast | `04` |
+| `12_venn`, `12_volcano`, `15`, `19` | `12-DEG_venn.Rmd`, `12-Volcano-plots.Rmd`, `15-number_DEGS.Rmd`, `19-DEG_list_cleanup.Rmd` | figures and the zenodo lists | `04`; `ggvenn`, `ggpattern` installed |
+
+Not in the batch, on purpose: `01_5-gene_count_matrix.Rmd` reads the raw StringTie matrix
+(`dat/gene_count_matrix.csv`), which is not in the repository, so the clean matrix it
+produced is the committed input; the `02_5_DESeq_*` and `03-*_Shrinkage_filtration` scripts
+are the original interactive DESeq2 runs whose result tables `03_5` re-derives and verifies
+from the same inputs, so re-knitting them adds nothing and the `03_5` row is the check that
+they are current.
+
+A step that fails is logged (`run_log.csv`, `<script>.log`) and, unless `stop_on_fail` is
+TRUE, the batch goes on to the next step; read the log before trusting anything downstream
+of a failed `03_5` or `04`.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+
+code_dir <- here::here("01_code")
+html_dir <- here::here("03_analyses", "knit_html")
+dir.create(html_dir, showWarnings = FALSE, recursive = TRUE)
+
+script_files <- c(
+  `01_7`       = "01_7-secretion_state.Rmd",
+  `03_5`       = "03_5-DEG_table_provenance_check.Rmd",
+  `02_6`       = "02_6-DESeq_fourlevel_sensitivity.Rmd",
+  `02_7`       = "02_7-DESeq_foot_TC_secretion_sensitivity.Rmd",
+  `04`         = "04-File_joining.Rmd",
+  `16`         = "16-top_DEGs.Rmd",
+  `12_venn`    = "12-DEG_venn.Rmd",
+  `12_volcano` = "12-Volcano-plots.Rmd",
+  `15`         = "15-number_DEGS.Rmd",
+  `19`         = "19-DEG_list_cleanup.Rmd"
+)
+## per-step knit parameters
+step_params <- list(`03_5` = list(rewrite_stale = isTRUE(params$rewrite_stale), families = c("TC", "LC")))
+
+steps <- as.character(params$steps)
+stopifnot(all(steps %in% names(script_files)))
+
+rscript <- file.path(R.home("bin"), if (.Platform$OS.type == "windows") "Rscript.exe" else "Rscript")
+
+render_in_new_process <- function(rmd, prm, out_html, log_file) {
+  job <- tempfile(fileext = ".R")
+  prm_txt <- if (length(prm)) paste0("params = ", paste(deparse(prm), collapse = ""), ", ") else ""
+  writeLines(sprintf('rmarkdown::render(%s, %soutput_file = %s, output_dir = %s, quiet = TRUE)',
+                     shQuote(normalizePath(rmd, winslash = "/")), prm_txt,
+                     shQuote(out_html), shQuote(normalizePath(html_dir, winslash = "/"))), job)
+  status <- system2(rscript, shQuote(job), stdout = log_file, stderr = log_file)
+  unlink(job)
+  status == 0
+}
+
+log <- list()
+for (s in steps) {
+  rmd  <- script_files[[s]]
+  stem <- tools::file_path_sans_ext(rmd)
+  logf <- file.path(html_dir, paste0(stem, ".log"))
+  message(sprintf("==== %s  (%s) ====", s, rmd))
+  t0 <- Sys.time()
+  ok <- render_in_new_process(file.path(code_dir, rmd), step_params[[s]], paste0(stem, ".html"), logf)
+  if (!ok) message("FAILED; see ", logf)
+  log[[length(log) + 1]] <- data.frame(
+    step = s, script = rmd, ok = ok,
+    minutes = round(as.numeric(difftime(Sys.time(), t0, units = "mins")), 1),
+    html = if (ok) file.path("03_analyses", "knit_html", paste0(stem, ".html")) else NA_character_)
+  if (!ok && isTRUE(params$stop_on_fail)) { message("Stopping the batch (stop_on_fail = TRUE)."); break }
+}
+run_log <- do.call(rbind, log)
+print(run_log)
+write.csv(run_log, file.path(html_dir, "run_log.csv"), row.names = FALSE)
+```
+
+# After a run
+
+`03_analyses/DEG_lists/DEG_provenance_check.csv` says, per contrast, whether the tables on
+disk reproduce (`full_table_consistent`, `siggene_consistent`) and whether this run rewrote
+them (`rewritten_this_run`). `DEG_join_summary.csv` carries the per-contrast DEG counts to
+quote (`n_DEG_genes`). `02_data/secretion_state.csv` is what `gene-mechanics-correlation`
+script 20 joins into its manifest, so run the gene-mechanics driver (`24-*`) after this
+batch when that file has changed.

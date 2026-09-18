@@ -1,5 +1,5 @@
 [20-gene_mechanics_correlation.Rmd]
-generated            : 2026-09-17 16:52:43
+generated            : 2026-09-17 21:03:17
 tissue               : F
 thread input         : C:/Users/mattg/Desktop/github/PSMFC-mytilus-byssus-pilot/thread-strength/03_analyses/thread-summary.xlsx
 thread input commit  : 9454963 2026-09-16
@@ -16,21 +16,26 @@ MIN_COUNT / FDR_ALPHA: 5 / 0.1
 paired animals       : 45 (control 11, OA 12, OW 12, DO 10)
 with baseline        : 44
 genes tested         : 10090
-candidate genes      : 73 (byssal structural 17)
+CANDIDATE_ANNOTATION : genome (evalue <= 1e-10, pident >= 0)
+annotation map       : 16675 LOCs (C:/Users/mattg/Desktop/github/PSMFC-mytilus-byssus-pilot/blast/03_analyses/genome-foot/LOC_GO_list.txt)
+candidate genes      : 226 (byssal structural 17; named in TC DEG tables 57)
+EXCLUDE_FLOOR_GENES  : TRUE (exclude > 0.4, caution > 0.2)
+candidates tested    : 201 (25 at the detection floor)
+DEG union tested     : 520 of 523
 DEG union genes      : 523
 R / DESeq2           : R version 4.2.2 (2022-10-31 ucrt) / 1.38.3
 
 [21-gene_mechanics_expanded.Rmd]
-generated            : 2026-09-17 16:54:01
+generated            : 2026-09-17 21:05:25
 NPERM                : 10000
 PERM_SEED            : 1
 permuted metrics     : max_force, pad_area, adhesion_kpa, max_displacement, dlog_max_force, dlog_pad_area, dlog_adhesion_kpa (all)
 primary metrics      : max_force, pad_area, dlog_max_force, dlog_pad_area
 nuisance covariates  : treatment
 permutation strata   : control, OA, OW, DO
-families             : candidate (73), module (6), DEG_union (523)
+families             : candidate (201), module (6), DEG_union (520)
 modules              : HIF_hypoxia, oxidative_detox, HSP_proteostasis, tRNA_translation, byssal_collagen, byssal_structural
 FDR_ALPHA            : 0.1
-FLOOR_EXCLUDE/CAUTION: 0.4 / 0.2
+candidates tested    : 201 of 226 (floor filter in script 20)
 N_INFLUENCE_HITS     : 3
 R / lme4 / lmerTest  : R version 4.2.2 (2022-10-31 ucrt) / 1.1.31 / 3.1.3

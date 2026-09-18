@@ -13,20 +13,21 @@ source(here::here("01_code", "_paths.R"))
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
+library(readr)   # read_csv: the *_sigs_merged.csv files written by 04-File_joining are comma-separated
 ```
 
 
 ### Load DEGS
 ```{r}
 # Gill (TC)
-GOW_sigs <- read_table(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
-GOA_sigs <- read_table(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
-GDO_sigs <- read_table(file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
+GOW_sigs <- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
+GOA_sigs <- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
+GDO_sigs <- read_csv(file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
 
 # Foot (TC)
-FOW_sigs <- read_table(file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
-FOA_sigs <- read_table(file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
-FDO_sigs <- read_table(file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
+FOW_sigs <- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
+FOA_sigs <- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
+FDO_sigs <- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
 
 # Select only unique identifiers
 GOW_sigs <- unique(GOW_sigs)
@@ -55,8 +56,8 @@ my_theme <- theme_classic()+
 ```
 
 ```{r}
-FDO_volcano <- ggplot(FDO_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
-    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+FDO_volcano <- ggplot(FDO_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
+    geom_point(aes(color= log2FoldChange > 0 )) +
     scale_color_manual(values=c("red", "blue")) +
     labs(x=expression(Log["2"]*" fold change") , 
          y=NULL) +
@@ -69,8 +70,8 @@ FDO_volcano <- ggplot(FDO_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
 FDO_volcano
 ```
 ```{r}
-GDO_volcano <- ggplot(GDO_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
-    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+GDO_volcano <- ggplot(GDO_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
+    geom_point(aes(color= log2FoldChange > 0 )) +
     scale_color_manual(values=c("red", "blue")) +
     labs(x=expression(Log["2"]*" fold change") , 
          y=NULL) +
@@ -83,8 +84,8 @@ GDO_volcano
 
 ```
 ```{r}
-FOW_volcano <- ggplot(FOW_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
-    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+FOW_volcano <- ggplot(FOW_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
+    geom_point(aes(color= log2FoldChange > 0 )) +
     scale_color_manual(values=c("red", "blue")) +
     labs(x=expression(Log["2"]*" fold change") , 
          y=NULL) +
@@ -96,8 +97,8 @@ FOW_volcano <- ggplot(FOW_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
 FOW_volcano
 ```
 ```{r}
-GOW_volcano <- ggplot(GOW_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
-    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+GOW_volcano <- ggplot(GOW_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
+    geom_point(aes(color= log2FoldChange > 0 )) +
     scale_color_manual(values=c("red", "blue")) +
     labs(x=expression(Log["2"]*" fold change"), 
          y=NULL) +
@@ -110,8 +111,8 @@ GOW_volcano
 ```
 ```{r}
 
-FOA_volcano <- ggplot(FOA_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
-    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+FOA_volcano <- ggplot(FOA_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
+    geom_point(aes(color= log2FoldChange > 0 )) +
     scale_color_manual(values=c("red", "blue")) +
     labs(x=expression(Log["2"]*" fold change") , 
          y=NULL) +
@@ -124,8 +125,8 @@ FOA_volcano
 
 ```
 ```{r}
-GOA_volcano <- ggplot(GOA_sigs, aes(x=`"log2FoldChange"`, y=-log10(`"padj"`))) +
-    geom_point(aes(color= `"log2FoldChange"` > 0 )) +
+GOA_volcano <- ggplot(GOA_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
+    geom_point(aes(color= log2FoldChange > 0 )) +
     scale_color_manual(values=c("red", "blue")) +
     labs(x=expression(Log["2"]*" fold change") , 
          y=NULL) +

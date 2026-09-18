@@ -62,8 +62,9 @@ NPERM     <- 10000   # permutations per family. At 1,000 draws a p near 0.05 has
                      # 10,000 x 7 metrics x (58 + 6 + ~1,000) genes a matter of a minute.
 PERM_SEED <- 1
 N_INFLUENCE_HITS <- 3
-FLOOR_EXCLUDE <- 0.40   # fraction of paired samples at the VST floor above which a gene is dropped
-FLOOR_CAUTION <- 0.20   # ... above which it is reported with a caution flag
+## The detection-floor filter (FLOOR_EXCLUDE / EXCLUDE_FLOOR_GENES) lives in script 20, which
+## writes detection_floor_flags_<T>.csv and marks each candidate `tested`; this script tests
+## the same family script 20 tested.
 
 ## The metric list, the metric tiers (primary / exploratory), the treatment levels and the
 ## nuisance covariates are read from script 20's metrics_config.csv handoff below, so the
@@ -110,7 +111,11 @@ if (USE_SECRETION_STATE) {
     stop("USE_SECRETION_STATE is on in script 20 but the manifest has no complete `secretion_state` column.")
   paired <- paired %>% mutate(secretion_state = factor(secretion_state, levels = c("off", "on")))
 }
-candidates <- read_csv(need(sprintf("candidate_genes_%s.csv", TISSUE)), show_col_types = FALSE)
+candidates_all <- read_csv(need(sprintf("candidate_genes_%s.csv", TISSUE)), show_col_types = FALSE)
+if (!"tested" %in% names(candidates_all)) candidates_all$tested <- TRUE   # older script-20 handoff
+candidates <- candidates_all %>% filter(tested)
+floor_tbl  <- read_csv(need(sprintf("detection_floor_flags_%s.csv", TISSUE)), show_col_types = FALSE) %>%
+  select(LOC_ID, frac_at_floor, floor_flag)
 annot      <- read_csv(need("annotation_map.csv"), show_col_types = FALSE)
 thr_raw    <- read_csv(need(sprintf("thread_plaques_paired_%s.csv", TISSUE)), show_col_types = FALSE)
 vp_df <- read_csv(need(sprintf("vst_paired_%s.csv", TISSUE)), show_col_types = FALSE)
@@ -130,7 +135,8 @@ cat("Paired animals:", nrow(paired), "| arms:", paste(arms_kept, collapse = ", "
     "| change metrics:", paste(CHANGE_METRICS, collapse = ", "),
     "\nPrimary metrics:", paste(PRIMARY_METRICS, collapse = ", "),
     "| nuisance covariates:", paste(nuis_terms, collapse = " + "),
-    "| candidates:", nrow(candidates), "| DEG union:", length(deg_union_ids), "\n")
+    "| candidates tested:", nrow(candidates), "of", nrow(candidates_all),
+    "| DEG union tested:", length(deg_union_ids), "\n")
 ```
 
 ---
@@ -276,8 +282,9 @@ modules <- list(
   byssal_structural = "foot protein|adhesive plaque|polyphenolic|byssal protein-|preCol|precollagen|byssal EP|ACDC"
 )
 
+if (!"blast_ok" %in% names(annot)) annot$blast_ok <- TRUE   # older script-20 handoff
 module_score <- function(rx) {
-  locs <- annot %>% filter(grepl(rx, protein_name, ignore.case = TRUE)) %>% pull(LOC_ID)
+  locs <- annot %>% filter(blast_ok, grepl(rx, protein_name, ignore.case = TRUE)) %>% pull(LOC_ID)
   locs <- intersect(locs, rownames(vp))
   if (length(locs) < 3) return(NULL)
   z <- t(scale(t(vp[locs, paired$sample, drop = FALSE])))   # standardise each gene
@@ -527,16 +534,18 @@ cat("\nInterpretation: p_permutation is the chance of a minimum p this small whe
 # E. Diagnostics: detection floor and influence; the best-hits table
 
 Genes where many paired samples sit at the VST minimum are effectively absent/zero-inflated;
-their correlations are driven by detection, not biology (e.g. the multidrug-resistance gene
-in the script-20 scatter pile-up at x ~ 3.5). Flag and optionally drop them. Also report the
+their correlations are driven by detection, not biology. Script 20 flags them and, by
+default, keeps them out of the tested family; the flags are echoed here. Also report the
 most influential animal per top hit (Cook's distance) so you know if one mussel drives a fit.
 
 The tables are written to `03_analyses/gene_mechanics/` so the report and any downstream
 filter can use them without re-running this script:
 
-- `detection_floor_flags_<T>.csv`: one row per tested gene (candidate set and DEG union),
-  with the fraction of paired samples at the VST floor and a `floor_flag` of `exclude`
-  (> 0.4), `caution` (> 0.2) or `ok`.
+- `detection_floor_flags_<T>.csv` (written by script 20): one row per gene in the candidate
+  set and the DEG union, with the fraction of paired samples at the VST floor, a
+  `floor_flag` of `exclude` (> 0.4), `caution` (> 0.2) or `ok`, and `tested` (FALSE for the
+  `exclude` genes when script 20's `EXCLUDE_FLOOR_GENES` is TRUE: they are out of the family
+  before BH and before the permutation, and appear in no association table).
 - `influence_top_hits_<T>.csv`: the three best candidate hits per metric (ranked by the
   reported test, `p_wls`, for every metric) with the most influential animal, its Cook's
   distance, the slope and p after dropping that animal, an `influence_flag` (`fragile` when
@@ -547,32 +556,11 @@ filter can use them without re-running this script:
   flag and the influence flag in one row. Nothing should be quoted from a q alone.
 
 ```{r diagnostics}
-floor_val <- min(vp)
-## tested universe = candidate set + DEG union
-tested <- bind_rows(
-  tibble(LOC_ID = candidates$LOC_ID, gene_set = "candidate"),
-  tibble(LOC_ID = setdiff(deg_union_ids, candidates$LOC_ID), gene_set = "DEG_union")
-) %>% filter(LOC_ID %in% rownames(vp))
-
-n_at_floor <- apply(vp[tested$LOC_ID, paired$sample, drop = FALSE], 1,
-                    function(x) sum(abs(x - floor_val) < 1e-6))
-floor_flag <- tested %>%
-  mutate(n_samples             = nrow(paired),
-         n_at_floor            = unname(n_at_floor),
-         frac_samples_at_floor = round(n_at_floor / nrow(paired), 3),
-         floor_flag            = case_when(frac_samples_at_floor > FLOOR_EXCLUDE ~ "exclude",
-                                           frac_samples_at_floor > FLOOR_CAUTION ~ "caution",
-                                           TRUE                                  ~ "ok")) %>%
-  left_join(annot, by = "LOC_ID") %>%
-  select(LOC_ID, protein_name, gene_set, n_samples, n_at_floor, frac_samples_at_floor, floor_flag) %>%
-  arrange(desc(frac_samples_at_floor), LOC_ID)
-write_csv(floor_flag, file.path(OUT_DIR, sprintf("detection_floor_flags_%s.csv", TISSUE)))
-
-cat("Detection-floor summary (", nrow(floor_flag), " tested genes):\n", sep = "")
-print(table(gene_set = floor_flag$gene_set, floor_flag = floor_flag$floor_flag))
-cat("\nCandidate genes above the caution threshold (drop 'exclude' before interpretation):\n")
-floor_flag %>% filter(gene_set == "candidate", floor_flag != "ok") %>%
-  as.data.frame() %>% print()
+## detection floor: computed and applied by script 20 (detection_floor_flags_<T>.csv); shown
+## here so the report carries it beside the influence table
+floor_flag <- read_csv(need(sprintf("detection_floor_flags_%s.csv", TISSUE)), show_col_types = FALSE)
+cat("Detection-floor summary (", nrow(floor_flag), " genes in the two universes; `tested` = in the family):\n", sep = "")
+print(table(gene_set = floor_flag$gene_set, floor_flag = floor_flag$floor_flag, tested = floor_flag$tested))
 
 ## influence: best hits per metric, which mussel has the largest Cook's distance.
 ## Ranking is by the reported test (p_wls) for every metric, so the leave-one-out refit, the
@@ -643,7 +631,7 @@ best_deg <- if (exists("res_deg_wls")) res_deg_wls %>% group_by(metric) %>%
   transmute(gene_set = "DEG_union", metric, tier, feature = LOC_ID, protein_name,
             n, slope_wls, p_wls, q_wls, p_mixed = NA_real_, p_perm_metricwise, p_perm_famwise, p_perm_primary) else NULL
 best_hits <- bind_rows(best_cand, best_mod, best_deg) %>%
-  left_join(floor_flag %>% select(feature = LOC_ID, floor_flag), by = "feature") %>%
+  left_join(floor_tbl %>% select(feature = LOC_ID, floor_flag), by = "feature") %>%
   left_join(infl %>% select(feature = LOC_ID, metric, most_influential_mussel, influence_flag),
             by = c("feature", "metric")) %>%
   left_join(perm_summary %>% filter(family == "per_metric") %>%
@@ -735,7 +723,7 @@ cat(c("",
       paste0("families             : ", paste(sprintf("%s (%d)", names(families), sapply(families, nrow)), collapse = ", ")),
       paste0("modules              : ", paste(names(mod_scores), collapse = ", ")),
       paste0("FDR_ALPHA            : ", FDR_ALPHA),
-      paste0("FLOOR_EXCLUDE/CAUTION: ", FLOOR_EXCLUDE, " / ", FLOOR_CAUTION),
+      paste0("candidates tested    : ", nrow(candidates), " of ", nrow(candidates_all), " (floor filter in script 20)"),
       paste0("N_INFLUENCE_HITS     : ", N_INFLUENCE_HITS),
       paste0("R / lme4 / lmerTest  : ", R.version.string, " / ",
              as.character(packageVersion("lme4")), " / ", as.character(packageVersion("lmerTest")))),

@@ -1,7 +1,7 @@
 # 0_build_mussel_key.Rmd
 
 Builds `02_data/mussel-treatment-key.csv`, the repo-internal lookup from mussel tag to
-experimental attributes. Replaces the mussel-level half of the retired project Google Sheet.
+experimental attributes: the mussel-level facts, in one file.
 
 Run it whenever `morphometrics/02_data/morphometrics - tross.xlsx` changes. It is
 deterministic: unchanged inputs produce a byte-identical file.
@@ -45,27 +45,14 @@ axis comes from the folder (`phase` in script 1), never from this column.
 
 - Every mussel tag parses, and no tag is duplicated. Either failure is a hard stop.
 - Every mussel with a tensometer trace has a key row. Currently **86 of 86**.
-- The arm implied by the folder matches `mussel_trt`. Currently **375 of 375 traces agree**,
+- The arm implied by the folder matches `mussel_trt`. Currently **380 of 380 traces agree**,
   with no exceptions. This is the check that would catch a trace filed in the wrong folder.
 - A coverage table of who is in the key but has no traces. Currently 33 animals: the twelve
-  `desiccation` animals, five day-3 DO animals, and sixteen day-1 animals.
+  `desiccation` animals, five day-3 animals and sixteen day-1 animals.
 
 ## Known gap
 
-`pad_area`, `failure_mode` and the technician-recorded `maximum_force` were **thread-level**
-columns of the Google Sheet. No morphometrics sheet contains them, so this key cannot supply
-them and `adhesion_kpa` cannot be computed from it.
-
-They survive in two places:
-
-- `03_analyses/thread-summary.xlsx` — 299 curated rows, each matching a real trace. This is
-  what `2_assemble_thread_summary.Rmd` carries forward.
-- Git history, as a 445-row superset worth keeping as a cross-check:
-
-  ```
-  git show 91dea50^:thread-strength/02_data/GOOGLESHEET-PSMFC-mytilus-byssus-pilot-threads.xlsx \
-    > thread-strength/02_data/thread-pad-area.xlsx
-  ```
-
-Between them, 270 of the current 375 traces have a plaque measurement. The remaining 105
-need one measured from `02_data/pictures/`, or they carry `adhesion_kpa = NA`.
+`pad_area`, `failure` and the technician-recorded `maximum_force` were **thread-level**
+columns of the project Google Sheet. No morphometrics sheet contains them, so this key
+cannot supply them; they live in `02_data/pad_area_measurements.xlsx` (one row per trace,
+all 380 measured), which `2_assemble_thread_summary.Rmd` joins to the extraction.
