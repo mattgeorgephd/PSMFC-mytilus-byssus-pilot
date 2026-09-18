@@ -2,7 +2,7 @@
 
 | Item | Produced by | Contents |
 |------|-------------|----------|
-| `gene_mechanics/` | scripts 20, 21 | paired manifest, handoffs, per-gene and module associations, permutation, detection-floor flags and leave-one-out influence tables, figures; `_F` and `_G` |
+| `gene_mechanics/` | scripts 20, 21 | paired manifest, handoffs, per-gene ANCOVA (reported) and mixed-model (sensitivity) associations, module associations, detection-floor flags, leave-one-out influence and best-hits tables, figures; `_F` and `_G` |
 | `expr_tables/` | script 22 | RNA × thread manifest, top-25 up/down expression tables, sample metadata; `_F` and `_G` |
 | `byssus_genes/` | script 23 | byssus/foot gene list with expression, category scores; `_F` and `_G` |
 | `knit_html/` | driver 24 | rendered HTML of each script per tissue plus `run_log.csv`; git-ignored, regenerable |

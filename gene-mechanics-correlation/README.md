@@ -11,8 +11,8 @@ measurements.
 gene-mechanics-correlation/
 ├── gene-mechanics-correlation.Rproj
 ├── 01_code/
-│   ├── 20-gene_mechanics_correlation.Rmd    paired table, VST, per-gene association
-│   ├── 21-gene_mechanics_expanded.Rmd       weighted regression (reported), mixed models, modules, permutation, best hits
+│   ├── 20-gene_mechanics_correlation.Rmd    paired table, VST, candidate set, per-gene ANCOVA (the reported test)
+│   ├── 21-gene_mechanics_expanded.Rmd       thread-level mixed ANCOVA (sensitivity), modules, influence, best hits
 │   ├── 22-rna_thread_manifest_and_expression_tables.Rmd
 │   ├── 23-byssus_foot_gene_list_expression.Rmd
 │   ├── 24-run_gene_mechanics_by_tissue.Rmd  renders 20-23 for foot and gill
@@ -47,22 +47,26 @@ All paths resolve from a `repo_root` found by walking up from `here::here()`.
 ## Status (18 September 2026)
 
 45 foot / 46 gill paired animals (control 11, OA 12, OW 12, DO 10-11), 44 / 45 with
-baselines. Peak force and plaque area and their change from baseline are the declared
-primary metrics (`PRIMARY_METRICS`, `tier` column in every output); adhesion, extension and
-the change in adhesion are exploratory. Candidates come from the genome-wide BLAST
-annotation (226 foot / 279 gill keyword matches, of which 201 / 251 are above the detection
-floor and tested). The reported test for every metric is the plaque-count-weighted
-per-animal regression, and every gene set (candidates, six modules, the DEG union) carries a
-10,000-shuffle permutation p per metric, family-wide and for the primary family
-(`03_analyses/gene_mechanics/best_hits_<T>.csv`, `permutation_summary_<T>.csv`).
+baselines and in the fits. The reported test is one baseline-adjusted regression (ANCOVA)
+per gene and metric on the per-animal values, `level_day3 ~ expression + treatment +
+level_baseline`, with force, area and adhesion on the log scale (geometric means of the
+plaques) and extension raw. Peak force and plaque area are the declared primary metrics
+(`METRICS` in script 20, `tier` column in every output); adhesion and extension are
+exploratory. BH is applied within each metric (`q_lm`) and within each tier family
+(`q_family`). Candidates come from the genome-wide BLAST annotation (226 foot / 279 gill
+keyword matches, of which 201 / 251 are above the detection floor and tested). Script 21
+adds the thread-level mixed ANCOVA as a sensitivity check, six pathway modules, the
+leave-one-animal-out influence check and `best_hits_<T>.csv`.
 
-**Nothing survives the search in either tissue.** Foot: best candidate PDE8B vs the change
-in force q = 0.24, family-wide permutation p = 0.74 (primary family 0.55); best module
-tRNA-synthetases vs the change in adhesion q = 0.083, family-wide 0.36; DEG union 0.70.
-Gill: candidates 0.49 (HSP70 12A vs plaque area, q = 0.091, per-metric permutation 0.08),
-modules 0.72, DEG union 0.24 (Arp2/3 subunit vs the change in force, q = 0.038 within the
-metric, permutation 0.077). The `byssal_structural` module is unrelated to every metric
-(foot best p = 0.18): the plaque-protein genes mark thread secretion, not strength. The
-byssal secretion state (`differential-expression/01_code/01_7-secretion_state.Rmd`) is
-joined into the manifest and can be switched on as a covariate (`USE_SECRETION_STATE`,
-default FALSE). Details in `01_code/gene-mechanics-pipeline_DOC.md` §4.
+**Foot: nothing.** Candidate x primary family (402 tests) minimum p = 0.0064 (PDE8B vs
+force, `q_family` 0.91); no q below 0.10 in any family; the `byssal_structural` module is
+unrelated to every metric (best p = 0.26): the plaque-protein genes mark thread secretion,
+not strength. **Gill: leads, not results.** Heat shock 70 kDa protein 12A (LOC134718614)
+vs adhesion p = 3.2e-5 (`q_lm` 0.008, `q_family` 0.016, exploratory tier) and vs force
+p = 2.5e-4 (`q_lm` 0.062, `q_family` 0.12, primary), two further HSPA12A paralogs at the
+top of area and extension, and in the DEG union Arp2/3 complex subunit 2 vs force
+p = 3.2e-5 (`q_lm` 0.032, `q_family` 0.064); all positive slopes, all robust to the most
+influential animal, all in the systemic tissue rather than the foot. The byssal secretion
+state (`differential-expression/01_code/01_7-secretion_state.Rmd`) is joined into the
+manifest and can be switched on as a covariate (`USE_SECRETION_STATE`, default FALSE).
+Details in `01_code/gene-mechanics-pipeline_DOC.md` §4.

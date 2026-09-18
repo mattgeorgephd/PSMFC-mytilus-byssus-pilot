@@ -9,24 +9,21 @@ source(here::here("01_code", "_paths.R"))
 ```
 
 ```{r}
-library(tidyverse)
-library(ggplot2)
-install.packages("ggpattern")
-remotes::install_github("coolbutuseless/ggpattern")
-library(ggpattern)
+library(tidyverse)   # readr::read_csv, dplyr, ggplot2, forcats::fct_relevel
+## (ggpattern was loaded here but never used; the plot is a plain geom_bar)
 ```
 
 ### Load DEGS
 ```{r}
 # Gill (TC)
-GOW_sigs <- read_table(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
-GOA_sigs <- read_table(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
-GDO_sigs <- read_table(file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
+GOW_sigs <- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
+GOA_sigs <- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
+GDO_sigs <- read_csv(file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
 
 # Foot (TC)
-FOW_sigs <- read_table(file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
-FOA_sigs <- read_table(file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
-FDO_sigs <- read_table(file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
+FOW_sigs <- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
+FOA_sigs <- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
+FDO_sigs <- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
 
 # Select only unique identifiers
 GOW_sigs <- unique(GOW_sigs)
@@ -40,25 +37,26 @@ FDO_sigs <- unique(FDO_sigs)
 
 ```
 
-# Filtering positive and negatively different transcripts
+# Counting up- and down-regulated GENES (the merged tables carry one row per BLAST hit, so
+# a gene with several hits would otherwise be counted several times)
 ```{r}
-GOW_pos<- nrow(filter(GOW_sigs, `"log2FoldChange"` > 0))
-GOW_neg<- nrow(filter(GOW_sigs, `"log2FoldChange"` < 0))
+GOW_pos<- n_distinct(filter(GOW_sigs, log2FoldChange > 0)$gene)
+GOW_neg<- n_distinct(filter(GOW_sigs, log2FoldChange < 0)$gene)
 
-FOW_pos<- nrow(filter(FOW_sigs, `"log2FoldChange"` > 0))
-FOW_neg<- nrow(filter(FOW_sigs, `"log2FoldChange"` < 0))
+FOW_pos<- n_distinct(filter(FOW_sigs, log2FoldChange > 0)$gene)
+FOW_neg<- n_distinct(filter(FOW_sigs, log2FoldChange < 0)$gene)
 
-GOA_pos<- nrow(filter(GOA_sigs, `"log2FoldChange"` > 0))
-GOA_neg<- nrow(filter(GOA_sigs, `"log2FoldChange"` < 0))
+GOA_pos<- n_distinct(filter(GOA_sigs, log2FoldChange > 0)$gene)
+GOA_neg<- n_distinct(filter(GOA_sigs, log2FoldChange < 0)$gene)
 
-FOA_pos<- nrow(filter(FOA_sigs, `"log2FoldChange"` > 0))
-FOA_neg<- nrow(filter(FOA_sigs, `"log2FoldChange"` < 0))
+FOA_pos<- n_distinct(filter(FOA_sigs, log2FoldChange > 0)$gene)
+FOA_neg<- n_distinct(filter(FOA_sigs, log2FoldChange < 0)$gene)
 
-GDO_pos<- nrow(filter(GDO_sigs, `"log2FoldChange"` > 0))
-GDO_neg<- nrow(filter(GDO_sigs, `"log2FoldChange"` < 0))
+GDO_pos<- n_distinct(filter(GDO_sigs, log2FoldChange > 0)$gene)
+GDO_neg<- n_distinct(filter(GDO_sigs, log2FoldChange < 0)$gene)
 
-FDO_pos<- nrow(filter(FDO_sigs, `"log2FoldChange"` > 0))
-FDO_neg<- nrow(filter(FDO_sigs, `"log2FoldChange"` < 0))
+FDO_pos<- n_distinct(filter(FDO_sigs, log2FoldChange > 0)$gene)
+FDO_neg<- n_distinct(filter(FDO_sigs, log2FoldChange < 0)$gene)
 
 
 ```
@@ -66,7 +64,7 @@ FDO_neg<- nrow(filter(FDO_sigs, `"log2FoldChange"` < 0))
 
 # Putting gene count numbers in a data frame
 ```{r}
-DEG_num <- data_frame(
+DEG_num <- tibble(
   tissue = c("Foot", "Foot","Foot","Foot","Foot","Foot","Gill","Gill","Gill","Gill","Gill","Gill"),
   treatment = c("Ocean Warming", "Ocean Warming", "Ocean Acidification", "Ocean Acidification", "Hypoxia", "Hypoxia", "Ocean Warming", "Ocean Warming", "Ocean Acidification", "Ocean Acidification", "Hypoxia", "Hypoxia"),
   updown = c("up", "down","up", "down","up", "down","up", "down","up", "down","up", "down" ),

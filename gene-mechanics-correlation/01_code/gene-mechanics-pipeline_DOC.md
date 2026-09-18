@@ -35,9 +35,9 @@ differential-expression/02_data/gene_count_matrix_clean.csv         counts
 differential-expression/03_analyses/DEG_lists/Foot/F_treatmentinfo.csv   Tag-seq arm per sample
         |
         v
-20  paired table, VST, candidate set, per-gene lm  ->  03_analyses/gene_mechanics/
-21  mixed models, weighted regression, modules,
-    permutation, diagnostics                        ->  03_analyses/gene_mechanics/
+20  paired table, VST, candidate set,
+    per-gene ANCOVA (the reported test)             ->  03_analyses/gene_mechanics/
+21  thread-level mixed ANCOVA, modules, diagnostics ->  03_analyses/gene_mechanics/
 22  RNA x thread manifest, top-25 expression tables ->  03_analyses/expr_tables/
 23  byssus/foot gene list + expression              ->  03_analyses/byssus_genes/
 ```
@@ -65,26 +65,44 @@ too is about attachment biology, not the stress response. Set FALSE for stressor
 
 ### Metrics, tiers and the reported test
 
-On the thread dataset the stressor effect is in peak force and plaque area separately, not
-in their ratio (`thread-strength/01_code/4_decompose_adhesion_DOC.md`). Script 20 tests:
+On the thread dataset the stressor effect is in peak force and plaque area separately more
+than in their ratio (`thread-strength/01_code/4_decompose_adhesion_DOC.md`: arm x timepoint
+p = 2.9e-5 for force, < 1e-10 for area, 0.0057 for adhesion). Script 20 tests, per gene and
+metric, one baseline-adjusted regression (ANCOVA) on the per-animal values:
 
-| metric | type | tier | what it is |
+    level_day3 ~ expression + treatment [+ secretion_state] + level_baseline
+
+| metric | scale | tier | per-animal value |
 |---|---|---|---|
-| `max_force` | level | primary | per-animal mean of its day-3 plaques, N |
-| `pad_area` | level | primary | mm² |
-| `adhesion_kpa` | level | exploratory | force / area × 1000, recomputed from the two |
-| `max_displacement` | level | exploratory | extension at break, mm |
-| `dlog_max_force` | change | primary | log(day-3 mean / baseline mean), per animal |
-| `dlog_pad_area` | change | primary | as above |
-| `dlog_adhesion_kpa` | change | exploratory | as above; equals `dlog_max_force − dlog_pad_area` |
+| `max_force` | log | primary | geometric mean of the animal's day-3 plaques, N |
+| `pad_area` | log | primary | geometric mean, mm² |
+| `adhesion_kpa` | log | exploratory | geometric mean of force / area × 1000 (recomputed per plaque) |
+| `max_displacement` | raw | exploratory | arithmetic mean of extension at break, mm |
 
-`PRIMARY_METRICS` (script 20) declares the confirmatory family; every output carries a
-`tier` column. `ADJUST_FOR_BASELINE` applies only to script 20's level-metric `lm` (ANCOVA
-on the day-3 level with the animal's baseline as covariate); the change metrics need no
-covariate; script 21's reported weighted regression uses no baseline covariate. The three
-answer related questions and can disagree when baseline and change are correlated.
-`metrics_config_<T>.csv` is written by 20 and read by 21, so the metric list, the tiers,
-the arm levels and the covariates cannot drift between the two.
+Force, area and adhesion enter as log(geometric mean) on both sides of the model, so
+`slope` is a log-unit change per VST unit and exp(slope) a multiplicative one; extension is
+raw. `level_baseline` is the same summary of the animal's own pre-exposure threads, on the
+same scale. Animals without baseline threads are not in the fits (44 of 45 foot, 45 of 46
+gill). `baseline_slope` is reported beside `slope`; on the current data it is 0.28-0.37 for
+force and adhesion and 0.03-0.14 for area (median over genes), consistent with the low
+repeatability in `thread-strength/01_code/3_analyze_thread_strength_DOC.md` (ICC 0.13-0.38).
+
+`METRICS` in script 20 fixes the scale and the tier; `tier = primary` (force, area) is the
+declared confirmatory family and every output carries the column. Multiplicity: `q_lm` is BH
+within a gene set x metric, `q_family` BH within a gene set x tier, so the candidate x
+primary family (201 x 2 foot, 251 x 2 gill tests) has its own search-corrected q. Beside
+the parametric slope, `rho_partial` is the Spearman correlation with arm, state and
+baseline partialled out of the ranks, on the same animals. `metrics_config_<T>.csv` is
+written by 20 and read by 21, so the metric list, scales, tiers, arm levels and covariates
+cannot drift between the two.
+
+Why an ANCOVA and not a change score: the change score `log(day3) - log(baseline)` imposes a
+baseline coefficient of 1, while the fitted coefficient is 0.03-0.37, so the change score
+adds most of the baseline's measurement noise to the response and loses power; the ANCOVA
+also absorbs the between-animal baseline differences the arm assignment did not balance
+(baseline area and extension differ by future arm, script 3, 3b). On the current data the
+per-animal fit and the thread-level mixed fit agree to within a few percent in p because 44
+of 45 foot and 45 of 46 gill day-3 animals have exactly three plaques.
 
 ### Annotation map and candidate universe
 
@@ -115,57 +133,44 @@ floor genes by construction).
 `differential-expression/02_data/secretion_state.csv` (DE script `01_7`) labels each foot
 sample `on` / `off` for the plaque-protein module; script 20 joins it to the manifest by
 animal for both tissues (15 of 45 foot animals `on`). `USE_SECRETION_STATE` (default FALSE)
-adds it as a nuisance covariate in every regression of 20 and 21 and as a permutation
-stratum.
+adds it as a nuisance covariate in every fit of 20 and 21.
 
-### Script 21: one reported test, permuted for everything
+### Script 21: sensitivity, modules, diagnostics
 
-The reported statistic for **every** metric is the per-animal precision-weighted regression
-(block B; weight = day-3 plaque count, or min(baseline, day-3) for a change metric), because
-it is the statistic the permutation calibrates. The thread-level mixed model (block A) stays
-as a sensitivity column (`p_mixed`) for the level metrics, so a reported p and its
-permutation companion always refer to the same test.
+Script 21 reads script 20's association tables and does not re-derive the reported test. It
+adds:
 
-The permutation (block D) now runs for all seven metrics, with `NPERM = 10000` shuffles
-within arm (and within secretion state when that covariate is on), and reports, per gene
-set (candidate genes, the six modules, the DEG union):
+- **Block A, thread-level mixed ANCOVA** (`assoc_candidate_MIXED_<T>.csv`, `p_mixed`): the
+  same model on every day-3 plaque, `plaque ~ expression + treatment [+ secretion_state] +
+  level_baseline + (1 | mussel)`, plaque values on the metric's scale, Satterthwaite df
+  (lmerTest). It weights each animal by the precision of its mean instead of equally; on the
+  current data (three plaques for all but one animal per tissue) it reproduces `p_lm` to
+  within a few percent, which is the check that no hit is carried by plaque count.
+- **Block B, module eigengenes** (`module_associations_<T>.csv`, `module_members_<T>.csv`):
+  PC1 of each module's members (genes passing the BLAST floor, `blast_ok`), oriented so a
+  higher score is higher expression, through the same ANCOVA (`p_lm`, `q_lm` across the six
+  modules within a metric, `q_family` within a tier) and the mixed ANCOVA (`p_mixed`).
+  `byssal_structural` is a sixth module (foot proteins, preCols, byssal EP/ACDC, the
+  plaque-curing tyrosinase: the genes that switch on together when an animal is secreting
+  thread), separate from the broad `byssal_collagen` regex, so the test "these genes track
+  thread building, not strength" has its own row (`BYSSAL_STRUCTURAL_REGEX` in script 20
+  flags the same genes in the candidate table).
+- **Block C, diagnostics**, below.
 
-- `p_perm_metric`: chance of a minimum p this small among that metric's genes;
-- `p_perm_family`: the same across genes x all seven metrics ("did the search find anything");
-- `p_perm_family_primary`: the same for the pre-declared primary family (candidate genes x
-  `PRIMARY_METRICS` from script 20: force, area and their change metrics);
-- per gene row: `p_perm_metricwise`, `p_perm_famwise`, `p_perm_primary`, single-step min-p
-  adjusted p-values (Westfall & Young 1993) so that no q is ever read without its
-  search-corrected companion.
-
-It is fast because the weighted regression is solved by Frisch-Waugh-Lovell residualisation:
-weight and residualise the expression matrix on the nuisance design with one matrix
-multiply per shuffle, then `t = r sqrt(df) / sqrt(1 - r^2)`. The engine is checked against
-`lm()` on the observed data every run (agreement to ~1e-14); 10,000 shuffles over 201 + 6 +
-520 genes x 7 metrics take about 2.5 minutes (foot), 3.5 minutes for gill. The null
-minimum-p vectors are written to `permutation_null_<T>.csv.gz`.
-
-`byssal_structural` is a sixth module (foot proteins, preCols, byssal EP/ACDC, the
-plaque-curing tyrosinase: the genes that switch on together when an animal is secreting
-thread), separate from the broad `byssal_collagen` regex, so the test "these genes track
-thread building, not strength" has its own row (`BYSSAL_STRUCTURAL_REGEX` in script 20
-flags the same genes in the candidate table).
-
-### Script 21 diagnostics (block E)
+### Script 21 diagnostics (block C)
 
 - `detection_floor_flags_<T>.csv` (written by script 20, echoed here): one row per gene in
   the candidate set and the DEG union, with `frac_at_floor`, `floor_flag` and `tested`.
-- `influence_top_hits_<T>.csv`: the three best candidate hits per metric (`N_INFLUENCE_HITS`,
-  ranked by `p_wls`), each refitted as the weighted per-animal regression with and without
-  its most influential animal, with `q_wls` and the permutation p-values beside them.
-  Columns: `most_influential_mussel`, `max_cooks_D`, `cook_threshold_4n`, `cooks_flag`
-  (`D>1`, `D>4/n`, `ok`), `slope`, `slope_without_mussel`, `p_without_mussel`,
-  `slope_change_frac`, and `influence_flag` = `fragile` when the hit loses p < 0.05 without
-  that animal or its slope moves by more than half, else `robust`. The 4/n screen fires for
-  the maximum of ~45 Cook's distances in almost every fit, so `influence_flag` is the column
-  to read.
+- `influence_top_hits_<T>.csv`: the three best candidate hits and the best DEG-union hit per
+  metric (`N_INFLUENCE_HITS`, ranked by `p_lm`), each refitted as the reported ANCOVA with
+  and without its most influential animal. Columns: `most_influential_mussel`,
+  `max_cooks_D`, `cook_threshold_4n`, `cooks_flag` (`D>1`, `D>4/n`, `ok`), `slope`,
+  `slope_without_mussel`, `p_without_mussel`, `slope_change_frac`, and `influence_flag` =
+  `fragile` when the hit loses p < 0.05 without that animal or its slope moves by more than
+  half, else `robust`. The 4/n screen fires for the maximum of ~45 Cook's distances in
+  almost every fit, so `influence_flag` is the column to read.
 - `best_hits_<T>.csv`: the single best hit per metric for each gene set (candidate, module,
-  DEG union) with `q_wls`, `p_mixed`, every permutation p, the floor flag and the influence
+  DEG union) with `p_lm`, `q_lm`, `q_family`, `p_mixed`, the floor flag and the influence
   flag on one row. This is the table to quote from.
 
 ### Bioconductor masking
@@ -189,8 +194,8 @@ The response classification carries, per animal and per metric, the pre and post
 log-ratio, the % change, the raw direction (`decreased` / `increased`), the change relative
 to the control arm's mean change, and a composite `response_class` (`weaker` if both force
 and adhesion fell, `stronger` if both rose, else `mixed`) and `response_score` (mean
-standardised log-ratio across force, area and adhesion). Script 20 joins the class, score,
-directions and control-referenced changes into `paired_sample_manifest.csv`.
+standardised log-ratio across force, area and adhesion). Script 20 joins the class and the
+score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 
 ---
 
@@ -200,24 +205,19 @@ directions and control-referenced changes into `paired_sample_manifest.csv`.
 
 | file | contents |
 |---|---|
-| `paired_sample_manifest_<T>.csv` | the paired animals: arm, day-3 and baseline means, `dlog_*`, response class and score, `secretion_score` / `secretion_state` (joined from `differential-expression/02_data/secretion_state.csv` when it exists) |
-| `metrics_config_<T>.csv` | metric list, type, `tier` (primary / exploratory), arm levels, covariates, the `USE_SECRETION_STATE` and `ADJUST_FOR_BASELINE` settings |
+| `paired_sample_manifest_<T>.csv` | the paired animals: arm, plaque counts, day-3 and baseline per-animal values (geometric means for force, area, adhesion), response class and score, `secretion_score` / `secretion_state` (joined from `differential-expression/02_data/secretion_state.csv` when it exists) |
+| `metrics_config_<T>.csv` | metric list with `scale` (log / raw), `tier` (primary / exploratory) and label, arm levels, covariates, the `USE_SECRETION_STATE` and `EXCLUDE_FLOOR_GENES` settings |
 | `vst_paired_<T>.csv`, `thread_plaques_paired_<T>.csv` | handoffs |
 | `annotation_map.csv` | genome-wide best UniProt hit per LOC with `blast_pident`, `blast_evalue`, `blast_ok`, `in_TC_DEG_annotation` |
 | `candidate_genes_<T>.csv` | the candidate set with `byssal_structural`, `frac_at_floor`, `floor_flag`, `tested` |
 | `detection_floor_flags_<T>.csv` | every candidate and DEG-union gene: fraction of paired samples at the VST floor, `floor_flag`, `tested` |
-| `assoc_candidate_<T>.csv`, `assoc_DEGunion_<T>.csv` | script 20 per-gene lm, all seven metrics, `tier` column |
-| `assoc_candidate_MIXED_<T>.csv` | script 21 thread-level mixed model, level metrics (sensitivity) |
-| `assoc_candidate_WLS_<T>.csv` | script 21 weighted per-animal regression, all metrics; **the reported test**, with `p_mixed` beside it and `p_perm_metricwise` / `p_perm_famwise` / `p_perm_primary` per row |
-| `assoc_DEGunion_WLS_<T>.csv` | the same for the DEG union |
-| `module_associations_<T>.csv`, `module_members_<T>.csv` | six pathway modules x seven metrics (WLS reported, mixed as sensitivity, permutation columns); the member genes |
-| `permutation_summary_<T>.csv` | per gene set: per-metric, family-wide and primary-family permutation p; `permutation_best_hit_<T>.csv` keeps the old per-metric candidate layout |
-| `permutation_null_<T>.csv.gz` | the null minimum-p vectors (one column per gene set x metric, plus family minima), git-ignored size aside, regenerated by every run with `PERM_SEED` |
-| `best_hits_<T>.csv` | best hit per metric and gene set with q, every permutation p, floor and influence flags |
-| `influence_top_hits_<T>.csv` | top three candidate hits per metric with leave-one-out slope and p, `influence_flag`, q and permutation p |
-| `RUN_provenance_<T>.txt` | settings of scripts 20 and 21 (arms, covariates, primary metrics, NPERM, seed), the git commit of the thread input |
-| `assoc_candidate_BASELINEADJ_<T>.csv` | ANCOVA mixed model, level metrics |
-| `candidate_heatmap_<T>.png`, `top_candidate_scatter_<T>.png`, `best_hit_per_metric_scatter_<T>.png` | figures; the last is the best candidate gene per metric, coloured by arm |
+| `assoc_candidate_<T>.csv`, `assoc_DEGunion_<T>.csv` | **the reported test**: script 20 ANCOVA per gene x metric with `scale`, `tier`, `n`, `slope`, `se`, `p_lm`, `baseline_slope`, `rho_partial`, `q_lm`, `q_family`, floor flag |
+| `assoc_candidate_MIXED_<T>.csv` | script 21 thread-level mixed ANCOVA, all metrics (sensitivity, `p_mixed`) |
+| `module_associations_<T>.csv`, `module_members_<T>.csv` | six pathway modules x four metrics (ANCOVA reported, mixed as sensitivity); the member genes |
+| `best_hits_<T>.csv` | best hit per metric and gene set with `p_lm`, `q_lm`, `q_family`, `p_mixed`, floor and influence flags |
+| `influence_top_hits_<T>.csv` | top three candidate hits and the best DEG-union hit per metric with leave-one-out slope and p, `influence_flag`, `q_lm`, `q_family` |
+| `RUN_provenance_<T>.txt` | settings of scripts 20 and 21 (arms, covariates, model, metrics with scale and tier, modules), the git commit of the thread input |
+| `candidate_heatmap_<T>.png`, `top_candidate_scatter_<T>.png`, `best_hit_per_metric_scatter_<T>.png` | figures; the scatter y axes are baseline-adjusted day-3 levels on the model scale; the last is the best candidate gene per metric, coloured by arm |
 
 ### `03_analyses/expr_tables/` (script 22) and `03_analyses/byssus_genes/` (script 23)
 
@@ -226,38 +226,59 @@ files carry all four arms and `max_displacement`.
 
 ---
 
-## 4. Results on the current data (18 September 2026)
+## 4. Results on the current data (18 September 2026, ANCOVA)
 
 Thread input: `thread-summary.xlsx` at commit `9454963`. Genome-wide candidate map, floor
-genes excluded, `USE_SECRETION_STATE = FALSE`, 10,000 shuffles.
+genes excluded, `USE_SECRETION_STATE = FALSE`, the ANCOVA above as the reported test. All
+figures are from the sandbox run (R 4.3.3, DESeq2 1.42.0); a re-run on the analysis machine
+changes p-values in the trailing digits only.
 
 ### Foot
 
-45 paired animals (control 11, OA 12, OW 12, DO 10), 44 with baselines; 201 candidate genes
-tested (226 matched, 25 at the detection floor); 520 DEG-union genes tested; 10,090 genes
-after the expression filter.
+45 paired animals (control 11, OA 12, OW 12, DO 10), 44 in the fits (OW 11); 201 candidate
+genes tested (226 matched, 25 at the detection floor); 520 DEG-union genes tested; 10,090
+genes after the expression filter.
 
-**Nothing survives the search.** Candidate family: observed minimum p = 0.0012 (PDE8B vs
-the change in force, q = 0.24), permutation p = **0.74** across all metrics and **0.55** for
-the primary family; the best level-metric hits (HIF-1-alpha vs force, p = 0.011;
-Cysteine-tRNA ligase vs area, p = 0.009) have per-metric permutation p of 0.82 and 0.73.
-Modules: `tRNA_translation` (29 genes) vs the change in adhesion p = 0.014 (q = 0.083) is
-the best row, per-metric permutation 0.076, family-wide 0.36; `HIF_hypoxia` (13 genes) vs
-the change in area p = 0.046. DEG union: family-wide 0.70. The `byssal_structural` module
-(16 genes, PC1 63 % of variance) is unrelated to every metric (best p = 0.18), the direct
-test that the plaque-protein genes mark thread secretion, not strength.
+**Nothing.** Candidate x primary family (402 tests): minimum p = 0.0064 (PDE8B vs force,
+slope -0.66 log N per VST unit, `q_lm` 0.76, `q_family` 0.91); 8 of 201 force tests and 5
+of 201 area tests have p < 0.05 against 10 expected by chance. Exploratory: Collagen
+alpha-1(XXII) vs extension p = 0.00083 (`q_lm` 0.17, `q_family` 0.33, `caution` floor flag)
+is the smallest p in the tissue; adhesion best p = 0.015 (GST A4, q = 0.82). Modules: best
+row `tRNA_translation` (29 genes) vs adhesion p = 0.053 (q = 0.32), vs area p = 0.074; the
+`byssal_structural` module (16 genes, PC1 63 % of variance) is unrelated to every metric
+(best p = 0.26), the direct test that the plaque-protein genes mark thread secretion, not
+strength. DEG union: best Zinc finger CCCH 18 vs force p = 0.00061 (`q_lm` 0.32); no q
+below 0.10 anywhere; 19 of 520 force tests and 7 of 520 area tests at p < 0.05 against 26
+expected.
 
 ### Gill
 
-46 paired animals (control 11, OA 12, OW 12, DO 11), 45 with baselines; 251 candidates
-tested (279 matched, 28 at the floor); 998 DEG-union genes tested. Candidate family: minimum
-p = 0.0004 (Heat shock 70 kDa protein 12A vs plaque area, q = 0.091; `caution` floor flag),
-per-metric permutation 0.080, family-wide 0.49 (primary 0.32). Modules: nothing (best
-p = 0.051). DEG union: Arp2/3 complex subunit (LOC134706590) vs the change in force reaches
-q = 0.038 within the metric, but the search gives per-metric permutation p = 0.077 and
-family-wide 0.24: a lead for the exploratory list, not a result.
+46 paired animals (control 11, OA 12, OW 12, DO 11), 45 in the fits; 251 candidates tested
+(279 matched, 28 at the floor); 998 DEG-union genes tested; 13,233 genes after the filter.
 
-Every q below 0.10 in either tissue has a search-corrected p above 0.05.
+The gill carries the only associations below q = 0.10, all with positive slopes (higher
+day-3 expression, stronger attachment, net of arm and baseline) and all `robust` to the
+most influential animal:
+
+- Heat shock 70 kDa protein 12A, LOC134718614, vs adhesion: p = 3.2e-5, slope +0.97 log kPa
+  per VST unit, `q_lm` 0.0079, `q_family` 0.016 (exploratory tier); vs force: p = 2.5e-4,
+  slope +0.78, `q_lm` 0.062, `q_family` 0.12 (primary family). Its paralog LOC134718612 vs
+  area: p = 4.6e-4, slope -0.37, `q_lm` 0.12 (`caution` floor flag); LOC134697060 vs force
+  and adhesion p = 0.009 / 0.002. Three HSPA12A paralogs at the top of three metrics is
+  the one pattern worth a follow-up; it is a gill (systemic-state) readout, not foot.
+- DEG union: Arp2/3 complex subunit 2, LOC134706590, vs force p = 3.2e-5, slope +1.29,
+  `q_lm` 0.032, `q_family` 0.064; vs adhesion p = 2.2e-4 (`q_lm` 0.11). Lactadherin,
+  LOC134683070, vs adhesion p = 2.1e-4 (`q_lm` 0.11) and force p = 4.0e-4 (`q_lm` 0.20).
+  100 of 998 force tests and 128 of 998 extension tests have p < 0.05 against 50 expected:
+  a broad, correlated gill expression signature tracks force, which is what a systemic
+  covariate (condition, handling response) looks like, not a gene-specific effect.
+- Modules: nothing (best p = 0.11, `tRNA_translation` vs extension).
+
+Reading these: `q_family` = 0.016 for HSPA12A vs adhesion is a false-discovery rate within
+the candidate x exploratory family (502 correlated tests), not a family-wise error rate; in
+the primary family the same gene sits at `q_family` = 0.12. These are leads for the
+exploratory list and a targeted follow-up, not results. The candidate x primary family has
+no q below 0.10 in either tissue.
 
 ## 5. Known data quirks
 
@@ -279,15 +300,14 @@ Every q below 0.10 in either tissue has a search-corrected p above 0.05.
 | script | option | default | effect |
 |---|---|---|---|
 | 20 | `INCLUDE_CONTROL_ARM` | TRUE | day-3 control animals as a fourth arm |
-| 20 | `ADJUST_FOR_BASELINE` | TRUE | ANCOVA for script 20's level metrics; n = 44 / 45 |
 | 20 | `USE_SECRETION_STATE` | FALSE | byssal secretion state (DE 01_7) as a nuisance covariate in 20 and 21; off = treatment only |
-| 20 | `PRIMARY_METRICS` | force, area, dlog force, dlog area | the confirmatory family; everything else `exploratory` |
-| 20 | `LEVEL_METRICS`, `CHANGE_METRICS` | see above | reporting order = priority |
+| 20 | `METRICS` | force, area (log, primary); adhesion (log), extension (raw), exploratory | metric, model scale and tier; reporting order = priority; `PRIMARY_METRICS` is derived from it |
 | 20 | `CANDIDATE_ANNOTATION` | "genome" | best genome-wide BLAST hit per LOC ("TC_DEG": DEG-table names only) |
 | 20 | `CANDIDATE_MAX_EVALUE`, `CANDIDATE_MIN_PIDENT` | 1e-10, 0 | BLAST-quality floor for candidates and module members |
 | 20 | `EXCLUDE_FLOOR_GENES`, `FLOOR_EXCLUDE`, `FLOOR_CAUTION` | TRUE, 0.40, 0.20 | detection-floor filter applied before testing |
 | 20 | `BYSSAL_STRUCTURAL_REGEX` | foot protein, preCol, ACDC, ... | flags the byssal structural genes |
-| 21 | `NPERM`, `PERM_SEED` | 10000, 1 | shuffles for every metric and gene set |
+| 20, 21 | `FDR_ALPHA` | 0.10 | BH threshold for flagging (`q_lm`, `q_family`) |
+| 21 | `N_INFLUENCE_HITS` | 3 | candidate hits per metric that get the leave-one-animal-out refit |
 | 21 | `modules` | six regexes | includes `byssal_structural` |
 | 22 | `USE_RAW_THREAD_SET` | TRUE | any extracted trace vs curated only |
 | 23 | `USE_RAW_THREAD_SET` | FALSE | |

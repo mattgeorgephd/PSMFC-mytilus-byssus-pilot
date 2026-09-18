@@ -1,5 +1,5 @@
 ---
-title: "21 - Gene x mechanics: expanded analysis (mixed models, modules, permutation)"
+title: "21 - Gene x mechanics: expanded analysis (thread-level mixed ANCOVA, modules, diagnostics)"
 author: "Byssus expression analysis"
 date: "`r Sys.Date()`"
 output:
@@ -17,34 +17,36 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width =
 
 # What this adds to script 20
 
-Script 20 correlated each mussel's **unweighted mean** plaque mechanics against expression.
-That uses the mussel as the unit (correct, no pseudoreplication) but ignores that some
-mussels have only 1-2 plaques, which inflates the apparent significance of the best hits.
-This script:
+Script 20 fits the reported test, one baseline-adjusted regression (ANCOVA) per gene x
+metric on the per-animal values:
 
-- **A. Thread-level mixed model** - keeps every plaque, models `mussel` as a random
-  intercept, so the expression effect is estimated between mussels and weighted by each
-  mussel's plaque count. Reported as a *sensitivity* check on the level metrics.
-- **B. Precision-weighted regression (the reported test)** - per-animal means weighted by
-  plaque count (weights = n_plaques; for a change metric the smaller of the two plaque
-  counts). This is the statistic that is ranked, BH-corrected **and permuted**, for every
-  metric, so a reported p and its permutation companion always refer to the same test.
-- **C. Module eigengenes** - collapse co-regulated pathways (HIF, oxidative, HSP,
-  tRNA-synthetase, byssal/collagen, and the byssal structural module) into one score each,
-  cutting the multiple-testing burden from hundreds of genes to six modules.
-- **D. Permutation null** - "is the best hit better than chance?" p-values that account for
-  searching across genes, across metrics AND their correlation structure: per metric, across
-  the whole search (genes x metrics), and for the pre-declared primary family (candidate
-  genes x primary metrics). Run for the candidate set, the modules and the DEG union, with
-  the same shuffles, and the null vectors are written to disk.
-- **E. Diagnostics** - flags genes sitting at the detection floor (whose correlations are
-  driven by zeros) and influential animals; writes `best_hits_<T>.csv`, one row per metric
-  and gene set, with q and every permutation p side by side.
+    level_day3 ~ expression + treatment [+ secretion_state] + level_baseline
 
-> **Prerequisite:** run script 20 first. This script no longer shares 20's R session; it
+with force, area and adhesion on the log scale (per-animal geometric means of the plaques)
+and extension on its raw scale. The animal is the unit, so there is no pseudoreplication,
+but every animal counts the same whether it built one plaque or five. This script keeps
+that test as the reported one and adds what a reader needs to trust or discount a hit:
+
+- **A. Thread-level mixed ANCOVA (sensitivity)** - the same model on every plaque, with
+  `mussel` as a random intercept, so an animal's weight follows the precision of its mean.
+  The expression and baseline terms vary only between animals, so their tests reflect
+  animal-level degrees of freedom (Satterthwaite), not the thread count. A hit whose
+  `p_mixed` disagrees badly with script 20's `p_lm` is being carried by the plaque count of a
+  few animals.
+- **B. Module eigengenes** - collapse co-regulated pathways (HIF, oxidative, HSP,
+  tRNA-synthetase, byssal/collagen, and the byssal structural module) into one score each
+  and put the score through the same ANCOVA (and its mixed version), cutting the
+  multiple-testing burden from hundreds of genes to six modules.
+- **C. Diagnostics** - echoes the detection-floor flags, refits the reported ANCOVA for the
+  best hits without their most influential animal (Cook's distance), and writes
+  `best_hits_<T>.csv`: one row per metric and gene set with the reported p, both q's, the
+  mixed-model p, the floor flag and the influence flag side by side.
+
+> **Prerequisite:** run script 20 first. This script does not share 20's R session; it
 > reads 20's CSV handoffs (`paired_sample_manifest_<T>`, `vst_paired_<T>`, `annotation_map`,
 > `candidate_genes_<T>`, `thread_plaques_paired_<T>`, `metrics_config_<T>`,
-> `assoc_DEGunion_<T>`) from `03_analyses/gene_mechanics/`.
+> `assoc_candidate_<T>`, `assoc_DEGunion_<T>`, `detection_floor_flags_<T>`) from
+> `03_analyses/gene_mechanics/`.
 
 ```{r setup_inputs}
 suppressPackageStartupMessages({ library(tidyverse); library(lmerTest); library(here) })
@@ -56,19 +58,15 @@ suppressPackageStartupMessages({ library(tidyverse); library(lmerTest); library(
 ## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
 TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
 stopifnot(TISSUE %in% c("F", "G"))
-FDR_ALPHA <- 0.10
-NPERM     <- 10000   # permutations per family. At 1,000 draws a p near 0.05 has a Monte Carlo
-                     # SE of ~0.007; at 10,000 it is ~0.002. The matrix engine in block D makes
-                     # 10,000 x 7 metrics x (58 + 6 + ~1,000) genes a matter of a minute.
-PERM_SEED <- 1
-N_INFLUENCE_HITS <- 3
+FDR_ALPHA        <- 0.10
+N_INFLUENCE_HITS <- 3     # candidate hits per metric that get the leave-one-animal-out refit
 ## The detection-floor filter (FLOOR_EXCLUDE / EXCLUDE_FLOOR_GENES) lives in script 20, which
-## writes detection_floor_flags_<T>.csv and marks each candidate `tested`; this script tests
-## the same family script 20 tested.
+## writes detection_floor_flags_<T>.csv and marks each candidate `tested`; this script works
+## on the same family script 20 tested.
 
-## The metric list, the metric tiers (primary / exploratory), the treatment levels and the
-## nuisance covariates are read from script 20's metrics_config.csv handoff below, so the
-## two scripts cannot drift apart. The permutation runs for EVERY metric (no PMETRICS).
+## The metrics, their model scale (log / raw) and tier (primary / exploratory), the treatment
+## levels and the nuisance covariates are read from script 20's metrics_config handoff, so
+## the two scripts fit the same model on the same animals.
 
 ## ---- read script 20's CSV handoffs (run 20 first) ----------------------------------
 find_repo_root <- function(start = here::here()) {
@@ -85,34 +83,27 @@ need <- function(f) { p <- file.path(IN_DIR, f)
   if (!file.exists(p)) stop("Missing ", f, " - run script 20 first (it writes this)."); p }
 
 mcfg <- read_csv(need(sprintf("metrics_config_%s.csv", TISSUE)), show_col_types = FALSE)
-if (!"tier" %in% names(mcfg)) {
-  message("metrics_config has no `tier` column (script 20 predates PRIMARY_METRICS); ",
-          "assuming force/area and their change metrics are primary. Re-run script 20.")
-  mcfg$tier <- ifelse(mcfg$metric %in% c("max_force", "pad_area", "dlog_max_force", "dlog_pad_area"),
-                      "primary", "exploratory")
-}
-if (!"covariates" %in% names(mcfg)) mcfg$covariates <- "treatment"
+if (!all(c("metric", "scale", "tier", "arms", "covariates") %in% names(mcfg)))
+  stop("metrics_config_", TISSUE, ".csv predates the ANCOVA version of script 20; re-run script 20.")
 metrics         <- mcfg$metric
-LEVEL_METRICS   <- mcfg$metric[mcfg$type == "level"]
-CHANGE_METRICS  <- mcfg$metric[mcfg$type == "change"]
 PRIMARY_METRICS <- mcfg$metric[mcfg$tier == "primary"]
 arms_kept       <- strsplit(mcfg$arms[1], ";", fixed = TRUE)[[1]]
 COVARIATES      <- strsplit(mcfg$covariates[1], ";", fixed = TRUE)[[1]]   # "treatment" [+ "secretion_state"]
 USE_SECRETION_STATE <- "secretion_state" %in% COVARIATES
-tier_of <- function(m) mcfg$tier[match(m, mcfg$metric)]
+scale_of <- function(m) mcfg$scale[match(m, mcfg$metric)]
+tier_of  <- function(m) mcfg$tier[match(m, mcfg$metric)]
+on_scale <- function(m, v) if (scale_of(m) == "log") log(v) else v    # a value on its model scale
 
 paired <- read_csv(need(sprintf("paired_sample_manifest_%s.csv", TISSUE)), show_col_types = FALSE) %>%
   mutate(treatment = factor(treatment, levels = arms_kept))
 if (USE_SECRETION_STATE) {
   ## script 20 joined the per-animal byssal secretion state (differential-expression script
-  ## 01_7) into the manifest; it is a nuisance covariate in every fit below and a stratum of
-  ## the permutation, exactly as `treatment` is.
+  ## 01_7) into the manifest; it is a nuisance covariate in every fit below, as `treatment` is.
   if (!"secretion_state" %in% names(paired) || anyNA(paired$secretion_state))
     stop("USE_SECRETION_STATE is on in script 20 but the manifest has no complete `secretion_state` column.")
   paired <- paired %>% mutate(secretion_state = factor(secretion_state, levels = c("off", "on")))
 }
 candidates_all <- read_csv(need(sprintf("candidate_genes_%s.csv", TISSUE)), show_col_types = FALSE)
-if (!"tested" %in% names(candidates_all)) candidates_all$tested <- TRUE   # older script-20 handoff
 candidates <- candidates_all %>% filter(tested)
 floor_tbl  <- read_csv(need(sprintf("detection_floor_flags_%s.csv", TISSUE)), show_col_types = FALSE) %>%
   select(LOC_ID, frac_at_floor, floor_flag)
@@ -122,149 +113,143 @@ vp_df <- read_csv(need(sprintf("vst_paired_%s.csv", TISSUE)), show_col_types = F
 vp <- as.matrix(vp_df[, -1]); rownames(vp) <- vp_df[[1]]   # LOC_ID column -> matrix rownames
 stopifnot(all(paired$sample %in% colnames(vp)))
 vp <- vp[, paired$sample, drop = FALSE]                      # column order = manifest order
+expr_of <- function(loc) as.numeric(vp[match(loc, rownames(vp)), paired$sample])
 
-## DEG union (data-driven universe) from script 20's per-gene table
+## script 20's reported test, one row per gene x metric, for the two gene universes
+res_cand <- read_csv(need(sprintf("assoc_candidate_%s.csv", TISSUE)), show_col_types = FALSE)
+if (!all(c("p_lm", "q_lm", "q_family", "baseline_slope") %in% names(res_cand)))
+  stop("assoc_candidate_", TISSUE, ".csv predates the ANCOVA version of script 20; re-run script 20.")
 deg_union_file <- file.path(IN_DIR, sprintf("assoc_DEGunion_%s.csv", TISSUE))
-deg_union_ids <- if (file.exists(deg_union_file))
-  intersect(unique(read_csv(deg_union_file, show_col_types = FALSE)$LOC_ID), rownames(vp)) else character(0)
+res_deg <- if (file.exists(deg_union_file)) read_csv(deg_union_file, show_col_types = FALSE) else NULL
 
-## nuisance design shared by every fit: y ~ x + treatment [+ secretion_state]
-nuis_terms <- COVARIATES
-cat("Paired animals:", nrow(paired), "| arms:", paste(arms_kept, collapse = ", "),
-    "| level metrics:", paste(LEVEL_METRICS, collapse = ", "),
-    "| change metrics:", paste(CHANGE_METRICS, collapse = ", "),
-    "\nPrimary metrics:", paste(PRIMARY_METRICS, collapse = ", "),
-    "| nuisance covariates:", paste(nuis_terms, collapse = " + "),
+## ---- the reported ANCOVA, exactly as script 20 fits it --------------------------------
+## y and base on the metric's model scale; complete cases only (animals without baseline
+## threads drop here); `mussel` rides along so the influence block can name an animal.
+ancova_data <- function(x, metric) {          # x = one value per animal, manifest order
+  dat <- data.frame(y      = on_scale(metric, paired[[metric]]),
+                    x      = x,
+                    base   = on_scale(metric, paired[[paste0("base_", metric)]]),
+                    mussel = paired$mussel,
+                    paired[, COVARIATES, drop = FALSE])
+  dat[stats::complete.cases(dat) & is.finite(dat$y) & is.finite(dat$base), , drop = FALSE]
+}
+ANCOVA_FORMULA <- reformulate(c("x", COVARIATES, "base"), response = "y")
+fit_ancova <- function(x, metric) {
+  dat <- ancova_data(x, metric)
+  if (nrow(dat) < 6) return(NULL)
+  fm <- tryCatch(lm(ANCOVA_FORMULA, data = dat), error = function(e) NULL)
+  if (is.null(fm)) return(NULL)
+  co <- summary(fm)$coefficients
+  if (!all(c("x", "base") %in% rownames(co))) return(NULL)
+  list(fit = fm, data = dat, n = nrow(dat),
+       slope = co["x", "Estimate"], se = co["x", "Std. Error"], p = co["x", "Pr(>|t|)"])
+}
+
+cat("Paired animals:", nrow(paired), "| in the fits (with baseline):", sum(!is.na(paired$base_max_force)),
+    "| arms:", paste(arms_kept, collapse = ", "),
+    "\nMetrics [scale, tier]:", paste(sprintf("%s [%s, %s]", mcfg$metric, mcfg$scale, mcfg$tier), collapse = ", "),
+    "\nNuisance covariates:", paste(COVARIATES, collapse = " + "),
     "| candidates tested:", nrow(candidates), "of", nrow(candidates_all),
-    "| DEG union tested:", length(deg_union_ids), "\n")
+    "| DEG union tested:", if (is.null(res_deg)) 0L else dplyr::n_distinct(res_deg$LOC_ID), "\n")
 ```
 
 ---
 
-# A. Thread-level mixed model (sensitivity check on the level metrics)
+# A. Thread-level mixed ANCOVA (sensitivity check on the reported test)
 
-Raw plaque-level data, joined to each mussel's expression. Model:
-`metric ~ expression + treatment + (1 | mussel)`. The expression term varies only between
-mussels, so its test reflects ~31 mussel-level df (Satterthwaite), not the thread count;
-mussels with more/precise plaques contribute more. Singular-fit warnings are expected when
-between-mussel variance is near zero and do not invalidate the fixed-effect estimate.
+Every day-3 plaque of the paired animals, joined to the animal's expression and to its
+baseline level (the same per-animal summary script 20 uses, on the same scale):
 
-The thread-level model applies to the LEVEL metrics only: a CHANGE metric (`dlog_*`) is one
-number per animal by construction. It is kept as a check that the reported per-animal
-weighted regression (block B) is not an artefact of averaging; it is not the reported test,
-because it cannot be permuted at a useful cost and would then have no search-corrected p.
+    plaque_day3 ~ expression + treatment [+ secretion_state] + level_baseline + (1 | mussel)
+
+with `plaque_day3` = log(plaque value) for force, area and adhesion and the raw value for
+extension. The expression and baseline terms vary only between animals, so their tests
+reflect animal-level degrees of freedom (Satterthwaite); each animal contributes in
+proportion to the precision of its mean, which is what the per-animal model cannot do.
+Singular-fit warnings are expected when between-animal variance is near zero and do not
+invalidate the fixed-effect estimate.
 
 ```{r mixed}
-## raw day-3 plaque-level mechanics for the paired animals (script 20 exports phase == "post")
+## raw day-3 plaque-level mechanics for the paired animals (script 20 exports phase == "post"),
+## with the animal's baseline levels and any non-arm covariate joined by animal
 thr_threads <- thr_raw %>%
   filter(phase == "post", mussel %in% paired$mussel, treatment %in% arms_kept) %>%
-  transmute(mussel,
-            treatment = factor(treatment, levels = arms_kept),
-            max_force, pad_area, adhesion_kpa, max_displacement)
-if (USE_SECRETION_STATE)
-  thr_threads <- thr_threads %>%
-    left_join(paired %>% select(mussel, secretion_state), by = "mussel")
+  transmute(mussel, treatment = factor(treatment, levels = arms_kept),
+            max_force, pad_area, adhesion_kpa, max_displacement) %>%
+  left_join(paired %>% select(mussel, starts_with("base_"), all_of(setdiff(COVARIATES, "treatment"))),
+            by = "mussel")
 
-test_gene_mixed <- function(loc, metric) {
-  ev  <- data.frame(mussel = paired$mussel,
-                    expr = as.numeric(vp[match(loc, rownames(vp)), paired$sample]))
-  dat <- thr_threads %>% inner_join(ev, by = "mussel")
-  dat <- dat[stats::complete.cases(dat[, c(metric, "expr", nuis_terms, "mussel")]), ]
+MIXED_FORMULA <- reformulate(c("x", COVARIATES, "base", "(1|mussel)"), response = "y")
+fit_mixed <- function(x, metric) {           # x = one value per animal, manifest order
+  d0  <- thr_threads %>% inner_join(data.frame(mussel = paired$mussel, x = x), by = "mussel")
+  dat <- data.frame(y      = on_scale(metric, d0[[metric]]),
+                    x      = d0$x,
+                    base   = on_scale(metric, d0[[paste0("base_", metric)]]),
+                    mussel = d0$mussel,
+                    d0[, COVARIATES, drop = FALSE])
+  dat <- dat[stats::complete.cases(dat) & is.finite(dat$y) & is.finite(dat$base), , drop = FALSE]
   if (dplyr::n_distinct(dat$mussel) < 6) return(NULL)
-  fm <- tryCatch(suppressWarnings(
-          lmerTest::lmer(reformulate(c("expr", nuis_terms, "(1|mussel)"),
-                                     response = metric),
-                         data = dat, REML = TRUE)),
-        error = function(e) NULL)
+  fm <- tryCatch(suppressWarnings(lmerTest::lmer(MIXED_FORMULA, data = dat, REML = TRUE)),
+                 error = function(e) NULL)
   if (is.null(fm)) return(NULL)
   co <- summary(fm)$coefficients
-  if (!"expr" %in% rownames(co)) return(NULL)
-  tibble(LOC_ID = loc, metric = metric,
-         n_threads = nrow(dat), n_mussel = dplyr::n_distinct(dat$mussel),
-         slope_mixed = co["expr", "Estimate"], p_mixed = co["expr", "Pr(>|t|)"])
+  if (!"x" %in% rownames(co)) return(NULL)
+  tibble(n_threads = nrow(dat), n_mussel = dplyr::n_distinct(dat$mussel),
+         slope_mixed = co["x", "Estimate"], p_mixed = co["x", "Pr(>|t|)"])
 }
 
 run_mixed <- function(loci, set_name) {
-  map_dfr(LEVEL_METRICS, function(mt) map_dfr(loci, ~ test_gene_mixed(.x, mt))) %>%
+  map_dfr(metrics, function(mt) map_dfr(loci, function(loc) {
+    r <- fit_mixed(expr_of(loc), mt)
+    if (is.null(r)) return(NULL)
+    bind_cols(tibble(LOC_ID = loc, metric = mt, scale = scale_of(mt), tier = tier_of(mt)), r)
+  })) %>%
     group_by(metric) %>% mutate(q_mixed = p.adjust(p_mixed, "BH")) %>% ungroup() %>%
     left_join(annot, by = "LOC_ID") %>%
-    mutate(gene_set = set_name, tier = tier_of(metric)) %>%
-    arrange(metric, p_mixed)
+    mutate(gene_set = set_name) %>%
+    arrange(factor(metric, levels = metrics), p_mixed)
 }
-
-## candidate set: already loaded from script 20's candidate_genes_<T>.csv handoff above
 
 res_cand_mixed <- run_mixed(candidates$LOC_ID, "candidate")
 write_csv(res_cand_mixed, file.path(OUT_DIR, sprintf("assoc_candidate_MIXED_%s.csv", TISSUE)))
 
-cat("Candidate genes, MIXED model, top per LEVEL metric (sensitivity; compare p_mixed with p_wls below):\n")
-res_cand_mixed %>% mutate(metric = factor(metric, levels = LEVEL_METRICS)) %>%
-  group_by(metric) %>% slice_min(p_mixed, n = 6) %>% ungroup() %>%
-  mutate(across(c(slope_mixed), ~round(., 4)),
-         p_mixed = signif(p_mixed, 2), q_mixed = signif(q_mixed, 2)) %>%
-  select(metric, tier, LOC_ID, protein_name, n_mussel, slope_mixed, p_mixed, q_mixed) %>%
-  as.data.frame() %>% print()
-```
-
----
-
-# B. Precision-weighted regression (the reported test)
-
-Per-mussel means weighted by plaque count, `metric ~ expression + treatment` (plus the
-secretion state when script 20 enabled it). Nearly equivalent to the mixed model for the
-level metrics, and the only sensible model for the change metrics. It is cheap to refit
-thousands of times, which is why it is the statistic the permutation in block D calibrates,
-and therefore the statistic reported for every metric.
-
-For a CHANGE metric the weight is the smaller of the animal's baseline and day-3 plaque
-counts, since the log ratio is only as precise as its less-replicated side.
-
-```{r weighted}
-wls_weight <- function(metric) {
-  if (metric %in% CHANGE_METRICS) pmin(paired$n_plaques, paired$n_plaques_base) else paired$n_plaques
-}
-wls_formula <- reformulate(c("x", nuis_terms), response = "y")
-test_gene_wls <- function(loc, metric) {
-  x <- as.numeric(vp[match(loc, rownames(vp)), paired$sample])
-  dat <- data.frame(y = paired[[metric]], x = x, w = wls_weight(metric),
-                    paired[, nuis_terms, drop = FALSE])
-  dat <- dat[stats::complete.cases(dat), ]
-  if (nrow(dat) < 6) return(NULL)
-  fm <- tryCatch(lm(wls_formula, data = dat, weights = w), error = function(e) NULL)
-  if (is.null(fm)) return(NULL)
-  co <- summary(fm)$coefficients
-  if (!"x" %in% rownames(co)) return(NULL)
-  tibble(LOC_ID = loc, metric = metric, n = nrow(dat),
-         slope_wls = co["x", "Estimate"], p_wls = co["x", "Pr(>|t|)"])
-}
-run_wls <- function(loci, set_name) {
-  map_dfr(metrics, function(mt) map_dfr(loci, ~ test_gene_wls(.x, mt))) %>%
-    group_by(metric) %>% mutate(q_wls = p.adjust(p_wls, "BH")) %>% ungroup() %>%
-    left_join(annot, by = "LOC_ID") %>%
-    mutate(gene_set = set_name, tier = tier_of(metric))
-}
-res_cand_wls <- run_wls(candidates$LOC_ID, "candidate") %>%
-  ## the mixed-model p for the level metrics sits beside the reported p as a sensitivity column
-  left_join(res_cand_mixed %>% select(LOC_ID, metric, slope_mixed, p_mixed, q_mixed),
+## the reported test (script 20) and the sensitivity check side by side
+cand_compare <- res_cand %>%
+  select(LOC_ID, metric, tier, n, protein_name, slope, p_lm, q_lm, q_family) %>%
+  left_join(res_cand_mixed %>% select(LOC_ID, metric, n_mussel, slope_mixed, p_mixed, q_mixed),
             by = c("LOC_ID", "metric"))
-## (the permutation columns are appended to this table in block D before it is written)
 
-cat("Candidate genes, weighted per-animal regression (the reported test), top per metric:\n")
-res_cand_wls %>% mutate(metric = factor(metric, levels = metrics)) %>%
-  group_by(metric) %>% slice_min(p_wls, n = 4) %>% ungroup() %>%
-  mutate(slope_wls = round(slope_wls, 4), p_wls = signif(p_wls, 2), q_wls = signif(q_wls, 2),
-         p_mixed = signif(p_mixed, 2)) %>%
-  select(metric, tier, n, LOC_ID, protein_name, slope_wls, p_wls, q_wls, p_mixed) %>%
+cat("Candidate genes: reported ANCOVA (script 20, p_lm) beside the thread-level mixed ANCOVA (p_mixed), top 6 per metric:\n")
+cand_compare %>% mutate(metric = factor(metric, levels = metrics)) %>%
+  group_by(metric) %>% slice_min(p_lm, n = 6, with_ties = FALSE) %>% ungroup() %>%
+  mutate(across(c(slope, slope_mixed), ~round(., 4)),
+         across(c(p_lm, q_lm, q_family, p_mixed), ~signif(., 2)),
+         protein_name = substr(protein_name, 1, 34)) %>%
+  select(metric, tier, LOC_ID, protein_name, n, slope, p_lm, q_lm, q_family, slope_mixed, p_mixed) %>%
+  as.data.frame() %>% print()
+
+cat("\nAgreement between the two fits across the whole candidate family, per metric:\n")
+cand_compare %>% filter(!is.na(p_mixed)) %>%
+  mutate(metric = factor(metric, levels = metrics)) %>%
+  group_by(metric) %>%
+  summarise(n_genes         = n(),
+            spearman_of_p   = round(cor(p_lm, p_mixed, method = "spearman"), 3),
+            same_sign       = round(mean(sign(slope) == sign(slope_mixed)), 3),
+            both_p_below_05 = sum(p_lm < 0.05 & p_mixed < 0.05),
+            lm_only         = sum(p_lm < 0.05 & p_mixed >= 0.05),
+            mixed_only      = sum(p_lm >= 0.05 & p_mixed < 0.05), .groups = "drop") %>%
   as.data.frame() %>% print()
 ```
 
 ---
 
-# C. Module eigengenes (power-preserving)
+# B. Module eigengenes (power-preserving)
 
 Each module = PC1 of its members' VST values (per mussel), oriented so higher score = higher
-module expression. Six modules x seven metrics is FDR-tractable, and a coordinated pathway
-score is biologically closer to "is the HIF response engaged" than any single gene.
+module expression. Six modules x four metrics is FDR-tractable, and a coordinated pathway
+score is biologically closer to "is the HIF response engaged" than any single gene. The
+score goes through the same ANCOVA as a single gene (reported) and through the thread-level
+mixed ANCOVA (sensitivity).
 
 `byssal_structural` is the plaque/thread protein module (foot proteins, preCols, byssal
 EP/ACDC): the genes that switch on together when an animal is actively secreting a thread.
@@ -296,242 +281,40 @@ module_score <- function(rx) {
        var_expl = summary(pc)$importance[2, 1])
 }
 mod_scores <- purrr::compact(map(modules, module_score))
-MOD <- do.call(rbind, map(mod_scores, "score"))          # modules x animals, manifest order
-colnames(MOD) <- paired$sample
 write_csv(map_dfr(names(mod_scores), ~ tibble(module = .x, LOC_ID = mod_scores[[.x]]$members)) %>%
             left_join(annot, by = "LOC_ID"),
           file.path(OUT_DIR, sprintf("module_members_%s.csv", TISSUE)))
 
-## the same weighted regression as block B (reported, permuted), plus the thread-level mixed
-## model for the level metrics as the sensitivity column
+## the same ANCOVA as script 20 on the module score (reported), plus the thread-level mixed
+## ANCOVA as the sensitivity column
 mod_fits <- imap_dfr(mod_scores, function(ms, nm) {
-  dat0 <- tibble(mussel = paired$mussel, score = ms$score)
   map_dfr(metrics, function(mt) {
-    dat <- data.frame(y = paired[[mt]], x = ms$score, w = wls_weight(mt),
-                      paired[, nuis_terms, drop = FALSE])
-    dat <- dat[stats::complete.cases(dat), ]
-    if (nrow(dat) < 6) return(NULL)
-    fm <- tryCatch(lm(wls_formula, data = dat, weights = w), error = function(e) NULL)
-    if (is.null(fm)) return(NULL)
-    co <- summary(fm)$coefficients
-    out <- tibble(module = nm, n_genes = ms$n_genes, pc1_var = round(ms$var_expl, 2),
-                  metric = mt, tier = tier_of(mt), n = nrow(dat),
-                  slope_wls = co["x", "Estimate"], p_wls = co["x", "Pr(>|t|)"],
-                  slope_mixed = NA_real_, p_mixed = NA_real_)
-    if (mt %in% LEVEL_METRICS) {
-      datm <- thr_threads %>% inner_join(dat0, by = "mussel")
-      fmm <- tryCatch(suppressWarnings(
-               lmerTest::lmer(reformulate(c("score", nuis_terms, "(1|mussel)"),
-                                          response = mt), data = datm, REML = TRUE)),
-             error = function(e) NULL)
-      if (!is.null(fmm)) {
-        com <- summary(fmm)$coefficients
-        out$slope_mixed <- com["score", "Estimate"]; out$p_mixed <- com["score", "Pr(>|t|)"]
-      }
-    }
-    out
+    a <- fit_ancova(ms$score, mt)
+    if (is.null(a)) return(NULL)
+    m <- fit_mixed(ms$score, mt)
+    tibble(module = nm, n_genes = ms$n_genes, pc1_var = round(ms$var_expl, 2),
+           metric = mt, scale = scale_of(mt), tier = tier_of(mt), n = a$n,
+           slope = a$slope, se = a$se, p_lm = a$p,
+           slope_mixed = if (is.null(m)) NA_real_ else m$slope_mixed,
+           p_mixed     = if (is.null(m)) NA_real_ else m$p_mixed)
   })
-}) %>% group_by(metric) %>%
-  mutate(q_wls = p.adjust(p_wls, "BH"), q_mixed = p.adjust(p_mixed, "BH")) %>%
-  ungroup() %>% arrange(p_wls)
-## (permutation columns are appended and the file written in block D)
-
-cat("MODULE-level associations (weighted regression, BH across the ", n_distinct(mod_fits$module),
-    " modules within each metric):\n", sep = "")
-mod_fits %>% mutate(across(c(slope_wls, slope_mixed), ~round(., 4)),
-                    across(c(p_wls, q_wls, p_mixed, q_mixed), ~signif(., 2))) %>%
-  select(module, n_genes, pc1_var, metric, tier, n, slope_wls, p_wls, q_wls, p_mixed) %>%
-  as.data.frame() %>% print()
-```
-
----
-
-# D. Permutation null: per metric, family-wide, and for the primary family
-
-**Why a permutation at all.** The search is 58 candidate genes x 7 metrics (plus six modules
-and ~500-1,000 DEG-union genes), the genes are correlated with one another and the metrics
-with one another, and n is 45. BH within a metric corrects for the genes but not for the
-metrics, and treats correlated genes as independent tests. The permutation asks the question
-directly: shuffle the expression-to-animal assignment **within treatment arm** (so arm-level
-expression shifts and the gene-gene correlation structure are preserved), recompute the
-whole search, and see how often chance produces a minimum p as small as the observed one.
-
-Three numbers come out of the same shuffles:
-
-- `p_perm_metric`: the chance of a minimum p this small among the genes of ONE metric
-  (what the old `permutation_best_hit` file reported, now for every metric);
-- `p_perm_family`: the chance across the whole search, genes x all seven metrics; this is the
-  number that answers "did the search find anything";
-- `p_perm_family_primary`: the same for the pre-declared primary family (candidate genes x
-  `PRIMARY_METRICS` from script 20), the confirmatory test.
-
-Each observed gene x metric p also gets a single-step min-p adjusted p (`p_perm_famwise`,
-Westfall & Young 1993): the fraction of shuffles whose family-wide minimum p is at or below
-that gene's observed p. It is monotone in p and reads like a Bonferroni-Holm value that knows
-the correlation structure.
-
-**Engine.** For a weighted regression `y ~ x + Z` (Z = the nuisance design: intercept, arm
-dummies, and the secretion state when enabled), the t statistic of x equals the t statistic
-of the weighted, Z-residualised x regressed on the weighted, Z-residualised y
-(Frisch-Waugh-Lovell): `t = r sqrt(df) / sqrt(1 - r^2)`, with r the uncentred correlation of
-the two residual vectors and `df = n - ncol(Z) - 1`. The residualiser M depends only on Z
-and the weights, so a permutation is one column permutation of the expression matrix and
-one matrix multiply, for every gene at once. That is what makes 10,000 shuffles across every
-gene set and metric take about a minute instead of a day of `lm()` calls. The engine is
-checked against `lm()` on the observed data before it is used.
-
-```{r permutation}
-## ---- the engine ---------------------------------------------------------------------
-make_engine <- function(y, w, Z) {
-  ok <- !is.na(y) & !is.na(w) & stats::complete.cases(Z)
-  sw <- sqrt(w[ok]); Zt <- Z[ok, , drop = FALSE] * sw
-  ZtZ_inv <- tryCatch(chol2inv(chol(crossprod(Zt))),
-                      error = function(e) stop("nuisance design is singular within the animals ",
-                                               "that have this metric: ", conditionMessage(e)))
-  M  <- diag(sum(ok)) - Zt %*% ZtZ_inv %*% t(Zt)
-  yr <- as.vector(M %*% (y[ok] * sw))
-  list(ok = ok, sw = sw,
-       SM = sw * M,                       # diag(sqrt(w)) %*% M: weight and residualise in one multiply
-       yr = yr, yr_norm = sqrt(sum(yr^2)),
-       df = sum(ok) - ncol(Zt) - 1, n = sum(ok),
-       key = paste(c(ok, signif(sw, 8)), collapse = ","))   # metrics sharing ok & weights share SM
-}
-## weighted, residualised expression for every row of E (genes x animals, manifest order),
-## optionally with the animals' expression columns permuted first
-resid_X <- function(eng, E, perm = seq_len(ncol(E)))
-  E[, perm, drop = FALSE][, eng$ok, drop = FALSE] %*% eng$SM
-## two-sided p for the x coefficient from the residualised rows (rn = their norms)
-p_from_Xr <- function(eng, Xr, rn = sqrt(rowSums(Xr^2))) {
-  r <- as.vector(Xr %*% eng$yr) / (rn * eng$yr_norm)
-  r[!is.finite(r)] <- 0
-  tt <- r * sqrt(eng$df) / sqrt(pmax(1 - r^2, .Machine$double.eps))
-  2 * pt(abs(tt), eng$df, lower.tail = FALSE)
-}
-engine_p <- function(eng, E, perm = seq_len(ncol(E))) p_from_Xr(eng, resid_X(eng, E, perm))
-
-Z_nuis  <- model.matrix(reformulate(nuis_terms), data = droplevels(paired[, nuis_terms, drop = FALSE]))
-engines <- setNames(lapply(metrics, function(m) make_engine(paired[[m]], wls_weight(m), Z_nuis)), metrics)
-## metrics with the same animals and weights (all level metrics; all change metrics) share
-## one residualisation per shuffle
-engine_groups <- split(metrics, sapply(metrics, function(m) engines[[m]]$key))
-
-## ---- check the engine against lm() on the observed data -------------------------------
-E_cand <- vp[candidates$LOC_ID, , drop = FALSE]
-chk <- map_dfr(metrics, function(m) {
-  tibble(metric = m, LOC_ID = rownames(E_cand), p_engine = engine_p(engines[[m]], E_cand))
-}) %>% inner_join(res_cand_wls %>% select(metric, LOC_ID, p_wls), by = c("metric", "LOC_ID"))
-stopifnot(nrow(chk) > 0, max(abs(chk$p_engine - chk$p_wls)) < 1e-8)
-cat("Engine check: max |p_engine - p_lm| over", nrow(chk), "candidate fits =",
-    signif(max(abs(chk$p_engine - chk$p_wls)), 2), "\n")
-
-## ---- the shuffles: within arm (and within secretion state when it is a covariate) -----
-strata <- interaction(droplevels(paired[, nuis_terms, drop = FALSE]), drop = TRUE)
-idx_by_stratum <- split(seq_len(nrow(paired)), strata)
-perm_within <- function() {
-  p <- seq_len(nrow(paired))
-  for (g in idx_by_stratum) if (length(g) > 1) p[g] <- g[sample.int(length(g))]
-  p
-}
-
-## ---- families: candidate genes, modules, DEG union ----------------------------------
-families <- list(candidate = E_cand, module = MOD)
-if (length(deg_union_ids) > 0) families$DEG_union <- vp[deg_union_ids, , drop = FALSE]
-
-## observed and null minimum p per family x metric (one shared set of shuffles, so the
-## family-wide minimum is taken inside each shuffle and metric-metric correlation is kept)
-set.seed(PERM_SEED)
-perms <- replicate(NPERM, perm_within())               # animals x NPERM
-t0 <- Sys.time()
-perm_min <- imap(families, function(E, fam) {
-  obs  <- sapply(metrics, function(m) min(engine_p(engines[[m]], E), na.rm = TRUE))
-  null <- matrix(NA_real_, NPERM, length(metrics), dimnames = list(NULL, metrics))
-  for (b in seq_len(NPERM)) {
-    perm <- perms[, b]
-    for (g in engine_groups) {
-      Xr <- resid_X(engines[[g[1]]], E, perm); rn <- sqrt(rowSums(Xr^2))
-      for (m in g) null[b, m] <- min(p_from_Xr(engines[[m]], Xr, rn), na.rm = TRUE)
-    }
-  }
-  list(obs = obs, null = null)
-})
-cat("Permutations:", NPERM, "shuffles x", length(metrics), "metrics x",
-    paste(sprintf("%s (%d genes)", names(families), sapply(families, nrow)), collapse = ", "),
-    "in", round(as.numeric(difftime(Sys.time(), t0, units = "mins")), 1), "min\n")
-
-## ---- summaries ------------------------------------------------------------------------
-perm_p <- function(null_vec, obs) (sum(null_vec <= obs) + 1) / (length(null_vec) + 1)
-
-perm_summary <- imap_dfr(perm_min, function(pm, fam) {
-  fam_all  <- apply(pm$null, 1, min)                                       # family-wide null
-  fam_prim <- apply(pm$null[, intersect(PRIMARY_METRICS, metrics), drop = FALSE], 1, min)
-  obs_all  <- min(pm$obs); obs_prim <- min(pm$obs[intersect(PRIMARY_METRICS, metrics)])
-  bind_rows(
-    tibble(gene_set = fam, family = "per_metric", metric = metrics, tier = tier_of(metrics),
-           n = sapply(metrics, function(m) engines[[m]]$n),
-           n_genes = nrow(families[[fam]]), n_tests = nrow(families[[fam]]), n_perm = NPERM,
-           observed_min_p = unname(pm$obs),
-           p_permutation  = sapply(metrics, function(m) perm_p(pm$null[, m], pm$obs[[m]]))),
-    tibble(gene_set = fam, family = "all_metrics", metric = "all", tier = "all",
-           n = NA_integer_, n_genes = nrow(families[[fam]]),
-           n_tests = nrow(families[[fam]]) * length(metrics), n_perm = NPERM,
-           observed_min_p = obs_all, p_permutation = perm_p(fam_all, obs_all)),
-    tibble(gene_set = fam, family = "primary_metrics", metric = paste(PRIMARY_METRICS, collapse = ";"),
-           tier = "primary", n = NA_integer_, n_genes = nrow(families[[fam]]),
-           n_tests = nrow(families[[fam]]) * length(intersect(PRIMARY_METRICS, metrics)), n_perm = NPERM,
-           observed_min_p = obs_prim, p_permutation = perm_p(fam_prim, obs_prim)))
-})
-write_csv(perm_summary, file.path(OUT_DIR, sprintf("permutation_summary_%s.csv", TISSUE)))
-## backward-compatible file: the per-metric candidate rows in the old column layout
-write_csv(perm_summary %>% filter(gene_set == "candidate", family == "per_metric") %>%
-            transmute(metric, n, n_genes, n_perm, observed_min_p, p_permutation),
-          file.path(OUT_DIR, sprintf("permutation_best_hit_%s.csv", TISSUE)))
-
-## null vectors, so the tails can be inspected and the p re-derived without re-running
-null_df <- imap_dfc(perm_min, function(pm, fam) {
-  d <- as.data.frame(signif(pm$null, 4)); names(d) <- paste0(fam, "__", metrics)
-  d[[paste0(fam, "__all_metrics")]]     <- signif(apply(pm$null, 1, min), 4)
-  d[[paste0(fam, "__primary_metrics")]] <- signif(apply(pm$null[, intersect(PRIMARY_METRICS, metrics), drop = FALSE], 1, min), 4)
-  d
-}) %>% mutate(perm = seq_len(NPERM), .before = 1)
-write_csv(null_df, file.path(OUT_DIR, sprintf("permutation_null_%s.csv.gz", TISSUE)))
-
-cat("\nPermutation p per family (observed minimum p and how often the shuffled search beats it):\n")
-perm_summary %>% filter(family != "per_metric" | tier == "primary") %>%
-  mutate(observed_min_p = signif(observed_min_p, 3), p_permutation = signif(p_permutation, 3)) %>%
-  as.data.frame() %>% print()
-
-## ---- single-step adjusted p for every observed gene x metric (Westfall-Young min-p) ------
-## p_perm_famwise: fraction of shuffles whose whole-search minimum p <= this observed p
-## p_perm_metricwise: the same within the gene's own metric (genes only, not metrics)
-adj_p <- function(obs_p, null_sorted)            # null_sorted: ascending null minimum p
-  (findInterval(obs_p, null_sorted) + 1) / (length(null_sorted) + 1)
-add_perm_cols <- function(tab, fam) {
-  pm <- perm_min[[fam]]
-  null_metric <- apply(pm$null, 2, sort)                                             # per metric
-  null_all    <- sort(apply(pm$null, 1, min))                                        # whole search
-  null_prim   <- sort(apply(pm$null[, intersect(PRIMARY_METRICS, metrics), drop = FALSE], 1, min))
-  tab %>% mutate(
-    p_perm_metricwise = mapply(function(p, m) adj_p(p, null_metric[, m]), p_wls, metric),
-    p_perm_famwise    = adj_p(p_wls, null_all),
-    p_perm_primary    = ifelse(metric %in% PRIMARY_METRICS, adj_p(p_wls, null_prim), NA_real_))
-}
-res_cand_wls <- add_perm_cols(res_cand_wls, "candidate") %>% arrange(metric, p_wls)
-write_csv(res_cand_wls, file.path(OUT_DIR, sprintf("assoc_candidate_WLS_%s.csv", TISSUE)))
-mod_fits <- add_perm_cols(mod_fits, "module") %>% arrange(p_wls)
+}) %>%
+  group_by(metric) %>% mutate(q_lm = p.adjust(p_lm, "BH"), q_mixed = p.adjust(p_mixed, "BH")) %>% ungroup() %>%
+  group_by(tier)   %>% mutate(q_family = p.adjust(p_lm, "BH")) %>% ungroup() %>%
+  arrange(p_lm)
 write_csv(mod_fits, file.path(OUT_DIR, sprintf("module_associations_%s.csv", TISSUE)))
-if ("DEG_union" %in% names(families)) {
-  res_deg_wls <- run_wls(deg_union_ids, "DEG_union") %>% add_perm_cols("DEG_union") %>% arrange(metric, p_wls)
-  write_csv(res_deg_wls, file.path(OUT_DIR, sprintf("assoc_DEGunion_WLS_%s.csv", TISSUE)))
-}
 
-cat("\nInterpretation: p_permutation is the chance of a minimum p this small when expression is",
-    "shuffled among animals within arm. If it is >> 0.05, the best hit is consistent with noise",
-    "given the search. p_perm_famwise on a gene row is that gene's search-corrected p.\n")
+cat("MODULE-level associations (ANCOVA on the module score; q_lm = BH across the ",
+    n_distinct(mod_fits$module), " modules within each metric, q_family = BH within each tier):\n", sep = "")
+mod_fits %>% mutate(across(c(slope, slope_mixed), ~round(., 4)),
+                    across(c(p_lm, q_lm, q_family, p_mixed), ~signif(., 2))) %>%
+  select(module, n_genes, pc1_var, metric, tier, n, slope, p_lm, q_lm, q_family, p_mixed) %>%
+  as.data.frame() %>% print()
 ```
 
 ---
 
-# E. Diagnostics: detection floor and influence; the best-hits table
+# C. Diagnostics: detection floor and influence; the best-hits table
 
 Genes where many paired samples sit at the VST minimum are effectively absent/zero-inflated;
 their correlations are driven by detection, not biology. Script 20 flags them and, by
@@ -545,15 +328,14 @@ filter can use them without re-running this script:
   set and the DEG union, with the fraction of paired samples at the VST floor, a
   `floor_flag` of `exclude` (> 0.4), `caution` (> 0.2) or `ok`, and `tested` (FALSE for the
   `exclude` genes when script 20's `EXCLUDE_FLOOR_GENES` is TRUE: they are out of the family
-  before BH and before the permutation, and appear in no association table).
-- `influence_top_hits_<T>.csv`: the three best candidate hits per metric (ranked by the
-  reported test, `p_wls`, for every metric) with the most influential animal, its Cook's
-  distance, the slope and p after dropping that animal, an `influence_flag` (`fragile` when
-  the hit loses p < 0.05 or its slope moves by more than half), and the q and permutation p
-  of the hit.
+  before BH and appear in no association table).
+- `influence_top_hits_<T>.csv`: the three best candidate hits and the best DEG-union hit per
+  metric (ranked by the reported `p_lm`) with the most influential animal, its Cook's
+  distance, the slope and p after dropping that animal, and an `influence_flag` (`fragile`
+  when the hit loses p < 0.05 or its slope moves by more than half).
 - `best_hits_<T>.csv`: the single best hit per metric for each gene set (candidate, module,
-  DEG union), with `q_wls`, `p_perm_metric`, `p_perm_famwise`, `p_perm_primary`, the floor
-  flag and the influence flag in one row. Nothing should be quoted from a q alone.
+  DEG union), with `p_lm`, `q_lm`, `q_family`, `p_mixed`, the floor flag and the influence
+  flag in one row. Nothing should be quoted from a p alone.
 
 ```{r diagnostics}
 ## detection floor: computed and applied by script 20 (detection_floor_flags_<T>.csv); shown
@@ -562,151 +344,100 @@ floor_flag <- read_csv(need(sprintf("detection_floor_flags_%s.csv", TISSUE)), sh
 cat("Detection-floor summary (", nrow(floor_flag), " genes in the two universes; `tested` = in the family):\n", sep = "")
 print(table(gene_set = floor_flag$gene_set, floor_flag = floor_flag$floor_flag, tested = floor_flag$tested))
 
-## influence: best hits per metric, which mussel has the largest Cook's distance.
-## Ranking is by the reported test (p_wls) for every metric, so the leave-one-out refit, the
-## q and the permutation p on a row all describe the same fit.
-top_hits <- res_cand_wls %>%
-  group_by(metric) %>% slice_min(p_wls, n = N_INFLUENCE_HITS, with_ties = FALSE) %>% ungroup() %>%
-  transmute(metric, LOC_ID, ranking_model = "wls", p_rank = p_wls, q_wls,
-            p_perm_metricwise, p_perm_famwise, p_perm_primary)
+## influence: the best hits per metric, which mussel has the largest Cook's distance in the
+## reported ANCOVA, and what the fit looks like without it
+top_hits <- bind_rows(
+  res_cand %>% group_by(metric) %>% slice_min(p_lm, n = N_INFLUENCE_HITS, with_ties = FALSE) %>% ungroup() %>%
+    transmute(gene_set = "candidate", metric, LOC_ID, p_lm, q_lm, q_family),
+  if (!is.null(res_deg)) res_deg %>% group_by(metric) %>% slice_min(p_lm, n = 1, with_ties = FALSE) %>% ungroup() %>%
+    transmute(gene_set = "DEG_union", metric, LOC_ID, p_lm, q_lm, q_family))
 
-infl <- pmap_dfr(top_hits %>% select(metric, LOC_ID, p_rank), function(metric, LOC_ID, p_rank) {
-  dat <- data.frame(y = paired[[metric]],
-                    x = as.numeric(vp[match(LOC_ID, rownames(vp)), paired$sample]),
-                    w = wls_weight(metric), mussel = paired$mussel,
-                    paired[, nuis_terms, drop = FALSE])
-  dat <- dat[stats::complete.cases(dat), ]
-  fm  <- lm(wls_formula, data = dat, weights = w)
-  cd  <- cooks.distance(fm)
-  ## slope after dropping the most influential animal: how much of the fit is one mussel
-  fm_drop <- lm(wls_formula, data = dat[-which.max(cd), ], weights = w)
-  b_all  <- unname(coef(fm)["x"]); b_drop <- unname(coef(fm_drop)["x"])
+infl <- pmap_dfr(top_hits, function(gene_set, metric, LOC_ID, p_lm, q_lm, q_family) {
+  a <- fit_ancova(expr_of(LOC_ID), metric)
+  if (is.null(a)) return(NULL)
+  cd   <- cooks.distance(a$fit)
+  drop <- which.max(cd)
+  fm_drop <- lm(ANCOVA_FORMULA, data = a$data[-drop, ])
+  b_all <- a$slope; b_drop <- unname(coef(fm_drop)["x"])
   p_drop <- summary(fm_drop)$coefficients["x", "Pr(>|t|)"]
-  tibble(metric, LOC_ID, p_rank = signif(p_rank, 3),
-         n                       = nrow(dat),
-         most_influential_mussel = dat$mussel[which.max(cd)],
+  tibble(gene_set, metric, LOC_ID,
+         p_lm = signif(p_lm, 3), q_lm = signif(q_lm, 3), q_family = signif(q_family, 3),
+         n                       = a$n,
+         most_influential_mussel = a$data$mussel[drop],
          max_cooks_D             = round(max(cd), 3),
-         cook_threshold_4n       = round(4 / nrow(dat), 3),
+         cook_threshold_4n       = round(4 / a$n, 3),
          ## the max of n Cook's distances exceeds 4/n in almost every fit of this size, so
          ## that screen alone is uninformative here; D > 1 is the conventional "one point
          ## moves the fit" level (Cook & Weisberg 1982)
-         cooks_flag              = case_when(max(cd) > 1            ~ "D>1",
-                                             max(cd) > 4 / nrow(dat) ~ "D>4/n",
-                                             TRUE                     ~ "ok"),
+         cooks_flag              = case_when(max(cd) > 1       ~ "D>1",
+                                             max(cd) > 4 / a$n ~ "D>4/n",
+                                             TRUE              ~ "ok"),
          slope                   = signif(b_all, 4),
          slope_without_mussel    = signif(b_drop, 4),
          p_without_mussel        = signif(p_drop, 3),
          slope_change_frac       = round(abs(b_drop - b_all) / abs(b_all), 3),
          ## "fragile": the result depends on one animal (loses p < 0.05, or the slope moves
          ## by more than half) - report such a hit with the leave-one-out slope beside it
-         influence_flag          = ifelse((p_rank < 0.05 & p_drop >= 0.05) |
+         influence_flag          = ifelse((p_lm < 0.05 & p_drop >= 0.05) |
                                             abs(b_drop - b_all) / abs(b_all) > 0.5,
                                           "fragile", "robust"))
 }) %>%
-  left_join(top_hits %>% select(metric, LOC_ID, ranking_model, q_wls, p_perm_metricwise,
-                                p_perm_famwise, p_perm_primary), by = c("metric", "LOC_ID")) %>%
-  left_join(annot, by = "LOC_ID") %>%
-  mutate(tier = tier_of(metric), metric = factor(metric, levels = metrics)) %>%
-  arrange(metric, p_rank) %>% mutate(metric = as.character(metric)) %>%
-  select(metric, tier, LOC_ID, protein_name, ranking_model, n, p_rank, q_wls,
-         p_perm_metricwise, p_perm_famwise, p_perm_primary, everything())
+  left_join(annot %>% select(LOC_ID, protein_name, blast_pident), by = "LOC_ID") %>%
+  mutate(tier = tier_of(metric),
+         metric = factor(metric, levels = metrics),
+         gene_set = factor(gene_set, levels = c("candidate", "DEG_union"))) %>%
+  arrange(gene_set, metric, p_lm) %>%
+  mutate(metric = as.character(metric), gene_set = as.character(gene_set)) %>%
+  select(gene_set, metric, tier, LOC_ID, protein_name, n, p_lm, q_lm, q_family, everything())
 write_csv(infl, file.path(OUT_DIR, sprintf("influence_top_hits_%s.csv", TISSUE)))
 
-cat("\nMost influential animal for the top", N_INFLUENCE_HITS, "hits per metric",
+cat("\nMost influential animal for the top", N_INFLUENCE_HITS, "candidate hits and the best DEG-union hit per metric",
     "('fragile' = loses p < 0.05 or slope moves > 50% when that animal is dropped):\n")
-infl %>% select(metric, LOC_ID, p_rank, q_wls, p_perm_famwise, most_influential_mussel, max_cooks_D,
+infl %>% select(gene_set, metric, LOC_ID, p_lm, q_lm, most_influential_mussel, max_cooks_D,
                 cooks_flag, slope, slope_without_mussel, p_without_mussel, influence_flag) %>%
   as.data.frame() %>% print()
 
 ## ---- best hit per metric and gene set, everything on one row --------------------------
-best_cand <- res_cand_wls %>% group_by(metric) %>% slice_min(p_wls, n = 1, with_ties = FALSE) %>%
-  ungroup() %>% transmute(gene_set = "candidate", metric, tier, feature = LOC_ID, protein_name,
-                          n, slope_wls, p_wls, q_wls, p_mixed, p_perm_metricwise, p_perm_famwise, p_perm_primary)
-best_mod <- mod_fits %>% group_by(metric) %>% slice_min(p_wls, n = 1, with_ties = FALSE) %>%
-  ungroup() %>% transmute(gene_set = "module", metric, tier, feature = module,
-                          protein_name = paste0(n_genes, "-gene module"),
-                          n, slope_wls, p_wls, q_wls, p_mixed, p_perm_metricwise, p_perm_famwise, p_perm_primary)
-best_deg <- if (exists("res_deg_wls")) res_deg_wls %>% group_by(metric) %>%
-  slice_min(p_wls, n = 1, with_ties = FALSE) %>% ungroup() %>%
+best_cand <- res_cand %>% group_by(metric) %>% slice_min(p_lm, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  left_join(res_cand_mixed %>% select(LOC_ID, metric, p_mixed), by = c("LOC_ID", "metric")) %>%
+  transmute(gene_set = "candidate", metric, tier, feature = LOC_ID, protein_name,
+            n, slope, p_lm, q_lm, q_family, p_mixed)
+best_mod <- mod_fits %>% group_by(metric) %>% slice_min(p_lm, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  transmute(gene_set = "module", metric, tier, feature = module,
+            protein_name = paste0(n_genes, "-gene module"),
+            n, slope, p_lm, q_lm, q_family, p_mixed)
+best_deg <- if (!is.null(res_deg)) res_deg %>% group_by(metric) %>%
+  slice_min(p_lm, n = 1, with_ties = FALSE) %>% ungroup() %>%
+  mutate(p_mixed = map2_dbl(LOC_ID, metric, ~ { m <- fit_mixed(expr_of(.x), .y)
+                                                if (is.null(m)) NA_real_ else m$p_mixed })) %>%
   transmute(gene_set = "DEG_union", metric, tier, feature = LOC_ID, protein_name,
-            n, slope_wls, p_wls, q_wls, p_mixed = NA_real_, p_perm_metricwise, p_perm_famwise, p_perm_primary) else NULL
+            n, slope, p_lm, q_lm, q_family, p_mixed) else NULL
 best_hits <- bind_rows(best_cand, best_mod, best_deg) %>%
   left_join(floor_tbl %>% select(feature = LOC_ID, floor_flag), by = "feature") %>%
   left_join(infl %>% select(feature = LOC_ID, metric, most_influential_mussel, influence_flag),
             by = c("feature", "metric")) %>%
-  left_join(perm_summary %>% filter(family == "per_metric") %>%
-              select(gene_set, metric, p_perm_metric = p_permutation), by = c("gene_set", "metric")) %>%
-  left_join(perm_summary %>% filter(family == "all_metrics") %>%
-              select(gene_set, p_perm_family = p_permutation), by = "gene_set") %>%
-  left_join(perm_summary %>% filter(family == "primary_metrics") %>%
-              select(gene_set, p_perm_family_primary = p_permutation), by = "gene_set") %>%
   mutate(metric = factor(metric, levels = metrics),
          gene_set = factor(gene_set, levels = c("candidate", "module", "DEG_union"))) %>%
   arrange(gene_set, metric) %>% mutate(metric = as.character(metric), gene_set = as.character(gene_set)) %>%
-  select(gene_set, metric, tier, feature, protein_name, n, slope_wls, p_wls, q_wls, p_mixed,
-         p_perm_metric, p_perm_metricwise, p_perm_famwise, p_perm_primary,
-         p_perm_family, p_perm_family_primary, floor_flag, most_influential_mussel, influence_flag)
+  select(gene_set, metric, tier, feature, protein_name, n, slope, p_lm, q_lm, q_family, p_mixed,
+         floor_flag, most_influential_mussel, influence_flag)
 write_csv(best_hits, file.path(OUT_DIR, sprintf("best_hits_%s.csv", TISSUE)))
 
-cat("\nBest hit per metric and gene set (q beside its permutation companions):\n")
-best_hits %>% mutate(across(c(p_wls, q_wls, p_mixed, p_perm_metric, p_perm_famwise, p_perm_primary,
-                              p_perm_family, p_perm_family_primary), ~signif(., 2)),
+cat("\nBest hit per metric and gene set (the reported p beside both q's and the mixed-model p):\n")
+best_hits %>% mutate(across(c(slope), ~signif(., 3)),
+                     across(c(p_lm, q_lm, q_family, p_mixed), ~signif(., 2)),
                      protein_name = substr(protein_name, 1, 30)) %>%
-  select(gene_set, metric, tier, feature, protein_name, p_wls, q_wls, p_perm_metric,
-         p_perm_famwise, p_perm_primary, p_perm_family, floor_flag, influence_flag) %>%
+  select(gene_set, metric, tier, feature, protein_name, n, slope, p_lm, q_lm, q_family, p_mixed,
+         floor_flag, influence_flag) %>%
   as.data.frame() %>% print()
 ```
 
 ---
 
-# F. Baseline-adjusted level models
-
-Adding each animal's baseline as a covariate asks whether expression relates to the day-3
-level *given where the animal started*. The direct test of whether expression tracks the
-*change* is the `dlog_*` metrics in blocks B and C, which need no covariate. Both are kept
-because they answer slightly different questions (ANCOVA versus change score) and can
-disagree when baseline and change are correlated.
-
-```{r baseline-adjusted}
-base_lookup <- paired %>% select(mussel, starts_with("base_"))
-test_gene_mixed_adj <- function(loc, metric) {
-  bcol <- paste0("base_", metric)
-  ev <- data.frame(mussel = paired$mussel,
-                   expr = as.numeric(vp[match(loc, rownames(vp)), paired$sample]))
-  dat <- thr_threads %>% inner_join(ev, by = "mussel") %>%
-    left_join(base_lookup, by = "mussel")
-  dat$base_val <- dat[[bcol]]                       # was: rename(base = !!bcol)
-  keep_cols <- c(metric, "expr", nuis_terms, "mussel", "base_val")
-  dat <- dat[stats::complete.cases(dat[, keep_cols]), ]
-  if (dplyr::n_distinct(dat$mussel) < 6) return(NULL)
-  fm <- tryCatch(suppressWarnings(
-          lmerTest::lmer(reformulate(c("expr", nuis_terms, "base_val", "(1|mussel)"),
-                                     response = metric), data = dat, REML = TRUE)),
-        error = function(e) NULL)
-  if (is.null(fm)) return(NULL)
-  co <- summary(fm)$coefficients
-  if (!"expr" %in% rownames(co)) return(NULL)
-  tibble(LOC_ID = loc, metric = metric, n_mussel = dplyr::n_distinct(dat$mussel),
-         slope = co["expr", "Estimate"], p = co["expr", "Pr(>|t|)"])
-}
-
-res_adj <- map_dfr(LEVEL_METRICS, function(mt) map_dfr(candidates$LOC_ID, ~ test_gene_mixed_adj(.x, mt))) %>%
-  group_by(metric) %>% mutate(q = p.adjust(p, "BH")) %>% ungroup() %>%
-  left_join(annot, by = "LOC_ID") %>% mutate(tier = tier_of(metric)) %>% arrange(metric, p)
-write_csv(res_adj, file.path(OUT_DIR, sprintf("assoc_candidate_BASELINEADJ_%s.csv", TISSUE)))
-cat("Baseline-adjusted candidate top hits (expression vs CHANGE in attachment):\n")
-res_adj %>% group_by(metric) %>% slice_min(p, n = 5) %>% ungroup() %>%
-  mutate(slope = round(slope, 4), p = signif(p, 2), q = signif(q, 2)) %>%
-  select(metric, tier, LOC_ID, protein_name, n_mussel, slope, p, q) %>%
-  as.data.frame() %>% print()
-```
-
----
-
-# G. Provenance
+# D. Provenance
 
 Script 20 opens `RUN_provenance_<T>.txt` with its settings and the git commit of the thread
-input; this block appends the permutation settings, so the folder records the configuration
+input; this block appends this script's settings, so the folder records the configuration
 behind every file in it.
 
 ```{r provenance}
@@ -714,14 +445,13 @@ prov <- file.path(OUT_DIR, sprintf("RUN_provenance_%s.txt", TISSUE))
 cat(c("",
       "[21-gene_mechanics_expanded.Rmd]",
       paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
-      paste0("NPERM                : ", NPERM),
-      paste0("PERM_SEED            : ", PERM_SEED),
-      paste0("permuted metrics     : ", paste(metrics, collapse = ", "), " (all)"),
+      paste0("reported test        : script 20's ANCOVA (assoc_candidate_", TISSUE, ".csv, assoc_DEGunion_", TISSUE, ".csv)"),
+      paste0("sensitivity model    : plaque ~ expression + ", paste(COVARIATES, collapse = " + "),
+             " + level_baseline + (1|mussel), thread level, Satterthwaite df"),
+      paste0("metrics [scale, tier]: ", paste(sprintf("%s [%s, %s]", mcfg$metric, mcfg$scale, mcfg$tier), collapse = ", ")),
       paste0("primary metrics      : ", paste(PRIMARY_METRICS, collapse = ", ")),
-      paste0("nuisance covariates  : ", paste(nuis_terms, collapse = " + ")),
-      paste0("permutation strata   : ", paste(names(idx_by_stratum), collapse = ", ")),
-      paste0("families             : ", paste(sprintf("%s (%d)", names(families), sapply(families, nrow)), collapse = ", ")),
-      paste0("modules              : ", paste(names(mod_scores), collapse = ", ")),
+      paste0("nuisance covariates  : ", paste(COVARIATES, collapse = " + ")),
+      paste0("modules              : ", paste(sprintf("%s (%d)", names(mod_scores), sapply(mod_scores, `[[`, "n_genes")), collapse = ", ")),
       paste0("FDR_ALPHA            : ", FDR_ALPHA),
       paste0("candidates tested    : ", nrow(candidates), " of ", nrow(candidates_all), " (floor filter in script 20)"),
       paste0("N_INFLUENCE_HITS     : ", N_INFLUENCE_HITS),

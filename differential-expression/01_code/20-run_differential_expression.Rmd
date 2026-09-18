@@ -28,7 +28,7 @@ Knit this file, or run the chunk below, from inside `differential-expression.Rpr
 | `02_7` | `02_7-DESeq_foot_TC_secretion_sensitivity.Rmd` | foot contrasts adjusted for secretion state; **does nothing unless `USE_SECRETION_STATE <- TRUE` inside that script** | `01_7` |
 | `04` | `04-File_joining.Rmd` | joins the DEG lists to the BLAST / GO annotation; writes `DEG_join_summary.csv` | `03_5` |
 | `16` | `16-top_DEGs.Rmd` | top-50 tables per contrast | `04` |
-| `12_venn`, `12_volcano`, `15`, `19` | `12-DEG_venn.Rmd`, `12-Volcano-plots.Rmd`, `15-number_DEGS.Rmd`, `19-DEG_list_cleanup.Rmd` | figures and the zenodo lists | `04`; `ggvenn`, `ggpattern` installed |
+| `12_venn`, `12_volcano`, `15`, `19` | `12-DEG_venn.Rmd`, `12-Volcano-plots.Rmd`, `15-number_DEGS.Rmd`, `19-DEG_list_cleanup.Rmd` | figures and the zenodo lists | `04`; `12_venn` installs `ggvenn` from CRAN if it is missing |
 
 Not in the batch, on purpose: `01_5-gene_count_matrix.Rmd` reads the raw StringTie matrix
 (`dat/gene_count_matrix.csv`), which is not in the repository, so the clean matrix it

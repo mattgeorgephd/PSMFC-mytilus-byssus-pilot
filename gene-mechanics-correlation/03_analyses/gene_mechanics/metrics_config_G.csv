@@ -1,8 +1,5 @@
-metric,type,tier,arms,covariates,use_secretion_state,adjust_for_baseline,exclude_floor_genes
-max_force,level,primary,control;OA;OW;DO,treatment,FALSE,TRUE,TRUE
-pad_area,level,primary,control;OA;OW;DO,treatment,FALSE,TRUE,TRUE
-adhesion_kpa,level,exploratory,control;OA;OW;DO,treatment,FALSE,TRUE,TRUE
-max_displacement,level,exploratory,control;OA;OW;DO,treatment,FALSE,TRUE,TRUE
-dlog_max_force,change,primary,control;OA;OW;DO,treatment,FALSE,TRUE,TRUE
-dlog_pad_area,change,primary,control;OA;OW;DO,treatment,FALSE,TRUE,TRUE
-dlog_adhesion_kpa,change,exploratory,control;OA;OW;DO,treatment,FALSE,TRUE,TRUE
+metric,scale,tier,label,arms,covariates,use_secretion_state,exclude_floor_genes
+max_force,log,primary,Peak force (N),control;OA;OW;DO,treatment,FALSE,TRUE
+pad_area,log,primary,Plaque area (mm^2),control;OA;OW;DO,treatment,FALSE,TRUE
+adhesion_kpa,log,exploratory,Adhesion (kPa),control;OA;OW;DO,treatment,FALSE,TRUE
+max_displacement,raw,exploratory,Extension at break (mm),control;OA;OW;DO,treatment,FALSE,TRUE

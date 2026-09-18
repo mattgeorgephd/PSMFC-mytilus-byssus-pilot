@@ -1,4 +1,4 @@
-generated : 2026-09-17 21:01:00
+generated : 2026-09-18 10:09:07
 design    : ~ treatment, levels control, OA, OW, DO (one fit per tissue, day-3 samples)
 filter    : >= 10 counts in >= 1/3 of the tissue's day-3 samples
 shrinkage : apeglm, coef = treatment_<X>_vs_control

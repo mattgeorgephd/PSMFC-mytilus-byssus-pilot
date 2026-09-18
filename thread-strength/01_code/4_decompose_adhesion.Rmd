@@ -254,9 +254,10 @@ Two reference frames are given side by side, because they answer different quest
                                This is "did this animal's threads get weaker".
   - `<metric>_vs_control`    : the animal's % change minus the control arm's mean % change,
                                and its sign as `below_control` / `above_control`.
-                               Every arm fell ~20% in adhesion, so an animal that fell 20% is
-                               typical, not a poor responder. This frame asks "weaker than the
-                               control trajectory", which is the stress-specific question.
+                               The control arm itself fell in adhesion (about -11% on the
+                               paired per-mussel means), so a modest fall is the typical
+                               trajectory in the system, not a poor responder. This frame asks
+                               "weaker than the control trajectory", the stress-specific question.
 
 The composite `response_class` uses the two metrics that define attachment strength, peak
 force and adhesion: `weaker` if both decreased, `stronger` if both increased, `mixed`

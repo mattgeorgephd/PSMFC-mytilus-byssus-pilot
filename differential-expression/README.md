@@ -81,9 +81,9 @@ placed here as the DE input, per the established handoff.
 ## Runnability
 
 Paths are resolved through `01_code/_paths.R` (`here::here()` anchored on the `.Rproj`).
-`03_5`, `04`, `16`, `19`, `12-Volcano-plots`, `01_7`, `02_6` and `02_7` knit cleanly from a
-fresh session (the batch driver runs them); `12-DEG_venn` and `15-number_DEGS` need `ggvenn`
-and `ggpattern` installed. `01_5` reads the raw StringTie matrix, which is not in the
+`03_5`, `04`, `16`, `19`, `12-Volcano-plots`, `15-number_DEGS`, `01_7`, `02_6` and `02_7`
+knit cleanly from a fresh session (the batch driver runs them); `12-DEG_venn` needs `ggvenn`
+and installs it from CRAN when it is missing. `01_5` reads the raw StringTie matrix, which is not in the
 repository, so the clean matrix it produced is the committed input. The `02_5_DESeq_*`
 scripts are the original interactive DESeq2 runs: every `DESeqDataSetFromMatrix()` in them
 is preceded by an explicit `factor(..., levels = c("control", ...))` (or `day` levels `0`,

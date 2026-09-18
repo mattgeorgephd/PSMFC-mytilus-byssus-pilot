@@ -10,9 +10,11 @@ source(here::here("01_code", "_paths.R"))
 ### Load libraries
 ```{r}
 library(dplyr)
+library(readr)     # read_csv: the *_sigs_merged.csv files written by 04-File_joining are comma-separated
 library(ggplot2)
-if (!require(devtools)) install.packages("devtools")
-devtools::install_github("yanlinlin82/ggvenn")
+## ggvenn is on CRAN; install once if missing (a headless knit cannot ask for a mirror)
+if (!requireNamespace("ggvenn", quietly = TRUE))
+  install.packages("ggvenn", repos = "https://cloud.r-project.org")
 library(ggvenn)
 ```
 
@@ -78,18 +80,18 @@ ggvenn(
 ### Make lists for tissue comparison within treatments
 ```{r}
 DO_list <- list(
-  Foot = FDO_sigs$`"gene"`,
-  Gill = GDO_sigs$`"gene"`
+  Foot = FDO_sigs$gene,
+  Gill = GDO_sigs$gene
 )
 
 OW_list <- list(
-  Foot = FOW_sigs$`"gene"`,
-  Gill = GOW_sigs$`"gene"`
+  Foot = FOW_sigs$gene,
+  Gill = GOW_sigs$gene
 )
 
 OA_list <- list(
-  Foot = FOA_sigs$`"gene"`,
-  Gill = GOA_sigs$`"gene"`
+  Foot = FOA_sigs$gene,
+  Gill = GOA_sigs$gene
 )
 ```
 

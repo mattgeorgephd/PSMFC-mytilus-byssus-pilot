@@ -74,9 +74,10 @@ change minus the control arm's mean % change) and `_rel_direction`
 (`below_control` / `above_control`).
 
 Two reference frames because they answer different questions. The raw direction says
-whether this animal's threads got weaker. Every arm fell ~20% in adhesion, so an animal
-that fell 20% is typical; the control-referenced frame asks whether it fell *more than the
-control trajectory*, which is the stress-specific question.
+whether this animal's threads got weaker. The control arm itself fell in adhesion (-11% on
+the paired per-mussel means, p = 0.28), so a modest fall is the typical trajectory in the
+system; the control-referenced frame asks whether an animal fell *more than the control
+trajectory*, which is the stress-specific question.
 
 Composite: `response_class` is `weaker` if both force and adhesion decreased, `stronger` if
 both increased, else `mixed`; `response_score` is the mean standardised log-ratio across
@@ -89,8 +90,8 @@ against 5 of 11 control; plaque area fell in 11 of 12 DO and 9 of 12 OW against 
 control and 3 of 12 OA. `FIG_animal_response_force_vs_area.png` shows every paired animal on
 the two axes; warming and hypoxia animals occupy the lower-left quadrant.
 
-Script 20 in `gene-mechanics-correlation/` joins the class, score, directions and
-control-referenced changes into its paired manifest.
+Script 20 in `gene-mechanics-correlation/` joins the class and the score into its paired
+manifest for inspection; they enter no model there.
 
 ## Failure mode
 

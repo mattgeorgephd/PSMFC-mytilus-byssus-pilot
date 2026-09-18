@@ -9,7 +9,6 @@ source(here::here("01_code", "_paths.R"))
 ```
 
 ```{r}
-install.packages("tidyverse")
 library(tidyverse)
 ```
 

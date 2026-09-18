@@ -15,7 +15,7 @@ README; run them in this order.
 |---|---|---|
 | `thread-strength/` | trace extraction, curation, adhesion / force / area / extension models, the two controls, failure mode | scripts 1-4 by hand (`README.md`) |
 | `differential-expression/` | DESeq2 contrasts (six stressor-vs-control of record, eight vs day 0), provenance check, secretion state, sensitivity fits, annotation join | `01_code/20-run_differential_expression.Rmd` |
-| `gene-mechanics-correlation/` | per-animal expression x mechanics, permutation-corrected, foot and gill | `01_code/24-run_gene_mechanics_by_tissue.Rmd` |
+| `gene-mechanics-correlation/` | per-animal expression x mechanics, baseline-adjusted (ANCOVA), foot and gill | `01_code/24-run_gene_mechanics_by_tissue.Rmd` |
 | `blast/`, `gene-annotation/`, `enrichment/` | genome annotation and GO enrichment behind the DEG tables | see each README |
 | `sequence-alignment/`, `iso-seq-transcriptome/` | read alignment and the Iso-seq transcriptome | see each README |
 | `morphometrics/`, `respirometry/`, `treatment_conditions/`, `experiment_plan/` | animal measurements, respirometry, tank conditions, design | data and notes |

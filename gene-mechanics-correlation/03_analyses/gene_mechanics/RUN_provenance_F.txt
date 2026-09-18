@@ -1,41 +1,37 @@
 [20-gene_mechanics_correlation.Rmd]
-generated            : 2026-09-17 21:03:17
+generated            : 2026-09-17 21:39:18
 tissue               : F
-thread input         : C:/Users/mattg/Desktop/github/PSMFC-mytilus-byssus-pilot/thread-strength/03_analyses/thread-summary.xlsx
+thread input         : /home/claude/PSMFC-mytilus-byssus-pilot/thread-strength/03_analyses/thread-summary.xlsx
 thread input commit  : 9454963 2026-09-16
-response input       : C:/Users/mattg/Desktop/github/PSMFC-mytilus-byssus-pilot/thread-strength/03_analyses/decompose-adhesion/mussel_response_classification.csv (present)
-count matrix         : C:/Users/mattg/Desktop/github/PSMFC-mytilus-byssus-pilot/differential-expression/02_data/gene_count_matrix_clean.csv
+response input       : /home/claude/PSMFC-mytilus-byssus-pilot/thread-strength/03_analyses/decompose-adhesion/mussel_response_classification.csv (present)
+count matrix         : /home/claude/PSMFC-mytilus-byssus-pilot/differential-expression/02_data/gene_count_matrix_clean.csv
 INCLUDE_CONTROL_ARM  : TRUE
-ADJUST_FOR_BASELINE  : TRUE
 USE_SECRETION_STATE  : FALSE
-covariates           : treatment
-PRIMARY_METRICS      : max_force, pad_area, dlog_max_force, dlog_pad_area
-LEVEL_METRICS        : max_force, pad_area, adhesion_kpa, max_displacement
-CHANGE_METRICS       : dlog_max_force, dlog_pad_area, dlog_adhesion_kpa
+reported test        : ANCOVA level_day3 ~ expression + treatment + level_baseline (per-animal geometric mean, log scale; extension raw)
+metrics [scale, tier]: max_force [log, primary], pad_area [log, primary], adhesion_kpa [log, exploratory], max_displacement [raw, exploratory]
+PRIMARY_METRICS      : max_force, pad_area
 MIN_COUNT / FDR_ALPHA: 5 / 0.1
 paired animals       : 45 (control 11, OA 12, OW 12, DO 10)
-with baseline        : 44
+with baseline (in fits): 44 (control 11, OA 12, OW 11, DO 10)
 genes tested         : 10090
 CANDIDATE_ANNOTATION : genome (evalue <= 1e-10, pident >= 0)
-annotation map       : 16675 LOCs (C:/Users/mattg/Desktop/github/PSMFC-mytilus-byssus-pilot/blast/03_analyses/genome-foot/LOC_GO_list.txt)
+annotation map       : 16675 LOCs (/home/claude/PSMFC-mytilus-byssus-pilot/blast/03_analyses/genome-foot/LOC_GO_list.txt)
 candidate genes      : 226 (byssal structural 17; named in TC DEG tables 57)
 EXCLUDE_FLOOR_GENES  : TRUE (exclude > 0.4, caution > 0.2)
 candidates tested    : 201 (25 at the detection floor)
 DEG union tested     : 520 of 523
 DEG union genes      : 523
-R / DESeq2           : R version 4.2.2 (2022-10-31 ucrt) / 1.38.3
+R / DESeq2           : R version 4.3.3 (2024-02-29) / 1.42.0
 
 [21-gene_mechanics_expanded.Rmd]
-generated            : 2026-09-17 21:05:25
-NPERM                : 10000
-PERM_SEED            : 1
-permuted metrics     : max_force, pad_area, adhesion_kpa, max_displacement, dlog_max_force, dlog_pad_area, dlog_adhesion_kpa (all)
-primary metrics      : max_force, pad_area, dlog_max_force, dlog_pad_area
+generated            : 2026-09-17 21:40:12
+reported test        : script 20's ANCOVA (assoc_candidate_F.csv, assoc_DEGunion_F.csv)
+sensitivity model    : plaque ~ expression + treatment + level_baseline + (1|mussel), thread level, Satterthwaite df
+metrics [scale, tier]: max_force [log, primary], pad_area [log, primary], adhesion_kpa [log, exploratory], max_displacement [raw, exploratory]
+primary metrics      : max_force, pad_area
 nuisance covariates  : treatment
-permutation strata   : control, OA, OW, DO
-families             : candidate (201), module (6), DEG_union (520)
-modules              : HIF_hypoxia, oxidative_detox, HSP_proteostasis, tRNA_translation, byssal_collagen, byssal_structural
+modules              : HIF_hypoxia (13), oxidative_detox (49), HSP_proteostasis (92), tRNA_translation (29), byssal_collagen (60), byssal_structural (16)
 FDR_ALPHA            : 0.1
 candidates tested    : 201 of 226 (floor filter in script 20)
 N_INFLUENCE_HITS     : 3
-R / lme4 / lmerTest  : R version 4.2.2 (2022-10-31 ucrt) / 1.1.31 / 3.1.3
+R / lme4 / lmerTest  : R version 4.3.3 (2024-02-29) / 1.1.35.1 / 3.1.3
