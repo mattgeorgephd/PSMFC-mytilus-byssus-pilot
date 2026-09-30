@@ -1,6 +1,0 @@
-"0","mussel_key %>%"
-"0","  mutate(has_traces = mussel %in% traces$mussel) %>%"
-"0","  count(group, mussel_trt, days_in_trt, has_traces) %>%"
-"0","  pivot_wider(names_from = has_traces, values_from = n,"
-"0","              names_prefix = ""traces_"", values_fill = 0) %>%"
-"0","  knitr::kable()"

@@ -1,2 +1,0 @@
-"0","ggsave(file.path(OUT_DIR, sprintf(""best_hit_per_metric_scatter_%s.png"", TISSUE)),"
-"0","       width = 10, height = 8.5, dpi = 150)"

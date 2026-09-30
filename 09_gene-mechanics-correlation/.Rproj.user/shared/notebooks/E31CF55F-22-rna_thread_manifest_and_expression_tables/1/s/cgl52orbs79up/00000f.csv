@@ -1,5 +1,0 @@
-"0","## annotation map: read script 20's handoff (one source of truth across the chain)"
-"0","am_path <- file.path(GM_DIR, ""annotation_map.csv"")"
-"0","if (!file.exists(am_path))"
-"0","  stop(""annotation_map.csv not found in "", GM_DIR, "" - run script 20 first."")"
-"0","annot <- read_csv(am_path, show_col_types = FALSE)"

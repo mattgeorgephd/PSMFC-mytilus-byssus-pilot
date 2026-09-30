@@ -1,108 +1,86 @@
-## Shared run checks and provenance for the analysis scripts.
-## Sourced by 02_thread-strength scripts 3 and 4 and 09_gene-mechanics-correlation scripts 20
-## and 21. Base R only (plus `tools`), so sourcing it adds no package dependency.
-##
-##   psmfc_repo_root(start)   the repository root, found by walking up from `start`
-##   warn_unless(ok, ...)     a check that reports a failure but never stops the run
-##   provenance_lines(settings, inputs, repo_root, packages)
-##                            the lines of a RUN_provenance*.txt file: the caller's settings,
-##                            the code commit and any uncommitted tracked changes, R and
-##                            package versions, the checks run in this session, and an MD5
-##                            of every input, with repository-relative paths
+## Shared pipeline checks and provenance, sourced by the thread-strength and gene-mechanics
+## scripts. Base R only, so it adds no package dependency.
 
-## Folders whose presence marks the repository root. Keep in step with the find_repo_root()
-## helpers at the top of the 09_gene-mechanics-correlation scripts, which cannot source this
-## file until they have found the root.
-PSMFC_ROOT_MARKERS <- c("02_thread-strength", "06_differential-expression")
+## A check that warns, naming what failed, when `ok` is not TRUE. The script continues.
+## The scripts knit with `warning = FALSE`, which drops warnings from both the report and the
+## render log, so a failure is also printed to the report (stdout) and to the log (stderr),
+## and counted for provenance_lines().
+.checks <- new.env()
+.checks$n_run  <- 0L
+.checks$failed <- character(0)
+warn_unless <- function(ok, ...) {
+  .checks$n_run <- .checks$n_run + 1L
+  if (!isTRUE(ok)) {
+    msg <- paste0(...)
+    .checks$failed <- c(.checks$failed, msg)
+    cat("CHECK FAILED: ", msg, "\n", sep = "")
+    cat("CHECK FAILED: ", msg, "\n", sep = "", file = stderr())
+    warning(msg, call. = FALSE)
+  }
+  invisible(isTRUE(ok))
+}
 
+## Repository root: the first parent that holds both analysis folders the pipelines join.
 psmfc_repo_root <- function(start = getwd()) {
   d <- normalizePath(start, winslash = "/", mustWork = FALSE)
-  repeat {
-    if (all(dir.exists(file.path(d, PSMFC_ROOT_MARKERS)))) return(d)
+  for (i in 1:8) {
+    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
     parent <- dirname(d)
     if (identical(parent, d)) break
     d <- parent
   }
-  stop("Repo root not found above ", start, ": need a folder containing ",
-       paste0(PSMFC_ROOT_MARKERS, "/", collapse = " and "), ".", call. = FALSE)
+  stop("Repository root not found: need a parent folder containing 06_differential-expression/ ",
+       "and 02_thread-strength/.", call. = FALSE)
 }
 
-## ---- checks -------------------------------------------------------------------------
-## One tally per R process. Each script is knit in its own process and sources this file
-## once, so sourcing resets the tally.
-.psmfc_checks <- new.env(parent = emptyenv())
-.psmfc_checks$run    <- 0L
-.psmfc_checks$failed <- character(0)
-
-## A failed check prints `CHECK FAILED: <message>` and the run carries on. It is written with
-## cat() so it lands in the knitted report whatever the chunk's `message` / `warning`
-## options are, and to stderr() so it also lands in the render log the batch drivers keep.
-warn_unless <- function(ok, ...) {
-  .psmfc_checks$run <- .psmfc_checks$run + 1L
-  if (isTRUE(ok)) return(invisible(TRUE))
-  msg  <- paste0(...)
-  line <- paste0("CHECK FAILED: ", msg, "\n")
-  .psmfc_checks$failed <- c(.psmfc_checks$failed, msg)
-  cat(line)
-  cat(line, file = stderr())
-  invisible(FALSE)
+## Path relative to the repository root, with forward slashes, for provenance files.
+rel_path <- function(path, repo_root) {
+  p <- normalizePath(path, winslash = "/", mustWork = FALSE)
+  r <- paste0(normalizePath(repo_root, winslash = "/", mustWork = FALSE), "/")
+  if (startsWith(p, r)) substring(p, nchar(r) + 1) else p
 }
 
-## ---- provenance ---------------------------------------------------------------------
-provenance_lines <- function(settings, inputs, repo_root, packages = character(0)) {
-  root <- normalizePath(repo_root, winslash = "/", mustWork = FALSE)
-  field <- function(label, value) sprintf("%-21s: %s", label, value)
+.git_out <- function(repo_root, args) {
+  if (!nzchar(Sys.which("git"))) return(NA_character_)
+  out <- tryCatch(suppressWarnings(system2("git", c("-C", shQuote(repo_root), args),
+                                           stdout = TRUE, stderr = FALSE)),
+                  error = function(e) character(0))
+  if (length(out) == 0 || !is.null(attr(out, "status"))) NA_character_ else out
+}
 
-  ## Repository-relative path. A missing file is resolved through its parent folder when
-  ## that exists, so `..` segments do not survive into the record.
-  rel <- function(p) {
-    p <- if (file.exists(p)) normalizePath(p, winslash = "/")
-         else if (dir.exists(dirname(p))) file.path(normalizePath(dirname(p), winslash = "/"), basename(p))
-         else p
-    if (startsWith(p, paste0(root, "/"))) substring(p, nchar(root) + 2L) else p
-  }
+## Code commit that ran, and whether any tracked code or input differs from it. Output folders
+## (03_analyses) and knitted reports are excluded, since a run rewrites them.
+git_state <- function(repo_root) {
+  head <- .git_out(repo_root, c("rev-parse", "--short=12", "HEAD"))
+  if (is.na(head[1])) return(c(commit = "unavailable (git not found)", dirty = "unknown"))
+  changed <- .git_out(repo_root, c("status", "--porcelain", "--untracked-files=no"))
+  changed <- if (all(is.na(changed))) character(0) else changed
+  changed <- changed[!grepl("03_analyses/|\\.html$", changed)]
+  c(commit = head[1],
+    dirty  = if (length(changed) == 0) "no" else
+      paste0("YES, ", length(changed), " tracked file(s) differ from the commit: ",
+             paste(trimws(utils::head(changed, 10)), collapse = "; "),
+             if (length(changed) > 10) " ..." else ""))
+}
 
-  ## git state. Returns NULL when git is not installed or this is not a checkout (for
-  ## example a downloaded zip), so provenance still writes.
-  git <- function(...) {
-    out <- tryCatch(suppressWarnings(system2("git", c("-C", shQuote(root), ...),
-                                             stdout = TRUE, stderr = FALSE)),
-                    error = function(e) NULL)
-    if (is.null(out) || !is.null(attr(out, "status"))) NULL else out
-  }
-  commit <- git("rev-parse", "--short=12", "HEAD")
-  git_lines <- if (length(commit) == 1L) {
-    st <- git("status", "--porcelain", "--untracked-files=no")
-    st <- sub("^\\s*(\\S+)\\s+", "\\1 ", st)      # "XY path" -> "X path"
-    c(field("code commit", commit),
-      field("uncommitted changes",
-            if (length(st) == 0L) "NO"
-            else paste0("YES, ", length(st), " tracked file(s) differ from the commit: ",
-                        paste(utils::head(st, 10L), collapse = "; "),
-                        if (length(st) > 10L) " ..." else "")))
-  } else {
-    field("code commit", "unavailable (not a git checkout, or git is not on the PATH)")
-  }
-
-  pkg_version <- function(p) tryCatch(as.character(utils::packageVersion(p)),
-                                      error = function(e) "not installed")
-  pkg_lines <- if (length(packages))
-    field("packages", paste(sprintf("%s %s", packages, vapply(packages, pkg_version, "")),
-                            collapse = ", "))
-
-  check_lines <- if (.psmfc_checks$run > 0L)
-    field("checks", paste0(.psmfc_checks$run, " run, ", length(.psmfc_checks$failed), " failed",
-                           if (length(.psmfc_checks$failed))
-                             paste0(": ", paste(.psmfc_checks$failed, collapse = " | "))))
-
-  inputs <- unique(as.character(inputs))
-  is_file <- file_test("-f", inputs)
-  md5 <- rep("MISSING", length(inputs))
-  md5[is_file] <- unname(tools::md5sum(inputs[is_file]))
-  input_lines <- sprintf("  %s  %s", md5, vapply(inputs, rel, "", USE.NAMES = FALSE))
-
-  c(settings, git_lines,
-    field("R", R.version.string),
-    pkg_lines, check_lines,
-    "inputs (md5, repo-relative path):", input_lines)
+## Provenance block: code commit and dirty state, one MD5 line per input file (repo-relative),
+## then the R session. `header` is a character vector of setting lines written first.
+provenance_lines <- function(header, inputs, repo_root, packages = character(0)) {
+  gs <- git_state(repo_root)
+  inputs <- unique(inputs[!is.na(inputs)])
+  md5 <- vapply(inputs, function(f)
+    if (file.exists(f) && !dir.exists(f)) unname(tools::md5sum(f)) else "MISSING", character(1))
+  pkg <- vapply(packages, function(p)
+    if (requireNamespace(p, quietly = TRUE)) paste0(p, " ", as.character(utils::packageVersion(p)))
+    else paste0(p, " (not installed)"), character(1))
+  c(header,
+    if (.checks$n_run > 0)
+      c(paste0("checks               : ", .checks$n_run, " run, ", length(.checks$failed), " failed"),
+        if (length(.checks$failed)) paste0("  FAILED: ", .checks$failed)),
+    paste0("code commit          : ", gs[["commit"]]),
+    paste0("uncommitted changes  : ", gs[["dirty"]]),
+    paste0("R                    : ", R.version.string),
+    if (length(pkg)) paste0("packages             : ", paste(pkg, collapse = ", ")),
+    "inputs (md5, repo-relative path):",
+    paste0("  ", md5, "  ", vapply(inputs, rel_path, character(1), repo_root = repo_root)))
 }

@@ -1,3 +1,0 @@
-"0",""
-"0","ggsave(file.path(out_dir, ""FIG_paired_change_by_metric.png""), plot = p_change,"
-"0","       dpi = 600, width = 9, height = 6, units = ""in"")"

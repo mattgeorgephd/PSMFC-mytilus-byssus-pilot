@@ -9,7 +9,9 @@ source(here::here("01_code", "_paths.R"))
 ```
 
 ```{r}
-Sys.setenv(ENTREZ_KEY = "8f817031916b3cfee7ec443b712c426d9a08")
+## NCBI API key (optional): rentrez reads it from the ENTREZ_KEY environment variable, e.g. a
+## line `ENTREZ_KEY=<your key>` in ~/.Renviron. Never write the key into this file. Without a
+## key NCBI allows 3 requests per second instead of 10; rentrez throttles either way.
 ## rentrez is on CRAN; install once if missing (a headless knit cannot ask for a mirror)
 if (!requireNamespace("rentrez", quietly = TRUE))
   install.packages("rentrez", repos = "https://cloud.r-project.org")
@@ -28,13 +30,13 @@ fetch_ncbi_summary <- function(uniprot_ids, email) {
     tryCatch({
       print("hello")
       # Search for the UniProt ID in NCBI Protein database
-      search_results <- entrez_search(db = entrez_db, term = uniprot_id, retmax = 1, api_key="8f817031916b3cfee7ec443b712c426d9a08")
+      search_results <- entrez_search(db = entrez_db, term = uniprot_id, retmax = 1)
       print(search_results)
       if (length(search_results$ids) > 0) {
         ncbi_id <- search_results$ids[1]
         print(ncbi_id)
         # Fetch the summary for the retrieved NCBI ID
-        summary_results <- entrez_summary(db = entrez_db, id = ncbi_id, api_key="8f817031916b3cfee7ec443b712c426d9a08")
+        summary_results <- entrez_summary(db = entrez_db, id = ncbi_id)
         print(summary_results$summary)
         summaries[[uniprot_id]] <- summary_results$summary
       } else {
@@ -59,9 +61,6 @@ top_genes <- read.csv(file.path(topgenes, "Top_50_genes/GOW_topgenes.csv"))
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
 
-# Set email for NCBI API
-set_entrez_key(email)
-
 GOW_summaries <- fetch_ncbi_summary(uniprot_ids, email)
 
 GOW_topgene_summs <- data.frame(UniProt_ID = names(GOW_summaries), Summary = unlist(GOW_summaries), stringsAsFactors = FALSE)
@@ -78,9 +77,6 @@ top_genes <- read.csv(file.path(topgenes, "Top_50_genes/FOW_topgenes.csv"))
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
 
-# Set email for NCBI API
-set_entrez_key(email)
-
 summaries <- fetch_ncbi_summary(uniprot_ids, email)
 
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
@@ -96,9 +92,6 @@ top_genes <- read.csv(file.path(topgenes, "Top_50_genes/GOA_topgenes.csv"))
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
 
-# Set email for NCBI API
-set_entrez_key(email)
-
 summaries <- fetch_ncbi_summary(uniprot_ids, email)
 
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
@@ -113,9 +106,6 @@ top_genes <- read.csv(file.path(topgenes, "Top_50_genes/FOA_topgenes.csv"))
 # Example usage
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
-
-# Set email for NCBI API
-set_entrez_key(email)
 
 summaries <- fetch_ncbi_summary(uniprot_ids, email)
 
@@ -133,9 +123,6 @@ top_genes <- read.csv(file.path(topgenes, "Top_50_genes/GDO_topgenes.csv"))
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
 
-# Set email for NCBI API
-set_entrez_key(email)
-
 summaries <- fetch_ncbi_summary(uniprot_ids, email)
 
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
@@ -151,9 +138,6 @@ top_genes <- read.csv(file.path(topgenes, "Top_50_genes/FDO_topgenes.csv"))
 uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
 email <- "sgleuch@uw.edu"  # Replace with your email
 
-# Set email for NCBI API
-set_entrez_key(email)
-
 summaries <- fetch_ncbi_summary(uniprot_ids, email)
 
 topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
@@ -164,14 +148,14 @@ write.csv(topgene_summs, file.path(topgenes, "FDO_topgene_summs.csv"), row.names
 
 
 ```{r}
-test_result <- entrez_search(db="gene", term="Q9WVR6", retmax=1, api_key="8f817031916b3cfee7ec443b712c426d9a08")
+test_result <- entrez_search(db="gene", term="Q9WVR6", retmax=1)
 print(test_result$ids) 
 
 
 ```
 
 ```{r}
-summary_results <- entrez_summary(db = "gene", id = "84551", api_key="8f817031916b3cfee7ec443b712c426d9a08")
+summary_results <- entrez_summary(db = "gene", id = "84551")
 ```
 
 

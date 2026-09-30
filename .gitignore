@@ -1,0 +1,14 @@
+# RStudio per-user state and R session files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Rendered reports and logs written by the batch drivers
+# (06_differential-expression and 09_gene-mechanics-correlation); regenerable
+knit_html/
+
+# OS and Office lock files
+.DS_Store
+Thumbs.db
+~$*

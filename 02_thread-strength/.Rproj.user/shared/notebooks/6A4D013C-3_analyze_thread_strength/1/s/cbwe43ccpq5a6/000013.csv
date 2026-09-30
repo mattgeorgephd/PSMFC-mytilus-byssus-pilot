@@ -1,8 +1,0 @@
-"0","par(mfrow = c(1, 1)); dev.off()"
-"1","null device "
-"1","
-"
-"1","          1 "
-"1","
-"
-"0","qqnorm(resid(mod)); qqline(resid(mod))"

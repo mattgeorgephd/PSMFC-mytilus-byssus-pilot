@@ -1,1 +1,0 @@
-"0","plot(fitted(mod), resid(mod), xlab = ""Fitted"", ylab = ""Residuals""); abline(h = 0, lty = 2)"

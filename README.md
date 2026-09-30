@@ -42,7 +42,7 @@ Scripts refer to other analysis folders by name, so renaming a numbered folder b
 The names are set in `06_differential-expression/01_code/_paths.R`,
 `07_enrichment/01_code/_paths.R`, `08_gene-annotation/01_code/_paths.R`, the `paths` chunk of
 each `09_gene-mechanics-correlation/01_code/2*.Rmd` script and its driver,
-`02_thread-strength/01_code/0_build_mussel_key.Rmd`, and `PSMFC_ROOT_MARKERS` in
+`02_thread-strength/01_code/0_build_mussel_key.Rmd`, and `psmfc_repo_root()` in
 `tools/pipeline_checks.R`.
 
 ## Large files

@@ -1,8 +1,0 @@
-"0","# Join key for a count-matrix gene name: the LOC identifier when there is one, otherwise the"
-"0","# gene symbol between ""gene-"" and ""|"" (mitochondrial genes). NA only if neither parses."
-"0","deg_key <- function(gene) {"
-"0","  loc <- str_extract(gene, ""LOC\\d+"")"
-"0","  sym <- str_match(gene, ""^gene-([^|]+)\\|"")[, 2]"
-"0","  dplyr::coalesce(loc, sym)"
-"0","}"
-"0","is_mito <- function(key) !grepl(""^LOC\\d+$"", key)"
