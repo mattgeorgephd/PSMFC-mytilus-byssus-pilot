@@ -12,9 +12,8 @@ PURPOSE
   hypoxia DO), relative to a pre-exposure baseline and a day-3 control arm.
 
 INPUT
-  03_analyses/thread-summary.xlsx, sheet "data" - the hand-curated table.
-  Produced by curating 03_analyses/02_assemble-thread-summary/thread-summary-candidate.xlsx
-  (script 2), which in turn reads script 1's extraction output.
+  03_analyses/02_assemble-thread-summary/thread-summary.xlsx, sheet "data" - the thread
+  summary written by script 2, which in turn reads script 1's extraction output.
 
 DATA MODEL (read this before editing the filters below)
   Three columns, three different grains. They are easy to confuse, so each is named
@@ -50,8 +49,8 @@ FIGURE CONVENTION FOR THE LINE+BOX PANELS (one per arm)
   - A boxplot of the per-mussel means flanks each cluster, offset so it never
     overlaps the points or crosses the connecting lines.
   - A panel is now built for the CONTROL arm too, not only OA/OW/DO. Whether it
-    has connecting lines depends on whether the T126-T135 baselines have been
-    curated with a plaque area; the script reports the pair count either way.
+    has connecting lines depends on whether the T126-T135 baselines have a
+    measured plaque area; the script reports the pair count either way.
   - Far-left grey cluster = the day-0 lab-reference animals, labelled "lab (day 0)"
     (SHOW_LAB_REFERENCE_IN_PANELS). They are shown for comparison only: never in the
     baseline pool, never paired, never in a model.
@@ -147,11 +146,12 @@ SHOW_LAB_REFERENCE_IN_PANELS <- TRUE
 
 ### Load data set; derive adhesion and timepoint
 ```{r}
-thread_plot <- read_excel(here::here("03_analyses", "02_assemble-thread-summary", "thread-summary.xlsx"),
-                          sheet = "data", col_names = TRUE)
+# One copy of the input path: read here, recorded in RUN_provenance.txt below.
+thread_xlsx <- here::here("03_analyses", "02_assemble-thread-summary", "thread-summary.xlsx")
+thread_plot <- read_excel(thread_xlsx, sheet = "data", col_names = TRUE)
 
 # --- Schema normalisation -------------------------------------------------------------
-# Accepts the curated file under either the old or the new column names, so this script
+# Accepts the thread summary under either the old or the new column names, so this script
 # keeps working across the rename. `mussel`/`thread`/`thread_trt` are the names used below.
 ren <- c(mussel_ID = "mussel", thread_num = "thread", treatment = "thread_trt")
 for (from in names(ren)) {
@@ -166,7 +166,7 @@ if (length(setdiff(need, names(thread_plot))) > 0)
        paste(setdiff(need, names(thread_plot)), collapse = ", "),
        "\nColumns present: ", paste(names(thread_plot), collapse = ", "))
 
-# `phase` is fully determined by thread_trt, so derive it if the curated file predates it.
+# `phase` is fully determined by thread_trt, so derive it if the thread summary predates it.
 if (!"phase" %in% names(thread_plot)) {
   thread_plot$phase <- dplyr::case_when(
     thread_plot$thread_trt == "lab_control" ~ "lab",
@@ -368,7 +368,7 @@ ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_MeanThreads.png"),
 # connecting lines neutral grey so they read as links rather than adding new colors.
 #
 # The control arm gets a panel too. Whether it shows connecting lines depends on whether
-# the day-3 control animals' own baseline threads have been curated with a plaque area;
+# the day-3 control animals' own baseline threads have a measured plaque area;
 # the pair count is printed for every panel so an empty pairing is never silent.
 
 make_line_box <- function(trt_code, trt_label = trt_code,
@@ -512,7 +512,7 @@ save_ancova_diagnostics(list(adhesion_ancova), file.path(out_dir, "DIAG_ancova_r
 #                              day-3 control animals. The lab animals never entered the
 #                              experimental system; they are a descriptive comparison group only.
 metric_cols <- intersect(c("adhesion_kpa", "max_force", "pad_area", "max_displacement"),
-                         names(thread_plot))   # extension is optional in the curated table
+                         names(thread_plot))   # extension is optional in the thread summary
 pm_metrics <- thread_plot %>%
   group_by(mussel, phase, mussel_trt) %>%
   summarise(n_threads = n(), across(all_of(metric_cols), ~ mean(.x, na.rm = TRUE)),
@@ -557,11 +557,11 @@ write.csv(lab_desc, file.path(out_dir, "DESC_lab_reference.csv"), row.names = FA
 ```{r}
 source(file.path(here::here(), "..", "tools", "pipeline_checks.R"))   # provenance_lines(), git state
 ts_repo_root <- psmfc_repo_root(here::here())
-ts_inputs <- c(here::here("03_analyses", "thread-summary.xlsx"),
+ts_inputs <- c(thread_xlsx,
                here::here("01_code", "3_analyze_thread_strength.Rmd"), here::here("01_code", "_ancova.R"))
 # Which configuration produced the files in this folder.
 writeLines(provenance_lines(c(paste0("generated       : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
-             paste0("input           : 03_analyses/thread-summary.xlsx"),
+             paste0("input           : 03_analyses/02_assemble-thread-summary/thread-summary.xlsx"),
              paste0("INCLUDE_LAB_REFERENCE : ", INCLUDE_LAB_REFERENCE),
              paste0("SHOW_LAB_REFERENCE_IN_PANELS : ", SHOW_LAB_REFERENCE_IN_PANELS),
              paste0("threads analysed: ", nrow(thread_plot)),

@@ -20,7 +20,8 @@ PURPOSE
   control, unadjusted and Dunnett-adjusted over the three comparisons.
 
 INPUT
-  03_analyses/thread-summary.xlsx, sheet "data" - the same curated table script 3 reads.
+  03_analyses/02_assemble-thread-summary/thread-summary.xlsx, sheet "data" - the same table
+  script 3 reads.
   03_analyses/03_analyze-thread-strength/STATS_ancova_vs_control.csv - script 3's adhesion
   result, read only to draw adhesion beside its parts in FIG_ancova_vs_control.png.
 
@@ -76,8 +77,9 @@ dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 ### Load and normalise (identical to script 3)
 ```{r}
-thread_plot <- read_excel(here::here("03_analyses", "02_assemble-thread-summary", "thread-summary.xlsx"),
-                          sheet = "data", col_names = TRUE)
+# One copy of the input path: read here, recorded in RUN_provenance.txt below.
+thread_xlsx <- here::here("03_analyses", "02_assemble-thread-summary", "thread-summary.xlsx")
+thread_plot <- read_excel(thread_xlsx, sheet = "data", col_names = TRUE)
 
 ren <- c(mussel_ID = "mussel", thread_num = "thread", treatment = "thread_trt")
 for (from in names(ren)) {
@@ -187,7 +189,7 @@ ggsave(file.path(out_dir, "FIG_ancova_vs_control.png"), plot = p_vs,
        dpi = 600, width = 11, height = 4.5, units = "in")
 ```
 
-### Per-animal response classification (handoff to gene-mechanics-correlation)
+### Per-animal response classification (handoff to 09_gene-mechanics-correlation)
 
 Which animals made **weaker** threads at day 3 than at baseline, and which made
 **stronger**, on each of the four metrics above. One row per animal that produced day-3
@@ -212,7 +214,7 @@ correlation pipeline. Extension is reported but kept out of the composite; its d
 not a strength direction.
 
 Written to `03_analyses/04_decompose-adhesion/mussel_response_classification.csv`. Script 20 in
-`gene-mechanics-correlation/` reads it.
+`09_gene-mechanics-correlation/` reads it.
 
 ```{r}
 # Per-animal means at each timepoint, every animal with day-3 threads
@@ -396,11 +398,11 @@ ggsave(file.path(out_dir, "FIG_failure_mode_by_arm.png"), plot = p_fm,
 ```{r}
 source(file.path(here::here(), "..", "tools", "pipeline_checks.R"))   # provenance_lines(), git state
 ts_repo_root <- psmfc_repo_root(here::here())
-ts_inputs <- c(here::here("03_analyses", "thread-summary.xlsx"),
+ts_inputs <- c(thread_xlsx,
                here::here("01_code", "4_decompose_adhesion.Rmd"), here::here("01_code", "_ancova.R"),
                here::here("03_analyses", "03_analyze-thread-strength", "STATS_ancova_vs_control.csv"))
 writeLines(provenance_lines(c(paste0("generated : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
-             paste0("input     : 03_analyses/thread-summary.xlsx"),
+             paste0("input     : 03_analyses/02_assemble-thread-summary/thread-summary.xlsx"),
              paste0("model     : per-animal ANCOVA, day-3 level ~ arm + baseline level (log: force, area; raw: extension)"),
              unlist(lapply(ancova, function(r)
                paste0("animals   : ", r$metric, " ", nrow(r$data), " (",

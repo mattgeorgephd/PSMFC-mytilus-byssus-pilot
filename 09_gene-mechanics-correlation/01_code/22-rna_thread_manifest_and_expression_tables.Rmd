@@ -32,31 +32,32 @@ suppressPackageStartupMessages({ library(DESeq2); library(readxl); library(here)
 
 ## ---- analysis options --------------------------------------------------------------
 ## Tissue comes from the knit parameter (`params$tissue`, default "F") so the same script
-## serves foot and gill; the driver 24-run_gene_mechanics_by_tissue.Rmd renders both.
+## serves foot and gill; the driver 00-run_gene_mechanics_by_tissue.Rmd renders both.
 ## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
 TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
 stopifnot(TISSUE %in% c("F", "G"))
 TREATMENTS  <- c("OA", "OW", "DO")  # contrasts to tabulate
 N_TOP       <- 25                   # genes per direction
 SIG_ONLY    <- TRUE                 # rank within significant DEGs (padj<0.05); FALSE = all genes
-USE_RAW_THREAD_SET <- TRUE         # FALSE = mussels in the curated summary; TRUE = any extracted tensometer trace
+USE_RAW_THREAD_SET <- TRUE         # FALSE = mussels in the thread summary; TRUE = any extracted tensometer trace
 
 ## ---- portable paths ----------------------------------------------------------------
 find_repo_root <- function(start = here::here()) {
   d <- normalizePath(start, winslash = "/")
   for (i in 1:6) {
-    if (all(dir.exists(file.path(d, c("differential-expression", "thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing differential-expression/ and thread-strength/.")
+  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
 }
 repo_root   <- find_repo_root()
-DE_DIR      <- file.path(repo_root, "differential-expression")
-THREAD_FILE <- file.path(repo_root, "thread-strength", "03_analyses", "thread-summary.xlsx")
-RAW_FILE    <- file.path(repo_root, "thread-strength", "03_analyses", "01_extract-tensometer-data",
+DE_DIR      <- file.path(repo_root, "06_differential-expression")
+THREAD_FILE <- file.path(repo_root, "02_thread-strength", "03_analyses", "02_assemble-thread-summary",
+                         "thread-summary.xlsx")
+RAW_FILE    <- file.path(repo_root, "02_thread-strength", "03_analyses", "01_extract-tensometer-data",
                          "thread-summary-raw-output.xlsx")   # every extracted trace, script 1
-GM_DIR      <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "gene_mechanics")  # script 20 outputs
-OUT_DIR     <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "expr_tables")
+GM_DIR      <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "gene_mechanics")  # script 20 outputs
+OUT_DIR     <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "expr_tables")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
 ## canonical 3-digit trossulus mussel tag, shared across the chain
@@ -67,7 +68,7 @@ norm_id <- function(x) {
   ifelse(is.na(num), NA_character_, sprintf("%s%03d", pre, num))
 }
 
-## Read the curated thread table under either the current or the older column names, and
+## Read the thread summary under either the current or the older column names, and
 ## make sure `phase` exists (lab / pre / post). Mirrors script 20; kept local so this script
 ## stays independently runnable.
 read_thread_summary <- function(path) {
@@ -94,7 +95,7 @@ read_thread_summary <- function(path) {
 
 # 1. RNA x thread manifest and reconciliation against every extracted trace
 
-The reconciliation compares the curated summary against script 1's raw extraction output,
+The reconciliation compares the thread summary against script 1's raw extraction output,
 which lists every trace on disk with its phase. That replaces the old scan of the
 `control/` and `treatment/` subfolders, which no longer exist.
 
@@ -122,14 +123,14 @@ ti <- ti %>%
          day       = as.integer(day)) %>%
   distinct(mussel, treatment, day)
 
-## curated summary presence (day-3 threads and pre-exposure baselines)
+## thread summary presence (day-3 threads and pre-exposure baselines)
 thr_raw <- read_thread_summary(THREAD_FILE) %>% mutate(mn = mussel)
 post_n <- thr_raw %>% dplyr::filter(phase == "post") %>% dplyr::count(mn, name = "in_summary_post")
 base_n <- thr_raw %>% dplyr::filter(phase == "pre")  %>% dplyr::count(mn, name = "in_summary_base")
 
 ## every extracted trace (script 1), by mussel and phase
 if (!file.exists(RAW_FILE))
-  stop("Extraction output not found:\n  ", RAW_FILE, "\nRun thread-strength script 1.")
+  stop("Extraction output not found:\n  ", RAW_FILE, "\nRun 02_thread-strength script 1.")
 raw_all <- read_excel(RAW_FILE, sheet = "data") %>% mutate(mn = norm_id(mussel))
 raw_post <- raw_all %>% dplyr::filter(phase == "post") %>% dplyr::count(mn, name = "raw_post")
 raw_pre  <- raw_all %>% dplyr::filter(phase == "pre")  %>% dplyr::count(mn, name = "raw_pre")
@@ -140,7 +141,7 @@ manifest <- rna_tab %>%
   left_join(post_n, by = "mn") %>% left_join(base_n, by = "mn") %>%
   left_join(raw_post, by = "mn") %>% left_join(raw_pre, by = "mn") %>%
   mutate(across(c(in_summary_post, in_summary_base, raw_post, raw_pre), ~replace_na(., 0)),
-         poststress_missing = raw_post > 0 & in_summary_post == 0,   # extracted but not curated
+         poststress_missing = raw_post > 0 & in_summary_post == 0,   # extracted but not in the thread summary
          baseline_missing   = raw_pre  > 0 & in_summary_base == 0,
          no_post_trace      = !is.na(day) & day == 3 & raw_post == 0) %>% # sequenced at day 3, never pulled
   arrange(treatment, mn)
@@ -152,11 +153,11 @@ manifest %>% filter(in_summary_post > 0) %>%
   group_by(treatment) %>% summarise(mussels = paste(mussel, collapse = ", "), .groups="drop") %>%
   as.data.frame() %>% print()
 
-cat("\nRNA-sequenced at day 3 with NO day-3 thread in the curated summary:\n")
+cat("\nRNA-sequenced at day 3 with NO day-3 thread in the thread summary:\n")
 manifest %>% filter(!is.na(day), day == 3, in_summary_post == 0) %>%
   select(mussel, treatment, rna_tissues, raw_post, no_post_trace) %>% as.data.frame() %>% print()
 
-cat("\nExtracted (script 1) but not in the curated summary (curation gap):\n")
+cat("\nExtracted (script 1) but not in the thread summary:\n")
 manifest %>% filter(poststress_missing | baseline_missing) %>%
   select(mussel, treatment, rna_tissues, raw_post, in_summary_post, raw_pre, in_summary_base) %>%
   as.data.frame() %>% print()
@@ -170,7 +171,7 @@ manifest %>% filter(poststress_missing | baseline_missing) %>%
 if (USE_RAW_THREAD_SET) {
   thread_mussels <- manifest %>% filter(raw_post > 0 | raw_pre > 0) %>% pull(mussel)
 } else {
-  thread_mussels <- unique(thr_raw$mussel)            # present in the curated summary
+  thread_mussels <- unique(thr_raw$mussel)            # present in the thread summary
 }
 samples_wanted <- paste0(thread_mussels, TISSUE)
 
@@ -299,9 +300,9 @@ if (!is.null(tables[[1]]))
 cat("
 **Outputs (in ", OUT_DIR, "):**
 
-- `rna_thread_manifest_<tissue>.csv` - every sequenced mussel: RNA tissues, treatment/day, curated
+- `rna_thread_manifest_<tissue>.csv` - every sequenced mussel: RNA tissues, treatment/day, thread
   summary presence (day-3 & baseline), extracted-trace counts by phase, and the
-  `poststress_missing` / `baseline_missing` (extracted but not curated) and `no_post_trace`
+  `poststress_missing` / `baseline_missing` (extracted but not in the thread summary) and `no_post_trace`
   (sequenced at day 3 but never pulled) flags.
 - `top25_updown_<tissue>_<treatment>.csv` - 25 up + 25 down DEGs (by LFC) with LFC, padj,
   direction, and VST expression across all thread-having mussels.
@@ -313,8 +314,8 @@ cat("
 
 - `SIG_ONLY = TRUE` ranks within padj<0.05 DEGs; for contrasts with few DEGs you may get
   fewer than 25 in a direction. Set FALSE to rank all expressed genes.
-- With `USE_RAW_THREAD_SET = FALSE`, columns are limited to mussels in the curated summary;
-  TRUE includes every animal with an extracted trace, whether or not it has been curated.
+- With `USE_RAW_THREAD_SET = FALSE`, columns are limited to mussels in the thread summary;
+  TRUE includes every animal with an extracted trace, whether or not it is in the summary.
 - Genes are ranked by fold change, not by association with mechanics; this is a descriptive
   cross-reference table, not a test.
 ")

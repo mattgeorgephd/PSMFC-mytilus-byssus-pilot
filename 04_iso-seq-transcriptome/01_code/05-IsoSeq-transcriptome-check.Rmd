@@ -43,8 +43,10 @@ knitr::opts_chunk$set(
 
 Lets take look at Isoseq fasta
 
+The download runs only when the FASTA is not already in `02_data/` (the chunks default to
+`eval = FALSE`, so without this the knit below would fail on a fresh clone).
 
-```{bash}
+```{bash, eval = !file.exists(here::here("02_data", "Mtros-hq_transcripts.fasta"))}
 cd ../02_data/
 
 curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_transcripts.fasta

@@ -12,6 +12,8 @@ source(here::here("01_code", "_paths.R"))
 ```{r}
 
 library(ggplot2)
+library(dplyr)   # %>% and arrange()
+library(stringr) # str_wrap()
 library(readxl)  # Or use read.csv() if it's a CSV file
 
 

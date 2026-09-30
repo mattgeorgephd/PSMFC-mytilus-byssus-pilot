@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
 # Purpose
 
 The scripts in this folder that can run from a fresh session, in the order they depend on
-one another, each rendered in its own R process (as `gene-mechanics-correlation/01_code/00-*`
+one another, each rendered in its own R process (as `09_gene-mechanics-correlation/01_code/00-*`
 does), with a log and an HTML report per step in `03_analyses/knit_html/` (git-ignored).
 Knit this file, or run the chunk below, from inside `differential-expression.Rproj`.
 
@@ -105,6 +105,6 @@ if (!all(run_log$ok))
 `03_analyses/DEG_lists/DEG_provenance_check.csv` says, per contrast, whether the tables on
 disk reproduce (`full_table_consistent`, `siggene_consistent`) and whether this run rewrote
 them (`rewritten_this_run`). `DEG_join_summary.csv` carries the per-contrast DEG counts to
-quote (`n_DEG_genes`). The `*_TC_siggene*` lists are what `gene-mechanics-correlation`
+quote (`n_DEG_genes`). The `*_TC_siggene*` lists are what `09_gene-mechanics-correlation`
 script 20 builds its DEG union from, so run the gene-mechanics driver (`00-*`) after this
 batch when any of them was rewritten.

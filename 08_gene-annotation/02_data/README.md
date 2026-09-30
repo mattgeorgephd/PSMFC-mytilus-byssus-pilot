@@ -4,5 +4,6 @@
 |------|-------------|
 | `Foot_proteins.txt` | Reference list of byssal foot proteins, used as a query/lookup in annotation and gene-mechanics |
 
-Other annotation inputs (the gene-to-GO mapping, DEG lists) live in `../../blast/` and
-`../../differential-expression/` and are read cross-folder.
+The other annotation inputs, the annotated DEG tables and the top-50 gene tables, are read
+cross-folder from `../../06_differential-expression/03_analyses/DEG_lists/` and from
+`../03_analyses/Top_gene_summaries/` (see `../README.md`).

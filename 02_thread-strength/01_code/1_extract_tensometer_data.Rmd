@@ -16,8 +16,8 @@ trace, joins the mussel key, and writes **one** trace-level table to
 `03_analyses/01_extract-tensometer-data/thread-summary-raw-output.xlsx`.
 
 Nothing is excluded. Every trace that parses is exported alongside a QC plot, so bad runs
-get curated later against the evidence rather than dropped silently here. That file is the
-input to the manual curation step that produces `03_analyses/thread-summary.xlsx`.
+are reviewed against the evidence rather than dropped silently here. That file is the
+input to script 2, which writes `03_analyses/02_assemble-thread-summary/thread-summary.xlsx`.
 
 Replaces the previous two-pass `control` / `treatment` layout, which no longer exists on disk.
 
@@ -45,7 +45,7 @@ before/after would silently pool them.
 recoverable from `thread_trt`, and its value `control` collided with both
 `mussel_trt == "control"` and `thread_trt == "treatment_control"`.
 
-Run `0_build_mussel_key.Rmd` first if the mussel-measurements workbook has changed. If the key is
+Run `0_build_mussel_key.Rmd` first if the `01_mussel-measurements` workbook has changed. If the key is
 missing this script still runs; it just warns and leaves the mussel-level columns out.
 
 ## Load packages; set ggplot theme
@@ -173,7 +173,7 @@ Tensometer files are named `<prefix><digits>_<digits><optional note>` and may or
 carry a `.txt` extension (the instrument exports them without one; the extension was added by
 hand for some files and missed for others). Any trailing text is the technician's note
 (`try2`, `fluke`, `thirdTry`, ...). It is kept as its own field so every run is imported and
-can be checked against its QC plot before curation. Nothing is dropped or merged here.
+can be checked against its QC plot. Nothing is dropped or merged here.
 
 `mussel` + `thread` is **not** unique across the dataset: an animal pulled before and after
 exposure has the same pair in two folders. `source_folder` is part of the key.
@@ -450,7 +450,7 @@ if ("mussel_trt" %in% names(thread_raw)) {
 ## Outlier screen
 
 Peak force by thread treatment, with each point labelled, plus a Rosner test for extreme
-values. This flags candidates for curation; it does not remove anything.
+values. This flags values for review; it does not remove anything.
 
 ```{r fig.width=9, fig.height=5}
 plot_dat <- thread_raw %>%

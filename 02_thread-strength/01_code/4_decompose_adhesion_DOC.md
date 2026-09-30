@@ -30,7 +30,7 @@ The response is logged before fitting, so `emmeans` is told the transformation e
 
 ## Input
 
-`03_analyses/thread-summary.xlsx`, sheet `data`, with the same schema normalisation as
+`03_analyses/02_assemble-thread-summary/thread-summary.xlsx`, sheet `data`, with the same schema normalisation as
 script 3. Rows without `pad_area` are excluded. The figure also reads
 `03_analyses/03_analyze-thread-strength/STATS_ancova_vs_control.csv`, so run script 3 first;
 script 4 stops if that file is missing.
@@ -75,7 +75,7 @@ The script prints the response class and the number of animals whose force, area
 adhesion and extension decreased, by arm. `FIG_animal_response_force_vs_area.png` shows
 every paired animal on the two axes.
 
-Script 20 in `gene-mechanics-correlation/` joins the class and the score into its paired
+Script 20 in `09_gene-mechanics-correlation/` joins the class and the score into its paired
 manifest for inspection; they enter no model there.
 
 ## Failure mode

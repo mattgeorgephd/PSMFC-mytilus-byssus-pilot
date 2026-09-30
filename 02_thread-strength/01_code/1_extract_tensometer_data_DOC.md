@@ -4,7 +4,7 @@ Reads every raw tensometer trace under `02_data/tensometer_output/`, joins the m
 and writes one trace-level table to `03_analyses/01_extract-tensometer-data/thread-summary-raw-output.xlsx`.
 
 Run it from inside `thread-strength.Rproj`. Run `0_build_mussel_key.Rmd` first if the
-morphometrics workbook has changed.
+`01_mussel-measurements` workbook has changed.
 
 ---
 
@@ -156,15 +156,14 @@ a warning, if it is not.
    can detect on its own. It is `NA` for `pre`, where the two legitimately differ.
 5. **Outlier screen.** Peak force by thread treatment, labelled, plus a Rosner test pooled
    and per arm (skipped where n < 25, which is the smallest sample Rosner is meant for).
-   Flags candidates for curation; removes nothing.
+   Flags values for review; removes nothing.
 
 ---
 
 ## 6. Known data gaps
 
-- Animals pulled at only one timepoint are listed in the `pairing` sheet and in
-  `pad-area-worklist.xlsx`, sheet `pairing_gaps`.
-- `01_treatment_control` holds eleven of the twelve day-3 control animals listed in the
-  morphometrics (T126 to T136); T137 has no day-3 trace.
-- The `desiccation` arm (12 animals, 24 h) has no tensometer traces; 21 other animals in
-  the mussel key (16 day-1, 5 day-3) have none either.
+- Animals pulled at only one timepoint are listed in the `pairing` sheet: 13 were pulled at
+  baseline only and 13 at day 3 only; 48 have both.
+- `01_treatment_control` holds all twelve day-3 control animals (T126 to T137).
+- 21 animals in the mussel key have no tensometer traces (16 with `days_in_trt` 0, 5 with
+  `days_in_trt` 3).

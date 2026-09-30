@@ -11,21 +11,15 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE)
 ## What this script does
 
 Joins the trace-level output of `1_extract_tensometer_data.Rmd` to the plaque measurements in
-`02_data/pad_area_measurements.xlsx`, computes adhesion, and writes a **curation-ready
-candidate** so the manual step is a review rather than a retype.
-
-It also writes two worklists: which traces still need a plaque measured (and whether a
-microscope image for them exists in the repository), and which animals that ought to pair
-before/after still do not.
+`02_data/pad_area_measurements.xlsx`, computes adhesion, and writes the thread summary that
+scripts 3 and 4, and the `09_gene-mechanics-correlation` scripts, read.
 
 ```
 1_extract_tensometer_data.Rmd  ->  03_analyses/01_extract-tensometer-data/thread-summary-raw-output.xlsx
               +  02_data/pad_area_measurements.xlsx                            (hand-measured)
-2_assemble_thread_summary.Rmd  ->  03_analyses/02_assemble-thread-summary/
-                                     thread-summary-candidate.xlsx
-                                     pad-area-worklist.xlsx
-                               ->  03_analyses/thread-summary.xlsx
+2_assemble_thread_summary.Rmd  ->  03_analyses/02_assemble-thread-summary/thread-summary.xlsx
 3_analyze_thread_strength.Rmd  ->  03_analyses/03_analyze-thread-strength/
+4_decompose_adhesion.Rmd       ->  03_analyses/04_decompose-adhesion/
 ```
 
 ### Where each fact comes from
@@ -44,8 +38,8 @@ One fact, one source. Nothing is copied into two files where the copies could dr
 `group`, `mussel_trt` and `day` columns were second copies of facts owned elsewhere and have
 been removed. They were verified to agree before removal.
 
-**Nothing is excluded here.** Every extracted trace is carried through so bad runs can be
-reviewed against their QC plots and removed deliberately.
+**Nothing is excluded here.** Every extracted trace is carried through, so bad runs can be
+reviewed against their QC plots.
 
 ## Load packages
 
@@ -98,15 +92,15 @@ message("Traces: ", nrow(traces), " | unique mussels: ", n_distinct(traces$musse
 
 if (!all(c("species", "mussel_trt", "rna_sequenced") %in% names(traces)))
   warning("The extraction output has no mussel-level columns. Run 0_build_mussel_key.Rmd ",
-          "and re-run script 1, or those columns will be blank in the candidate file.")
+          "and re-run script 1, or those columns will be blank in the thread summary.")
 
 print(knitr::kable(traces %>% count(source_folder, thread_trt, phase, day)))
 ```
 
 ## 2. Join the plaque measurements
 
-`pad_area` (plaque cross-sectional area, mm^2) and `failure` are measured by hand from the
-microscope images in `02_data/pictures/`; they cannot be derived from a force trace.
+`pad_area` (plaque cross-sectional area, mm^2) and `failure` are measured by hand from
+microscope images of each plaque; they cannot be derived from a force trace.
 
 The join key is `mussel` + `thread` + `thread_trt`. It has to include `thread_trt`: for an
 animal pulled before and after exposure, `mussel` + `thread` alone matches two different
@@ -161,7 +155,7 @@ if (nrow(orphan) > 0) {
 missing_rows <- traces %>% anti_join(pad, by = c("mussel", "thread", "thread_trt"))
 if (nrow(missing_rows) > 0)
   message(nrow(missing_rows), " trace(s) have no row in ", basename(pad_xlsx),
-          "; they appear in the worklist below and can be pasted in.")
+          "; they have no pad_area, so scripts 3 and 4 exclude them until a row is added.")
 
 traces <- traces %>% left_join(pad, by = c("mussel", "thread", "thread_trt"))
 
@@ -169,11 +163,11 @@ message("Plaque measurements joined: ", sum(!is.na(traces$pad_area)), " of ", nr
 ```
 
 
-## 3. Derive adhesion and assemble the candidate
+## 3. Derive adhesion and assemble the thread summary
 
 ```{r}
 # If script 1 ran without the mussel key, these columns are absent. Create them empty rather
-# than failing, so the candidate still builds and the gap is visible as blank cells.
+# than failing, so the summary still builds and the gap is visible as blank cells.
 for (col in c("species", "mussel_trt", "rna_sequenced"))
   if (!col %in% names(traces)) traces[[col]] <- NA_character_
 
@@ -209,9 +203,8 @@ message("Wrote ", file.path(out_dir, "thread-summary.xlsx"),
         " (", nrow(summary_tbl), " rows).")
 ```
 
-Review the candidate against the QC plots in
-`03_analyses/01_extract-tensometer-data/QC_plots/<source_folder>/<file>.jpg`, using `note`,
-`failure` and `picture_status` to spot bad runs. Remove what should be excluded and save the
-result as `03_analyses/thread-summary.xlsx` (sheet `data`) for script 3. Drop
-`source_folder`, `file`, `pad_notes` and `picture_status` before saving if you want the
-narrower column set script 3 previously used; script 3 ignores extra columns either way.
+Review the output against the QC plots in
+`03_analyses/01_extract-tensometer-data/QC_plots/<source_folder>/<file>.jpg`, using `note` and
+`failure` to spot bad runs. Scripts 3 and 4 read
+`03_analyses/02_assemble-thread-summary/thread-summary.xlsx` (sheet `data`) and ignore extra
+columns. Re-running this script overwrites that file, so any hand edits made to it are lost.

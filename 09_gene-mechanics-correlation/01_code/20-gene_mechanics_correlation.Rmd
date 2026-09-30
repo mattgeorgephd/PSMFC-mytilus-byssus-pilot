@@ -64,7 +64,7 @@ It produces:
 
 > **Which metric to read first.** **Peak force and plaque area** are tested separately as
 > well as through their ratio, since adhesion mixes the two
-> (`thread-strength/01_code/4_decompose_adhesion.Rmd` decomposes it the same way) and a gene
+> (`02_thread-strength/01_code/4_decompose_adhesion.Rmd` decomposes it the same way) and a gene
 > associated with plaque size can be invisible against the ratio. `max_force` and
 > `pad_area` are the primary targets here; `adhesion_kpa` is retained as the
 > material-strength readout. Every metric is tested as the animal's day-3 level with its
@@ -81,7 +81,7 @@ data from the **main** repo and expression data from the **expression** repo.
 ```{r config}
 ## ---- analysis options ---------------------------------------------------------------
 ## Tissue comes from the knit parameter (`params$tissue`, default "F") so the same script
-## serves foot and gill; the driver 24-run_gene_mechanics_by_tissue.Rmd renders both.
+## serves foot and gill; the driver 00-run_gene_mechanics_by_tissue.Rmd renders both.
 ## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
 TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
 stopifnot(TISSUE %in% c("F", "G"))
@@ -187,20 +187,21 @@ sapply(load.lib, require, character = TRUE)
 find_repo_root <- function(start = here::here()) {
   d <- normalizePath(start, winslash = "/")
   for (i in 1:6) {
-    if (all(dir.exists(file.path(d, c("differential-expression", "thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing differential-expression/ and thread-strength/.")
+  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
 }
 repo_root   <- find_repo_root()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance
-DE_DIR      <- file.path(repo_root, "differential-expression")          # expression-side inputs
-## The curated thread table produced by thread-strength scripts 1-2 and hand-reviewed; and
-## the per-animal response classification produced by thread-strength script 4.
-THREAD_FILE   <- file.path(repo_root, "thread-strength", "03_analyses", "thread-summary.xlsx")
-RESPONSE_FILE <- file.path(repo_root, "thread-strength", "03_analyses", "04_decompose-adhesion",
+DE_DIR      <- file.path(repo_root, "06_differential-expression")          # expression-side inputs
+## The thread summary written by 02_thread-strength script 2, and the per-animal response
+## classification written by 02_thread-strength script 4.
+THREAD_FILE   <- file.path(repo_root, "02_thread-strength", "03_analyses", "02_assemble-thread-summary",
+                           "thread-summary.xlsx")
+RESPONSE_FILE <- file.path(repo_root, "02_thread-strength", "03_analyses", "04_decompose-adhesion",
                            "mussel_response_classification.csv")
-OUT_DIR     <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "gene_mechanics")
+OUT_DIR     <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "gene_mechanics")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 ## ---- annotation map and candidate universe ------------------------------------------
 ## CANDIDATE_ANNOTATION:
@@ -221,14 +222,15 @@ dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 CANDIDATE_ANNOTATION <- "genome"
 CANDIDATE_MAX_EVALUE <- 1e-10
 CANDIDATE_MIN_PIDENT <- 0
-MASTER_ANNOT_FILE <- file.path(repo_root, "blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
+MASTER_ANNOT_FILE <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
 BYSSAL_STRUCTURAL_REGEX <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-",
                                  "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
                                  sep = "|")
 
 if (!file.exists(THREAD_FILE))
   stop("Thread summary not found:\n  ", THREAD_FILE,
-       "\nRun thread-strength scripts 1 and 2 and curate 03_analyses/thread-summary.xlsx.")
+       "\nRun 02_thread-strength scripts 1 and 2; script 2 writes it to\n",
+       "03_analyses/02_assemble-thread-summary/thread-summary.xlsx.")
 
 ## Canonicalize a mussel tag to one 3-digit form (T55 -> T055) so the thread side and the
 ## expression side cannot split on zero-padding when joined.
@@ -239,7 +241,7 @@ norm_id <- function(x) {
   ifelse(is.na(num), NA_character_, sprintf("%s%03d", pre, num))
 }
 
-## Read the curated thread table under either the current or the older column names, and
+## Read the thread summary under either the current or the older column names, and
 ## make sure `phase` exists. thread_trt = what the THREAD was built in; mussel_trt = the arm
 ## the ANIMAL was assigned to; phase = lab / pre / post. The older `treatment == "control"`
 ## convention pooled baseline threads with the day-3 control arm and is not used here.
@@ -343,7 +345,7 @@ warn_unless(nrow(arm_clash) == 0, nrow(arm_clash), " animal(s) carry different a
               "thread-summary and ", TISSUE, "_treatmentinfo and are excluded: ",
               paste(arm_clash$mussel, collapse = ", "))
 
-## ---- per-animal response classification from thread-strength script 4 ----------------
+## ---- per-animal response classification from 02_thread-strength script 4 -------------
 ## Carried in the manifest for inspection (which animals weakened relative to control);
 ## it enters no model here.
 if (file.exists(RESPONSE_FILE)) {
@@ -353,7 +355,7 @@ if (file.exists(RESPONSE_FILE)) {
   paired <- paired %>% left_join(resp, by = "mussel")
 } else {
   warn_unless(FALSE, "Response classification not found (", RESPONSE_FILE,
-                "); run thread-strength/01_code/4_decompose_adhesion.Rmd. Continuing without it.")
+                "); run 02_thread-strength/01_code/4_decompose_adhesion.Rmd. Continuing without it.")
 }
 
 ## An animal can be in treatmentinfo without a column in the count matrix (a library that
@@ -379,12 +381,12 @@ print(table(paired$treatment[!is.na(paired$base_max_force)]))
 if ("response_class" %in% names(paired)) print(table(paired$treatment, paired$response_class))
 write_csv(paired, file.path(OUT_DIR, sprintf("paired_sample_manifest_%s.csv", TISSUE)))
 
-## ---- invariants: the animals in the fits, and agreement with thread-strength ----------
+## ---- invariants: the animals in the fits, and agreement with 02_thread-strength -------
 ## (1) The set of animals that enter every ANCOVA fit (paired, with a baseline) must equal
 ##     02_data/expected_animals.csv for this tissue. Every other day-3 animal is listed there
 ##     with the reason it is out, so a wrong join shows up as a
 ##     difference here instead of silently changing n.
-EXPECTED_FILE <- file.path(repo_root, "gene-mechanics-correlation", "02_data", "expected_animals.csv")
+EXPECTED_FILE <- file.path(repo_root, "09_gene-mechanics-correlation", "02_data", "expected_animals.csv")
 tissue_col <- ifelse(TISSUE == "F", "foot", "gill")
 in_fit <- paired$mussel[!is.na(paired$base_max_force)]
 if (file.exists(EXPECTED_FILE)) {
@@ -403,10 +405,10 @@ if (file.exists(EXPECTED_FILE)) {
   warn_unless(FALSE, "Not found: ", EXPECTED_FILE, "; the animal set is not checked.")
 }
 
-## (2) Each animal's day-3 and baseline values must equal the ones thread-strength's ANCOVA
+## (2) Each animal's day-3 and baseline values must equal the ones 02_thread-strength's ANCOVA
 ##     used (DATA_ancova_animals.csv, scripts 3 and 4), so the two pipelines cannot drift apart.
 ##     This checks consistency between the codes, not whether the traces are right.
-TS_ANIMALS <- file.path(repo_root, "thread-strength", "03_analyses",
+TS_ANIMALS <- file.path(repo_root, "02_thread-strength", "03_analyses",
                         c("03_analyze-thread-strength", "04_decompose-adhesion"), "DATA_ancova_animals.csv")
 if (all(file.exists(TS_ANIMALS))) {
   ts_an <- bind_rows(lapply(TS_ANIMALS, read_csv, show_col_types = FALSE)) %>%
@@ -421,10 +423,10 @@ if (all(file.exists(TS_ANIMALS))) {
     mutate(diff = pmax(abs(y - gm_y), abs(baseline - gm_base)))
   bad <- cmp %>% filter(diff > 1e-8)
   if (nrow(bad) > 0) print(bad %>% select(metric, mussel, y, gm_y, baseline, gm_base))
-  warn_unless(nrow(bad) == 0, nrow(bad), " animal x metric value(s) differ from thread-strength's ",
-                "DATA_ancova_animals.csv; rerun thread-strength scripts 3 and 4 on the same thread table.")
+  warn_unless(nrow(bad) == 0, nrow(bad), " animal x metric value(s) differ from 02_thread-strength's ",
+                "DATA_ancova_animals.csv; rerun 02_thread-strength scripts 3 and 4 on the same thread table.")
 } else {
-  warn_unless(FALSE, "thread-strength DATA_ancova_animals.csv not found; run thread-strength ",
+  warn_unless(FALSE, "02_thread-strength DATA_ancova_animals.csv not found; run 02_thread-strength ",
                 "scripts 3 and 4 first. Cross-pipeline agreement is not checked.")
 }
 ```
@@ -887,7 +889,7 @@ cat("
    summary on the same scale. Unlike a change score it adds no baseline noise to the
    response, but the baseline is measured with error, so the adjustment is only partial
    (Frost and Thompson 2000, J R Stat Soc A 163:173-189). Baseline by future arm is
-   described in thread-strength script 3 (`DESC_baseline_by_arm.csv`). Animals without
+   described in 02_thread-strength script 3 (`DESC_baseline_by_arm.csv`). Animals without
    baseline threads are not in the fits.
 4. Timing: tissue was sampled at the end of the exposure, after the tested day-3 threads
    were secreted. The association is not predictive or causal; it may reflect a persistent
@@ -942,7 +944,7 @@ inputs <- c(THREAD_FILE, RESPONSE_FILE, EXPECTED_FILE, TS_ANIMALS,
             file.path(DE_DIR, "03_analyses", "DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"),
                       sprintf("%s_treatmentinfo.csv", TISSUE)),
             MASTER_ANNOT_FILE, sig_files, deg_files,
-            file.path(repo_root, "gene-mechanics-correlation", "01_code", "20-gene_mechanics_correlation.Rmd"),
+            file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "20-gene_mechanics_correlation.Rmd"),
             file.path(repo_root, "tools", "pipeline_checks.R"))
 writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "dplyr", "readr")), prov)
 cat(readLines(prov), sep = "\n")

@@ -14,8 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 Build a repo-internal mussel key that maps each *M. trossulus* tag to its experimental
 attributes
 
-Source of truth: `mussel-measurements/mussel-size-measurements`, sheet `data`.
-Output: `thread-strength/02_data/mussel-treatment-key.csv` (CSV, not xlsx, so the key shows
+Source of truth: `01_mussel-measurements/mussel-size-measurements.xlsx`, sheet `data`.
+Output: `02_thread-strength/02_data/mussel-treatment-key.csv` (CSV, not xlsx, so the key shows
 up as readable text in `git diff`).
 
 ## Load packages
@@ -33,15 +33,15 @@ sapply(load.lib, require, character = TRUE)
 ## Paths
 
 ```{r paths}
-proj_root  <- here::here()                                   # thread-strength/
+proj_root  <- here::here()                                   # 02_thread-strength/
 repo_root  <- normalizePath(file.path(proj_root, ".."))      # repository root
-morph_xlsx <- file.path(repo_root, "mussel-measurements", "mussel-size-measurements.xlsx")
+morph_xlsx <- file.path(repo_root, "01_mussel-measurements", "mussel-size-measurements.xlsx")
 tens_root  <- file.path(proj_root, "02_data", "tensometer_output")
 key_out    <- file.path(proj_root, "02_data", "mussel-treatment-key.csv")
 
 if (!file.exists(morph_xlsx))
   stop("mussel-size-measurements.xlsx workbook not found at:\n  ", morph_xlsx,
-       "\nThe filename contains spaces and hyphens exactly as written above.")
+       "\nIt lives in the repository-level 01_mussel-measurements/ folder.")
 ```
 
 ## Helper: canonical mussel tag
@@ -89,7 +89,7 @@ mussel_key <- mussels %>%
 if (any(is.na(mussel_key$mussel)))
   stop(sum(is.na(mussel_key$mussel)), " row(s) have an unparseable mussel_ID.")
 if (anyDuplicated(mussel_key$mussel) > 0)
-  stop("Duplicate mussel IDs in `mussels-all`: ",
+  stop("Duplicate mussel IDs in sheet `data`: ",
        paste(unique(mussel_key$mussel[duplicated(mussel_key$mussel)]), collapse = ", "))
 
 message("Key rows: ", nrow(mussel_key))

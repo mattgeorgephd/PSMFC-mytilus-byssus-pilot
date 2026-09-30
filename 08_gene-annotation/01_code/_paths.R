@@ -6,8 +6,8 @@ library(here)
 
 repo_root <- normalizePath(file.path(here::here(), ".."))
 
-# Cross-folder reads/writes into the differential-expression DEG_lists
-deg <- file.path(repo_root, "differential-expression", "03_analyses", "DEG_lists")
+# Cross-folder reads/writes into the 06_differential-expression DEG_lists
+deg <- file.path(repo_root, "06_differential-expression", "03_analyses", "DEG_lists")
 
 # This analysis's own outputs
 topgenes <- here::here("03_analyses", "Top_gene_summaries")

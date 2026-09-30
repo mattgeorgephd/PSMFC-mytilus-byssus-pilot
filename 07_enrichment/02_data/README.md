@@ -1,8 +1,8 @@
 # 02_data
 
-No enrichment inputs are stored here. The enrichment scripts read their inputs cross-folder:
+No enrichment inputs are stored here. The enrichment scripts read their inputs cross-folder
+through `../01_code/_paths.R`:
 
-- DEG lists from `../../differential-expression/03_analyses/DEG_lists/`
-- gene-to-GO mapping from `../../blast/03_analyses/genome-foot/`
-
-Phase 4 will wire these reads through a `repo_root` pointer.
+- DEG tables from `../../06_differential-expression/03_analyses/DEG_lists/GOterms_genome/`
+- gene count matrices from `../../06_differential-expression/02_data/`
+- gene-to-UniProt / GO mapping from `../../03_blast/03_analyses/genome-foot/`

@@ -1,5 +1,5 @@
 ---
-title: "24 - Run the gene-mechanics chain for foot and gill"
+title: "00 - Run the gene-mechanics chain for foot and gill"
 author: "Byssus expression analysis"
 date: "`r Sys.Date()`"
 output: html_document
@@ -32,12 +32,12 @@ writing `run_log.csv`.
 find_repo_root <- function(start = getwd()) {
   d <- normalizePath(start, winslash = "/", mustWork = FALSE)
   for (i in 1:8) {
-    if (all(dir.exists(file.path(d, c("differential-expression", "thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing differential-expression/ and thread-strength/.")
+  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
 }
-gm_dir   <- file.path(find_repo_root(), "gene-mechanics-correlation")
+gm_dir   <- file.path(find_repo_root(), "09_gene-mechanics-correlation")
 code_dir <- file.path(gm_dir, "01_code")
 html_dir <- file.path(gm_dir, "03_analyses", "knit_html")
 dir.create(html_dir, showWarnings = FALSE, recursive = TRUE)
@@ -108,7 +108,7 @@ Nothing in the code. What differs is the data:
 - `Gill/G_treatmentinfo.csv` codes the day-3 control arm as `control_3` and has no leading
   index column; script 20 and 22 normalise both.
 - The DEG union is built from the tissue's own `*_TC_siggene*` files;
-  `differential-expression/01_code/03_5-DEG_table_provenance_check.Rmd` checks that they
+  `06_differential-expression/01_code/03_5-DEG_table_provenance_check.Rmd` checks that they
   are reproduced from the committed inputs for all six contrasts.
 - The foot is the byssus-producing organ. A gill association is a systemic-state readout,
   not a mechanism at the site of thread production, and should be framed that way.

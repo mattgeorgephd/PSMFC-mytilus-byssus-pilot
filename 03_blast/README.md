@@ -1,10 +1,11 @@
-# blast
+# 03_blast
 
 Sequence-similarity searches used to annotate genes and to compare the Iso-Seq
 transcriptome to the genome. Two lines of work:
 
 - Genome CDS vs SwissProt + Mytilus-foot proteins (`Mtros-genome-blast.Rmd`), producing the
-  gene-to-GO mapping (`LOC_GO_list.txt`, `g.spid.txt`) consumed by gene-annotation.
+  gene-to-GO mapping (`LOC_GO_list.txt`, `g.spid.txt`) consumed by `06_differential-expression`
+  (`04-File_joining`), `07_enrichment` and `09_gene-mechanics-correlation`.
 - Iso-Seq transcriptome vs UniProt (`uniprot-retrieval.py` + outputs) and isoseq vs genome
   (`Isoseq_vs_genome_blast.Rmd`).
 
@@ -15,7 +16,7 @@ outputs are in `03_analyses/`.
 ## Layout
 
 ```
-blast/
+03_blast/
 ├── blast.Rproj
 ├── 01_code/
 │   ├── Mtros-genome-blast.Rmd       genome CDS vs SwissProt+foot (HPC); writes LOC_GO/g.spid

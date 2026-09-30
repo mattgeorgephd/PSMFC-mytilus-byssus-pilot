@@ -1,8 +1,8 @@
-# sequence-alignment
+# 05_sequence-alignment
 
 Read QC and alignment of Tag-seq reads to the *Mytilus trossulus* genome (GenBank
 GCA_036588685.1 / RefSeq GCF_036588685.1), producing the count inputs used downstream by
-differential-expression.
+`06_differential-expression`.
 
 The authoritative pipeline is HISAT2 + StringTie (`01_code/13-Hisat.Rmd`). These scripts
 ran on a collaborator HPC workstation (paths under `/home/shared/...`) against raw reads
@@ -12,7 +12,7 @@ Only their committed outputs are in `03_analyses/`.
 ## Layout
 
 ```
-sequence-alignment/
+05_sequence-alignment/
 ├── sequence-alignment.Rproj
 ├── 01_code/
 │   ├── 13-Hisat.Rmd                 authoritative HISAT2 + StringTie (HPC)
@@ -31,7 +31,8 @@ sequence-alignment/
 
 | Input | Location |
 |-------|----------|
-| Raw / trimmed Tag-seq reads | gannet: `panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/` |
+| Raw (untrimmed) Tag-seq reads | gannet: https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/ |
+| Trimmed reads (`*_L099_R1_cmb.trim.fastq.gz`), read by `13-Hisat.Rmd` | produced on the HPC; the trimming step is not in this repository and `20220405-tagseq/` holds raw reads only |
 | Genome assembly + annotation | NCBI `GCF_036588685.1` (downloaded in the script) |
 
 `13-Hisat.Rmd` and `07-HiSat_GL.Rmd` invoke HISAT2/StringTie at fixed `/home/shared/...`

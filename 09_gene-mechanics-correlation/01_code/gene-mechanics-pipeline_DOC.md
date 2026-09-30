@@ -2,8 +2,8 @@
 
 Links foot or gill gene expression at day 3 to the same animal's byssal thread mechanics.
 Four chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
-session, parameterised by tissue. Run in order **20 → 21 → 22 → 23**, after thread-strength
-scripts 1 to 4, or knit **24-run_gene_mechanics_by_tissue.Rmd**, which renders all four for
+session, parameterised by tissue. Run in order **20 → 21 → 22 → 23**, after 02_thread-strength
+scripts 1 to 4, or knit **00-run_gene_mechanics_by_tissue.Rmd**, which renders all four for
 foot and gill.
 
 ## Running for a tissue
@@ -16,7 +16,7 @@ params:
 ```
 
 `TISSUE` is read from `params$tissue`, falling back to `"F"` when the script is run chunk by
-chunk outside a knit. Driver 24 renders each script **in its own R process** (nested
+chunk outside a knit. Driver 00 renders each script **in its own R process** (nested
 `rmarkdown::render()` collides on knitr's chunk-label registry) and writes the HTML reports
 and a `run_log.csv` to `03_analyses/knit_html/`, which is git-ignored.
 
@@ -26,13 +26,15 @@ leading index column; scripts 20 and 22 normalise both. An animal with a treatme
 count-matrix column is dropped with a message rather than a hard stop.
 
 ```
-thread-strength/03_analyses/thread-summary.xlsx                     curated threads (scripts 1-2)
-thread-strength/03_analyses/04_decompose-adhesion/
+02_thread-strength/03_analyses/02_assemble-thread-summary/
+    thread-summary.xlsx                                             thread summary (script 2)
+02_thread-strength/03_analyses/04_decompose-adhesion/
     mussel_response_classification.csv                              per-animal response (script 4)
-thread-strength/03_analyses/01_extract-tensometer-data/
+02_thread-strength/03_analyses/01_extract-tensometer-data/
     thread-summary-raw-output.xlsx                                  every extracted trace (script 1)
-differential-expression/02_data/gene_count_matrix_clean.csv         counts
-differential-expression/03_analyses/DEG_lists/Foot/F_treatmentinfo.csv   Tag-seq arm per sample
+06_differential-expression/02_data/gene_count_matrix_clean.csv      counts
+06_differential-expression/03_analyses/DEG_lists/Foot/F_treatmentinfo.csv
+                                                                    Tag-seq arm per sample
         |
         v
 20  paired table, VST, candidate set,
@@ -48,7 +50,7 @@ differential-expression/03_analyses/DEG_lists/Foot/F_treatmentinfo.csv   Tag-seq
 
 ### Thread input and labels
 
-Scripts 20, 22 and 23 read the curated thread table `thread-strength/03_analyses/thread-summary.xlsx`. Pre-exposure threads are `phase == "pre"`, day-3 threads
+Scripts 20, 22 and 23 read the thread summary `02_thread-strength/03_analyses/02_assemble-thread-summary/thread-summary.xlsx`. Pre-exposure threads are `phase == "pre"`, day-3 threads
 `phase == "post"`, and the arm an animal was assigned to is `mussel_trt`; a
 `read_thread_summary()` helper in each script accepts the older column spellings. Script 22
 reconciles against script 1's extraction (`thread-summary-raw-output.xlsx`) and flags
@@ -66,7 +68,7 @@ stress response. Set FALSE for stressor arms only.
 
 Peak force and plaque area are analysed separately as well as through their ratio
 (adhesion), since a response in either component can be diluted in the ratio
-(`thread-strength/01_code/4_decompose_adhesion_DOC.md` decomposes adhesion the same way).
+(`02_thread-strength/01_code/4_decompose_adhesion_DOC.md` decomposes adhesion the same way).
 Script 20 tests, per gene and metric, one baseline-adjusted regression (ANCOVA) on the
 per-animal values:
 
@@ -84,7 +86,7 @@ Force, area and adhesion enter as log(geometric mean) on both sides of the model
 raw. `level_baseline` is the same summary of the animal's own pre-exposure threads, on the
 same scale. Animals without baseline threads are not in the fits. `baseline_slope` is
 reported beside `slope`; it is the same quantity as the baseline coefficient of the
-thread-strength ANCOVA (`STATS_ancova_coefficients.csv` in thread-strength scripts 3 and 4),
+02_thread-strength ANCOVA (`STATS_ancova_coefficients.csv` in 02_thread-strength scripts 3 and 4),
 fitted here with expression added.
 
 `METRICS` in script 20 fixes the scale and the tier; `tier = primary` (force, area) is the
@@ -100,12 +102,12 @@ Why an ANCOVA and not a change score: the change score `log(day3) - log(baseline
 baseline coefficient of 1; when the fitted coefficient is well below 1, the change score
 adds most of the baseline's measurement noise to the response and loses power. The ANCOVA
 also absorbs any between-animal baseline differences the arm assignment did not balance
-(baseline balance by future arm is checked in thread-strength script 3, 3b).
+(baseline balance by future arm is checked in 02_thread-strength script 3, 3b).
 
 ### Annotation map and candidate universe
 
 `CANDIDATE_ANNOTATION = "genome"`: every gene in the count matrix is annotated with its best
-UniProt hit (highest bitscore) from `blast/03_analyses/genome-foot/LOC_GO_list.txt`, with
+UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`, with
 `blast_pident` and `blast_evalue` carried along, and any expressed gene whose name matches
 `CANDIDATE_KEYWORDS` (byssal / collagen / plaque-curing / HSP / hypoxia / tRNA-synthetase /
 oxidative-stress terms) and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-10`,
@@ -163,11 +165,11 @@ Loading tidyverse before DESeq2 fails with `object 'treatment' not found`.
 
 ---
 
-## 2. Inputs from thread-strength
+## 2. Inputs from 02_thread-strength
 
 | file | produced by | used by |
 |---|---|---|
-| `03_analyses/thread-summary.xlsx` | scripts 1–2 | 20, 22, 23 |
+| `03_analyses/02_assemble-thread-summary/thread-summary.xlsx` | script 2 | 20, 22, 23 |
 | `03_analyses/04_decompose-adhesion/mussel_response_classification.csv` | script 4 | 20 (joined into the paired manifest) |
 | `03_analyses/01_extract-tensometer-data/thread-summary-raw-output.xlsx` | script 1 | 22 |
 
@@ -214,17 +216,17 @@ Script 20 checks, before any model is fitted:
 - the animals in the fits equal `02_data/expected_animals.csv` for the tissue (every other
   day-3 animal is listed there with the reason it is out); a difference is written to
   `animal_reconciliation_<T>.csv`;
-- each animal's day-3 and baseline values equal the ones thread-strength's ANCOVA used
+- each animal's day-3 and baseline values equal the ones 02_thread-strength's ANCOVA used
   (`DATA_ancova_animals.csv`), so the two pipelines cannot drift apart;
-- every expected differential-expression input exists and reads (one `*_TC_siggene*` file per
+- every expected 06_differential-expression input exists and reads (one `*_TC_siggene*` file per
   stressor, six `*_sigs_ID.csv` files), and the arm in the thread key agrees with the Tag-seq
   treatment table.
 
 A failed check does not stop the run (`warn_unless()` in `tools/pipeline_checks.R`). It
-prints `CHECK FAILED: <what failed>` in the knitted report and in the render log (driver 24's
+prints `CHECK FAILED: <what failed>` in the knitted report and in the render log (driver 00's
 `.log` files), and `RUN_provenance_<T>.txt` records how many checks ran and lists each one that
 failed. Read that line before using a run.
-Update `expected_animals.csv` only with a documented reason. Driver 24 stops with an error,
+Update `expected_animals.csv` only with a documented reason. Driver 00 stops with an error,
 after writing `run_log.csv`, if any step failed.
 
 ## 4. Known data quirks
@@ -252,7 +254,7 @@ after writing `run_log.csv`, if any step failed.
 | 20, 21 | `FDR_ALPHA` | 0.10 | BH threshold for flagging (`q_lm`, `q_family`) |
 | 21 | `N_INFLUENCE_HITS` | 3 | candidate hits per metric that get the leave-one-animal-out refit |
 | 21 | `modules` | six regexes | includes `byssal_structural` |
-| 22 | `USE_RAW_THREAD_SET` | TRUE | any extracted trace vs curated only |
+| 22 | `USE_RAW_THREAD_SET` | TRUE | any extracted trace vs thread-summary mussels only |
 | 23 | `USE_RAW_THREAD_SET` | FALSE | |
 | 20-23 | `params$tissue` | "F" | foot or gill |
-| 24 | `params$tissues`, `params$scripts` | both, all four | what the driver renders |
+| 00 | `params$tissues`, `params$scripts` | both, all four | what the driver renders |

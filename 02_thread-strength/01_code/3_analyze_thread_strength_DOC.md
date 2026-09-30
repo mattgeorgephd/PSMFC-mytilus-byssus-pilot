@@ -4,20 +4,19 @@ Analyzes byssal-thread plaque adhesion (kPa) for *M. trossulus* before and after
 stress exposure, relative to a pre-exposure baseline and a day-3 control arm, with the
 day-0 lab-reference animals as a descriptive comparison group.
 
-Run it from inside `thread-strength.Rproj`, after curating `03_analyses/thread-summary.xlsx`.
+Run it from inside `thread-strength.Rproj`, after script 2.
 Every table it prints is also written to `03_analyses/03_analyze-thread-strength/`.
 
 ---
 
 ## 1. Input
 
-`03_analyses/thread-summary.xlsx`, sheet `data`: the hand-curated table. It is produced by
-reviewing `03_analyses/02_assemble-thread-summary/thread-summary-candidate.xlsx` (script 2),
-which already carries `pad_area` and `failure`, and dropping bad runs.
+`03_analyses/02_assemble-thread-summary/thread-summary.xlsx`, sheet `data`: the thread
+summary written by script 2, which already carries `pad_area` and `failure`.
 
 ### Schema normalization
 
-The load chunk accepts the curated file under either column spelling:
+The load chunk accepts the thread summary under either column spelling:
 
 | accepted | used internally |
 |---|---|

@@ -62,8 +62,7 @@ writeLines(unlist(uniprot_BG_DAVID_unique), file.path(deg, "DAVID_lists/uniprot_
 
 ### FOA list
 ```{r}
-FOA_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"),
-                      sep = " ")
+FOA_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"))
 FOA_sigs_uniprot <- na.omit(FOA_sigs_ID$uniprot_accession)
 head(FOA_sigs_uniprot) 
 length(FOA_sigs_uniprot)
@@ -79,9 +78,7 @@ writeLines(unlist(FOA_sigs_uniprot_unique), file.path(deg, "DAVID_lists/FOA_ID_u
 ```{r}
 
 
-GOA_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"),
-                      sep = " "
-                      )
+GOA_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"))
 GOA_sigs_uniprot <- na.omit(GOA_sigs_ID$uniprot_accession)
 head(GOA_sigs_uniprot)
 length(GOA_sigs_uniprot)
@@ -93,9 +90,7 @@ writeLines(unlist(GOA_sigs_uniprot_unique), file.path(deg, "DAVID_lists/GOA_ID_u
 
 ### FOW list
 ```{r}
-FOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"),
-                      sep = " "
-                      )
+FOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"))
 FOW_sigs_uniprot <- na.omit(FOW_sigs_ID$uniprot_accession)
 head(FOW_sigs_uniprot)
 length(FOW_sigs_uniprot)
@@ -107,9 +102,7 @@ writeLines(unlist(FOW_sigs_uniprot_unique), file.path(deg, "DAVID_lists/FOW_ID_u
 
 ### GOW list
 ```{r}
-GOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"),
-                      sep = " "
-                      )
+GOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"))
 GOW_sigs_uniprot <- na.omit(GOW_sigs_ID$uniprot_accession)
 head(GOW_sigs_uniprot)
 length(GOW_sigs_uniprot)

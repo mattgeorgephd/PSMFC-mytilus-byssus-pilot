@@ -11,5 +11,5 @@ deg <- here::here("03_analyses", "DEG_lists")     # DEG tables (written here; so
 dir.create(deg, recursive = TRUE, showWarnings = FALSE)
 
 # Cross-folder reads/writes (absorbed pipeline spans several analysis folders)
-blast_go <- file.path(repo_root, "blast", "03_analyses", "genome-foot")              # LOC_GO_list.txt, g.spid.txt
-topgenes <- file.path(repo_root, "gene-annotation", "03_analyses", "Top_gene_summaries")
+blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot")           # LOC_GO_list.txt, g.spid.txt
+topgenes <- file.path(repo_root, "08_gene-annotation", "03_analyses", "Top_gene_summaries")

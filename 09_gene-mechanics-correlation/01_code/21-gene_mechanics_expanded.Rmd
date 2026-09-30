@@ -49,7 +49,7 @@ suppressPackageStartupMessages({ library(tidyverse); library(here) })
 
 ## ---- config -------------------------------------------------------------------------
 ## Tissue comes from the knit parameter (`params$tissue`, default "F") so the same script
-## serves foot and gill; the driver 24-run_gene_mechanics_by_tissue.Rmd renders both.
+## serves foot and gill; the driver 00-run_gene_mechanics_by_tissue.Rmd renders both.
 ## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
 TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
 stopifnot(TISSUE %in% c("F", "G"))
@@ -67,14 +67,14 @@ N_INFLUENCE_HITS <- 3     # candidate hits per metric that get the leave-one-ani
 find_repo_root <- function(start = here::here()) {
   d <- normalizePath(start, winslash = "/")
   for (i in 1:6) {
-    if (all(dir.exists(file.path(d, c("differential-expression", "thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing differential-expression/ and thread-strength/.")
+  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
 }
 repo_root <- find_repo_root()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance
-IN_DIR  <- file.path(repo_root, "gene-mechanics-correlation", "03_analyses", "gene_mechanics")
+IN_DIR  <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "gene_mechanics")
 OUT_DIR <- IN_DIR                                  # 21 writes alongside 20's outputs
 need <- function(f) { p <- file.path(IN_DIR, f)
   if (!file.exists(p)) stop("Missing ", f, " - run script 20 first (it writes this)."); p }
@@ -355,7 +355,7 @@ inputs <- file.path(IN_DIR, c(sprintf(c("metrics_config_%s.csv", "paired_sample_
                                         "candidate_genes_%s.csv", "detection_floor_flags_%s.csv",
                                         "vst_paired_%s.csv", "assoc_candidate_%s.csv",
                                         "assoc_DEGunion_%s.csv"), TISSUE), "annotation_map.csv"))
-inputs <- c(inputs, file.path(repo_root, "gene-mechanics-correlation", "01_code", "21-gene_mechanics_expanded.Rmd"))
+inputs <- c(inputs, file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "21-gene_mechanics_expanded.Rmd"))
 writeLines(c(old, "", provenance_lines(settings, inputs, repo_root, packages = c("dplyr", "readr"))), prov)
 cat(readLines(prov), sep = "\n")
 ```

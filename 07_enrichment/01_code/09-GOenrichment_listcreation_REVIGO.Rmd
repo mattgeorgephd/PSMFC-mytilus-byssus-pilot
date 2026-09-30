@@ -23,7 +23,7 @@ masterID <- masterID[, -((ncol(masterID)-2):ncol(masterID))]
 
 # Rename remaining columns
 
-colnames(masterID)  <- c("transcript", "database","uniprot_accession","geneID","species", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "reviewed", "entryname", "protein_name", "gene_name", "organism", "prot_length", "GO_ID", "GO_BP", "GO_MF", "GO_CC", "Genename_orderedlocus", "Induction", "Pathwaycommons", "Reactome", "Unipathway", "Interacts_with", "LOC_column")
+colnames(masterID)  <- c("transcript", "database","uniprot_accession","geneID","species", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "reviewed", "entryname", "protein_name", "gene_name", "organism", "prot_length", "GO_ID", "GO_BP", "GO_MF", "GO_CC", "Genename_orderedlocus", "Induction", "Pathwaycommons", "Reactome", "Unipathway", "Interacts_with", "LOC_ID")
 ```
 
 ### Filter for genes that have counts of at least 10 in >= 1/3 of gene count matrix
@@ -57,7 +57,7 @@ filteredGCM3$GO_ID <- trimws(filteredGCM3$GO_ID)
 
 filteredGCM3_unique <- filteredGCM3 %>%
   distinct(GO_ID, .keep_all = TRUE)
-nrow(filteredGCM2_unique) #9386
+nrow(filteredGCM3_unique) #9386
 ```
 
 ### Create BG for DAVID
@@ -70,8 +70,7 @@ writeLines(unlist(uniprot_BG_REVIGO), file.path(deg, "REVIGO_lists/uniprot_BG_RE
 
 ### FOA list
 ```{r}
-FOA_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"),
-                      sep = " ")
+FOA_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"))
 FOA_sigs_ID <- separate_rows(FOA_sigs_ID, GO_ID, sep = ";")
 FOA_sigs_ID$GO_ID <- trimws(FOA_sigs_ID$GO_ID)
 FOA_sigs_REVIGO <- na.omit(FOA_sigs_ID$GO_ID)
@@ -87,8 +86,7 @@ writeLines(unlist(FOA_sigs_REVIGO), file.path(deg, "REVIGO_lists/FOA_ID_REVIGO.t
 ```{r}
 
 
-GOA_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"),
-                      sep = " ")
+GOA_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"))
 GOA_sigs_ID <- separate_rows(GOA_sigs_ID, GO_ID, sep = ";")
 GOA_sigs_ID$GO_ID <- trimws(GOA_sigs_ID$GO_ID)
 GOA_sigs_REVIGO <- na.omit(GOA_sigs_ID$GO_ID)
@@ -101,8 +99,7 @@ writeLines(unlist(GOA_sigs_REVIGO), file.path(deg, "REVIGO_lists/GOA_ID_REVIGO.t
 
 ### FOW list
 ```{r}
-FOW_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"),
-                      sep = " ")
+FOW_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"))
 FOW_sigs_ID <- separate_rows(FOW_sigs_ID, GO_ID, sep = ";")
 FOW_sigs_ID$GO_ID <- trimws(FOW_sigs_ID$GO_ID)
 FOW_sigs_REVIGO <- na.omit(FOW_sigs_ID$GO_ID)
@@ -114,8 +111,7 @@ writeLines(unlist(FOW_sigs_REVIGO), file.path(deg, "REVIGO_lists/FOW_ID_REVIGO.t
 
 ### GOW list
 ```{r}
-GOW_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"),
-                      sep = " ")
+GOW_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"))
 GOW_sigs_ID <- separate_rows(GOW_sigs_ID, GO_ID, sep = ";")
 GOW_sigs_ID$GO_ID <- trimws(GOW_sigs_ID$GO_ID)
 GOW_sigs_REVIGO <- na.omit(GOW_sigs_ID$GO_ID)
@@ -127,8 +123,7 @@ writeLines(unlist(GOW_sigs_REVIGO), file.path(deg, "REVIGO_lists/GOW_ID_REVIGO.t
 
 ### FDO list
 ```{r}
-FDO_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"),
-                      sep = " ")
+FDO_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"))
 FDO_sigs_ID <- separate_rows(FDO_sigs_ID, GO_ID, sep = ";")
 FDO_sigs_ID$GO_ID <- trimws(FDO_sigs_ID$GO_ID)
 FDO_sigs_REVIGO <- na.omit(FDO_sigs_ID$GO_ID)
@@ -140,8 +135,7 @@ writeLines(unlist(FDO_sigs_REVIGO), file.path(deg, "REVIGO_lists/FDO_ID_REVIGO.t
 
 ### GDO list
 ```{r}
-GDO_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"),
-                      sep = " ")
+GDO_sigs_ID <-  read.csv(file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"))
 GDO_sigs_ID <- separate_rows(GDO_sigs_ID, GO_ID, sep = ";")
 GDO_sigs_ID$GO_ID <- trimws(GDO_sigs_ID$GO_ID)
 GDO_sigs_REVIGO <- na.omit(GDO_sigs_ID$GO_ID)

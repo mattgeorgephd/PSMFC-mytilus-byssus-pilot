@@ -1,4 +1,4 @@
-# differential-expression
+# 06_differential-expression
 
 DESeq2 differential expression of Tag-seq counts across treatments (OA, OW, DO) in foot and
 gill tissue, using the HISAT2 + StringTie genome-based count matrix. This is the core
@@ -10,30 +10,31 @@ resolve through `01_code/_paths.R`; see Runnability for which scripts knit headl
 ## Layout
 
 ```
-differential-expression/
+06_differential-expression/
 ├── differential-expression.Rproj
 ├── 01_code/                 count-matrix build, per-tissue/contrast DESeq2, shrinkage/filtration,
 │                            provenance check, four-level sensitivity fit, file joining,
-│                            DEG venn/volcano, counts, top DEGs, and the batch driver (20-*)
+│                            DEG venn/volcano, counts, top DEGs, and the batch driver (00-*)
 ├── 02_data/                 count matrices, treatment design table, sample metadata
 └── 03_analyses/
-    └── DEG_lists/           significant-DEG tables per tissue x contrast (Foot/, Gill/, GOterms_genome/)
+    ├── DEG_lists/           significant-DEG tables per tissue x contrast (Foot/, Gill/, GOterms_genome/)
+    └── knit_html/           per-step HTML reports and logs from the batch driver
 ```
 
 ## Script order
 
 `01_5-gene_count_matrix` (assemble counts) then `02_5_DESeq_*` (per tissue x contrast) then
-`03-*_Shrinkage_filtration` (apeglm shrinkage + filtering) then
+`03-TC_shrinkage_filtration` (apeglm shrinkage + filtering) then
 `03_5-DEG_table_provenance_check` (re-derives each TC contrast of record from the committed
 inputs and flags or rewrites stale result tables; LC on request) then `04-File_joining` (merge with GO;
 writes `DEG_join_summary.csv`, the source of the per-contrast DEG counts) then `12-DEG_venn`,
 `12-Volcano-plots`, `15-number_DEGS`, `16-top_DEGs`, `19-DEG_list_cleanup`.
 
-`01_code/20-run_differential_expression.Rmd` runs every script that knits from a fresh
+`01_code/00-run_differential_expression_pipeline.Rmd` runs every script that knits from a fresh
 session as a batch, each in its own R process, with a log per step in
 `03_analyses/knit_html/` (git-ignored): `03_5` (with `rewrite_stale`, TC contrasts), `02_6`,
 `04`, `16`, `12-Volcano-plots`, `12-DEG_venn`, `15`, `19`. Run it after any change to the
-inputs or the DESeq scripts, then the gene-mechanics driver.
+inputs or the DESeq scripts, then the `09_gene-mechanics-correlation` driver.
 
 Side script, which does not change the primary lists:
 `02_6-DESeq_fourlevel_sensitivity` fits one four-level model per tissue (`~ treatment` over
@@ -50,18 +51,20 @@ stressor effect is a contrast against it.
 | **TC, treatment control, of record** (`*_TC_*`; `treatment == "control" & day == 3`) | T126-T137, held three days under ambient conditions in the same system as the stressor arms | the stressor effect, net of time in the system and handling | the DEG lists of record (`<X>_TC_siggene*.csv`), the gene-mechanics DEG union, enrichment |
 | **LC, lab control, not of record** (`*_LC_*`; `treatment == "control" & day == 0`) | T001-T012, sampled before entering the system | the stressor **plus** three days in the system and handling | nothing downstream; `FTC_LC` / `GTC_LC` (day-3 control vs day 0) describe the non-stressor component only |
 
-The LC scripts (`02_5_DESeq_*_LC_genome`, `03-LC_Shrinkage_filtration`) and their tables in
+The LC scripts (`02_5_DESeq_*_LC_genome`, `_superseeded/03-LC_Shrinkage_filtration`) and their tables in
 `DEG_lists/` are kept, but no downstream script reads them and the batch driver does not
 verify them (`03_5` checks them only with `families` including `"LC"`).
 
-`03_5` and `04` are documented in `01_code/DEG-lists-provenance_DOC.md`.
+`03_5` and `04` are documented in their own headers.
 
-The gene count matrix is produced upstream by sequence-alignment (HISAT2 + StringTie) and
-placed here as the DE input, per the established handoff.
+The gene count matrix is produced upstream by `05_sequence-alignment` (HISAT2 + StringTie)
+and placed here as the DE input, per the established handoff.
 
 ## Runnability
 
-Paths are resolved through `01_code/_paths.R` (`here::here()` anchored on the `.Rproj`).
+Paths are resolved through `01_code/_paths.R` (`here::here()` anchored on the `.Rproj`). Two
+paths leave this folder: `04` reads `../03_blast/03_analyses/genome-foot/LOC_GO_list.txt`, and
+`16` writes the top-50 tables to `../08_gene-annotation/03_analyses/Top_gene_summaries/`.
 `03_5`, `04`, `16`, `19`, `12-Volcano-plots`, `15-number_DEGS` and `02_6`
 knit cleanly from a fresh session (the batch driver runs them); `12-DEG_venn` needs `ggvenn`
 and installs it from CRAN when it is missing. `01_5` reads the raw StringTie matrix, which is not in the

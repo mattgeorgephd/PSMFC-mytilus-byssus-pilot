@@ -1,34 +1,36 @@
-# thread-strength
+# 02_thread-strength
 
 Plaque adhesion strength and thread mechanics from tensometer pull tests, before and after a
 3-day stress exposure (control, OA, OW, DO), plus a lab-reference group.
 
-Self-contained and reproducible from this repository apart from one manual step, noted below.
+Self-contained and reproducible from this repository apart from one manual input, the
+plaque measurements, noted below. It reads one file from outside this folder
+(`../01_mussel-measurements/mussel-size-measurements.xlsx`, script 0) and sources the shared
+`../tools/pipeline_checks.R` (scripts 3 and 4, for `RUN_provenance.txt`).
 
 ## Layout
 
 ```
-thread-strength/
+02_thread-strength/
 ├── thread-strength.Rproj              open this first; it anchors here::here()
 ├── 01_code/
-│   ├── 0_build_mussel_key.Rmd         morphometrics -> 02_data/mussel-treatment-key.csv
-│   ├── 1_extract_tensometer_data.Rmd  raw traces    -> 03_analyses/01_extract-tensometer-data/
-│   ├── 2_assemble_thread_summary.Rmd  raw output    -> curation-ready candidate
-│   ├── 3_analyze_thread_strength.Rmd  curated table -> adhesion plots + ANCOVA
-│   ├── 4_decompose_adhesion.Rmd       curated table -> force / area / extension ANCOVA
+│   ├── 0_build_mussel_key.Rmd         mussel workbook -> 02_data/mussel-treatment-key.csv
+│   ├── 1_extract_tensometer_data.Rmd  raw traces     -> 03_analyses/01_extract-tensometer-data/
+│   ├── 2_assemble_thread_summary.Rmd  raw output + plaque areas -> thread summary
+│   ├── 3_analyze_thread_strength.Rmd  thread summary -> adhesion plots + ANCOVA
+│   ├── 4_decompose_adhesion.Rmd       thread summary -> force / area / extension ANCOVA
 │   ├── _ancova.R                      the per-animal ANCOVA both scripts source
 │   └── *_DOC.md                       companion documentation, one per script
 ├── 02_data/
 │   ├── tensometer_output/<phase folders>/   raw force/displacement .txt traces
-│   ├── pictures/{control,treatment}/        microscope images, source of pad_area
-│   └── mussel-treatment-key.csv             mussel tag -> arm, species, rna flag
+│   ├── pad_area_measurements.xlsx           hand-measured plaque area + failure mode, per trace
+│   └── mussel-treatment-key.csv             mussel tag -> arm, species, rna flag (script 0)
 └── 03_analyses/
-    ├── thread-summary.xlsx                  curated table, input to script 3
-    ├── 01_extract-tensometer-data/             output of script 1: thread-summary-raw-output.xlsx
+    ├── 01_extract-tensometer-data/          script 1: thread-summary-raw-output.xlsx
     │   └── QC_plots/<source_folder>/        per-trace loess QC jpgs
-    ├── 02_assemble-thread-summary/             output of script 2: candidate + pad-area worklist
-    ├── 03_analyze-thread-strength/             output of script 3: figures + STATS_ancova_*.csv
-    └── 04_decompose-adhesion/                  output of script 4: force / area / extension ANCOVA
+    ├── 02_assemble-thread-summary/          script 2: thread-summary.xlsx, input to 3, 4 and 09
+    ├── 03_analyze-thread-strength/          script 3: figures + STATS_ancova_*.csv
+    └── 04_decompose-adhesion/               script 4: force / area / extension ANCOVA
 ```
 
 ## Tensometer folder layout
@@ -72,23 +74,29 @@ binary before/after would pool them and contaminate every paired contrast.
 
 1. Open `thread-strength.Rproj` in RStudio. Not the repository-root `.Rproj`; `here::here()`
    must resolve to this folder.
-2. `01_code/0_build_mussel_key.Rmd` — only needed when the mussel-measurement workbook changes.
+2. `01_code/0_build_mussel_key.Rmd` — only needed when
+   `../01_mussel-measurements/mussel-size-measurements.xlsx` changes.
 3. `01_code/1_extract_tensometer_data.Rmd` — reads every trace, writes
    `03_analyses/01_extract-tensometer-data/thread-summary-raw-output.xlsx` and the QC plots.
-4. `01_code/2_assemble_thread_summary.Rmd` — writes the curation candidate.
-   `pad_area` and `failure`), save as `03_analyses/thread-summary.xlsx` (sheet `data`).
+4. `01_code/2_assemble_thread_summary.Rmd` — joins `02_data/pad_area_measurements.xlsx` and
+   writes `03_analyses/02_assemble-thread-summary/thread-summary.xlsx` (sheet `data`). It
+   overwrites that file on every run, so do not edit it by hand.
 5. `01_code/3_analyze_thread_strength.Rmd` — adhesion (kPa) figures and the per-animal
    ANCOVA (day-3 level adjusted for the animal's baseline; each arm vs control).
 6. `01_code/4_decompose_adhesion.Rmd` — the same ANCOVA on peak force, plaque area and
    extension separately. Read this alongside script 3; run it after script 3.
 
+`09_gene-mechanics-correlation` reads this folder's outputs (the thread summary, script 4's
+`mussel_response_classification.csv`, both `DATA_ancova_animals.csv` files and script 1's
+extraction), so re-run its driver after any change here.
+
 ## The manual step
 
-`pad_area` (plaque cross-sectional area, mm²) and `failure_mode` are measured from the
-microscope images in `02_data/pictures/`. They cannot be derived from a force trace, so step
-5 above is genuinely manual. Script 2 carries forward every measurement already present in
-`thread-summary.xlsx` and reports exactly which traces still need one, so the manual work is
-only ever on the new traces.
+`pad_area` (plaque cross-sectional area, mm²) and `failure` are measured by hand from
+microscope images of each plaque and recorded in `02_data/pad_area_measurements.xlsx`, one
+row per trace. They cannot be derived from a force trace. Script 2 joins the measurements to
+the traces; a trace with a blank `pad_area` is carried through and then excluded, with a
+count, by scripts 3 and 4.
 
 `adhesion_kpa = max_force / pad_area * 1000` is recomputed by script 3 rather than trusted
 from a cached spreadsheet formula.

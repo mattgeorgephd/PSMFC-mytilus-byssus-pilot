@@ -9,14 +9,18 @@ source(here::here("01_code", "_paths.R"))
 ```
 ```{r}
 library(tidyverse)
-BiocManager::install(c("GSEABase", "GO.db"))
+## Bioconductor packages; install once if missing rather than on every knit
+bioc_missing <- c("GSEABase", "GO.db")[!vapply(c("GSEABase", "GO.db"), requireNamespace, logical(1), quietly = TRUE)]
+if (length(bioc_missing)) BiocManager::install(bioc_missing)
+library(GSEABase)   # GOCollection(), getOBOCollection(), goSlim()
 
 
 ```
 
 #FDO
-```{r}
-
+```{r, eval=FALSE}
+# Disabled: runs before FDO_sigs_ID is read (flatten-gene-GO-listt-FDO below), so it stops a
+# fresh knit. That chunk recomputes FDO_sigs_ID_cleaned_separated before anything uses it.
 FDO_sigs_ID_cleaned_separated <- separate_rows(FDO_sigs_ID, GO_ID, sep = ";")
 FDO_sigs_ID_cleaned_separated$GO_ID <- trimws(FDO_sigs_ID_cleaned_separated$GO_ID)
 
@@ -103,11 +107,9 @@ fl <- system.file("extdata", goslims, package="GSEABase")
 ### Flatten gene list
 
 Creates one row per GO ID
-```{r flatten-gene-GO-listt}
-# Read in tab-delimited file
-FDO_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"),
-                      sep = " "
-                      )
+```{r flatten-gene-GO-listt-FDO}
+# Read in comma-delimited file (written by 06_differential-expression 04-File_joining)
+FDO_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"))
 
 # Remove rows with no GO ID
 FDO_sigs_ID_cleaned <- FDO_sigs_ID[!(FDO_sigs_ID$GO_ID == ""), ]
@@ -120,7 +122,7 @@ str(FDO_sigs_ID_cleaned_separated)
 
 
 ### Map Biological Process GOslims to GO IDs
-```{r BP-GOslims-to-GOIDs}
+```{r BP-GOslims-to-GOIDs-FDO}
 # Vector of GO IDs
 go_ids <- FDO_sigs_ID_cleaned_separated$GO_ID
 
@@ -170,7 +172,7 @@ str(updated_slimdf)
 
 ### Create GSEAbase GeneSetCollection
 
-```{r gene-set-collection}
+```{r gene-set-collection-FDO}
 
 # Group by unique GO ID
 grouped_df <- FDO_sigs_ID_cleaned_separated %>% group_by(GO_ID)%>% summarise(geneID = paste(geneID, collapse = ","))
@@ -187,7 +189,7 @@ gsc
 ```
 
 ### Map genes to GOslims
-```{r map-genes-to-GOslims}
+```{r map-genes-to-GOslims-FDO}
 mapped_df <- mappedIds(updated_slimdf, myCollection, GOBPOFFSPRING, gsc)
 
 # Provide column name for first column
@@ -224,7 +226,7 @@ We select the first Term value within each group using Term[1].
 
 This code should create a dataframe with one row per gene, including the corresponding GOslim.BP entries in a single, semi-colon-delimited field, the first Term value within each group, and the count of rows in each group.
 
-```{r flatten-GOslims-by-gene}
+```{r flatten-GOslims-by-gene-FDO}
 flattened_mapped_df <- mapped_df %>%
   dplyr::select(Genes, GOslim.BP, Term, GO.IDs) %>%
   separate_rows(Genes, sep = ",")
@@ -242,7 +244,7 @@ str(goslims_per_gene_df)
 ```
 
 ### Write mapped GOslims to file
-```{r write-mapped-GOslims-to-file}
+```{r write-mapped-GOslims-to-file-FDO}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
   write.table(file =file.path(deg, "goslims_genome/FDO_sigs_ID.tab"),
@@ -254,7 +256,7 @@ mapped_df %>%
 ```
 
 ### Write flattened genes to file
-```{r write-flattened-genes-to-file}
+```{r write-flattened-genes-to-file-FDO}
 goslims_per_gene_df %>%
   write.table(file =file.path(deg, "goslims_genome/FDO_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
@@ -270,11 +272,9 @@ goslims_per_gene_df %>%
 ### Flatten gene list
 
 Creates one row per GO ID
-```{r flatten-gene-GO-listt}
+```{r flatten-gene-GO-listt-GDO}
 # Read in tab-delimited file
-GDO_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"),
-                      sep = " "
-                      )
+GDO_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"))
 
 # Remove rows with no GO ID
 GDO_sigs_ID_cleaned <- GDO_sigs_ID[!(GDO_sigs_ID$GO_ID == ""), ]
@@ -287,7 +287,7 @@ str(GDO_sigs_ID_cleaned_separated)
 
 
 ### Map Biological Process GOslims to GO IDs
-```{r BP-GOslims-to-GOIDs}
+```{r BP-GOslims-to-GOIDs-GDO}
 # Vector of GO IDs
 go_ids <- GDO_sigs_ID_cleaned_separated$GO_ID
 
@@ -337,7 +337,7 @@ str(updated_slimdf)
 
 ### Create GSEAbase GeneSetCollection
 
-```{r gene-set-collection}
+```{r gene-set-collection-GDO}
 
 # Group by unique GO ID
 grouped_df <- GDO_sigs_ID_cleaned_separated %>% group_by(GO_ID)%>% summarise(geneID = paste(geneID, collapse = ","))
@@ -354,7 +354,7 @@ gsc
 ```
 
 ### Map genes to GOslims
-```{r map-genes-to-GOslims}
+```{r map-genes-to-GOslims-GDO}
 mapped_df <- mappedIds(updated_slimdf, myCollection, GOBPOFFSPRING, gsc)
 
 # Provide column name for first column
@@ -391,7 +391,7 @@ We select the first Term value within each group using Term[1].
 
 This code should create a dataframe with one row per gene, including the corresponding GOslim.BP entries in a single, semi-colon-delimited field, the first Term value within each group, and the count of rows in each group.
 
-```{r flatten-GOslims-by-gene}
+```{r flatten-GOslims-by-gene-GDO}
 flattened_mapped_df <- mapped_df %>%
   dplyr::select(Genes, GOslim.BP, Term, GO.IDs) %>%
   separate_rows(Genes, sep = ",")
@@ -409,7 +409,7 @@ str(goslims_per_gene_df)
 ```
 
 ### Write mapped GOslims to file
-```{r write-mapped-GOslims-to-file}
+```{r write-mapped-GOslims-to-file-GDO}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
   write.table(file =file.path(deg, "goslims_genome/GDO_sigs_ID.tab"),
@@ -421,7 +421,7 @@ mapped_df %>%
 ```
 
 ### Write flattened genes to file
-```{r write-flattened-genes-to-file}
+```{r write-flattened-genes-to-file-GDO}
 goslims_per_gene_df %>%
   write.table(file =file.path(deg, "goslims_genome/GDO_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
@@ -438,11 +438,9 @@ goslims_per_gene_df %>%
 ### Flatten gene list
 
 Creates one row per GO ID
-```{r flatten-gene-GO-listt}
+```{r flatten-gene-GO-listt-FOA}
 # Read in tab-delimited file
-FOA_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"),
-                      sep = " "
-                      )
+FOA_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"))
 
 # Remove rows with no GO ID
 FOA_sigs_ID_cleaned <- FOA_sigs_ID[!(FOA_sigs_ID$GO_ID == ""), ]
@@ -455,7 +453,7 @@ str(FOA_sigs_ID_cleaned_separated)
 
 
 ### Map Biological Process GOslims to GO IDs
-```{r BP-GOslims-to-GOIDs}
+```{r BP-GOslims-to-GOIDs-FOA}
 # Vector of GO IDs
 go_ids <- FOA_sigs_ID_cleaned_separated$GO_ID
 
@@ -505,7 +503,7 @@ str(updated_slimdf)
 
 ### Create GSEAbase GeneSetCollection
 
-```{r gene-set-collection}
+```{r gene-set-collection-FOA}
 
 # Group by unique GO ID
 grouped_df <- FOA_sigs_ID_cleaned_separated %>% group_by(GO_ID)%>% summarise(geneID = paste(geneID, collapse = ","))
@@ -522,7 +520,7 @@ gsc
 ```
 
 ### Map genes to GOslims
-```{r map-genes-to-GOslims}
+```{r map-genes-to-GOslims-FOA}
 mapped_df <- mappedIds(updated_slimdf, myCollection, GOBPOFFSPRING, gsc)
 
 # Provide column name for first column
@@ -559,7 +557,7 @@ We select the first Term value within each group using Term[1].
 
 This code should create a dataframe with one row per gene, including the corresponding GOslim.BP entries in a single, semi-colon-delimited field, the first Term value within each group, and the count of rows in each group.
 
-```{r flatten-GOslims-by-gene}
+```{r flatten-GOslims-by-gene-FOA}
 flattened_mapped_df <- mapped_df %>%
   dplyr::select(Genes, GOslim.BP, Term, GO.IDs) %>%
   separate_rows(Genes, sep = ",")
@@ -577,7 +575,7 @@ str(goslims_per_gene_df)
 ```
 
 ### Write mapped GOslims to file
-```{r write-mapped-GOslims-to-file}
+```{r write-mapped-GOslims-to-file-FOA}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
   write.table(file =file.path(deg, "goslims_genome/FOA_sigs_ID.tab"),
@@ -589,7 +587,7 @@ mapped_df %>%
 ```
 
 ### Write flattened genes to file
-```{r write-flattened-genes-to-file}
+```{r write-flattened-genes-to-file-FOA}
 goslims_per_gene_df %>%
   write.table(file =file.path(deg, "goslims_genome/FOA_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
@@ -605,11 +603,9 @@ goslims_per_gene_df %>%
 ### Flatten gene list
 
 Creates one row per GO ID
-```{r flatten-gene-GO-listt}
+```{r flatten-gene-GO-listt-GOA}
 # Read in tab-delimited file
-GOA_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"),
-                      sep = " "
-                      )
+GOA_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"))
 
 # Remove rows with no GO ID
 GOA_sigs_ID_cleaned <- GOA_sigs_ID[!(GOA_sigs_ID$GO_ID == ""), ]
@@ -622,7 +618,7 @@ str(GOA_sigs_ID_cleaned_separated)
 
 
 ### Map Biological Process GOslims to GO IDs
-```{r BP-GOslims-to-GOIDs}
+```{r BP-GOslims-to-GOIDs-GOA}
 # Vector of GO IDs
 go_ids <- GOA_sigs_ID_cleaned_separated$GO_ID
 
@@ -672,7 +668,7 @@ str(updated_slimdf)
 
 ### Create GSEAbase GeneSetCollection
 
-```{r gene-set-collection}
+```{r gene-set-collection-GOA}
 
 # Group by unique GO ID
 grouped_df <- GOA_sigs_ID_cleaned_separated %>% group_by(GO_ID)%>% summarise(geneID = paste(geneID, collapse = ","))
@@ -689,7 +685,7 @@ gsc
 ```
 
 ### Map genes to GOslims
-```{r map-genes-to-GOslims}
+```{r map-genes-to-GOslims-GOA}
 mapped_df <- mappedIds(updated_slimdf, myCollection, GOBPOFFSPRING, gsc)
 
 # Provide column name for first column
@@ -726,7 +722,7 @@ We select the first Term value within each group using Term[1].
 
 This code should create a dataframe with one row per gene, including the corresponding GOslim.BP entries in a single, semi-colon-delimited field, the first Term value within each group, and the count of rows in each group.
 
-```{r flatten-GOslims-by-gene}
+```{r flatten-GOslims-by-gene-GOA}
 flattened_mapped_df <- mapped_df %>%
   dplyr::select(Genes, GOslim.BP, Term, GO.IDs) %>%
   separate_rows(Genes, sep = ",")
@@ -744,7 +740,7 @@ str(goslims_per_gene_df)
 ```
 
 ### Write mapped GOslims to file
-```{r write-mapped-GOslims-to-file}
+```{r write-mapped-GOslims-to-file-GOA}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
   write.table(file =file.path(deg, "goslims_genome/GOA_sigs_ID.tab"),
@@ -756,7 +752,7 @@ mapped_df %>%
 ```
 
 ### Write flattened genes to file
-```{r write-flattened-genes-to-file}
+```{r write-flattened-genes-to-file-GOA}
 goslims_per_gene_df %>%
   write.table(file =file.path(deg, "goslims_genome/GOA_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
@@ -773,11 +769,9 @@ goslims_per_gene_df %>%
 ### Flatten gene list
 
 Creates one row per GO ID
-```{r flatten-gene-GO-listt}
+```{r flatten-gene-GO-listt-FOW}
 # Read in tab-delimited file
-FOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"),
-                      sep = " "
-                      )
+FOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"))
 
 # Remove rows with no GO ID
 FOW_sigs_ID_cleaned <- FOW_sigs_ID[!(FOW_sigs_ID$GO_ID == ""), ]
@@ -790,7 +784,7 @@ str(FOW_sigs_ID_cleaned_separated)
 
 
 ### Map Biological Process GOslims to GO IDs
-```{r BP-GOslims-to-GOIDs}
+```{r BP-GOslims-to-GOIDs-FOW}
 # Vector of GO IDs
 go_ids <- FOW_sigs_ID_cleaned_separated$GO_ID
 
@@ -840,7 +834,7 @@ str(updated_slimdf)
 
 ### Create GSEAbase GeneSetCollection
 
-```{r gene-set-collection}
+```{r gene-set-collection-FOW}
 
 # Group by unique GO ID
 grouped_df <- FOW_sigs_ID_cleaned_separated %>% group_by(GO_ID)%>% summarise(geneID = paste(geneID, collapse = ","))
@@ -857,7 +851,7 @@ gsc
 ```
 
 ### Map genes to GOslims
-```{r map-genes-to-GOslims}
+```{r map-genes-to-GOslims-FOW}
 mapped_df <- mappedIds(updated_slimdf, myCollection, GOBPOFFSPRING, gsc)
 
 # Provide column name for first column
@@ -894,7 +888,7 @@ We select the first Term value within each group using Term[1].
 
 This code should create a dataframe with one row per gene, including the corresponding GOslim.BP entries in a single, semi-colon-delimited field, the first Term value within each group, and the count of rows in each group.
 
-```{r flatten-GOslims-by-gene}
+```{r flatten-GOslims-by-gene-FOW}
 flattened_mapped_df <- mapped_df %>%
   dplyr::select(Genes, GOslim.BP, Term, GO.IDs) %>%
   separate_rows(Genes, sep = ",")
@@ -912,7 +906,7 @@ str(goslims_per_gene_df)
 ```
 
 ### Write mapped GOslims to file
-```{r write-mapped-GOslims-to-file}
+```{r write-mapped-GOslims-to-file-FOW}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
   write.table(file =file.path(deg, "goslims_genome/FOW_sigs_ID.tab"),
@@ -924,7 +918,7 @@ mapped_df %>%
 ```
 
 ### Write flattened genes to file
-```{r write-flattened-genes-to-file}
+```{r write-flattened-genes-to-file-FOW}
 goslims_per_gene_df %>%
   write.table(file =file.path(deg, "goslims_genome/FOW_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,
@@ -940,11 +934,9 @@ goslims_per_gene_df %>%
 ### Flatten gene list
 
 Creates one row per GO ID
-```{r flatten-gene-GO-listt}
+```{r flatten-gene-GO-listt-GOW}
 # Read in tab-delimited file
-GOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"),
-                      sep = " "
-                      )
+GOW_sigs_ID <- read.csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"))
 
 # Remove rows with no GO ID
 GOW_sigs_ID_cleaned <- GOW_sigs_ID[!(GOW_sigs_ID$GO_ID == ""), ]
@@ -957,7 +949,7 @@ str(GOW_sigs_ID_cleaned_separated)
 
 
 ### Map Biological Process GOslims to GO IDs
-```{r BP-GOslims-to-GOIDs}
+```{r BP-GOslims-to-GOIDs-GOW}
 # Vector of GO IDs
 go_ids <- GOW_sigs_ID_cleaned_separated$GO_ID
 
@@ -1007,7 +999,7 @@ str(updated_slimdf)
 
 ### Create GSEAbase GeneSetCollection
 
-```{r gene-set-collection}
+```{r gene-set-collection-GOW}
 
 # Group by unique GO ID
 grouped_df <- GOW_sigs_ID_cleaned_separated %>% group_by(GO_ID)%>% summarise(geneID = paste(geneID, collapse = ","))
@@ -1024,7 +1016,7 @@ gsc
 ```
 
 ### Map genes to GOslims
-```{r map-genes-to-GOslims}
+```{r map-genes-to-GOslims-GOW}
 mapped_df <- mappedIds(updated_slimdf, myCollection, GOBPOFFSPRING, gsc)
 
 # Provide column name for first column
@@ -1061,7 +1053,7 @@ We select the first Term value within each group using Term[1].
 
 This code should create a dataframe with one row per gene, including the corresponding GOslim.BP entries in a single, semi-colon-delimited field, the first Term value within each group, and the count of rows in each group.
 
-```{r flatten-GOslims-by-gene}
+```{r flatten-GOslims-by-gene-GOW}
 flattened_mapped_df <- mapped_df %>%
   dplyr::select(Genes, GOslim.BP, Term, GO.IDs) %>%
   separate_rows(Genes, sep = ",")
@@ -1079,7 +1071,7 @@ str(goslims_per_gene_df)
 ```
 
 ### Write mapped GOslims to file
-```{r write-mapped-GOslims-to-file}
+```{r write-mapped-GOslims-to-file-GOW}
 mapped_df %>%
   dplyr::select(GOslim.BP, Term, GO.IDs, Genes) %>% 
   write.table(file =file.path(deg, "goslims_genome/GOW_sigs_ID.tab"),
@@ -1091,7 +1083,7 @@ mapped_df %>%
 ```
 
 ### Write flattened genes to file
-```{r write-flattened-genes-to-file}
+```{r write-flattened-genes-to-file-GOW}
 goslims_per_gene_df %>%
   write.table(file =file.path(deg, "goslims_genome/GOW_sigs_ID.BP_per_gene.tab"),
               row.names = FALSE,

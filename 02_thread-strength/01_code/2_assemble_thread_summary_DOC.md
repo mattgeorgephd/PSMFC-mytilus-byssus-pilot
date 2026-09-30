@@ -1,19 +1,17 @@
 # `2_assemble_thread_summary.Rmd`
 
 Joins the trace-level extraction to the hand-measured plaque areas, computes adhesion, and
-writes a curation-ready candidate plus two worklists.
+writes the thread summary that scripts 3 and 4 and the `09_gene-mechanics-correlation`
+scripts read.
 
 ## Pipeline position
 
 ```
 1_extract_tensometer_data.Rmd  ->  03_analyses/01_extract-tensometer-data/thread-summary-raw-output.xlsx
               +  02_data/pad_area_measurements.xlsx                            (hand-measured)
-2_assemble_thread_summary.Rmd  ->  03_analyses/02_assemble-thread-summary/
-                                     thread-summary-candidate.xlsx
-                                     pad-area-worklist.xlsx
-   (manual: drop bad runs against the QC plots)
-                               ->  03_analyses/thread-summary.xlsx
+2_assemble_thread_summary.Rmd  ->  03_analyses/02_assemble-thread-summary/thread-summary.xlsx
 3_analyze_thread_strength.Rmd  ->  03_analyses/03_analyze-thread-strength/
+4_decompose_adhesion.Rmd       ->  03_analyses/04_decompose-adhesion/
 ```
 
 ## Where each fact comes from
@@ -38,8 +36,12 @@ One fact, one source. Nothing is copied into two files where the copies could dr
 | `failure` | `cohesive`, `peeling`, `tearing`, `thread`. Blank where not yet measured |
 | `notes` | free text, yours |
 
+`pad_area` and `failure` are measured by hand from microscope images of each plaque; they
+cannot be derived from a force trace.
+
 One row per extracted trace, sorted by folder then mussel then thread. A new trace is added
-as a row with blank `pad_area`, and the worklist below finds it. The script still accepts
+as a row with blank `pad_area`; the script reports how many traces have no row at all, and
+scripts 3 and 4 exclude (and count) traces with no `pad_area`. The script still accepts
 `mussel_ID` / `thread_num`, so an older copy of the file joins.
 
 ## The join key
@@ -48,43 +50,24 @@ as a row with blank `pad_area`, and the worklist below finds it. The script stil
 optional: for an animal pulled before and after exposure, `mussel` + `thread` alone
 matches two different traces and would silently duplicate rows.
 
-## Picture matching
-
-Section 3 indexes `02_data/pictures/`, which is split `control` / `treatment`, matching the
-pre/post split. A single image sometimes covers several threads (`T020_01-02-03.png`); those
-are expanded so each thread gets its own entry. `picture_status` is `available` or `missing`
-for every trace.
-
-**This is what makes the worklist actionable**, because a trace with no image cannot be
-measured from what is in the repository.
-
-## Outputs
+## Output
 
 Written to `03_analyses/02_assemble-thread-summary/`.
 
-### `thread-summary-candidate.xlsx`, sheet `data`
+### `thread-summary.xlsx`, sheet `data`
 
-One row per trace, the shape script 3 expects, plus `pad_notes`, `picture_status`,
-`source_folder` and `file` for provenance. Script 3 ignores extra columns, so it can be
-saved as `thread-summary.xlsx` as-is once the bad runs are removed.
+One row per trace: `species`, `sort_ID`, `mussel_ID`, `thread_num`, `note`, `phase`, `day`,
+`mussel_trt`, `thread_trt`, `max_force`, `integral`, `max_displacement`, `pad_area`,
+`adhesion_kpa`, `failure`, `rna_sequenced`, plus `pad_notes`, `source_folder` and `file` for
+provenance. Scripts 3 and 4 ignore the extra columns.
 
-### `pad-area-worklist.xlsx`
-
-- **`to_measure`**: one row per trace with no plaque measurement. Carries the path to the QC
-  plot and to the microscope image, plus `picture_status`.
-- **`pairing_gaps`**: one row per animal that ought to pair before/after but does not, with
-  `gap_type`:
-  - `pair_blocked_unmeasured` — traces exist on both sides, but a plaque measurement is
-    missing on at least one side. **Fixable, if an image exists.**
-  - `missing_pre_trace` — day-3 threads exist, no pre-exposure trace was recorded.
-  - `missing_post_trace` — pre-exposure threads exist, no day-3 trace was recorded.
+Re-running the script overwrites this file, so any hand edit made to it is lost on the next
+run. The committed copy is identical, cell for cell, to what the script writes from the
+committed inputs.
 
 ## Known data gaps
 
-Some traces were measured from microscope images that are not in `02_data/pictures/`; they
-are measured but carry `picture_status = missing`.
-
-Some pairing gaps are trace gaps that no measurement can fix: the thirteen day-1 animals
-pulled at baseline and never again by design, and T137 (control), which has no day-3
-trace. The script prints the pairing status and the gaps by arm. The control arm's pairs
-are what give the design a within-subject control contrast.
+Pairing is listed in script 1's `pairing` sheet: 13 animals were pulled at baseline only (by
+design) and 13 at day 3 only; the 48 animals with both are the set the per-animal ANCOVA in
+scripts 3 and 4 uses. The control arm's pairs are what give the design a within-subject
+control contrast.

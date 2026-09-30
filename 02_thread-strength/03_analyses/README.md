@@ -1,15 +1,14 @@
 # 03_analyses
 
-Generated outputs. Everything here is regenerable except `thread-summary.xlsx`, which is
-hand-curated; the raw inputs live in `../02_data/`.
+Generated outputs. Everything here is regenerable by scripts 1 to 4 from the inputs in
+`../02_data/`; the one hand-maintained input is `../02_data/pad_area_measurements.xlsx`.
 
 | Item | Produced by | Contents |
 |---|---|---|
 | `01_extract-tensometer-data/thread-summary-raw-output.xlsx` | `1_extract_tensometer_data.Rmd` | Every extracted trace. Sheets: `data`, `coverage`, `pairing`. |
 | `01_extract-tensometer-data/QC_plots/<source_folder>/` | `1_extract_tensometer_data.Rmd` | Per-trace loess QC plots, named after the source file |
-| `02_assemble-thread-summary/` | `2_assemble_thread_summary.Rmd` | `thread-summary-candidate.xlsx` (curation-ready table) and `pad-area-worklist.xlsx` (sheets `to_measure` and `pairing_gaps`) |
-| `thread-summary.xlsx` | **manual curation** | The curated table script 3 reads. Not regenerable. |
-| `04_decompose-adhesion/` | `4_decompose_adhesion.Rmd` | Per-animal ANCOVA on peak force, plaque area and extension separately (`STATS_ancova_*.csv`); each-arm-vs-control figure; per-animal response classification (`mussel_response_classification.csv`, read by gene-mechanics script 20); failure-mode composition |
+| `02_assemble-thread-summary/thread-summary.xlsx` | `2_assemble_thread_summary.Rmd` | One row per trace with `pad_area`, `failure` and `adhesion_kpa` (sheet `data`). Read by scripts 3 and 4 and by `09_gene-mechanics-correlation` scripts 20, 22 and 23. Overwritten on every run of script 2. |
+| `04_decompose-adhesion/` | `4_decompose_adhesion.Rmd` | Per-animal ANCOVA on peak force, plaque area and extension separately (`STATS_ancova_*.csv`); each-arm-vs-control figure; per-animal response classification (`mussel_response_classification.csv`, read by `09_gene-mechanics-correlation` script 20); failure-mode composition |
 | `03_analyze-thread-strength/` | `3_analyze_thread_strength.Rmd` | Adhesion distribution panels, one before/after panel per day-3 arm (lab-reference animals as their own cluster), the per-animal ANCOVA on adhesion (`STATS_ancova_*.csv`, `DATA_ancova_animals.csv`, `DIAG_ancova_residuals.png`), descriptive tables of baseline by future arm and of the lab reference (`DESC_*.csv`), and `RUN_provenance.txt` recording the `INCLUDE_LAB_REFERENCE` setting behind the run |
 
 ## Notes
