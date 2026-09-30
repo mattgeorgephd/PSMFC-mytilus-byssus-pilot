@@ -1,0 +1,5 @@
+"0","check %>%"
+"0","  select(code, family, n_samples, genes_after_filter, n_DEG_rederived, countmatrix_matches_master,"
+"0","         full_rows_disk, full_same_genes, full_baseMean_maxrel, full_table_consistent,"
+"0","         siggene_rows_disk, siggene_same_genes, siggene_baseMean_maxrel, siggene_consistent) %>%"
+"0","  knitr::kable()"

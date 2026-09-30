@@ -1,0 +1,73 @@
+GOslim.BP	Term	GO.IDs	Genes
+GO:0000278	mitotic cell cycle	GO:0000082	RHOU
+GO:0000910	cytokinesis		NA
+GO:0002181	cytoplasmic translation	GO:0002184	ERF1
+GO:0002376	immune system process	GO:0001782;GO:0001914;GO:0002218;GO:0002250;GO:0002318;GO:0002720	BAK
+GO:0003012	muscle system process		NA
+GO:0003013	circulatory system process		NA
+GO:0003014	renal system process		NA
+GO:0003016	respiratory system process		NA
+GO:0005975	carbohydrate metabolic process		NA
+GO:0006091	generation of precursor metabolites and energy		NA
+GO:0006260	DNA replication		NA
+GO:0006281	DNA repair		NA
+GO:0006310	DNA recombination		NA
+GO:0006325	chromatin organization		NA
+GO:0006351	DNA-templated transcription	GO:0000122	CWO,HES4A,PARP1,BCOR
+GO:0006355	regulation of DNA-templated transcription	GO:0000122	CWO,HES4A,PARP1,BCOR
+GO:0006399	tRNA metabolic process		NA
+GO:0006457	protein folding		NA
+GO:0006486	protein glycosylation		NA
+GO:0006520	cellular amino acid metabolic process		NA
+GO:0006575	cellular modified amino acid metabolic process		NA
+GO:0006629	lipid metabolic process		NA
+GO:0006766	vitamin metabolic process		NA
+GO:0006790	sulfur compound metabolic process		NA
+GO:0006886	intracellular protein transport		NA
+GO:0006913	nucleocytoplasmic transport		NA
+GO:0006914	autophagy	GO:0000045	MLP3C
+GO:0006954	inflammatory response		NA
+GO:0007005	mitochondrion organization		NA
+GO:0007010	cytoskeleton organization	GO:0000226;GO:0001578	TBB4B,TTLL7,TTLL7,TBB,TBB,TBA3,TBA3,CFA44,TTLL5,TTLL5,TTLL5,TTLL5,TTLL4,TBA1,TTLL6,TTL13,TBB,TBB
+GO:0007018	microtubule-based movement	GO:0003341;GO:0003351;GO:0003352	HYDIN,HYDIN,HYDIN,TTLL6
+GO:0007031	peroxisome organization		NA
+GO:0007040	lysosome organization		NA
+GO:0007059	chromosome segregation		NA
+GO:0007155	cell adhesion		NA
+GO:0007163	establishment or maintenance of cell polarity		NA
+GO:0012501	programmed cell death		NA
+GO:0015979	photosynthesis		NA
+GO:0016071	mRNA metabolic process	GO:0000381	RFOX1,RFOX1,RFOX1,RBMX
+GO:0016073	snRNA metabolic process		NA
+GO:0016192	vesicle-mediated transport		NA
+GO:0022414	reproductive process	GO:0001542;GO:0001556;GO:0007283	PDE4D,PDE4D
+GO:0022600	digestive system process		NA
+GO:0023052	signaling	GO:0001921	ARAP1
+GO:0030154	cell differentiation	GO:0001556;GO:0002062;GO:0002064;GO:0002318	ITPR
+GO:0030163	protein catabolic process		NA
+GO:0030198	extracellular matrix organization		NA
+GO:0031047	gene silencing by RNA		NA
+GO:0032200	telomere organization		NA
+GO:0034330	cell junction organization		NA
+GO:0042060	wound healing		NA
+GO:0042254	ribosome biogenesis		NA
+GO:0044782	cilium organization		NA
+GO:0048856	anatomical structure development	GO:0000902;GO:0001501;GO:0001525;GO:0001542;GO:0001556;GO:0001704;GO:0002062;GO:0002064;GO:0002119;GO:0002168;GO:0002318	ITPR1,ITPR1
+GO:0048870	cell motility		NA
+GO:0050877	nervous system process	GO:0001661	PDE4A
+GO:0050886	endocrine process		NA
+GO:0051604	protein maturation		NA
+GO:0055085	transmembrane transport		NA
+GO:0055086	nucleobase-containing small molecule metabolic process		NA
+GO:0061007	hepaticobiliary system process		NA
+GO:0061024	membrane organization		NA
+GO:0065003	protein-containing complex assembly		NA
+GO:0071554	cell wall organization or biogenesis		NA
+GO:0071941	nitrogen cycle metabolic process	GO:0000050	ARGI1
+GO:0072659	protein localization to plasma membrane		NA
+GO:0098542	defense response to other organism	GO:0002218	ZNFX1,ZNFX1
+GO:0098754	detoxification		NA
+GO:0140013	meiotic nuclear division		NA
+GO:0140014	mitotic nuclear division		NA
+GO:0140053	mitochondrial gene expression		NA
+GO:1901135	carbohydrate derivative metabolic process		NA

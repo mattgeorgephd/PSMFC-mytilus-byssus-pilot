@@ -1,0 +1,39 @@
+---
+title: "Genome_vs_transcriptome"
+output: html_document
+date: "2024-06-13"
+---
+
+```{bash}
+#make databases for isoseq transcriptome and the genome assembly
+makeblastdb -in /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/Mtros-hq_transcripts.fasta -dbtype nucl -out isoseq_db
+makeblastdb -in /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fasta -dbtype nucl -out genome_db
+
+#blast foot protein fasta against isoseq database
+blastn -query /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/foot_proteins.fasta -db isoseq_db -out results_isoseq.txt \
+-evalue 1E-20 \
+-num_threads 8 \
+-max_target_seqs 1 \
+-outfmt 6
+#Adding sequences from FASTA; added 411251 sequences in 11.0021 seconds.
+
+#blast foot protein fasta against genome database
+blastn -query /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/foot_proteins.fasta -db genome_db -out results_genome.txt \
+-evalue 1E-20 \
+-num_threads 8 \
+-max_target_seqs 1 \
+-outfmt 6
+#Adding sequences from FASTA; added 53269 sequences in 1.55116 seconds.
+```
+```{bash}
+#how many blast hits did we get for each
+
+wc -l /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/results_isoseq.txt
+#239
+
+wc -l /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/results_genome.txt
+#278
+```
+
+
+

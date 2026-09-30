@@ -1,0 +1,3 @@
+"0",""
+"0","ggsave(file.path(out_dir, ""FIG_ancova_vs_control.png""), plot = p_vs,"
+"0","       dpi = 600, width = 11, height = 4.5, units = ""in"")"

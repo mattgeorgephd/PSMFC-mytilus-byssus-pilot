@@ -1,0 +1,13 @@
+gene_set,metric,tier,feature,protein_name,n,slope,p_lm,q_lm,q_family,floor_flag,most_influential_mussel,influence_flag
+candidate,max_force,primary,LOC134694726,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)",44,0.3041485843702936,0.00388724977538986,0.7813372048533629,0.986746945814235,ok,T037,robust
+candidate,pad_area,primary,LOC134721033,Tubulin-specific chaperone cofactor E-like protein (EL) (Leucine-rich repeat-containing protein 35),44,-0.3281911859936674,0.01375051755653413,0.9434067969046,0.986746945814235,ok,T030,robust
+candidate,adhesion_kpa,exploratory,LOC134724473,Tubulin-specific chaperone D (Beta-tubulin cofactor D) (tfcD) (SSD-1) (Tubulin-folding cofactor D),44,0.2706863992296636,0.01041245399474703,0.99775336784979,0.8434008389889771,ok,T033,robust
+candidate,max_displacement,exploratory,LOC134716158,Collagen alpha-1(XXII) chain,44,0.03281823442691967,9.195282947258592e-4,0.18482518723989771,0.36965037447979543,caution,T133,robust
+module,max_force,primary,oxidative_detox,49-gene module,44,0.027856919120668948,0.29288653409888565,0.6370893936577926,0.7966959797784301,NA,NA,NA
+module,pad_area,primary,tRNA_translation,29-gene module,44,-0.02774848283795548,0.07356276032325862,0.4413765619395517,0.7966959797784301,NA,NA,NA
+module,adhesion_kpa,exploratory,oxidative_detox,49-gene module,44,0.052802755379143654,0.10488651104894871,0.6293190662936923,0.6293190662936923,NA,NA,NA
+module,max_displacement,exploratory,oxidative_detox,49-gene module,44,0.0039123436200671465,0.06237712674501027,0.3742627604700616,0.6293190662936923,NA,NA,NA
+DEG_union,max_force,primary,LOC134708235,"Actin, adductor muscle (EC 3.6.4.-)",44,0.3777933479935929,0.00292335551930833,0.99138059220909025,0.9981385029064264,ok,T039,robust
+DEG_union,pad_area,primary,LOC134711700,"Serine/arginine-rich splicing factor 4 (Splicing factor, arginine/serine-rich 4)",44,-0.34217627257334693,0.0157311975941234,0.9994416524824128,0.9981385029064264,ok,T030,robust
+DEG_union,adhesion_kpa,exploratory,LOC134721830,Calbindin-32,44,-0.4619729704093767,0.01095966116853093,0.9945783591267128,0.8767728934824743,ok,T030,robust
+DEG_union,max_displacement,exploratory,LOC134724944,NA,44,0.01903311034900943,1.97807314509276e-4,0.1028598035448235,0.205719607089647,ok,T040,robust

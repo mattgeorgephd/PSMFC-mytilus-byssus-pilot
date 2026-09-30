@@ -1,0 +1,5 @@
+"0","source(here::here(""01_code"", ""_paths.R""))"
+"0","suppressPackageStartupMessages({ library(DESeq2); library(apeglm); library(tidyverse) })"
+"0","REWRITE_STALE <- isTRUE(params$rewrite_stale)"
+"0","FAMILIES      <- if (!is.null(params$families)) params$families else ""TC"""
+"0","PADJ_CUTOFF   <- 0.05"

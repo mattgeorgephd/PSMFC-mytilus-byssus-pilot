@@ -1,0 +1,50 @@
+"0","cat("""
+"0","**Outputs ("", OUT_DIR, ""):**"
+"0",""
+"0","- `byssus_gene_expression_<tissue>.csv` - the narrowed list: category, protein, blast"
+"0","  quality (pident/evalue/hi_conf), per-contrast log2FC, n_DE, then VST expression across"
+"0","  every thread-having mussel (columns like `T046F` = mussel `T046`)."
+"0","- `sample_metadata_<tissue>.csv` - per mussel: treatment and post-stress thread mechanics,"
+"0","  to align against the expression columns."
+"0","- `byssus_category_scores_<tissue>.csv` - mean VST per category per mussel + mechanics."
+"0",""
+"0","**Interpretation / caveats:**"
+"0",""
+"0","- Categories were built from UniProt names + a tight enzyme filter; `hi_conf` flags"
+"0","  confident blast hits (pident>=40, evalue<1e-10). Set `HI_CONF_ONLY=TRUE` to drop weak"
+"0","  annotations (e.g. distant paralog hits among the many byssal-protein gene copies)."
+"0","- Byssal proteins are a highly duplicated gene family, so one protein name maps to many"
+"0","  LOCs; that is real, not a bug, but treat the paralog set with care."
+"0","- In foot, the canonical *structural* byssal proteins are not differentially expressed; the"
+"0","  stress signal sits in the curing/biosynthesis machinery (prolyl-4-hydroxylase, byssal"
+"0","  HSP-like, transglutaminase). The table lets you confirm this per gene per animal."
+"0","- Columns are limited to mussels in the curated summary; set `USE_RAW_THREAD_SET=TRUE`"
+"0","  to include every animal with an extracted trace (script 22 manifest)."
+"0",""")"
+"1","
+**Outputs ("
+"1"," "
+"1","C:/Users/mattg/Desktop/github/PSMFC-mytilus-byssus-pilot/gene-mechanics-correlation/03_analyses/byssus_genes"
+"1"," "
+"1","):**
+
+- `byssus_gene_expression_<tissue>.csv` - the narrowed list: category, protein, blast
+  quality (pident/evalue/hi_conf), per-contrast log2FC, n_DE, then VST expression across
+  every thread-having mussel (columns like `T046F` = mussel `T046`).
+- `sample_metadata_<tissue>.csv` - per mussel: treatment and post-stress thread mechanics,
+  to align against the expression columns.
+- `byssus_category_scores_<tissue>.csv` - mean VST per category per mussel + mechanics.
+
+**Interpretation / caveats:**
+
+- Categories were built from UniProt names + a tight enzyme filter; `hi_conf` flags
+  confident blast hits (pident>=40, evalue<1e-10). Set `HI_CONF_ONLY=TRUE` to drop weak
+  annotations (e.g. distant paralog hits among the many byssal-protein gene copies).
+- Byssal proteins are a highly duplicated gene family, so one protein name maps to many
+  LOCs; that is real, not a bug, but treat the paralog set with care.
+- In foot, the canonical *structural* byssal proteins are not differentially expressed; the
+  stress signal sits in the curing/biosynthesis machinery (prolyl-4-hydroxylase, byssal
+  HSP-like, transglutaminase). The table lets you confirm this per gene per animal.
+- Columns are limited to mussels in the curated summary; set `USE_RAW_THREAD_SET=TRUE`
+  to include every animal with an extracted trace (script 22 manifest).
+"

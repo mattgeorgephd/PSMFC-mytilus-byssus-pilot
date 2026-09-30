@@ -1,0 +1,67 @@
+mussel,arm,foot_in_fit,foot_reason,gill_in_fit,gill_reason
+T014,OA,TRUE,,TRUE,
+T015,OA,TRUE,,TRUE,
+T016,OA,TRUE,,TRUE,
+T017,OA,TRUE,,TRUE,
+T019,OA,TRUE,,TRUE,
+T021,OA,TRUE,,TRUE,
+T023,OA,TRUE,,TRUE,
+T025,OA,TRUE,,TRUE,
+T026,OA,TRUE,,TRUE,
+T027,OA,TRUE,,TRUE,
+T029,OW,TRUE,,TRUE,
+T030,OW,TRUE,,TRUE,
+T031,OW,TRUE,,TRUE,
+T033,OW,TRUE,,TRUE,
+T034,OW,TRUE,,TRUE,
+T035,OW,FALSE,no baseline thread trace,FALSE,no baseline thread trace
+T036,OW,TRUE,,TRUE,
+T037,OW,TRUE,,TRUE,
+T038,OW,TRUE,,TRUE,
+T039,OW,TRUE,,TRUE,
+T040,OW,TRUE,,TRUE,
+T041,OW,TRUE,,TRUE,
+T042,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T046,DO,TRUE,,TRUE,
+T047,DO,FALSE,foot library removed at QC (differential-expression 01_5),TRUE,
+T049,DO,TRUE,,TRUE,
+T051,DO,FALSE,foot library removed at QC (differential-expression 01_5),FALSE,gill library removed at QC (differential-expression 01_5)
+T052,DO,TRUE,,TRUE,
+T055,DO,TRUE,,TRUE,
+T056,DO,TRUE,,TRUE,
+T057,DO,TRUE,,TRUE,
+T058,DO,TRUE,,TRUE,
+T089,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T090,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T091,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T092,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T093,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T094,DO,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T110,DO,TRUE,,TRUE,
+T111,DO,TRUE,,TRUE,
+T112,DO,TRUE,,TRUE,
+T113,DO,FALSE,no day-3 thread trace,FALSE,no day-3 thread trace
+T114,DO,FALSE,no day-3 thread trace,FALSE,no day-3 thread trace
+T115,DO,FALSE,no day-3 thread trace,FALSE,no day-3 thread trace
+T116,DO,FALSE,no day-3 thread trace,FALSE,no day-3 thread trace
+T117,DO,FALSE,no day-3 thread trace,FALSE,no day-3 thread trace
+T118,OA,TRUE,,TRUE,
+T119,OA,TRUE,,TRUE,
+T120,OA,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T121,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T122,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T123,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T124,OW,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T125,DO,FALSE,no foot library sequenced,FALSE,no gill library sequenced
+T126,control,TRUE,,TRUE,
+T127,control,TRUE,,TRUE,
+T128,control,TRUE,,TRUE,
+T129,control,TRUE,,TRUE,
+T130,control,TRUE,,TRUE,
+T131,control,TRUE,,TRUE,
+T132,control,TRUE,,TRUE,
+T133,control,TRUE,,TRUE,
+T134,control,TRUE,,TRUE,
+T135,control,TRUE,,TRUE,
+T136,control,TRUE,,TRUE,
+T137,control,TRUE,,TRUE,

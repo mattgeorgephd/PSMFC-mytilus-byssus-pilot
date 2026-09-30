@@ -1,0 +1,6 @@
+"0",""
+"0","# Fixed horizontal offset per mussel, computed ONCE over all mussels so the baseline"
+"0","# cluster looks identical across the arm panels. Used only for point/line placement."
+"0","set.seed(1)"
+"0","mussel_offsets <- tibble(mussel = levels(thread_plot$mussel),"
+"0","                         xoff   = runif(nlevels(thread_plot$mussel), -0.08, 0.08))"

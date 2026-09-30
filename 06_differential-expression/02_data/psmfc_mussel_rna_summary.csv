@@ -1,0 +1,133 @@
+species,sample,concentration(ng/uL),volume(uL),yield(ng),tissue,isolation_date,storage_location,quant_method,DNased(y/n)
+M.trossulus,T01-F,122,200,24400,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T02-F,166,50,8300,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T03-F,186,50,9300,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T04-F,138,200,27600,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T05-F,136,200,27200,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T06-F,106,400,42400,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T07-F,27.6,50,1380,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T08-F,172,100,17200,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T09-F,174,200,34800,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T10-F,188,50,9400,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T11-F,116,200,23200,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T12-F,132,200,26400,foot,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T01-F_PG,158,50,7900,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T02-F_PG,92,50,4600,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T03-F_PG,70.4,50,3520,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T04-F_PG,44.4,50,2220,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T05-F_PG,65.8,50,3290,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T06-F_PG,95.2,50,4760,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T07-F_PG,146,100,14600,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T08-F_PG,66.4,50,3320,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T09-F_PG,114,50,5700,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T10-F_PG,74.2,50,3710,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T11-F_PG,138,50,6900,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T12-F_PG,152,50,7600,phenol gland,20211222,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T01-G,28,100,2800,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T02-G,148,100,14800,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T03-G,65.4,100,6540,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T04-G,126,100,12600,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T05-G,160,100,16000,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T06-G,118,100,11800,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T07-G,106,100,10600,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T08-G,132,100,13200,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T09-G,130,100,13000,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T10-G,85.6,100,8560,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T11-G,112,100,11200,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T12-G,132,100,13200,gill,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T126-F_PG,23.8,50,1190,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T127-F_PG,36.6,50,1830,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T128-F_PG,57.6,50,2880,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T129-F_PG,52.2,50,2610,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T130-F_PG,12.2,50,610,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T131-F_PG,21.8,50,1090,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T132-F_PG,75.6,50,3780,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T133-F_PG,69.4,50,3470,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T134-F_PG,62.8,50,3140,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T135-F_PG,43,50,2150,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T136-F_PG,55.2,50,2760,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T137-F_PG,92.8,50,4640,phenol gland,20211223,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T126-G,79,100,7900,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T127-G,86.6,100,8660,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T128-G,82,100,8200,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T129-G,45.8,100,4580,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T130-G,62.6,100,6260,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T131-G,31,100,3100,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T132-G,94.8,100,9480,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T133-G,56,100,5600,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T134-G,32.6,100,3260,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T135-G,44.2,100,4420,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T136-G,48.6,100,4860,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T137-G,20.2,100,2020,gill,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T110-F_PG,35.6,100,3560,phenol gland,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T111-F_PG,29.8,100,2980,phenol gland,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T112-F_PG,43.6,100,4360,phenol gland,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T46-F_PG,21.8,100,2180,phenol gland,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T47-F_PG,2.78,100,278,phenol gland,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T49-F_PG,17.4,100,1740,phenol gland,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T51-F_PG,124,100,12400,phenol gland,20220109,Sam's RNA Box #2,Qubit RNA HS assay,y
+M.trossulus,T52-F_PG,37,100,3700,phenol gland,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T55-F_PG,32.6,100,3260,phenol gland,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T56-F_PG,64.4,100,6440,phenol gland,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T57-F_PG,91.2,100,9120,phenol gland,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T58-F_PG,28,100,2800,phenol gland,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T110-G,42.2,100,4220,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T111-G,40.6,100,4060,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T112-G,24.2,100,2420,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T46-G,19.8,100,1980,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T47-G,47.8,100,4780,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T49-G,56.6,100,5660,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T51-G,8.48,100,848,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T52-G,57.6,100,5760,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T55-G,56.2,100,5620,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T56-G,102,100,10200,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T57-G,112,100,11200,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T58-G,96.4,100,9640,gill,20220109,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T118-F_PG,150,25,3750,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T119-F_PG,96,100,9600,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T14-F_PG,29.4,100,2940,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T15-F_PG,45.8,100,4580,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T16-F_PG,83.8,100,8380,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T17-F_PG,63.6,100,6360,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T19-F_PG,44.2,100,4420,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T21-F_PG,124,100,12400,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T23-F_PG,132,100,13200,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T25-F_PG,28.8,100,2880,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T26-F_PG,38.6,100,3860,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T27-F_PG,34.2,100,3420,phenol gland,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T118-G,82,100,8200,gill,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T119-G,54.6,100,5460,gill,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T14-G,162,100,16200,gill,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T15-G,96.2,100,9620,gill,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T16-G,46.8,100,4680,gill,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T17-G,194,100,19400,gill,20220110,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T19-G,79.6,100,7960,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T21-G,69.4,100,6940,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T23-G,108,100,10800,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T25-G,46,100,4600,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T26-G,168,100,16800,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T27-G,130,100,13000,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T29-F_PG,89,100,8900,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T30-F_PG,46.2,100,4620,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T31-F_PG,74.2,100,7420,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T33-F_PG,63.2,100,6320,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T34-F_PG,97,100,9700,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T35-F_PG,30.4,100,3040,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T36-F_PG,37,100,3700,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T37-F_PG,62.6,100,6260,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T38-F_PG,84.2,100,8420,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T39-F_PG,68.4,100,6840,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T40-F_PG,35,100,3500,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T41-F_PG,47.4,100,4740,phenol gland,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T29-G,86,100,8600,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T30-G,83,200,16600,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T31-G,99,200,19800,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T33-G,87.8,100,8780,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T34-G,104,100,10400,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T35-G,130,100,13000,gill,20220111,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T36-G,50.4,100,5040,gill,20220112,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T37-G,86,140,12040,gill,20220112,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T38-G,56.8,100,5680,gill,20220112,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T39-G,52.6,100,5260,gill,20220112,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T40-G,118,100,11800,gill,20220112,Sam's RNA Box #3,Qubit RNA HS assay,y
+M.trossulus,T41-G,45,100,4500,gill,20220112,Sam's RNA Box #3,Qubit RNA HS assay,y

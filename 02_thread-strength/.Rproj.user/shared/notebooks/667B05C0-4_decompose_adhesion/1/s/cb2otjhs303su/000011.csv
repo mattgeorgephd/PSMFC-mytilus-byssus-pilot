@@ -1,0 +1,3 @@
+"0",""
+"0","ggsave(file.path(out_dir, ""FIG_animal_response_force_vs_area.png""), plot = p_animal,"
+"0","       dpi = 600, width = 7.5, height = 6, units = ""in"")"

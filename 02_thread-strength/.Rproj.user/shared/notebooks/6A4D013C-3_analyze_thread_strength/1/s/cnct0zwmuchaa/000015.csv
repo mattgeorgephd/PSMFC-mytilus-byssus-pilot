@@ -1,0 +1,3 @@
+"0",""
+"0","write_ancova_tables(list(adhesion_ancova), out_dir)"
+"0","save_ancova_diagnostics(list(adhesion_ancova), file.path(out_dir, ""DIAG_ancova_residuals.png""))"

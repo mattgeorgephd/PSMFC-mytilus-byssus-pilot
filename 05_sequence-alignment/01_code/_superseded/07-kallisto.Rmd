@@ -1,0 +1,155 @@
+---
+title: "Kallisto Pseudo-alignment"
+author: Steven Roberts
+date: "`r format(Sys.time(), '%d %B, %Y')`" 
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    html_preview: true
+  html_document:
+    theme: readable
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: true
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(DESeq2)
+library(pheatmap)
+library(RColorBrewer)
+library(data.table)
+library(DT)
+library(formattable)
+library(Biostrings)
+library(spaa)
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = FALSE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 6,       # Set plot width in inches
+  fig.height = 4,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+```
+
+
+# Download tag-seq data
+```{bash}
+wget -r \
+--no-directories --no-parent \
+-P ../data \
+-A .fastq.gz https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/ \
+--no-check-certificate
+
+```
+
+
+# get transcriptome
+
+```{r, engine='bash'}
+cd ../data
+curl -O https://owl.fish.washington.edu/halfshell/genomic-databank/Mtros-hq_transcripts.fasta
+```
+
+
+
+
+# Create indices for transcriptome with Kallisto
+```{bash}
+# Build index
+/home/shared/kallisto_linux-v0.50.1/kallisto \
+index \
+-t 20 \
+-i ../data/Mtros-hq_transcripts.index \
+../data/Mtros-hq_transcripts.fasta
+  
+
+```
+
+# Kallisto quantification
+
+```{bash}
+# Set the paths
+DATA_DIRECTORY="../data"
+KALLISTO_INDEX="../data/Mtros-hq_transcripts.index"
+OUTPUT_DIRECTORY="../analyses/07-kallisto"
+
+
+# Iterate over all .fq.gz files in the data directory
+for FILE in "$DATA_DIRECTORY"/*.fastq.gz; do
+    # Extract the base name of the file for naming the output folder
+    BASENAME=$(basename "$FILE" _R1_001.fastq.gz)
+
+    # Create output directory for this sample
+    SAMPLE_OUTPUT="$OUTPUT_DIRECTORY/$BASENAME"
+    mkdir -p "$SAMPLE_OUTPUT"
+
+    # Run Kallisto quantification
+    /home/shared/kallisto_linux-v0.50.1/kallisto quant -i "$KALLISTO_INDEX" -o "$SAMPLE_OUTPUT" \
+        --single -t 20 -l 65 -s 2 "$FILE"
+done
+
+echo "Kallisto quantification complete."
+```
+
+# creating count matrix
+
+```{bash}
+perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
+--est_method kallisto \
+    --gene_trans_map none \
+    --out_prefix ../analyses/07-kallisto/test \
+    --name_sample_by_basedir \
+     ../analyses/07-kallisto/*/abundance.tsv
+```
+
+
+```{r, engine='bash', eval=TRUE}
+head ../analyses/07-kallisto/test.isoform.counts.matrix
+```
+```{r, eval=TRUE}
+countmatrix <- read.delim("../analyses/07-kallisto/test.isoform.counts.matrix", header = TRUE, sep = '\t')
+rownames(countmatrix) <- countmatrix$X
+countmatrix <- countmatrix[,-1]
+head(countmatrix)
+```
+```{r, eval=TRUE}
+countmatrix <- round(countmatrix, 0)
+str(countmatrix)
+```
+
+```{r, eval=TRUE}
+deseq2.colData <- data.frame(condition=factor(c(rep("control", 34), rep("desicated", 34))), 
+                             type=factor(rep("single-read", 68)))
+rownames(deseq2.colData) <- colnames(data)
+deseq2.dds <- DESeqDataSetFromMatrix(countData = countmatrix,
+                                     colData = deseq2.colData, 
+                                     design = ~ condition)
+```
+
+```{r, eval=TRUE, cache=TRUE}
+deseq2.dds <- DESeq(deseq2.dds)
+deseq2.res <- results(deseq2.dds)
+deseq2.res <- deseq2.res[order(rownames(deseq2.res)), ]
+```
+
+
+### Note sample treatments are not correct. 
+
+```{r, eval=FALSE}
+vsd <- vst(deseq2.dds, blind = FALSE)
+plotPCA(vsd, intgroup = "condition")
+```
+
+
+
+

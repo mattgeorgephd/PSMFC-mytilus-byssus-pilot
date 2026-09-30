@@ -1,0 +1,48 @@
+"0","cat("""
+"0","**Outputs (in "", OUT_DIR, ""):**"
+"0",""
+"0","- `rna_thread_manifest.csv` - every sequenced mussel: RNA tissues, treatment/day, curated"
+"0","  summary presence (day-3 & baseline), extracted-trace counts by phase, and the"
+"0","  `poststress_missing` / `baseline_missing` (extracted but not curated) and `no_post_trace`"
+"0","  (sequenced at day 3 but never pulled) flags."
+"0","- `top25_updown_<tissue>_<treatment>.csv` - 25 up + 25 down DEGs (by LFC) with LFC, padj,"
+"0","  direction, and VST expression across all thread-having mussels."
+"0","- `sample_metadata_<tissue>.csv` - per mussel: treatment, day, and post-stress thread"
+"0","  mechanics, to cross-reference against the expression columns above (match on mussel ID;"
+"0","  expression column `T046F` -> mussel `T046`)."
+"0",""
+"0","**Caveats:**"
+"0",""
+"0","- `SIG_ONLY = TRUE` ranks within padj<0.05 DEGs; for contrasts with few DEGs (e.g. foot-OA,"
+"0","  ~80 genes) you may get fewer than 25 in a direction. Set FALSE to rank all expressed genes."
+"0","- With `USE_RAW_THREAD_SET = FALSE`, columns are limited to mussels in the curated summary;"
+"0","  TRUE includes every animal with an extracted trace, whether or not it has been curated."
+"0","- Genes are ranked by fold change, not by association with mechanics; this is a descriptive"
+"0","  cross-reference table, not a test."
+"0",""")"
+"1","
+**Outputs (in "
+"1"," "
+"1","C:/Users/mattg/Desktop/github/PSMFC-mytilus-byssus-pilot/gene-mechanics-correlation/03_analyses/expr_tables"
+"1"," "
+"1","):**
+
+- `rna_thread_manifest.csv` - every sequenced mussel: RNA tissues, treatment/day, curated
+  summary presence (day-3 & baseline), extracted-trace counts by phase, and the
+  `poststress_missing` / `baseline_missing` (extracted but not curated) and `no_post_trace`
+  (sequenced at day 3 but never pulled) flags.
+- `top25_updown_<tissue>_<treatment>.csv` - 25 up + 25 down DEGs (by LFC) with LFC, padj,
+  direction, and VST expression across all thread-having mussels.
+- `sample_metadata_<tissue>.csv` - per mussel: treatment, day, and post-stress thread
+  mechanics, to cross-reference against the expression columns above (match on mussel ID;
+  expression column `T046F` -> mussel `T046`).
+
+**Caveats:**
+
+- `SIG_ONLY = TRUE` ranks within padj<0.05 DEGs; for contrasts with few DEGs (e.g. foot-OA,
+  ~80 genes) you may get fewer than 25 in a direction. Set FALSE to rank all expressed genes.
+- With `USE_RAW_THREAD_SET = FALSE`, columns are limited to mussels in the curated summary;
+  TRUE includes every animal with an extracted trace, whether or not it has been curated.
+- Genes are ranked by fold change, not by association with mechanics; this is a descriptive
+  cross-reference table, not a test.
+"

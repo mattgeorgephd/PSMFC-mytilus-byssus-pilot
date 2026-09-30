@@ -1,0 +1,538 @@
+---
+title: "11-byssal_thread_by_sample"
+output: html_document
+date: "2024-12-12"
+---
+### Load libraries
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(readr)
+```
+
+### Load in gene count matrix and gene loc/gene ID key
+```{r}
+gene_count_matrix_clean <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/gene_count_matrix_clean.csv")
+
+loc_go_blast <- read_delim("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/LOC_GO_list.txt",delim = "\t")
+
+colnames(loc_go_blast)[colnames(loc_go_blast) == "gene"] ="loc_id"
+```
+
+```{r}
+gene_count_matrix_clean <- gene_count_matrix_clean %>%
+  mutate(loc_id = sub(".*\\|", "", ...1)) %>% # Extract part after the pipe
+  select(loc_id, everything()) 
+
+
+# View the updated data frame
+print(df)
+```
+
+```{r}
+annot_GCM <- left_join(gene_count_matrix_clean, loc_go_blast[,c("loc_id", "Protein.names", "uniprot_accession.y", "Gene.Names", "Organism")], by= "loc_id")
+
+annot_GCM <- annot_GCM %>%
+  select(loc_id, Protein.names, uniprot_accession.y, Gene.Names, Organism, everything())
+```
+
+# Creating a gene count matrix of byssal thread genes
+```{r}
+foot_GCM <- annot_GCM %>%
+  filter(grepl("foot", Protein.names, ignore.case = TRUE))
+
+byss_GCM <- annot_GCM %>%
+  filter(grepl("byss", Protein.names, ignore.case = TRUE))
+
+foot_GCM <- foot_GCM %>%
+  distinct(uniprot_accession.y, .keep_all = TRUE)
+
+byss_GCM <- byss_GCM %>%
+  distinct(uniprot_accession.y, .keep_all = TRUE)
+
+foot_byss_GCM <- rbind(foot_GCM, byss_GCM)
+
+
+write.csv(foot_byss_GCM , file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/foot_byss_GCM.csv")
+```
+
+# Clean up foot-byss gene count matrix and join to treatment info
+```{r}
+foot_GCM_1 <- foot_byss_GCM %>%
+  pivot_longer(!1:6, names_to = "sample", values_to = "count")
+
+colnames(treatmentinfo.2)[colnames(treatmentinfo.2) == "sample.1"] ="sample"
+
+foot_byss_GCM_2 <- left_join(foot_GCM_1, treatmentinfo.2, by = "sample")
+
+write.csv(foot_byss_GCM_2, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/foot_byss_GCM.csv")
+```
+
+# Read in foot-byssus gene count matrix
+```{r}
+foot_byss_GCM_2 <- read_csv("/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/foot_byss_GCM.csv")
+```
+
+# Graph the log transcript counts of foot and byssus genes in foot tissue
+```{r}
+foot_byss_gene_plot <- foot_byss_GCM_2 %>%
+  filter(tissue == "F") %>%
+  filter(day == 3) %>%
+  ggplot(aes(x=Protein.names, y=log(count), fill=treatment))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  theme(plot.margin = unit(c(0.5, 0.5, 0.5, 1), 
+                                "inches"))
+foot_byss_gene_plot
+  
+ggsave(foot_byss_gene_plot, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/foot_byss_gene_plot.pdf")
+
+```
+
+# Graph the log transcript counts of foot and byssus genes in gill tissue
+```{r}
+gill_byss_gene_plot<- foot_byss_GCM_2 %>%
+  filter(tissue == "G") %>%
+  filter(day == 3) %>%
+  ggplot(aes(x=Protein.names, y=log(count), fill=treatment))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  theme(plot.margin = unit(c(0.5, 0.5, 0.5, 1), 
+                                "inches"))+
+  ylim(1,10)
+
+gill_byss_gene_plot
+
+
+ggsave(gill_byss_gene_plot, file = "output/gill_byss_gene_plot.pdf")
+```
+### Structural foot protein graph
+
+```{r}
+genes_to_plot <- foot_byss_GCM_2 %>%
+  filter(tissue == "F", day == 3, treatment == "control") %>%
+  group_by(Protein.names) %>%
+  summarise(max_count = max(count, na.rm = TRUE)) %>%
+  filter(max_count > 0.1) %>%
+  pull(Protein.names) 
+
+
+genes_to_plot_dataframe <- foot_byss_GCM_2 %>%
+  filter(tissue == "F", day == 3, treatment == "control") %>%
+  group_by(Protein.names, Organism) %>%   # group by both
+  summarise(max_count = max(count, na.rm = TRUE), .groups = "drop") %>%
+  filter(max_count > 0.1) %>%
+  select(Protein.names, Organism)
+
+genes_to_plot <- genes_to_plot[c(-(2:7), -17)]
+
+my_theme <- theme(line = element_line(linewidth=1.2), 
+                  rect = element_rect(linewidth=1.2),
+                  text = element_text(size=14,color="black"),
+                  panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text.x = element_text(size=14,color="black",angle=45, hjust =1),
+                  axis.text.y = element_text(size=16,color="black"),
+                  axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x = element_line(color="black"),
+                  axis.ticks.y = element_line(color="black"),
+                  # axis.line= element_line(color = "black", size = 0.1),
+                  panel.border = element_rect(color = "black", fill=NA, linewidth=1.2),
+                  legend.key = element_blank(), # removes background of legend bullets
+                  legend.position = "right",
+                  plot.margin = unit(c(0.5, 0.5, 0.5, 2), "inches"))
+
+install.packages("ggtext")
+library(ggtext)
+foot_byss_GCM_2 %>%
+  filter(tissue == "F", day == 3, Protein.names %in% genes_to_plot) %>%
+  mutate(
+    Protein.names = factor(
+      Protein.names,
+      levels = c(
+        "ACDC (Byssal EP-like protein 1) (EP-protein-1)",
+        "Foot protein 2",           # moved up
+        "Foot protein-4 variant-1",           # moved up
+        "Foot protein 10",
+        "Foot protein 11",
+        "Foot protein 12",
+        "Foot protein 13",
+        "Foot protein 14",
+        "Foot protein 15",
+        "Foot protein 17"
+      )
+    )
+  ) %>%
+  ggplot(aes(x = Protein.names, y = log(count), fill = treatment)) +
+  geom_boxplot(alpha = 5/10) +
+  theme_classic() +
+  labs(fill = "Treatment",
+       x = "Structural foot proteins")+
+  scale_fill_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  my_theme+
+  scale_x_discrete(labels = c(expression(paste("Foot protein 1 (", italic("M. coruscus"), ")")),expression(paste("Foot protein 2 (", italic("M. edulis"), ")")),"Foot protein-4 variant-1","Foot protein 10", "Foot protein 11", "Foot protein 12", "Foot protein 13", "Foot protein 14", "Foot protein 15", "Foot protein 17"))
+
+
+genes_to_plot_list <- foot_byss_GCM_2 %>%
+  filter(tissue == "F", day == 3, Protein.names %in% genes_to_plot)
+```
+
+### Structural foot protein graph in gill tissue
+```{r}
+genes_to_plot_G <- foot_byss_GCM_2 %>%
+  filter(tissue == "G", day == 3, treatment == "control") %>%
+  group_by(Protein.names) %>%
+  summarise(max_count = max(count, na.rm = TRUE)) %>%
+  filter(max_count > 0) %>%
+  pull(Protein.names)
+
+foot_byss_GCM_2 %>%
+  filter(tissue == "G", day == 3, Protein.names %in% genes_to_plot_G) %>%
+  ggplot(aes(x = Protein.names, y = log(count), fill = treatment)) +
+  geom_boxplot() +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 1), "inches"))
+```
+### HSP isolation and graph
+```{r}
+HSP_GCM <- annot_GCM %>%
+  filter(grepl("heat shock", Protein.names, ignore.case = TRUE))
+
+HSP_GCM <- HSP_GCM %>%
+  distinct(uniprot_accession.y, .keep_all = TRUE)
+
+HSP_GCM_1 <- HSP_GCM %>%
+  pivot_longer(!1:6, names_to = "sample", values_to = "count")
+
+colnames(treatmentinfo)[colnames(treatmentinfo) == "sample.1"] ="sample"
+
+HSP_GCM_2 <- left_join(HSP_GCM_1, treatmentinfo, by = "sample")
+
+write.csv(HSP_GCM_2, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/HSP_GCM.csv")
+
+```
+
+# HSP graph in foot tissue
+```{r}
+genes_to_plot_hsp <- HSP_GCM_2 %>%
+  filter(tissue == "F", day == 3, treatment == "control") %>%
+  group_by(Protein.names) %>%
+  summarise(max_count = max(count, na.rm = TRUE)) %>%
+  filter(max_count > 0.1) %>%
+  pull(Protein.names) 
+
+my_theme <- theme(line = element_line(linewidth=1.2), 
+                  rect = element_rect(linewidth=1.2),
+                  text = element_text(size=14,color="black"),
+                  panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text.x = element_text(size=12,color="black",angle=45, hjust =1),
+                  axis.text.y = element_text(size=14,color="black"),
+                  axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x = element_line(color="black"),
+                  axis.ticks.y = element_line(color="black"),
+                  # axis.line= element_line(color = "black", size = 0.1),
+                  panel.border = element_rect(color = "black", fill=NA, linewidth=1.2),
+                  legend.key = element_blank(), # removes background of legend bullets
+                  legend.position = "right",
+                  plot.margin = unit(c(0.5, 0.5, 0.5, 2), "inches"))
+
+genes_to_plot_hsp <- genes_to_plot_hsp[-8]
+
+labels_hsp <- c(
+  "10 kDa heat shock protein, mitochondrial", 
+  "60 kDa heat shock protein, mitochondrial", 
+  "97 kDa heat shock protein", 
+  "Activator of 90 kDa heat shock protein ATPase homolog 1", 
+  "DnaJ homologous subfamily A member 1 (Heat shock 40 kDa protein 4)", 
+  "Endoplasmin (Heat shock protein 90 kDa beta member 1)", 
+  "HSP70", 
+  "Heat shock 70 kDa protein 12A", 
+  "Heat shock 70 kDa protein 12B", 
+  "Heat shock 70 kDa protein 13", 
+  "Heat shock 70 kDa protein 14", 
+  "Heat shock cognate 71 kDa protein", 
+  "Heat shock factor protein", 
+  "Heat shock factor-binding protein 1", 
+  "Heat shock protein 70 A1", 
+  "Heat shock protein 70 B2", 
+  "Heat shock protein 75 kDa, mitochondrial", 
+  "Heat shock protein HSP 90-alpha", 
+  "Hsp70-binding protein 1 (HspBP1)", 
+  "HSPB1-associated protein 1", 
+  "Intraflagellar transport protein 25 homolog (Heat shock protein beta-11)", 
+  "Stress-70 protein, mitochondrial (Heat shock 70 kDa protein 9)"
+)
+
+HSP_GCM_2 %>%
+  filter(tissue == "F", day == 3, Protein.names %in% genes_to_plot_hsp) %>%
+  ggplot(aes(x = Protein.names, y = log(count), fill = treatment)) +
+  geom_boxplot(alpha = 5/10) +
+  theme_classic() +
+  labs(fill = "Treatment",
+       x = "Heat shock proteins")+
+  scale_fill_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  theme(axis.text.x = element_text(color="black",angle=45, hjust = 1),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 1.5), "inches"))+
+  scale_x_discrete(labels = str_wrap(labels_hsp, width = 40))+
+  my_theme
+
+```
+# HSP genes in gill tissue
+```{r}
+genes_to_plot_hspG <- HSP_GCM_2 %>%
+  filter(tissue == "G", day == 3, treatment == "control") %>%
+  group_by(Protein.names) %>%
+  summarise(max_count = max(count, na.rm = TRUE)) %>%
+  filter(max_count > 0.1) %>%
+  pull(Protein.names) 
+
+genes_to_plot_hspG <- genes_to_plot_hspG[-c(8,16)]
+
+labels_hspG <- c(
+  "10 kDa heat shock protein, mitochondrial", 
+  "60 kDa heat shock protein, mitochondrial", 
+  "97 kDa heat shock protein", 
+  "Activator of 90 kDa heat shock protein ATPase homolog 1", 
+  "DnaJ homologous subfamily A member 1 (Heat shock 40 kDa protein 4)", 
+  "Endoplasmin (Heat shock protein 90 kDa beta member 1)", 
+  "HSP70", 
+  "Heat shock 70 kDa protein 12A", 
+  "Heat shock 70 kDa protein 12B",
+  "Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B)",
+  "Heat shock 70 kDa protein 13", 
+  "Heat shock 70 kDa protein 14", 
+  "Heat shock cognate 71 kDa protein", 
+  "Heat shock factor protein",
+  "Heat shock factor-binding protein 1", 
+  "Heat shock protein 70 A1", 
+  "Heat shock protein 70 B2", 
+  "Heat shock protein 75 kDa, mitochondrial", 
+  "Heat shock protein HSP 90-alpha", 
+  "Hsp70-binding protein 1 (HspBP1)", 
+  "HSPB1-associated protein 1", 
+  "Intraflagellar transport protein 25 homolog (Heat shock protein beta-11)", 
+  "Stress-70 protein, mitochondrial (Heat shock 70 kDa protein 9)"
+)
+
+HSP_GCM_2 %>%
+  filter(tissue == "G", day == 3, Protein.names %in% genes_to_plot_hspG) %>%
+  ggplot(aes(x = Protein.names, y = log(count), fill = treatment)) +
+  geom_boxplot(alpha = 5/10) +
+  theme_classic() +
+  labs(fill = "Treatment",
+       x = "Heat shock proteins")+
+  scale_fill_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  theme(axis.text.x = element_text(color="black",angle=45, hjust = 1),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 2), "inches"))+
+  scale_x_discrete(labels = str_wrap(labels_hspG, width = 40))+
+  #scale_x_discrete(labels = function(x) str_wrap(x, width = 40))+
+  my_theme
+```
+# HIF gene isolation from GCM
+```{r}
+### HIF isolation and graph
+
+HIF_GCM <- annot_GCM %>%
+  filter(grepl("hypoxia", Protein.names, ignore.case = TRUE))
+
+HIF_GCM <- HIF_GCM %>%
+  distinct(uniprot_accession.y, .keep_all = TRUE)
+
+HIF_GCM_1 <- HIF_GCM %>%
+  pivot_longer(!1:6, names_to = "sample", values_to = "count")
+
+
+HIF_GCM_2 <- left_join(HIF_GCM_1, treatmentinfo, by = "sample")
+
+write.csv(HIF_GCM_2, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/HIF_GCM.csv")
+
+
+```
+
+# Graphing HIF transcript counts in foot tissue
+```{r}
+genes_to_plot_hifF <- HIF_GCM_2 %>%
+  filter(tissue == "F", day == 3, treatment == "control") %>%
+  group_by(Protein.names) %>%
+  summarise(max_count = max(count, na.rm = TRUE)) %>%
+  filter(max_count > 0.1) %>%
+  pull(Protein.names) 
+
+
+genes_to_plot_hifF <- genes_to_plot_hifF[-1]
+
+labels_hifF <- c(
+  "Aryl hydrocarbon receptor nuclear translocator (Hypoxia-inducible factor 1-beta)",
+  "Egl nine homologous 1 (Hypoxia-inducible factor prolyl hydroxylase 2)",
+  "Endothelial PAS domain-containing protein 1 (Hypoxia-inducible factor 2-alpha)",
+  "Hypoxia upregulated protein 1", 
+  "Hypoxia-inducible factor 1-alpha",
+  "Hypoxia-inducible factor 1-alpha inhibitor",
+  "Transmembrane prolyl 4-hydroxylase (Hypoxia-inducible factor prolyl hydroxylase 4)"
+)
+
+HIF_GCM_2 %>%
+  filter(tissue == "F", day == 3, Protein.names %in% genes_to_plot_hifF) %>%
+  ggplot(aes(x = Protein.names, y = log(count), fill = treatment)) +
+  geom_boxplot(alpha = 5/10) +
+  theme_classic() +
+  labs(fill = "Treatment",
+       x = "Hypoxia-inducible factor proteins")+
+  scale_fill_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  theme(axis.text.x = element_text(color="black",angle=45, hjust = 1),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 2), "inches"))+
+  scale_x_discrete(labels = str_wrap(labels_hifF, width = 40))+
+  my_theme
+```
+
+# Graphing HIF transcript counts in gill tissue
+```{r}
+genes_to_plot_hifG <- HIF_GCM_2 %>%
+  filter(tissue == "G", day == 3, treatment == "control") %>%
+  group_by(Protein.names) %>%
+  summarise(max_count = max(count, na.rm = TRUE)) %>%
+  filter(max_count > 0.1) %>%
+  pull(Protein.names) 
+
+genes_to_plot_hifG <- genes_to_plot_hifG[-1]
+
+labels_hifG <- c(
+  "Aryl hydrocarbon receptor nuclear translocator (Hypoxia-inducible factor 1-beta)",
+  "Egl nine homologous 1 (Hypoxia-inducible factor prolyl hydroxylase 2)",
+  "Endothelial PAS domain-containing protein 1 (Hypoxia-inducible factor 2-alpha)",
+  "Hypoxia upregulated protein 1", 
+  "Hypoxia-inducible factor 1-alpha",
+  "Hypoxia-inducible factor 1-alpha inhibitor",
+  "Transmembrane prolyl 4-hydroxylase (Hypoxia-inducible factor prolyl hydroxylase 4)"
+)
+
+HIF_GCM_2 %>%
+  filter(tissue == "G", day == 3, Protein.names %in% genes_to_plot_hifG) %>%
+  ggplot(aes(x = Protein.names, y = log(count), fill = treatment)) +
+  geom_boxplot(alpha = 5/10) +
+  theme_classic() +
+  labs(fill = "Treatment",
+       x = "Hypoxia-inducible factor proteins")+
+  scale_fill_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  theme(axis.text.x = element_text(color="black",angle=45, hjust = 1),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 2), "inches"))+
+  scale_x_discrete(labels = str_wrap(labels_hifG, width = 40))+
+  my_theme
+```
+### Peroxidase/catalase transcript isolation
+```{r}
+toMatch <- c("peroxidase", "catalase")
+
+perox_GCM <- annot_GCM %>%
+  filter(grepl(paste(toMatch,collapse="|"), Protein.names, ignore.case = TRUE))
+
+perox_GCM <- perox_GCM %>%
+  distinct(uniprot_accession.y, .keep_all = TRUE)
+
+perox_GCM_1 <- perox_GCM %>%
+  pivot_longer(!1:6, names_to = "sample", values_to = "count")
+
+
+perox_GCM_2 <- left_join(perox_GCM_1, treatmentinfo, by = "sample")
+
+write.csv(perox_GCM_2, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/byssus-exp-analysis/output/perox_GCM.csv")
+
+
+```
+
+# Graphing peroxidase/catalase transcript counts in foot tissue
+```{r}
+genes_to_plot_peroxF <- perox_GCM_2 %>%
+  filter(tissue == "F", day == 3, treatment == "control") %>%
+  group_by(Protein.names) %>%
+  summarise(max_count = max(count, na.rm = TRUE)) %>%
+  filter(max_count > 1) %>%
+  pull(Protein.names) 
+
+genes_to_plot_peroxF <- genes_to_plot_peroxF[-c(8,10)]
+
+labels_peroxF <- c(
+  "Byssal peroxidase-like protein 4", 
+  "Catalase", 
+  "Chloride intracellular channel protein 2 (Glutaredoxin-like peroxidase CLIC2)", 
+  "Dye-decolorizing peroxidase YfeX", 
+  "Glutathione peroxidase (GPX)", 
+  "Gluthathione peroxidase (GPx) (GSHPx)", 
+  "Glutathione peroxidase 1", 
+  "Glutathione peroxidase 7",
+  "Glutathione S-transferase 3, mitochondrial (Glutathione peroxidase MGST3)", 
+  "Peroxiredoxin 4 (Thioredoxin peroxidase AO372)", 
+  "Peroxiredoxin 5, mitochondrial (Thioredoxin peroxidase PMP20)", 
+  "Peroxiredoxin 5, mitochondrial (Thioredoxin peroxidase)", 
+  "Peroxidredoxin 6 (Glutathione peroxidase 4)", 
+  "Phospholipid hydroperoxide glutathione peroxidase ", 
+  "Thioredoxin reductase 1, cytoplasmic (Peroxidase TXNRD1)")
+
+
+perox_GCM_2 %>%
+  filter(tissue == "F", day == 3, Protein.names %in% genes_to_plot_peroxF) %>%
+  ggplot(aes(x = Protein.names, y = log(count), fill = treatment)) +
+  geom_boxplot(alpha = 5/10) +
+  theme_classic() +
+  labs(fill = "Treatment",
+       x = "Peroxidase proteins")+
+  scale_fill_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  theme(axis.text.x = element_text(color="black",angle=45, hjust = 1),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 2), "inches"))+
+  scale_x_discrete(labels = str_wrap(labels_peroxF, width = 40))+
+  #scale_x_discrete(labels = function(x) str_wrap(x, width = 40))+
+  my_theme
+```
+
+# Graphing peroxidase/catalase transcript counts in gill tissue
+```{r}
+genes_to_plot_peroxG <- perox_GCM_2 %>%
+  filter(tissue == "G", day == 3, treatment == "control") %>%
+  group_by(Protein.names) %>%
+  summarise(max_count = max(count, na.rm = TRUE)) %>%
+  filter(max_count > 1) %>%
+  pull(Protein.names) 
+
+genes_to_plot_peroxG <- genes_to_plot_peroxG[-c(8,12)]
+
+labels_peroxG <- c(
+  "Byssal peroxidase-like protein 4", 
+  "Catalase", 
+  "Chloride intracellular channel protein 2 (Glutaredoxin-like peroxidase CLIC2)", 
+  "Dye-decolorizing peroxidase YfeX", 
+  "Glutathione peroxidase (GPX)", 
+  "Gluthathione peroxidase (GPx) (GSHPx)", 
+  "Glutathione peroxidase 1", 
+  "Glutathione peroxidase 3", 
+  "Glutathione peroxidase 7",
+  "Glutathione S-transferase 3, mitochondrial (Glutathione peroxidase MGST3)",
+  "Peroxiredoxin-4 (Thioredoxin peroxidase AO372)", 
+  "Peroxiredoxin-5, mitochondrial (Thioredoxin peroxidase PMP20)", 
+  "Peroxiredoxin-5, mitochondrial (Thioredoxin peroxidase)", 
+  "Peroxidredoxin-6 (Glutathione peroxidase 4)", 
+  "Phospholipid hydroperoxide glutathione peroxidase", 
+  "Thioredoxin reductase 1, cytoplasmic (Peroxidase TXNRD1)")
+
+
+perox_GCM_2 %>%
+  filter(tissue == "G", day == 3, Protein.names %in% genes_to_plot_peroxG) %>%
+  ggplot(aes(x = Protein.names, y = log(count), fill = treatment)) +
+  geom_boxplot(alpha = 5/10) +
+  theme_classic() +
+  labs(fill = "Treatment",
+       x = "Peroxidase proteins")+
+  scale_fill_manual(labels = c("Treatment control", "Hypoxia", "Ocean acidification", "Ocean warming"), values = c("purple", "green", "red", "orange"))+
+  theme(axis.text.x = element_text(color="black",angle=45, hjust = 1),
+        plot.margin = unit(c(0.5, 0.5, 0.5, 2), "inches"))+
+  #scale_x_discrete(labels = function(x) str_wrap(x, width = 40))
+  scale_x_discrete(labels = str_wrap(labels_peroxG, width = 40))+
+  my_theme
+```

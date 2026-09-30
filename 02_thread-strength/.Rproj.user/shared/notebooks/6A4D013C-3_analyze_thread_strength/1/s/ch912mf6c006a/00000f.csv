@@ -1,0 +1,3 @@
+"0","# Create this script's output folder under 03_analyses (idempotent)"
+"0","out_dir <- here::here(""03_analyses"", ""analyze-thread-strength"")"
+"0","dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)"

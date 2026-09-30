@@ -1,0 +1,116 @@
+---
+title: "14-kallisto"
+author: "Steven Roberts"
+date: "`r format(Sys.time(), '%d %B, %Y')`"  
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    html_preview: true
+  html_document:
+    theme: readable
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: true
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(DT)
+library(Biostrings)
+library(tm)
+library(pheatmap)
+library(DESeq2)
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = FALSE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 6,       # Set plot width in inches
+  fig.height = 4,      # Set plot height in inches
+  fig.align = "center", # Align plots to the center
+  comment = ""         # Prevents appending '##' to beginning of lines in code output
+)
+```
+
+# Differentially Expressed Genes
+ 
+
+
+# Reads
+
+```{r, engine='bash', eval=TRUE}
+ls /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/
+```
+
+
+# Genome
+
+
+```{r, engine='bash'}
+cd ../data
+
+/home/shared/datasets download genome accession GCF_036588685.1 --include gff3,gtf,rna,cds,protein,genome,seq-report
+```
+
+```{bash}
+cd ../data 
+unzip ncbi_dataset.zip
+```
+
+```{r, engine='bash', eval=TRUE}
+ls ../data/ncbi_dataset/data/GCF_036588685.1
+
+```
+
+
+
+
+```{bash}
+/home/shared/kallisto/kallisto index \
+-i ../output/14-kallisto-ng/cds.index \
+../data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fna
+```
+
+
+```{bash}
+find /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz | xargs basename -s _L099_R1_cmb.trim.fastq.gz \
+| xargs -I{} sh -c '/home/shared/kallisto/kallisto quant \
+-i ../output/14-kallisto-ng/cds.index \
+-o ../output/kallisto_01/{} \
+-t 20 \
+--fr-stranded ../data/{}_R1.fastq.gz \
+/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/{}_L099_R1_cmb.trim.fastq.gz
+> ../output/kallisto_01/{}_kallisto.out
+```
+
+
+
+
+
+
+
+
+```{r, engine='bash'}
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+which multiqc
+
+
+multiqc ../output/13-Hisat/ \
+-o ../output/13-Hisat/
+```
+
+
+
+
+

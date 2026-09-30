@@ -1,0 +1,5 @@
+metric,scale,tier,label,arms,covariates,use_secretion_state,exclude_floor_genes
+max_force,log,primary,Peak force (N),control;OA;OW;DO,treatment,FALSE,TRUE
+pad_area,log,primary,Plaque area (mm^2),control;OA;OW;DO,treatment,FALSE,TRUE
+adhesion_kpa,log,exploratory,Adhesion (kPa),control;OA;OW;DO,treatment,FALSE,TRUE
+max_displacement,raw,exploratory,Extension at break (mm),control;OA;OW;DO,treatment,FALSE,TRUE

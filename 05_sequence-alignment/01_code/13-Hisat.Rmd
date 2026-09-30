@@ -1,0 +1,234 @@
+---
+title: "13-Hisat"
+author: "Steven Roberts"
+date: "`r format(Sys.time(), '%d %B, %Y')`"  
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    html_preview: true
+  html_document:
+    theme: readable
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: true
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(DT)
+library(Biostrings)
+library(tm)
+library(pheatmap)
+library(DESeq2)
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = FALSE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 6,       # Set plot width in inches
+  fig.height = 4,      # Set plot height in inches
+  fig.align = "center", # Align plots to the center
+  comment = ""         # Prevents appending '##' to beginning of lines in code output
+)
+```
+
+# Differentially Expressed Genes
+ 
+
+
+# Reads
+
+```{r, engine='bash', eval=TRUE}
+ls /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/
+```
+
+
+# Genome
+
+
+```{r, engine='bash'}
+cd ../data
+
+/home/shared/datasets download genome accession GCF_036588685.1 --include gff3,gtf,rna,cds,protein,genome,seq-report
+```
+
+```{bash}
+cd ../data 
+unzip ncbi_dataset.zip
+```
+
+```{r, engine='bash', eval=TRUE}
+ls ../data/ncbi_dataset/data/GCF_036588685.1
+
+```
+
+
+
+
+# Hisat
+
+```{r, engine='bash'}
+/home/shared/hisat2-2.2.1/hisat2_extract_exons.py \
+../data/ncbi_dataset/data/GCF_036588685.1/genomic.gtf \
+> ../output/13-Hisat/m_exon.tab
+```
+
+```{r, engine='bash'}
+/home/shared/hisat2-2.2.1/hisat2_extract_splice_sites.py \
+../data/ncbi_dataset/data/GCF_036588685.1/genomic.gtf \
+> ../output/13-Hisat/m_spice_sites.tab
+```
+
+```{r, engine='bash'}
+echo "13-Hisat/GCF*" >> ../output/.gitignore
+echo "13-Hisat/GCF**fastq" >> ../output/.gitignore
+```
+
+
+
+```{r, engine='bash'}
+/home/shared/hisat2-2.2.1/hisat2-build \
+../data/ncbi_dataset/data/GCF_036588685.1/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna \
+../output/13-Hisat/PNRI_Mtr1.1.1.index \
+--exon ../output/13-Hisat/m_exon.tab \
+--ss ../output/13-Hisat/m_spice_sites.tab \
+-p 32 \
+../data/ncbi_dataset/data/GCF_036588685.1/genomic.gtf \
+2> ../output/13-Hisat/hisat2-build_stats.txt
+```
+
+```{r, engine='bash'}
+echo "13-Hisat/*sam" >> ../output/.gitignore
+```
+
+H9-T014F_S171_L099_R1_cmb.trim.fastq.gz
+
+/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/
+
+```{r, engine='bash', eval=TRUE}
+find /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz | xargs basename -s _L099_R1_cmb.trim.fastq.gz | xargs -I{} echo {}
+```
+
+
+
+
+
+```{r, engine='bash'}
+find /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz | xargs -I{} basename -s _L099_R1_cmb.trim.fastq.gz {} | xargs -I{} sh -c '/home/shared/hisat2-2.2.1/hisat2 \
+-x ../output/13-Hisat/PNRI_Mtr1.1.1.index \
+--dta \
+-p 32 \
+-U /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/{}_L099_R1_cmb.trim.fastq.gz \
+-S ../output/13-Hisat/{}.sam \
+> ../output/13-Hisat/{}_hisat.stdout 2> ../output/13-Hisat/{}_hisat.stderr'
+```
+
+
+Explanation
+xargs -I{}: This option allows you to replace {} in the command with the output from the previous command (i.e., basename). It's used twice: first, to strip the suffix from the filenames, and second, to construct and execute the hisat2 command.
+
+sh -c: This is used to execute a complex command within xargs. It's necessary because the output redirection (>, 2>) is shell functionality, and without sh -c, xargs wouldn't handle it correctly.
+
+
+
+```{r, engine='bash'}
+echo "13-Hisat/*bam" >> ../output/.gitignore
+echo "13-Hisat/*bam*" >> ../output/.gitignore
+```
+
+```{r, engine='bash'}
+for samfile in ../output/13-Hisat/*.sam; do
+  bamfile="${samfile%.sam}.bam"
+  sorted_bamfile="${samfile%.sam}.sorted.bam"
+  /home/shared/samtools-1.12/samtools view -bS -@ 20 "$samfile" > "$bamfile"
+  /home/shared/samtools-1.12/samtools sort -@ 20 "$bamfile" -o "$sorted_bamfile"
+  /home/shared/samtools-1.12/samtools index -@ 20 "$sorted_bamfile"
+done
+```
+
+,
+```{r, engine='bash'}
+rm ../output/13-Hisat/*sam
+```
+
+
+```{r, engine='bash'}
+ls ../output/13-Hisat/*sorted.bam | wc -l
+```
+
+
+
+
+# Stringtie
+
+```{r, engine='bash'}
+echo "13-Hisat/*gtf" >> ../output/.gitignore
+```
+
+
+
+```{r, engine='bash'}
+find ../output/13-Hisat/*sorted.bam \
+| xargs basename -s .sorted.bam | xargs -I{} \
+sh -c '/home/shared/stringtie-2.2.1.Linux_x86_64/stringtie \
+-p 36 \
+-eB \
+-G ../data/ncbi_dataset/data/GCF_036588685.1/genomic.gff \
+-o ../output/13-Hisat/{}.gtf \
+../output/13-Hisat/{}.sorted.bam'
+```
+
+
+
+Compare genome with gff...
+
+```{bash}
+head -30 ../data/ncbi_dataset/data/GCF_036588685.1/genomic.gff
+```
+
+
+```{bash}
+head ../data/ncbi_dataset/data/GCF_036588685.1/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna
+```
+
+
+
+
+
+```{bash}
+head ../output/13-Hisat/*119.gtf
+
+```
+
+
+
+
+
+
+
+```{r, engine='bash'}
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+which multiqc
+
+
+multiqc ../output/13-Hisat/ \
+-o ../output/13-Hisat/
+```
+
+
+
+
+```{bash}
+head ../output/13-Hisat/*gtf
+```

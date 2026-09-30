@@ -1,0 +1,3 @@
+"0",""
+"0","ggsave(file.path(out_dir, ""FIG_failure_mode_by_arm.png""), plot = p_fm,"
+"0","       dpi = 600, width = 8, height = 4.5, units = ""in"")"

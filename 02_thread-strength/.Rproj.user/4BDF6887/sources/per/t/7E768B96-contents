@@ -1,0 +1,171 @@
+---
+title: "0_build_mussel_key"
+author: "Matt George"
+date: "2026-09-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Purpose
+
+Build a repo-internal mussel key that maps each *M. trossulus* tag to its experimental
+attributes
+
+Source of truth: `mussel-measurements/mussel-size-measurements`, sheet `data`.
+Output: `thread-strength/02_data/mussel-treatment-key.csv` (CSV, not xlsx, so the key shows
+up as readable text in `git diff`).
+
+## Load packages
+
+```{r message=FALSE, warning=FALSE}
+## Run within "thread-strength.Rproj" so here::here() resolves to the analysis root.
+rm(list = ls())
+
+load.lib    <- c("readxl", "tidyverse", "here")
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+for (lib in install.lib) install.packages(lib, dependencies = TRUE)
+sapply(load.lib, require, character = TRUE)
+```
+
+## Paths
+
+```{r paths}
+proj_root  <- here::here()                                   # thread-strength/
+repo_root  <- normalizePath(file.path(proj_root, ".."))      # repository root
+morph_xlsx <- file.path(repo_root, "mussel-measurements", "mussel-size-measurements.xlsx")
+tens_root  <- file.path(proj_root, "02_data", "tensometer_output")
+key_out    <- file.path(proj_root, "02_data", "mussel-treatment-key.csv")
+
+if (!file.exists(morph_xlsx))
+  stop("mussel-size-measurements.xlsx workbook not found at:\n  ", morph_xlsx,
+       "\nThe filename contains spaces and hyphens exactly as written above.")
+```
+
+## Helper: canonical mussel tag
+
+```{r}
+# Collapse any spelling of a tag to prefix + zero-padded 3 digits (T37 -> T037) so the same
+# physical animal joins across sources. Returns NA for anything that is not a tag.
+norm_id <- function(x) {
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
+}
+```
+
+## Build the key
+
+```{r}
+mussels <- read_excel(morph_xlsx, sheet = "data")
+
+required <- c("species", "mussel_ID", "group", "mussel_trt",
+              "days_in_trt", "rna_sequenced")
+missing_cols <- setdiff(required, names(mussels))
+if (length(missing_cols) > 0)
+  stop("`data` is missing expected column(s): ",
+       paste(missing_cols, collapse = ", "),
+       "\nThe sheet layout changed; update this script rather than the key by hand.")
+
+# readxl returns date cells as POSIXct and text cells as character; coerce once, up front,
+# so the written key is always an ISO date string or empty (never "NA" or a serial number).
+sampled <- suppressWarnings(as.Date(mussels$date_sampled))
+
+mussel_key <- mussels %>%
+  transmute(
+    mussel        = norm_id(mussel_ID),
+    species       = trimws(as.character(species)),
+    mussel_trt    = trimws(as.character(mussel_trt)),   # the arm: OA / OW / DO / control / lab_control / desiccation
+    group         = trimws(as.character(group)),        # cohort label from morphometrics - NOT a before/after axis
+    days_in_trt   = trimws(as.character(days_in_trt)),  # text: not all values are numeric (e.g. "24h")
+    rna_sequenced = trimws(as.character(rna_sequenced))
+  ) %>%
+  arrange(mussel)
+
+# Fail loudly rather than write a key that cannot be joined on.
+if (any(is.na(mussel_key$mussel)))
+  stop(sum(is.na(mussel_key$mussel)), " row(s) have an unparseable mussel_ID.")
+if (anyDuplicated(mussel_key$mussel) > 0)
+  stop("Duplicate mussel IDs in `mussels-all`: ",
+       paste(unique(mussel_key$mussel[duplicated(mussel_key$mussel)]), collapse = ", "))
+
+message("Key rows: ", nrow(mussel_key))
+mussel_key %>% count(group, mussel_trt, days_in_trt) %>% knitr::kable()
+```
+
+## Validate against the tensometer folders
+
+This is the check that matters: every mussel with a trace must be in the key, and the arm
+implied by the folder must match the arm recorded in morphometrics.
+
+```{r}
+trace_files <- list.files(tens_root, recursive = TRUE, full.names = FALSE)
+traces <- tibble(rel = trace_files) %>%
+  filter(grepl("^[^/]+/[A-Za-z]+[0-9]+_[0-9]+", rel)) %>%
+  transmute(source_folder = dirname(rel),
+            mussel        = norm_id(sub("_.*$", "", basename(rel))))
+
+# Folder name -> arm, for the comparison only. The authoritative copy of this map lives in
+# 1_extract_tensometer_data.Rmd; keep the two in step if folders are added.
+folder_arm <- c("00_baseline"           = NA_character_,   # baseline threads: arm not yet expressed
+                "00_laboratory_control" = "lab_control",
+                "01_treatment_control"  = "control",
+                "02_OA_treatment"       = "OA",
+                "03_OW_treatment"       = "OW",
+                "04_DO_treatment"       = "DO")
+
+chk <- traces %>%
+  left_join(mussel_key, by = "mussel") %>%
+  mutate(folder_trt = unname(folder_arm[source_folder]))
+
+orphans <- chk %>% filter(is.na(species)) %>% distinct(mussel) %>% pull(mussel)
+if (length(orphans) > 0)
+  warning("Mussel(s) with traces but no key row: ", paste(orphans, collapse = ", "))
+
+mismatch <- chk %>% filter(!is.na(folder_trt), folder_trt != mussel_trt)
+if (nrow(mismatch) > 0) {
+  warning(nrow(mismatch), " trace(s) where the folder arm disagrees with morphometrics.")
+  mismatch %>% count(source_folder, folder_trt, mussel_trt) %>% knitr::kable()
+} else {
+  message("Folder arm agrees with mussel-size-measurements on all ",
+          sum(!is.na(chk$folder_trt)), " post-exposure traces.")
+}
+
+unknown_folder <- setdiff(unique(traces$source_folder), names(folder_arm))
+if (length(unknown_folder) > 0)
+  warning("Tensometer subfolder(s) not in `folder_arm`: ",
+          paste(unknown_folder, collapse = ", "),
+          " - add them here and in 1_extract_tensometer_data.Rmd.")
+```
+
+### Coverage: who is in the key but has no traces
+
+Informational. A mussel can legitimately appear here (an arm that was never pulled), but a
+short count in an arm you expect to analyze is worth chasing before modelling.
+
+```{r}
+mussel_key %>%
+  mutate(has_traces = mussel %in% traces$mussel) %>%
+  count(group, mussel_trt, days_in_trt, has_traces) %>%
+  pivot_wider(names_from = has_traces, values_from = n,
+              names_prefix = "traces_", values_fill = 0) %>%
+  knitr::kable()
+```
+
+## Write the key
+
+```{r}
+readr::write_csv(mussel_key, key_out, na = "")
+message("Wrote ", key_out, " (", nrow(mussel_key), " mussels).")
+```
+
+## Thread-level facts are not in this key
+
+`pad_area` (plaque cross-sectional area, mm^2), `failure` and the technician-recorded
+`maximum_force` were thread-level columns of the retired Google Sheet. No morphometrics
+sheet contains them, so this key cannot supply them; `pad_area` and `failure` live in
+`02_data/pad_area_measurements.xlsx` (one row per trace), which
+`2_assemble_thread_summary.Rmd` joins to the extracted traces.
