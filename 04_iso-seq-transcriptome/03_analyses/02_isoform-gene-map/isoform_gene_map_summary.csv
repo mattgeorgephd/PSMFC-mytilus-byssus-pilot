@@ -1,0 +1,7 @@
+status,isoforms,genes
+assigned,182861,17207
+unassigned,221480,221480
+ambiguous,6910,1436
+all,411251,239272
+unassigned with only an antisense hit,610,
+genes with a CDS that received an isoform,,17792
