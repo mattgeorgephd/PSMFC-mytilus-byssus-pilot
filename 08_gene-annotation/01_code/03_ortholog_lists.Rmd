@@ -15,8 +15,9 @@ lists the bivalve species that have a member in that group (OrthoDB release 12.2
 UniProt hit has relatives in bivalves.
 
 Writes, in `03_analyses/Top_gene_summaries/`, `<code>_topgene_summs_ortho.csv` (step 02's table
-plus `ortho_group`, the OrthoDB group used, and `bivalve_validation`, the bivalve species in it,
-empty when there are none, or `Error: <message>`), `ortho_species.tab.gz` (OrthoDB's species
+plus `ortho_group`, the OrthoDB group used, and `bivalve_validation`: the bivalve species in
+the group, each once, or `No bivalve in the group`, `No OrthoDB group for this accession`, or
+`Error: <message>`), `ortho_species.tab.gz` (OrthoDB's species
 table) and `RUN_provenance_orthologs.txt`.
 
 ```{r paths}
@@ -63,11 +64,12 @@ odb_get <- function(url) {                                    # spaced, retried 
 bivalves_of <- function(acc) {
   tryCatch({
     hit <- odb_get(paste0("https://data.orthodb.org/v12/search?query=", acc, "&level=33208"))
-    if (length(hit$data) == 0) return(c(NA_character_, ""))
+    if (length(hit$data) == 0) return(c(NA_character_, "No OrthoDB group for this accession"))
     group <- hit$data[[1]]
     members <- odb_get(paste0("https://data.orthodb.org/v12/orthologs?id=", group))
     orgs <- members$data$organism.id
-    c(group, paste(bivalve_taxids$species_name[bivalve_taxids$orthodb_key %in% orgs], collapse = ", "))
+    biv <- unique(bivalve_taxids$species_name[bivalve_taxids$orthodb_key %in% orgs])   # a species can have two assemblies
+    c(group, if (length(biv)) paste(sort(biv), collapse = ", ") else "No bivalve in the group")
   }, error = function(e) c(NA_character_, paste0("Error: ", conditionMessage(e))))
 }
 all_acc <- unique(unlist(lapply(codes, function(cd) read.csv(file.path(topgenes, paste0(cd, "_topgene_summs.csv")))$UniProt_ID)))
@@ -80,7 +82,7 @@ for (cd in codes) {
 }
 knitr::kable(data.frame(accessions = length(all_acc),
                         with_group = sum(!is.na(vapply(res, `[`, "", 1))),
-                        with_bivalves = sum(nzchar(vapply(res, `[`, "", 2)) & !startsWith(vapply(res, `[`, "", 2), "Error")),
+                        with_bivalves = sum(!grepl("^(Error|No )", vapply(res, `[`, "", 2))),
                         errors = sum(startsWith(vapply(res, `[`, "", 2), "Error"))))
 ```
 
