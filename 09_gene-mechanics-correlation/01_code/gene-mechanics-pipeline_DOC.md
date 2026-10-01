@@ -1,14 +1,14 @@
-# Gene-mechanics correlation pipeline, scripts 20 to 23
+# Gene-mechanics correlation pipeline, scripts 01 to 04
 
 Links foot or gill gene expression at day 3 to the same animal's byssal thread mechanics.
 Four chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
-session, parameterised by tissue. Run in order **20 → 21 → 22 → 23**, after 02_thread-strength
-scripts 1 to 4, or knit **00-run_gene_mechanics_by_tissue.Rmd**, which renders all four for
-foot and gill.
+session, parameterised by tissue. Run in order **01 → 02 → 03 → 04**, after the
+`02_thread-strength` and `06_differential-expression` runners, or knit
+**00_run_gene_mechanics_by_tissue.Rmd**, which renders all four for foot and gill.
 
 ## Running for a tissue
 
-Each of 20 to 23 has a knit parameter in its YAML header:
+Each of 01 to 04 has a knit parameter in its YAML header:
 
 ```yaml
 params:
@@ -16,32 +16,37 @@ params:
 ```
 
 `TISSUE` is read from `params$tissue`, falling back to `"F"` when the script is run chunk by
-chunk outside a knit. Driver 00 renders each script **in its own R process** (nested
-`rmarkdown::render()` collides on knitr's chunk-label registry) and writes the HTML reports
-and a `run_log.csv` to `03_analyses/knit_html/`, which is git-ignored.
+chunk outside a knit. Runner 00 renders each script **in its own R process** (nested
+`rmarkdown::render()` collides on knitr's chunk-label registry), through the shared
+`tools/run_steps.R`, and writes the HTML reports, a log per script and a `run_log.csv` to
+`03_analyses/knit_html/`, which is git-ignored.
 
 Every output is tissue-suffixed (`_F` / `_G`) except `annotation_map.csv`, a tissue-independent
-LOC-to-protein map. The gill treatmentinfo codes the day-3 control arm as `control_3` and has no
-leading index column; scripts 20 and 22 normalise both. An animal with a treatmentinfo row but no
+LOC-to-protein map. Treatment, day and sampled region per library come from the sample table
+written by `06_differential-expression` (`treatmentinfo_clean.csv`), one row per library in the
+clean count matrix. Foot means the phenol gland to the tip of the foot; the day-0 libraries of
+the rest of the foot (IDs ending `FX`) are left out. An animal with a sample-table row but no
 count-matrix column is dropped with a message rather than a hard stop.
 
 ```
-02_thread-strength/03_analyses/02_assemble-thread-summary/
-    thread-summary.xlsx                                             thread summary (script 2)
-02_thread-strength/03_analyses/04_decompose-adhesion/
-    mussel_response_classification.csv                              per-animal response (script 4)
-02_thread-strength/03_analyses/01_extract-tensometer-data/
-    thread-summary-raw-output.xlsx                                  every extracted trace (script 1)
-06_differential-expression/02_data/gene_count_matrix_clean.csv      counts
-06_differential-expression/03_analyses/DEG_lists/Foot/F_treatmentinfo.csv
-                                                                    Tag-seq arm per sample
+02_thread-strength/03_analyses/03_assemble-thread-summary/
+    thread-summary.xlsx                                             thread summary (script 03)
+02_thread-strength/03_analyses/05_decompose-adhesion/
+    mussel_response_classification.csv                              per-animal response (script 05)
+02_thread-strength/03_analyses/02_extract-tensometer-data/
+    thread-summary-raw-output.xlsx                                  every extracted trace (script 02)
+06_differential-expression/03_analyses/count_matrix/
+    gene_count_matrix_clean.csv                                     counts (script 01)
+    treatmentinfo_clean.csv                                         arm, day, region per library (script 01)
+06_differential-expression/03_analyses/DEG_lists/<Foot|Gill>/
+    <T><X>_TC_siggene.csv                                           TC DEG lists (script 04)
         |
         v
-20  paired table, VST, candidate set,
+01  paired table, VST, candidate set,
     per-gene ANCOVA (the reported test)             ->  03_analyses/gene_mechanics/
-21  modules, diagnostics                          ->  03_analyses/gene_mechanics/
-22  RNA x thread manifest, top-25 expression tables ->  03_analyses/expr_tables/
-23  byssus/foot gene list + expression              ->  03_analyses/byssus_genes/
+02  modules, diagnostics                            ->  03_analyses/gene_mechanics/
+03  RNA x thread manifest, top-25 expression tables ->  03_analyses/expr_tables/
+04  byssus/foot gene list + expression              ->  03_analyses/byssus_genes/
 ```
 
 ---
@@ -50,15 +55,15 @@ count-matrix column is dropped with a message rather than a hard stop.
 
 ### Thread input and labels
 
-Scripts 20, 22 and 23 read the thread summary `02_thread-strength/03_analyses/02_assemble-thread-summary/thread-summary.xlsx`. Pre-exposure threads are `phase == "pre"`, day-3 threads
+Scripts 01, 03 and 04 read the thread summary `02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx`. Pre-exposure threads are `phase == "pre"`, day-3 threads
 `phase == "post"`, and the arm an animal was assigned to is `mussel_trt`; a
-`read_thread_summary()` helper in each script accepts the older column spellings. Script 22
-reconciles against script 1's extraction (`thread-summary-raw-output.xlsx`) and flags
+`read_thread_summary()` helper in each script accepts the older column spellings. Script 03
+reconciles against 02_thread-strength script 02's extraction (`thread-summary-raw-output.xlsx`) and flags
 animals sequenced at day 3 but never pulled (`no_post_trace`).
 
 ### The day-3 control arm is in the paired set
 
-`INCLUDE_CONTROL_ARM <- TRUE` in script 20. The day-3 control animals (T126-T137) have
+`INCLUDE_CONTROL_ARM <- TRUE` in script 01. The day-3 control animals (T126-T137) have
 foot RNA, day-3 threads and their own baselines, and enter as a fourth treatment level;
 the control animals' own trajectory is the null an expression signal must beat. An
 association that holds within the control arm too is about attachment biology, not the
@@ -68,8 +73,8 @@ stress response. Set FALSE for stressor arms only.
 
 Peak force and plaque area are analysed separately as well as through their ratio
 (adhesion), since a response in either component can be diluted in the ratio
-(`02_thread-strength/01_code/4_decompose_adhesion_DOC.md` decomposes adhesion the same way).
-Script 20 tests, per gene and metric, one baseline-adjusted regression (ANCOVA) on the
+(`02_thread-strength/01_code/05_decompose_adhesion_DOC.md` decomposes adhesion the same way).
+Script 01 tests, per gene and metric, one baseline-adjusted regression (ANCOVA) on the
 per-animal values:
 
     level_day3 ~ expression + treatment + level_baseline
@@ -89,13 +94,13 @@ reported beside `slope`; it is the same quantity as the baseline coefficient of 
 02_thread-strength ANCOVA (`STATS_ancova_coefficients.csv` in 02_thread-strength scripts 3 and 4),
 fitted here with expression added.
 
-`METRICS` in script 20 fixes the scale and the tier; `tier = primary` (force, area) is the
+`METRICS` in script 01 fixes the scale and the tier; `tier = primary` (force, area) is the
 declared confirmatory family and every output carries the column. Multiplicity: `q_lm` is BH
 within a gene set x metric, `q_family` BH within a gene set x tier, so the candidate x
 primary family (tested candidates x two primary metrics) has its own search-corrected q.
 `partial_r` expresses the same test as a partial correlation, t / sqrt(t^2 + residual df),
 with the sign and p of `slope`. `metrics_config_<T>.csv` is
-written by 20 and read by 21, so the metric list, scales, tiers, arm levels and covariates
+written by 01 and read by 02, so the metric list, scales, tiers, arm levels and covariates
 cannot drift between the two.
 
 Why an ANCOVA and not a change score: the change score `log(day3) - log(baseline)` imposes a
@@ -119,16 +124,16 @@ overlap in every table.
 ### Detection floor
 
 A gene at the VST floor (zero counts) in many paired animals gives an association driven by
-presence/absence. Script 20 computes `frac_at_floor` for every tested gene, flags `exclude`
+presence/absence. Script 01 computes `frac_at_floor` for every tested gene, flags `exclude`
 (> 0.40) and `caution` (> 0.20), writes `detection_floor_flags_<T>.csv` for the candidate
 set and the DEG union, and with `EXCLUDE_FLOOR_GENES = TRUE` (default) drops the `exclude`
-genes from both families before testing; script 20 reports how many candidate and
+genes from both families before testing; script 01 reports how many candidate and
 DEG-union genes are tested. Excluded genes still contribute to the module scores in
-script 21.
+script 02.
 
-### Script 21: modules, diagnostics
+### Script 02: modules, diagnostics
 
-Script 21 reads script 20's association tables and does not re-derive the reported test.
+Script 02 reads script 01's association tables and does not re-derive the reported test.
 Every model it fits is that same per-animal ANCOVA. It adds:
 
 - **Block A, module eigengenes** (`module_associations_<T>.csv`, `module_members_<T>.csv`):
@@ -137,13 +142,13 @@ Every model it fits is that same per-animal ANCOVA. It adds:
   modules within a metric, `q_family` within a tier).
   `byssal_structural` is a sixth module (foot proteins, preCols, byssal EP/ACDC, the
   plaque-curing tyrosinase: the structural proteins of the plaque and thread), separate from the broad `byssal_collagen` regex, so the test "these genes track
-  thread building, not strength" has its own row (`BYSSAL_STRUCTURAL_REGEX` in script 20
+  thread building, not strength" has its own row (`BYSSAL_STRUCTURAL_REGEX` in script 01
   flags the same genes in the candidate table).
 - **Block B, diagnostics**, below.
 
-### Script 21 diagnostics (block B)
+### Script 02 diagnostics (block B)
 
-- `detection_floor_flags_<T>.csv` (written by script 20, echoed here): one row per gene in
+- `detection_floor_flags_<T>.csv` (written by script 01, echoed here): one row per gene in
   the candidate set and the DEG union, with `frac_at_floor`, `floor_flag` and `tested`.
 - `influence_top_hits_<T>.csv`: the three best candidate hits and the best DEG-union hit per
   metric (`N_INFLUENCE_HITS`, ranked by `p_lm`), each refitted as the reported ANCOVA with
@@ -160,7 +165,7 @@ Every model it fits is that same per-animal ANCOVA. It adds:
 ### Bioconductor masking
 
 `S4Vectors` and `IRanges`, loaded by DESeq2, mask `dplyr::rename`, `count`, `first` and
-`desc`. Script 20 loads DESeq2 first and tidyverse last, and uses `dplyr::` prefixes.
+`desc`. Script 01 loads DESeq2 first and tidyverse last, and uses `dplyr::` prefixes.
 Loading tidyverse before DESeq2 fails with `object 'treatment' not found`.
 
 ---
@@ -169,22 +174,22 @@ Loading tidyverse before DESeq2 fails with `object 'treatment' not found`.
 
 | file | produced by | used by |
 |---|---|---|
-| `03_analyses/02_assemble-thread-summary/thread-summary.xlsx` | script 2 | 20, 22, 23 |
-| `03_analyses/04_decompose-adhesion/mussel_response_classification.csv` | script 4 | 20 (joined into the paired manifest) |
-| `03_analyses/01_extract-tensometer-data/thread-summary-raw-output.xlsx` | script 1 | 22 |
+| `03_analyses/03_assemble-thread-summary/thread-summary.xlsx` | script 03 | 01, 03, 04 |
+| `03_analyses/05_decompose-adhesion/mussel_response_classification.csv` | script 05 | 01 (joined into the paired manifest) |
+| `03_analyses/02_extract-tensometer-data/thread-summary-raw-output.xlsx` | script 02 | 03 |
 
 The response classification carries, per animal and per metric, the pre and post means, the
 log-ratio, the % change, the raw direction (`decreased` / `increased`), the change relative
 to the control arm's mean change, and a composite `response_class` (`weaker` if both force
 and adhesion fell, `stronger` if both rose, else `mixed`) and `response_score` (mean
-standardised log-ratio across force, area and adhesion). Script 20 joins the class and the
+standardised log-ratio across force, area and adhesion). Script 01 joins the class and the
 score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 
 ---
 
 ## 3. Outputs
 
-### `03_analyses/gene_mechanics/` (scripts 20 and 21)
+### `03_analyses/gene_mechanics/` (scripts 01 and 02)
 
 | file | contents |
 |---|---|
@@ -194,15 +199,15 @@ score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 | `annotation_map.csv` | genome-wide best UniProt hit per LOC with `blast_pident`, `blast_evalue`, `blast_ok`, `in_TC_DEG_annotation` |
 | `candidate_genes_<T>.csv` | the candidate set with `byssal_structural`, `frac_at_floor`, `floor_flag`, `tested` |
 | `detection_floor_flags_<T>.csv` | every candidate and DEG-union gene: fraction of paired samples at the VST floor, `floor_flag`, `tested` |
-| `assoc_candidate_<T>.csv`, `assoc_DEGunion_<T>.csv` | **the reported test**: script 20 ANCOVA per gene x metric with `scale`, `tier`, `n`, `slope`, `se`, `p_lm`, `baseline_slope`, `partial_r` with its marginal 95% interval (`partial_r_lo`, `partial_r_hi`), `q_lm`, `q_family`, floor flag |
+| `assoc_candidate_<T>.csv`, `assoc_DEGunion_<T>.csv` | **the reported test**: script 01 ANCOVA per gene x metric with `scale`, `tier`, `n`, `slope`, `se`, `p_lm`, `baseline_slope`, `partial_r` with its marginal 95% interval (`partial_r_lo`, `partial_r_hi`), `q_lm`, `q_family`, floor flag |
 | `module_associations_<T>.csv`, `module_members_<T>.csv` | six pathway modules x four metrics (ANCOVA); the member genes |
 | `best_hits_<T>.csv` | best hit per metric and gene set with `p_lm`, `q_lm`, `q_family`, floor and influence flags |
 | `influence_top_hits_<T>.csv` | top three candidate hits and the best DEG-union hit per metric with leave-one-out slope and p, `influence_flag`, `q_lm`, `q_family` |
-| `RUN_provenance_<T>.txt` | settings of scripts 20 and 21 (arms, covariates, model, metrics with scale and tier, modules, family sizes), the code commit that ran and whether tracked files differed from it, R and package versions, and an MD5 of every input, all with repository-relative paths |
+| `RUN_provenance_<T>.txt` | settings of scripts 01 and 02 (arms, covariates, model, metrics with scale and tier, modules, family sizes), the code commit that ran and whether tracked files differed from it, R and package versions, and an MD5 of every input, all with repository-relative paths |
 | `animal_reconciliation_<T>.csv` | animals whose presence in the fits differs from `02_data/expected_animals.csv` (empty when they agree) |
 | `candidate_heatmap_<T>.png`, `top_candidate_scatter_<T>.png`, `best_hit_per_metric_scatter_<T>.png` | figures of genes selected by smallest p (effects biased away from zero). The two scatter files are added-variable plots: day-3 level and expression each residualised on arm and baseline, with the tested slope drawn through the origin, points coloured by arm |
 
-### `03_analyses/expr_tables/` (script 22) and `03_analyses/byssus_genes/` (script 23)
+### `03_analyses/expr_tables/` (script 03) and `03_analyses/byssus_genes/` (script 04)
 
 `rna_thread_manifest_<T>.csv` is tissue-suffixed. The companion `sample_metadata_<T>.csv`
 files carry all four arms and `max_displacement`.
@@ -211,29 +216,37 @@ files carry all four arms and `max_displacement`.
 
 ## Checks
 
-Script 20 checks, before any model is fitted:
+Script 01 checks, before any model is fitted:
 
 - the animals in the fits equal `02_data/expected_animals.csv` for the tissue (every other
   day-3 animal is listed there with the reason it is out); a difference is written to
   `animal_reconciliation_<T>.csv`;
 - each animal's day-3 and baseline values equal the ones 02_thread-strength's ANCOVA used
   (`DATA_ancova_animals.csv`), so the two pipelines cannot drift apart;
-- every expected 06_differential-expression input exists and reads (one `*_TC_siggene*` file per
-  stressor, six `*_sigs_ID.csv` files), and the arm in the thread key agrees with the Tag-seq
-  treatment table.
+- every expected 06_differential-expression input exists and reads (one `<T><X>_TC_siggene.csv`
+  file per stressor, six `*_sigs_ID.csv` files), and the arm in the thread key agrees with the
+  Tag-seq sample table.
 
 A failed check does not stop the run (`warn_unless()` in `tools/pipeline_checks.R`). It
-prints `CHECK FAILED: <what failed>` in the knitted report and in the render log (driver 00's
+prints `CHECK FAILED: <what failed>` in the knitted report and in the render log (runner 00's
 `.log` files), and `RUN_provenance_<T>.txt` records how many checks ran and lists each one that
 failed. Read that line before using a run.
-Update `expected_animals.csv` only with a documented reason. Driver 00 stops with an error,
+Update `expected_animals.csv` only with a documented reason. Runner 00 stops with an error,
 after writing `run_log.csv`, if any step failed.
 
 ## 4. Known data quirks
 
 - **T047** has day-3 threads and a gill library (`T047G`) but no foot library: there is no
-  `T047F` column in the count matrix and no row in `F_treatmentinfo.csv`. It can enter the
-  gill paired set, not the foot one.
+  `T047F` column in the count matrix and no foot row in `treatmentinfo_clean.csv`. It can enter
+  the gill paired set, not the foot one.
+- **Foot region.** Every foot library used here is the phenol gland to the tip of the foot.
+  In day-3 animals several byssal plaque genes are at or near the VST floor (for example
+  LOC134711106, foot protein-4 variant-1, and LOC134692428, byssal peroxidase-like 4: zero
+  counts in 35 of the 46 day-3 foot libraries, against medians of 164 and 167 counts in the 12
+  day-0 ones), so the detection-floor filter removes part of the byssal structural family: in
+  the foot run 6 of the 16 `byssal_structural` candidates are excluded and 5 more are flagged
+  `caution` (`candidate_genes_F.csv`). A null result for those genes is not evidence of no
+  association.
 - The candidate keywords are regexes on UniProt names; `Hsp` and `chaperone` in particular
   pull in co-chaperones and assembly factors, so the `HSP_proteostasis` module is broad.
   Tighten `CANDIDATE_KEYWORDS` or raise `CANDIDATE_MIN_PIDENT` if a narrower family is
@@ -245,16 +258,16 @@ after writing `run_log.csv`, if any step failed.
 
 | script | option | default | effect |
 |---|---|---|---|
-| 20 | `INCLUDE_CONTROL_ARM` | TRUE | day-3 control animals as a fourth arm |
-| 20 | `METRICS` | force, area (log, primary); adhesion (log), extension (raw), exploratory | metric, model scale and tier; reporting order = priority; `PRIMARY_METRICS` is derived from it |
-| 20 | `CANDIDATE_ANNOTATION` | "genome" | best genome-wide BLAST hit per LOC ("TC_DEG": DEG-table names only) |
-| 20 | `CANDIDATE_MAX_EVALUE`, `CANDIDATE_MIN_PIDENT` | 1e-10, 0 | BLAST-quality floor for candidates and module members |
-| 20 | `EXCLUDE_FLOOR_GENES`, `FLOOR_EXCLUDE`, `FLOOR_CAUTION` | TRUE, 0.40, 0.20 | detection-floor filter applied before testing |
-| 20 | `BYSSAL_STRUCTURAL_REGEX` | foot protein, preCol, ACDC, ... | flags the byssal structural genes |
-| 20, 21 | `FDR_ALPHA` | 0.10 | BH threshold for flagging (`q_lm`, `q_family`) |
-| 21 | `N_INFLUENCE_HITS` | 3 | candidate hits per metric that get the leave-one-animal-out refit |
-| 21 | `modules` | six regexes | includes `byssal_structural` |
-| 22 | `USE_RAW_THREAD_SET` | TRUE | any extracted trace vs thread-summary mussels only |
-| 23 | `USE_RAW_THREAD_SET` | FALSE | |
-| 20-23 | `params$tissue` | "F" | foot or gill |
-| 00 | `params$tissues`, `params$scripts` | both, all four | what the driver renders |
+| 01 | `INCLUDE_CONTROL_ARM` | TRUE | day-3 control animals as a fourth arm |
+| 01 | `METRICS` | force, area (log, primary); adhesion (log), extension (raw), exploratory | metric, model scale and tier; reporting order = priority; `PRIMARY_METRICS` is derived from it |
+| 01 | `CANDIDATE_ANNOTATION` | "genome" | best genome-wide BLAST hit per LOC ("TC_DEG": DEG-table names only) |
+| 01 | `CANDIDATE_MAX_EVALUE`, `CANDIDATE_MIN_PIDENT` | 1e-10, 0 | BLAST-quality floor for candidates and module members |
+| 01 | `EXCLUDE_FLOOR_GENES`, `FLOOR_EXCLUDE`, `FLOOR_CAUTION` | TRUE, 0.40, 0.20 | detection-floor filter applied before testing |
+| 01 | `BYSSAL_STRUCTURAL_REGEX` | foot protein, preCol, ACDC, ... | flags the byssal structural genes |
+| 01, 02 | `FDR_ALPHA` | 0.10 | BH threshold for flagging (`q_lm`, `q_family`) |
+| 02 | `N_INFLUENCE_HITS` | 3 | candidate hits per metric that get the leave-one-animal-out refit |
+| 02 | `modules` | six regexes | includes `byssal_structural` |
+| 03 | `USE_RAW_THREAD_SET` | TRUE | any extracted trace vs thread-summary mussels only |
+| 04 | `USE_RAW_THREAD_SET` | FALSE | |
+| 01-04 | `params$tissue` | "F" | foot or gill |
+| 00 | `params$tissues`, `params$steps`, `params$stop_on_fail` | both, "all", TRUE | what the runner renders |

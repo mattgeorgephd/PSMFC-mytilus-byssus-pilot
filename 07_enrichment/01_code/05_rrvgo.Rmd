@@ -1,0 +1,108 @@
+---
+title: "05 - Reduce redundant GO terms with rrvgo (REVIGO-style)"
+output: html_document
+params:
+  families: ["TC", "LC", "FG"]
+  threshold: 0.7     # rrvgo's default; similar to REVIGO's "medium" list
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+Summarises each run's enriched biological-process terms from topGO (script 02, weight01
+p < 0.01) into clusters of similar terms, the way REVIGO does, with rrvgo (Sayols 2023,
+microPublication Biology, doi:10.17912/micropub.biology.000811). It replaces the REVIGO web
+submissions, whose inputs were built from an older version of the DEG tables (kept in
+`03_analyses/_superseded/`).
+
+- **similarity**: Wang's graph-based measure (Wang et al. 2007, Bioinformatics 23:1274),
+  computed with `GOSemSim::goSim()` on the GO graph alone. `rrvgo::calculateSimMatrix()` is
+  not used because it keeps only terms with human annotation in the OrgDb, which would drop
+  terms that are annotated in the mussel but not in human;
+- **clusters**: complete-linkage clustering of 1 - similarity, cut at 0.7
+  (`rrvgo::reduceSimMatrix()`); the term with the smallest p in each cluster is its parent;
+- `reduceSimMatrix()` also reads term sizes from an OrgDb (`org.Hs.eg.db`) for its `size`
+  column; that column is replaced with the term's annotated genes in the contrast's universe.
+  Neither the clustering nor the choice of parent uses it.
+
+Writes, in `03_analyses/05_rrvgo/`:
+
+- `rrvgo_reduced_terms.csv`: every enriched BP term with its cluster and parent;
+- `rrvgo_parents.csv`: one row per parent term and run, with the number of terms it stands
+  for, the smallest p among them and the distinct DEGs they contain;
+- `rrvgo_<family>_BP_parents.png`: the parent terms of every run side by side.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(here::here("01_code", "_go_helpers.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))
+if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) BiocManager::install("org.Hs.eg.db")
+suppressPackageStartupMessages({ library(rrvgo); library(GOSemSim); library(dplyr); library(ggplot2) })
+enriched <- read.csv(file.path(out_topgo, "topgo_enriched.csv"), stringsAsFactors = FALSE) %>%
+  filter(ontology == "BP", family %in% unlist(params$families))
+sem <- GOSemSim::godata(ont = "BP", computeIC = FALSE)     # GO graph only; Wang needs no IC
+mt  <- mt_genes(read_annotation())
+```
+
+# Reduce each run
+
+```{r reduce}
+reduce_run <- function(e) {
+  e <- e[order(e$p_weight01), ]
+  if (nrow(e) == 1)
+    return(data.frame(go = e$GO.ID, cluster = 1L, parent = e$GO.ID, score = -log10(e$p_weight01),
+                      term = e$Term, parentTerm = e$Term))
+  ids <- e$GO.ID
+  m <- matrix(GOSemSim::goSim(ids, ids, semData = sem, measure = "Wang"), ncol = length(ids),
+              dimnames = list(ids, ids))
+  keep <- !apply(m, 2, function(x) all(is.na(x)))
+  m <- m[keep, keep, drop = FALSE]
+  r <- suppressMessages(reduceSimMatrix(m, scores = setNames(-log10(e$p_weight01), ids),
+                                        threshold = params$threshold, orgdb = "org.Hs.eg.db"))
+  r[, c("go", "cluster", "parent", "score", "term", "parentTerm")]
+}
+
+runs <- distinct(enriched, code, family, direction)
+reduced <- bind_rows(lapply(seq_len(nrow(runs)), function(i) {
+  e <- enriched %>% filter(code == runs$code[i], direction == runs$direction[i])
+  r <- reduce_run(e)
+  e2 <- e[match(r$go, e$GO.ID), ]
+  data.frame(runs[i, ], r, size = e2$Annotated, Significant = e2$Significant, p_weight01 = e2$p_weight01,
+             genes = e2$genes, row.names = NULL)
+})) %>% arrange(match(code, contrasts$code), desc(direction == "up"), parentTerm, desc(score))
+write.csv(reduced %>% select(-genes), file.path(out_rrvgo, "rrvgo_reduced_terms.csv"), row.names = FALSE)
+
+parents <- reduced %>%
+  group_by(code, family, direction, parent, parentTerm) %>%
+  summarise(n_terms = n(), best_p = min(p_weight01),
+            genes = paste(sort(unique(unlist(strsplit(genes[nzchar(genes)], ";")))), collapse = ";"),
+            .groups = "drop") %>%
+  mutate(n_genes = lengths(strsplit(genes, ";")),
+         n_mt_encoded = vapply(strsplit(genes, ";"), function(g) sum(g %in% mt), 0L)) %>%
+  arrange(match(code, contrasts$code), desc(direction == "up"), best_p)
+write.csv(parents %>% select(code, family, direction, parent, parentTerm, n_terms, best_p, n_genes, n_mt_encoded, genes),
+          file.path(out_rrvgo, "rrvgo_parents.csv"), row.names = FALSE)
+knitr::kable(parents %>% count(code, direction, name = "parent_terms") %>%
+               left_join(enriched %>% count(code, direction, name = "enriched_terms"), by = c("code", "direction")),
+             caption = "enriched BP terms and the parent terms they reduce to")
+```
+
+# Figures
+
+```{r figures, fig.width = 10, fig.height = 9}
+for (fam in unique(runs$family)) {
+  d <- parents %>% filter(family == fam) %>%
+    transmute(code, direction, Term = parentTerm, p = best_p, n = n_terms, mt = ifelse(n_mt_encoded >= n_genes / 2, n_terms, 0))
+  if (!nrow(d)) next
+  print(go_dotplot(d, contrasts$code[contrasts$family == fam],
+                   title = sprintf("Enriched GO terms after rrvgo reduction (biological process): %s", FAMILY_TITLE[[fam]]),
+                   caption = sprintf(paste("Each point is a cluster of similar topGO terms (weight01 p < 0.01; Wang similarity,",
+                                           "clusters cut at %s), named after its most significant term. Size: terms in the",
+                                           "cluster; colour: the smallest p in it, capped at 1e-%d."), params$threshold, P_CAP),
+                   file = file.path(out_rrvgo, sprintf("rrvgo_%s_BP_parents.png", fam)),
+                   p_label = "-log10 p\n(weight01)", n_label = "terms in cluster"))
+}
+```

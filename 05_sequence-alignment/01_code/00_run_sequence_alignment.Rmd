@@ -1,0 +1,37 @@
+---
+title: "00 - Run the sequence-alignment steps"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  steps: [2]            # 2: count matrices only. "all" also runs step 01 (HISAT2 + StringTie)
+  stop_on_fail: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Runs the numbered scripts in `01_code/` in order, each in its own R process, with an HTML
+report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
+
+| step | script | what it does |
+|---|---|---|
+| 01 | `01_hisat_stringtie.Rmd` | HISAT2 alignment and StringTie quantification of the trimmed Tag-seq reads; writes `03_analyses/hisat/` and its `sample_list.txt` |
+| 02 | `02_prepDE.Rmd` | gene and transcript count matrices (`03_analyses/prepDE/`), read by `06_differential-expression` |
+
+By default only step 02 runs. Step 01 needs the trimmed reads, the genome and HISAT2 /
+StringTie, none of which are in this repository (see `../README.md`); with its outputs
+present, step 02 counts from the StringTie GTFs, and without them it rebuilds the gene matrix
+from the committed transcript matrix. Set `steps: "all"` on a machine that has the inputs.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+source(file.path(here::here(), "..", "tools", "run_steps.R"))
+html_dir <- here::here("03_analyses", "knit_html")
+run_log <- run_steps(here::here("01_code"), html_dir, steps = params$steps,
+                     stop_on_fail = isTRUE(params$stop_on_fail))
+finish_run(run_log, html_dir, "Sequence-alignment")
+```

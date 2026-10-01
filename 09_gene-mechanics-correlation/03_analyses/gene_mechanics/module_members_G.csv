@@ -29,6 +29,7 @@ oxidative_detox,LOC134681223,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (G
 oxidative_detox,LOC134721046,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain],46.296,2.1799999999999993e-164,genome_blast,TRUE,TRUE
 oxidative_detox,LOC134712875,S-formylglutathione hydrolase (FGH) (EC 3.1.2.12) (Esterase D),72.857,5.209999999999998e-163,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134696249,Alcohol dehydrogenase class-3 chain H (EC 1.1.1.1) (Alcohol dehydrogenase class-III chain H) (Glutathione-dependent formaldehyde dehydrogenase) (FALDH) (FDH) (GSH-FDH) (EC 1.1.1.-) (S-(hydroxymethyl)glutathione dehydrogenase) (EC 1.1.1.284),58.378,5.299999999999998e-160,genome_blast,FALSE,TRUE
+oxidative_detox,LOC134694154,Byssal peroxidase-like protein 1,37.748,4.9e-115,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134695816,Glutathione S-transferase C-terminal domain-containing protein,35.09,3.73e-114,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134708582,Mitochondrial glutathione transporter SLC25A40 (Solute carrier family 25 member 40),51.549,7.3299999999999995e-121,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134706916,"Hydroxyacylglutathione hydrolase, mitochondrial (EC 3.1.2.6) (Glyoxalase II) (Glx II)",63.534,3.4799999999999984e-119,genome_blast,FALSE,TRUE
@@ -67,6 +68,7 @@ oxidative_detox,LOC134721812,Glutathione peroxidase (GPx) (GSHPx) (EC 1.11.1.9),
 oxidative_detox,LOC134721829,Microsomal glutathione S-transferase 1 (Microsomal GST-1) (EC 2.5.1.18) (Microsomal GST-I),52.903,1.8e-47,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134687162,Glutathione S-transferase A4 (EC 2.5.1.18) (GST A4-4) (GSTA4-4) (GST class-alpha member 4) (Glutathione S-transferase 5.7) (GST 5.7),42.081,7.579999999999999e-46,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134715354,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma),39.336,4.17e-44,genome_blast,TRUE,TRUE
+oxidative_detox,LOC134699097,Cytochrome b-245 light chain (Cytochrome b(558) alpha chain) (Cytochrome b558 subunit alpha) (Neutrophil cytochrome b 22 kDa polypeptide) (Superoxide-generating NADPH oxidase light chain subunit) (p22 phagocyte B-cytochrome) (p22-phox) (p22phox),55.396,2.9599999999999995e-42,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134681080,"Glutathione S-transferase 3, mitochondrial (EC 2.5.1.-) (Glutathione peroxidase MGST3) (EC 1.11.1.-) (LTC4 synthase MGST3) (EC 4.4.1.20)",46.715,6.2e-41,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134714216,Microsomal glutathione S-transferase 1 (Microsomal GST-1) (EC 2.5.1.18) (Microsomal GST-I),49.306,1.3199999999999999e-40,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134690634,Probable glutathione S-transferase 8 (EC 2.5.1.18) (GST class-sigma),37.681,6.04e-39,genome_blast,FALSE,TRUE
@@ -77,6 +79,7 @@ oxidative_detox,LOC134715908,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-),32.3
 oxidative_detox,LOC134685510,Probable glutathione S-transferase 6 (EC 2.5.1.18) (GST class-sigma),35.961,2.59e-35,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134725897,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independent glyoxalase),34.649,3.8800000000000005e-33,genome_blast,TRUE,TRUE
 oxidative_detox,LOC134707468,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein),30.466,9.35e-29,genome_blast,TRUE,TRUE
+oxidative_detox,LOC134708528,"Probable glutathione S-transferase DHAR2, chloroplastic (EC 2.5.1.18) (GSH-dependent dehydroascorbate reductase 2) (OsDHAR2) (EC 1.8.5.1) (Glutathione-dependent dehydroascorbate reductase 2)",33.014,2.97e-29,genome_blast,FALSE,TRUE
 oxidative_detox,LOC134706727,Glutathione S-transferase (PfGST) (EC 2.5.1.18),32.227,1.79e-21,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134681253,Transcription elongation factor SPT6 (hSPT6) (Histone chaperone suppressor of Ty6) (Tat-cotransactivator 2 protein) (Tat-CT2 protein),55.072,0,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134693874,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide],36.864,0,genome_blast,TRUE,TRUE
@@ -122,6 +125,7 @@ HSP_proteostasis,LOC134696926,Heat shock 70 kDa protein 12B (Heat shock protein 
 HSP_proteostasis,LOC134724896,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),32.258,5.5999999999999984e-105,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134696338,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),34.984,3.35e-105,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134716115,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.854,9.86e-105,genome_blast,FALSE,TRUE
+HSP_proteostasis,LOC134717770,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.754,2.5899999999999998e-104,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134696139,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.541,6.359999999999999e-104,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134701697,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),31.23,6.08e-104,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134697339,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),31.23,9.420000000000001e-104,genome_blast,FALSE,TRUE
@@ -176,9 +180,11 @@ HSP_proteostasis,LOC134715809,Peptidyl-prolyl cis-trans isomerase B (PPIase B) (
 HSP_proteostasis,LOC134707346,Peptidyl-prolyl cis-trans isomerase G (PPIase G) (Peptidyl-prolyl isomerase G) (EC 5.2.1.8) (Cyclophilin G) (Matrin cyclophilin) (Matrin-cyp) (Rotamase G),70.166,4.7199999999999986e-68,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134694794,Heat shock 70 kDa protein 12A,31.122,3.33e-71,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134696122,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),32.053,2.09e-71,genome_blast,FALSE,TRUE
+HSP_proteostasis,LOC134721766,Heat shock 70 kDa protein 12B,28.526,1.12e-71,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134724842,Peptidyl-prolyl cis-trans isomerase (PPIase) (EC 5.2.1.8) (Cyclophilin) (Cyclosporin A-binding protein) (Rotamase),75,6.129999999999998e-82,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134696251,Heat shock 70 kDa protein 12B,26.508,5.52e-69,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134718571,Peptidyl-prolyl cis-trans isomerase-like 1 (PPIase) (EC 5.2.1.8) (Rotamase PPIL1),72.671,7.94e-80,genome_blast,FALSE,TRUE
+HSP_proteostasis,LOC134705112,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),28.482,7.67e-68,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134706982,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),27.607,2.05e-64,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134725948,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),27.229,1.3e-63,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134695117,Heat shock 70 kDa protein 12B,29.751,8.77e-65,genome_blast,FALSE,TRUE
@@ -260,6 +266,7 @@ byssal_collagen,LOC134694421,Byssal calumenin-like protein 1,95.71,0,genome_blas
 byssal_collagen,LOC134725152,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)",47.124,5.799999999999999e-166,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134711515,Collagen alpha-2(IV) chain,51.043,2.47e-134,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134716385,ACDC (Byssal EP-like protein 1) (EP-protein-1),87.712,4.81e-139,genome_blast,TRUE,TRUE
+byssal_collagen,LOC134694154,Byssal peroxidase-like protein 1,37.748,4.9e-115,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134716384,ACDC (Byssal EP-like protein 1) (EP-protein-1),76.695,3.19e-126,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134720932,Byssal peroxidase-like protein 2,35.518,8.489999999999998e-107,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134707744,Byssal peroxidase-like protein 1,35.231,1.4599999999999997e-98,genome_blast,FALSE,TRUE
@@ -298,6 +305,7 @@ byssal_collagen,LOC134716158,Collagen alpha-1(XXII) chain,38.974,1.25e-28,genome
 byssal_collagen,LOC134718987,Collagen alpha-4(VI) chain,37.113,1.94e-29,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134719074,Collagen alpha-4(VI) chain,41.148,3.21e-29,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134728119,Collagen alpha-1(XXII) chain,35.678,1.43e-29,genome_blast,TRUE,TRUE
+byssal_collagen,LOC134717947,Collagen alpha-5(VI) chain (Collagen alpha-1(XXIX) chain),33.23,5.49e-26,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134682159,Byssal metalloproteinase inhibitor-like protein 1,34.031,4.14e-31,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134694726,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)",21.013,3.1799999999999998e-24,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134692100,ACDC (Byssal EP-like protein 1) (EP-protein-1),33.862,8.24e-24,genome_blast,TRUE,TRUE

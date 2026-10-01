@@ -1,0 +1,92 @@
+---
+title: "02 - Define the differential-expression contrasts"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# What this does
+
+Defines every pairwise DESeq2 contrast from the sample table written by script 01, so the
+sample set behind each result is set by rule in one place. (Before, the TC sample lists were
+written only by two scripts kept as superseded.) Three families:
+
+| family | contrast | samples (one tissue unless stated) | design | reference |
+|---|---|---|---|---|
+| **TC, of record** | `<T><X>_TC`, X = OA, OW, DO | stressor X at day 3 + control at day 3 | `~ treatment` | `control` |
+| LC | `<T><X>_LC`, X = OA, OW, DO | stressor X at day 3 + control at day 0 | `~ treatment` | `control` |
+| LC | `<T>TC_LC` | control at day 3 + control at day 0 | `~ day` | `0` |
+| FG | `FG_TC`, `FG_LC` | foot + gill controls at day 3 (TC) or day 0 (LC) | `~ tissue` | `F` (foot) |
+
+T is `F` (foot) or `G` (gill). Foot means the phenol gland to the tip of the foot, the region
+sampled in every animal. The twelve day-0 libraries of the rest of the foot (IDs ending `FX`,
+region "foot (without phenol gland)") are in no contrast: there is no day-3 counterpart, and
+pooling the two regions would add a large region effect to the day-0 group. Samples are
+listed in sample-ID order. TC is the control of record for the stressor effect; LC contrasts
+carry the stressor plus three days in the system and handling; FG compares the tissues
+within one control group.
+
+Writes `03_analyses/DEG_lists/contrasts.csv` (one row per contrast) and
+`contrast_samples.csv` (one row per contrast x sample), read by script 03.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+ti <- read.csv(file.path(cnt, "treatmentinfo_clean.csv"), row.names = 1, colClasses = "character")
+stopifnot(all(ti$region %in% c("foot (phenol gland to tip)", "foot (without phenol gland)", "gill")))
+ti <- ti[ti$region != "foot (without phenol gland)", ]     # FX libraries: no contrast uses them
+```
+
+# Contrasts
+
+```{r define}
+tissues   <- c(F = "Foot", G = "Gill")
+stressors <- c("OA", "OW", "DO")
+defs <- list()
+add <- function(code, family, dir, design_var, ref, test, keep, description)
+  defs[[code]] <<- list(code = code, family = family, dir = dir, design_var = design_var,
+                        ref_level = ref, test_level = test, keep = keep, description = description)
+
+for (t in names(tissues)) {
+  for (x in stressors) {
+    add(paste0(t, x, "_TC"), "TC", tissues[[t]], "treatment", "control", x,
+        with(ti, tissue == t & day == "3" & treatment %in% c("control", x)),
+        sprintf("%s: %s vs day-3 treatment control", tissues[[t]], x))
+    add(paste0(t, x, "_LC"), "LC", tissues[[t]], "treatment", "control", x,
+        with(ti, tissue == t & ((treatment == x & day == "3") | (treatment == "control" & day == "0"))),
+        sprintf("%s: %s vs day-0 lab control", tissues[[t]], x))
+  }
+  add(paste0(t, "TC_LC"), "LC", tissues[[t]], "day", "0", "3",
+      with(ti, tissue == t & treatment == "control"),
+      sprintf("%s: day-3 treatment control vs day-0 lab control", tissues[[t]]))
+}
+for (fam in c("TC", "LC")) {
+  d <- if (fam == "TC") "3" else "0"
+  add(paste0("FG_", fam), "FG", "Foot_vs_Gill", "tissue", "F", "G",
+      with(ti, tissue %in% c("F", "G") & treatment == "control" & day == d),
+      sprintf("Gill vs foot, %s controls", if (fam == "TC") "day-3 treatment" else "day-0 lab"))
+}
+
+contrast_samples <- do.call(rbind, lapply(defs, function(d) {
+  s <- ti[d$keep, ]
+  s <- s[order(s$sample.1, method = "radix"), ]
+  data.frame(code = d$code, sample.1 = s$sample.1, tissue = s$tissue, treatment = s$treatment,
+             day = s$day, group = ifelse(s[[d$design_var]] == d$test_level, "test", "reference"))
+}))
+contrasts <- do.call(rbind, lapply(defs, function(d) {
+  s <- contrast_samples[contrast_samples$code == d$code, ]
+  data.frame(code = d$code, family = d$family, dir = d$dir, design_var = d$design_var,
+             ref_level = d$ref_level, test_level = d$test_level,
+             n_reference = sum(s$group == "reference"), n_test = sum(s$group == "test"),
+             description = d$description)
+}))
+rownames(contrasts) <- rownames(contrast_samples) <- NULL
+
+## every contrast has two groups, and the levels it names are the ones its samples carry
+stopifnot(all(contrasts$n_reference > 0), all(contrasts$n_test > 0),
+          !anyDuplicated(paste(contrast_samples$code, contrast_samples$sample.1)))
+write.csv(contrasts, file.path(deg, "contrasts.csv"), row.names = FALSE)
+write.csv(contrast_samples, file.path(deg, "contrast_samples.csv"), row.names = FALSE)
+knitr::kable(contrasts[, c("code", "family", "design_var", "ref_level", "test_level", "n_reference", "n_test", "description")])
+```

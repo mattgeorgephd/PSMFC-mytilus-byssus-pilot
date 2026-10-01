@@ -1,0 +1,210 @@
+---
+title: "Assemble thread summary"
+author: "PSMFC mytilus byssus pilot"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = TRUE)
+```
+
+## What this script does
+
+Joins the trace-level output of `02_extract_tensometer_data.Rmd` to the plaque measurements in
+`02_data/pad_area_measurements.xlsx`, computes adhesion, and writes the thread summary that
+scripts 04 and 05, and the `09_gene-mechanics-correlation` scripts, read.
+
+```
+02_extract_tensometer_data.Rmd  ->  03_analyses/02_extract-tensometer-data/thread-summary-raw-output.xlsx
+              +  02_data/pad_area_measurements.xlsx                            (hand-measured)
+03_assemble_thread_summary.Rmd  ->  03_analyses/03_assemble-thread-summary/thread-summary.xlsx
+04_analyze_thread_strength.Rmd  ->  03_analyses/04_analyze-thread-strength/
+05_decompose_adhesion.Rmd       ->  03_analyses/05_decompose-adhesion/
+```
+
+### Where each fact comes from
+
+One fact, one source. Nothing is copied into two files where the copies could drift.
+
+| fact | grain | source |
+|---|---|---|
+| `max_force`, `integral`, `max_displacement` | thread | the trace itself, via script 02 |
+| `thread_trt`, `phase`, `day` | thread | the tensometer subfolder, via script 02 |
+| `species`, `mussel_trt`, `rna_sequenced` | mussel | `03_analyses/01_build-mussel-key/mussel-treatment-key.csv`, via script 02 |
+| `pad_area`, `failure` | thread | `02_data/pad_area_measurements.xlsx` |
+
+`pad_area_measurements.xlsx` therefore carries only what it is the source of truth for:
+`mussel`, `thread`, `thread_trt`, `pad_area`, `failure`, `notes`. Its previous `species`,
+`group`, `mussel_trt` and `day` columns were second copies of facts owned elsewhere and have
+been removed. They were verified to agree before removal.
+
+**Nothing is excluded here.** Every extracted trace is carried through, so bad runs can be
+reviewed against their QC plots.
+
+## Load packages
+
+```{r}
+## Run within "thread-strength.Rproj" so here::here() resolves to the analysis root.
+load.lib    <- c("readxl", "tidyverse", "openxlsx", "here")
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+for (lib in install.lib) install.packages(lib, dependencies = TRUE)
+sapply(load.lib, require, character = TRUE)
+```
+
+## Paths
+
+```{r paths}
+raw_xlsx <- here::here("03_analyses", "02_extract-tensometer-data", "thread-summary-raw-output.xlsx")
+pad_xlsx <- here::here("02_data", "pad_area_measurements.xlsx")
+out_dir  <- here::here("03_analyses", "03_assemble-thread-summary")
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+
+if (!file.exists(raw_xlsx))
+  stop("Not found:\n  ", raw_xlsx, "\nRun 02_extract_tensometer_data.Rmd first.")
+if (!file.exists(pad_xlsx))
+  stop("Not found:\n  ", pad_xlsx)
+```
+
+## Helper: canonical mussel tag
+
+```{r}
+# Collapse any spelling of a tag to prefix + zero-padded 3 digits (T37 -> T037) so the same
+# physical animal joins across sources regardless of how it was written.
+norm_id <- function(x) {
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
+}
+```
+
+## 1. Read the extraction output
+
+```{r}
+traces <- read_excel(raw_xlsx, sheet = "data") %>%
+  mutate(mussel = norm_id(mussel),
+         thread = as.integer(thread),
+         note   = replace_na(as.character(note), ""))
+
+folder_order <- unique(traces$source_folder)
+
+message("Traces: ", nrow(traces), " | unique mussels: ", n_distinct(traces$mussel))
+
+if (!all(c("species", "mussel_trt", "rna_sequenced") %in% names(traces)))
+  warning("The extraction output has no mussel-level columns. Run 01_build_mussel_key.Rmd ",
+          "and re-run script 02, or those columns will be blank in the thread summary.")
+
+print(knitr::kable(traces %>% count(source_folder, thread_trt, phase, day)))
+```
+
+## 2. Join the plaque measurements
+
+`pad_area` (plaque cross-sectional area, mm^2) and `failure` are measured by hand from
+microscope images of each plaque; they cannot be derived from a force trace.
+
+The join key is `mussel` + `thread` + `thread_trt`. It has to include `thread_trt`: for an
+animal pulled before and after exposure, `mussel` + `thread` alone matches two different
+traces and would silently duplicate rows.
+
+```{r}
+pad <- read_excel(pad_xlsx, sheet = "data")
+
+# Accept the old column spellings so an older copy of the file still joins.
+ren <- c(mussel_ID = "mussel", thread_num = "thread")
+for (from in names(ren)) {
+  to <- ren[[from]]
+  if (from %in% names(pad) && !to %in% names(pad))
+    names(pad)[names(pad) == from] <- to
+}
+
+need_cols <- c("mussel", "thread", "thread_trt", "pad_area")
+if (length(setdiff(need_cols, names(pad))) > 0)
+  stop(basename(pad_xlsx), " is missing column(s): ",
+       paste(setdiff(need_cols, names(pad)), collapse = ", "),
+       "\nColumns present: ", paste(names(pad), collapse = ", "))
+
+# Optional columns: create them empty if the file does not carry them, so the transmute
+# below never has to branch on the schema.
+if (!"failure" %in% names(pad)) pad$failure <- NA_character_
+if (!"notes"   %in% names(pad)) pad$notes   <- NA_character_
+
+pad <- pad %>%
+  transmute(mussel     = norm_id(mussel),
+            thread     = as.integer(thread),
+            thread_trt = as.character(thread_trt),
+            pad_area   = suppressWarnings(as.numeric(pad_area)),
+            failure    = as.character(failure),
+            pad_notes  = as.character(notes))
+
+dup <- pad %>% count(mussel, thread, thread_trt) %>% filter(n > 1)
+if (nrow(dup) > 0) {
+  warning(nrow(dup), " duplicated key(s) in ", basename(pad_xlsx),
+          "; the first of each is used. Fix the source file.")
+  knitr::kable(dup) %>% print()
+  pad <- pad %>% distinct(mussel, thread, thread_trt, .keep_all = TRUE)
+}
+
+# Rows in the measurement file that match no trace: a typo, or a trace that was deleted.
+orphan <- pad %>% anti_join(traces, by = c("mussel", "thread", "thread_trt"))
+if (nrow(orphan) > 0) {
+  warning(nrow(orphan), " row(s) in ", basename(pad_xlsx), " match no trace.")
+  knitr::kable(orphan %>% select(mussel, thread, thread_trt, pad_area)) %>% print()
+}
+
+# Traces with no row at all in the measurement file (as opposed to a row with a blank value).
+missing_rows <- traces %>% anti_join(pad, by = c("mussel", "thread", "thread_trt"))
+if (nrow(missing_rows) > 0)
+  message(nrow(missing_rows), " trace(s) have no row in ", basename(pad_xlsx),
+          "; they have no pad_area, so scripts 04 and 05 exclude them until a row is added.")
+
+traces <- traces %>% left_join(pad, by = c("mussel", "thread", "thread_trt"))
+
+message("Plaque measurements joined: ", sum(!is.na(traces$pad_area)), " of ", nrow(traces))
+```
+
+
+## 3. Derive adhesion and assemble the thread summary
+
+```{r}
+# If script 02 ran without the mussel key, these columns are absent. Create them empty rather
+# than failing, so the summary still builds and the gap is visible as blank cells.
+for (col in c("species", "mussel_trt", "rna_sequenced"))
+  if (!col %in% names(traces)) traces[[col]] <- NA_character_
+
+summary_tbl <- traces %>%
+  mutate(adhesion_kpa = max_force / pad_area * 1000,       # N / mm^2 -> kPa
+         sort_ID      = paste0(mussel, "_", thread)) %>%
+  arrange(match(source_folder, folder_order), mussel, thread) %>%
+  transmute(species, sort_ID,
+            mussel_ID  = mussel,
+            thread_num = thread,
+            note, phase, day,
+            mussel_trt,                                # the arm the ANIMAL was assigned to
+            thread_trt,                                # what the THREAD was built in
+            max_force, integral, max_displacement,
+            pad_area, adhesion_kpa, failure,
+            rna_sequenced,
+            pad_notes,
+            source_folder, file)                       # provenance, drop before pasting
+
+message("Candidate rows: ", nrow(summary_tbl),
+        " | with adhesion_kpa: ", sum(!is.na(summary_tbl$adhesion_kpa)))
+```
+
+
+## 4. Write the outputs
+
+```{r}
+write.xlsx(list(data = summary_tbl),
+           file = file.path(out_dir, "thread-summary.xlsx"),
+           colNames = TRUE, overwrite = TRUE)
+
+message("Wrote ", file.path(out_dir, "thread-summary.xlsx"),
+        " (", nrow(summary_tbl), " rows).")
+```
+
+Review the output against the QC plots in
+`03_analyses/02_extract-tensometer-data/QC_plots/<source_folder>/<file>.jpg`, using `note` and
+`failure` to spot bad runs. Scripts 04 and 05 read
+`03_analyses/03_assemble-thread-summary/thread-summary.xlsx` (sheet `data`) and ignore extra
+columns. Re-running this script overwrites that file, so any hand edits made to it are lost.

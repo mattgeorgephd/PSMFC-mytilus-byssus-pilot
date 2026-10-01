@@ -1,0 +1,77 @@
+---
+title: "04 - Log fold change shrinkage and DEG lists"
+output: html_document
+params:
+  padj_cutoff: 0.05
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+For every contrast fitted by script 03, reads the saved `DESeqDataSet`
+(`03_analyses/dds/<contrast>.rds`) and, as the original TC shrinkage script did:
+
+- shrinks the log2 fold changes with `apeglm` (the estimates of record), and with `normal` and
+  `ashr` for comparison;
+- writes the full apeglm table, `<contrast>_apeglm.csv`, and the DEG list,
+  `<contrast>_siggene.csv` (apeglm `padj < 0.05`);
+- writes how many genes survived each step, `<contrast>_filter_counts.csv`, and MA plots of the
+  three shrinkage methods, `<contrast>_MA_plots.pdf`.
+
+Files go to `03_analyses/DEG_lists/<Foot|Gill|Foot_vs_Gill>/`, all comma-separated, plus a
+summary of DEG counts by direction, `03_analyses/DEG_lists/DEG_counts.csv`. Previously this
+step only worked inside an interactive session that had just run the DESeq2 scripts; it now
+reads the objects script 03 saves.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+suppressPackageStartupMessages({ library(DESeq2); library(apeglm); library(ashr) })
+contrasts <- read.csv(file.path(deg, "contrasts.csv"), colClasses = "character")
+summary_tbl <- read.csv(file.path(deg, "filter_summary.csv"))
+```
+
+# Shrink, filter, write
+
+```{r shrink}
+as_table <- function(res) data.frame(gene = rownames(res), as.data.frame(res), row.names = NULL)
+
+shrink_one <- function(row) {
+  ddsf <- readRDS(file.path(dds_dir, paste0(row$code, ".rds")))
+  out  <- file.path(deg, row$dir); dir.create(out, showWarnings = FALSE)
+  res  <- lapply(c(normal = "normal", apeglm = "apeglm", ashr = "ashr"),
+                 function(type) lfcShrink(ddsf, coef = 2, type = type, quiet = TRUE))
+  full <- as_table(res$apeglm)
+  sig  <- full[!is.na(full$padj) & full$padj < params$padj_cutoff, ]
+  write.csv(full, file.path(out, paste0(row$code, "_apeglm.csv")), row.names = FALSE)
+  write.csv(sig,  file.path(out, paste0(row$code, "_siggene.csv")), row.names = FALSE)
+
+  n_sig <- function(r) sum(!is.na(r$padj) & r$padj < params$padj_cutoff)
+  s <- summary_tbl[summary_tbl$code == row$code, ]
+  write.csv(data.frame(step = c("genes_in_matrix", "genes_after_filtering", "genes_dropped",
+                                "results_normal", "results_apeglm", "results_ashr",
+                                "DEG_apeglm_padj", "DEG_ashr_padj", "DEG_normal_padj"),
+                       count = c(s$genes_in_matrix, nrow(ddsf), s$genes_in_matrix - nrow(ddsf),
+                                 nrow(res$normal), nrow(res$apeglm), nrow(res$ashr),
+                                 n_sig(res$apeglm), n_sig(res$ashr), n_sig(res$normal))),
+            file.path(out, paste0(row$code, "_filter_counts.csv")), row.names = FALSE)
+
+  pdf(file.path(out, paste0(row$code, "_MA_plots.pdf")), width = 10, height = 4)
+  par(mfrow = c(1, 3), mar = c(4, 4, 2, 1))
+  for (type in names(res)) {
+    plotMA(res[[type]], xlim = c(1, 1e5), ylim = c(-3, 3), main = paste(row$code, type), cex = 0.8)
+    abline(h = c(-1.5, 1.5), col = "dodgerblue", lwd = 2)
+  }
+  dev.off()
+
+  data.frame(code = row$code, family = row$family, tissue_dir = row$dir,
+             description = row$description, genes_tested = nrow(full), n_DEG = nrow(sig),
+             n_up = sum(sig$log2FoldChange > 0), n_down = sum(sig$log2FoldChange < 0))
+}
+
+deg_counts <- do.call(rbind, lapply(seq_len(nrow(contrasts)), function(i) shrink_one(contrasts[i, ])))
+write.csv(deg_counts, file.path(deg, "DEG_counts.csv"), row.names = FALSE)
+knitr::kable(deg_counts[, c("code", "family", "genes_tested", "n_DEG", "n_up", "n_down")])
+```

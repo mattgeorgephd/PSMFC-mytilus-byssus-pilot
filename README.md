@@ -4,46 +4,69 @@ Byssal thread attachment of *Mytilus trossulus* under ocean acidification, warmi
 hypoxia: tensometer pull tests before and after a 3-day exposure, foot and gill Tag-seq, and
 the link between the two.
 
+# How to run
+
+Knit `00_run_pipeline.Rmd` at the repository root (inside `PSMFC-mytilus-byssus-pilot.Rproj`).
+It runs, in order and each in a fresh R process, the batch runner of every folder that can run
+from the committed data: thread strength (02), the count matrices (05), differential expression
+(06), GO enrichment (07), GO slims (08) and the gene-mechanics associations (09). About 25
+minutes. Reports and logs go to each folder's `03_analyses/knit_html/` and, one per stage, to
+`knit_html/` at the root (all git-ignored). See `AGENTS.md` for the conventions and `tasks.md`
+for what is done and open.
+
 # Analysis folders
 
 Each analysis folder (`02_` to `09_`) is self-contained with its own `.Rproj`, `01_code/`,
 `02_data/`, `03_analyses/` and a README. Open the folder's own `.Rproj` (not the
-repository-root one) before knitting, so `here::here()` resolves to that folder.
+repository-root one) before knitting a single script, so `here::here()` resolves to that
+folder. In every `01_code/`, `00_run_*.Rmd` is the folder's batch runner and `01_` onwards are
+the steps in run order; `_*.R` files are helpers they source. Each script writes only to its
+own folder's `03_analyses/`; later folders read earlier ones.
 
 | folder | what it does | run |
 |---|---|---|
 | `00_experiment_plan/` | experimental design slides and photos | reference only |
 | `00_treatment_conditions/` | tank DO, pH, temperature and salinity record and summary table | reference only |
-| `01_mussel-measurements/` | mussel size, condition and thread-production workbooks | input: `mussel-size-measurements.xlsx` feeds `02_thread-strength` script 0 |
-| `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, force, plaque area and extension | knit `01_code/` scripts 0 to 4 in order |
+| `01_mussel-measurements/` | mussel size, condition and thread-production workbooks | input: `mussel-size-measurements.xlsx` feeds `02_thread-strength` script 01 |
+| `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, force, plaque area and extension | `01_code/00_run_thread_strength.Rmd` |
 | `03_blast/` | BLAST annotation of the genome CDS and the Iso-Seq transcriptome; the `genome-foot/` GO mapping used downstream | HPC method record; outputs committed |
-| `04_iso-seq-transcriptome/` | QC of the Iso-Seq transcriptome (superseded isoseq-as-reference DE kept) | knit `01_code/05-IsoSeq-transcriptome-check.Rmd` |
-| `05_sequence-alignment/` | read QC and HISAT2 + StringTie alignment to the genome | HPC method record; outputs committed |
-| `06_differential-expression/` | DESeq2 per tissue and contrast, DEG annotation, DEG figures and tables | knit `01_code/00-run_differential_expression_pipeline.Rmd` |
-| `07_enrichment/` | DAVID and REVIGO input lists and DAVID plots | knit `01_code/` scripts 07, 08, 09 |
-| `08_gene-annotation/` | GO slims, NCBI summaries and orthologs for the top DEGs | knit `01_code/` scripts 06, 17, 18 (need network access) |
-| `09_gene-mechanics-correlation/` | per-gene ANCOVA of day-3 thread mechanics on expression, foot and gill | knit `01_code/00-run_gene_mechanics_by_tissue.Rmd` |
+| `04_iso-seq-transcriptome/` | QC of the Iso-Seq transcriptome (superseded isoseq-as-reference DE kept); design for an Iso-Seq branch | knit `01_code/01_isoseq_transcriptome_check.Rmd` |
+| `05_sequence-alignment/` | read QC, HISAT2 + StringTie alignment (HPC record) and the count matrices | `01_code/00_run_sequence_alignment.Rmd` |
+| `06_differential-expression/` | DESeq2 for 16 contrasts (TC of record, LC, foot vs gill), DEG annotation, figures | `01_code/00_run_differential_expression.Rmd` |
+| `07_enrichment/` | GO enrichment: topGO (of record), goseq, clusterProfiler, rrvgo, method comparison | `01_code/00_run_enrichment.Rmd` |
+| `08_gene-annotation/` | GO slims of the TC DEGs; NCBI summaries and orthologs for the top DEGs (network) | `01_code/00_run_gene_annotation.Rmd` |
+| `09_gene-mechanics-correlation/` | per-gene ANCOVA of day-3 thread mechanics on expression, foot and gill | `01_code/00_run_gene_mechanics_by_tissue.Rmd` |
 
-Run order: `02_thread-strength` and `06_differential-expression` first (independent of each
-other), then `07_enrichment` and `08_gene-annotation` (they read `06`'s DEG tables), and
-`09_gene-mechanics-correlation` last (it reads `02`, `03` and `06`).
+Run order: `02_thread-strength` and `05` -> `06` (independent of each other), then
+`07_enrichment` and `08_gene-annotation` (they read `06`), and
+`09_gene-mechanics-correlation` last (it reads `02`, `03` and `06`). `00_run_pipeline.Rmd`
+follows this order.
 
 Other folders:
 
-- `tools/pipeline_checks.R`: shared run checks and `RUN_provenance*.txt` writer, sourced by
-  `02_thread-strength` scripts 3 and 4 and `09_gene-mechanics-correlation` scripts 20 and 21.
+- `tools/`: shared helpers (README inside): `run_steps.R` (the runners), `plot_style.R` (the
+  one set of figure colours: control grey, OA green, OW orange, DO purple; red up, blue
+  down), `mt_encoded.R` (flags LOCs annotated as mitochondrially encoded proteins) and
+  `pipeline_checks.R` (run checks and `RUN_provenance*.txt`).
 - `instrument-reference/`: tensometer manual, LabVIEW logger and wiring notes.
 - `template-oyster-pipeline/`: Tag-seq code from the triploid oyster heatwave project, kept as
   a template; not part of this analysis.
 
+## Samples
+
+Tissue was foot or gill. Every animal has a library of the phenol gland to the tip of the foot
+(IDs ending `F`) and of the gill (`G`); the twelve day-0 lab controls also have a library of
+the rest of the foot (`FX`), which no contrast uses. The sample sheets name these
+inconsistently; `06_differential-expression/03_analyses/count_matrix/library_crosswalk.csv`
+maps every library to its RNA isolation record.
+
 ## Cross-folder paths
 
 Scripts refer to other analysis folders by name, so renaming a numbered folder breaks them.
-The names are set in `06_differential-expression/01_code/_paths.R`,
-`07_enrichment/01_code/_paths.R`, `08_gene-annotation/01_code/_paths.R`, the `paths` chunk of
-each `09_gene-mechanics-correlation/01_code/2*.Rmd` script and its driver,
-`02_thread-strength/01_code/0_build_mussel_key.Rmd`, and `psmfc_repo_root()` in
-`tools/pipeline_checks.R`.
+The names are set in each folder's `01_code/_paths.R` (06, 07, 08), the `paths` chunk of each
+`09_gene-mechanics-correlation/01_code/0*.Rmd` script and its runner,
+`02_thread-strength/01_code/01_build_mussel_key.Rmd`, the stage table of `00_run_pipeline.Rmd`
+and `psmfc_repo_root()` in `tools/pipeline_checks.R`.
 
 ## Large files
 

@@ -1,0 +1,40 @@
+---
+title: "00 - Run the gene-annotation analysis"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  online: false         # steps 02-03 query NCBI and OrthoDB; false runs step 01 only
+  steps: "all"          # "all", or step numbers, e.g. [1]
+  stop_on_fail: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Runs the numbered scripts in `01_code/` in order, each in its own R process, with an HTML
+report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
+
+| step | script | writes to `03_analyses/` | needs the network |
+|---|---|---|---|
+| 01 | `01_go_slims.Rmd` | `goslims/`: GO slim (BP) of the TC DEGs, tables and heatmap | no |
+| 02 | `02_uniprot_summaries.Rmd` | `Top_gene_summaries/`: NCBI gene summaries for the top-50 DEGs | NCBI Entrez |
+| 03 | `03_ortholog_lists.Rmd` | `Top_gene_summaries/`: bivalve orthologs for the top-50 DEGs | OrthoDB |
+
+With `online: false` (the default, and what the repository-level runner uses) only step 01
+runs, and the committed NCBI and OrthoDB tables are kept. Set `online: true` to refresh
+them; an NCBI API key, if you have one, goes in the `ENTREZ_KEY` environment variable, never
+in a script.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+source(file.path(here::here(), "..", "tools", "run_steps.R"))
+html_dir <- here::here("03_analyses", "knit_html")
+steps <- if (!isTRUE(params$online) && identical(params$steps, "all")) 1 else params$steps
+run_log <- run_steps(here::here("01_code"), html_dir, steps = steps,
+                     stop_on_fail = isTRUE(params$stop_on_fail))
+finish_run(run_log, html_dir, "Gene-annotation")
+```

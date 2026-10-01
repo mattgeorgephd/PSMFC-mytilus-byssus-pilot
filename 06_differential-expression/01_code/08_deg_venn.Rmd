@@ -1,0 +1,135 @@
+---
+title: "08 - DEG Venn diagrams"
+output: html_document
+date: "2025-03-21"
+---
+
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))   # shared treatment and tissue colours
+```
+### Load libraries
+```{r}
+library(dplyr)
+library(readr)     # read_csv: the *_sigs_merged.csv files written by 06_join_annotation are comma-separated
+library(ggplot2)
+## ggvenn is on CRAN; install once if missing (a headless knit cannot ask for a mirror)
+if (!requireNamespace("ggvenn", quietly = TRUE))
+  install.packages("ggvenn", repos = "https://cloud.r-project.org")
+library(ggvenn)
+```
+
+### Load DEGS
+```{r}
+# Gill (TC)
+
+GOW_sigs <- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
+GOA_sigs <- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
+GDO_sigs <- read_csv(file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
+
+# Foot (TC)
+FOW_sigs <- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
+FOA_sigs <- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
+FDO_sigs <- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
+
+# Select only unique identifiers
+GOW_sigs_venn <- unique(GOW_sigs)
+GOA_sigs <- unique(GOA_sigs)
+GDO_sigs <- unique(GDO_sigs)
+
+FOW_sigs <- unique(FOW_sigs)
+FOA_sigs <- unique(FOA_sigs)
+FDO_sigs_venn <- unique(FDO_sigs)
+
+
+```
+
+### Make lists for venn diagram
+```{r}
+G_list <- list(
+  "Ocean warming" = GOW_sigs$gene, 
+  "Ocean acidification" = GOA_sigs$gene, 
+  "Hypoxia" = GDO_sigs$gene
+  )
+
+F_list <- list(
+  "Ocean warming" = FOW_sigs$gene, 
+  "Ocean acidification" = FOA_sigs$gene, 
+  "Hypoxia" = FDO_sigs$gene
+)
+```
+
+### Gill tissue venn diagram all treatments
+```{r}
+p <- ggvenn(
+  G_list, 
+  fill_color = unname(TREATMENT_COLORS[c("OW", "OA", "DO")]),   # list order: warming, acidification, hypoxia
+  stroke_size = 0.5, set_name_size =10,text_size = 13,show_percentage = FALSE
+  )+
+  theme(aspect.ratio = 1,
+        element_text(size = 20))
+print(p)
+ggsave(file.path(figs, "TC_venn_gill_stressors.png"), p, width = 7, height = 7, dpi = 300)
+```
+### Foot tissue venn all treatments
+```{r}
+p <- ggvenn(
+  F_list, 
+  fill_color = unname(TREATMENT_COLORS[c("OW", "OA", "DO")]),   # list order: warming, acidification, hypoxia
+  stroke_size = 0.5, set_name_size = 10,text_size = 13,show_percentage = FALSE
+  )+
+  theme(aspect.ratio = 1)
+print(p)
+ggsave(file.path(figs, "TC_venn_foot_stressors.png"), p, width = 7, height = 7, dpi = 300)
+```
+### Make lists for tissue comparison within treatments
+```{r}
+DO_list <- list(
+  Foot = FDO_sigs$gene,
+  Gill = GDO_sigs$gene
+)
+
+OW_list <- list(
+  Foot = FOW_sigs$gene,
+  Gill = GOW_sigs$gene
+)
+
+OA_list <- list(
+  Foot = FOA_sigs$gene,
+  Gill = GOA_sigs$gene
+)
+```
+
+### DO
+```{r}
+
+p <- ggvenn(
+  DO_list, 
+  fill_color = unname(TISSUE_COLORS[c("F", "G")]),
+  stroke_size = 0.5, set_name_size = 7
+  )
+print(p)
+ggsave(file.path(figs, "TC_venn_foot_vs_gill_DO.png"), p, width = 6, height = 6, dpi = 300)
+```
+## OA
+```{r}
+
+p <- ggvenn(
+  OA_list, 
+  fill_color = unname(TISSUE_COLORS[c("F", "G")]),
+  stroke_size = 0.5, set_name_size = 7
+  )
+print(p)
+ggsave(file.path(figs, "TC_venn_foot_vs_gill_OA.png"), p, width = 6, height = 6, dpi = 300)
+```
+## OW
+```{r}
+
+p <- ggvenn(
+  OW_list, 
+  fill_color = unname(TISSUE_COLORS[c("F", "G")]),
+  stroke_size = 0.5, set_name_size = 7
+  )
+print(p)
+ggsave(file.path(figs, "TC_venn_foot_vs_gill_OW.png"), p, width = 6, height = 6, dpi = 300)
+```

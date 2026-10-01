@@ -1,11 +1,48 @@
 # 08_gene-annotation
 
-Functional annotation of genes: GOSlim assignment, UniProt summaries, ortholog lists, and the
-top-gene summary tables. Sits downstream of the BLAST GO mapping, which reaches it through the
-annotated DEG tables in `06_differential-expression`.
+Functional annotation of the treatment-control (TC) DEGs: their GO slim (biological process)
+profile, NCBI gene summaries and bivalve orthologs of the top DEGs. It reads the annotated DEG
+tables and top-50 lists of `06_differential-expression` and writes only to its own
+`03_analyses/`.
 
-Authoritative annotation is Grace/Sam's (`Annotation.Rmd` and the numbered scripts); your earlier
-`06-annotation.Rmd` is kept under `01_code/_superseded/`.
+Paths resolve through `01_code/_paths.R` (`here::here()` anchored on `gene-annotation.Rproj`).
+The genome BLAST that produced the annotation is in `03_blast` (its record script
+`02_genome_blast_uniprot_check.Rmd` used to sit here as `Annotation.Rmd`); an earlier
+annotation attempt is kept under `01_code/_superseded/`.
+
+## How to run
+
+Open `gene-annotation.Rproj` and knit `01_code/00_run_gene_annotation.Rmd` (or let the
+repository-level `00_run_pipeline.Rmd` do it, after 06).
+
+| step | script | writes to `03_analyses/` | network |
+|---|---|---|---|
+| 01 | `01_go_slims.Rmd` | `goslims/`: GO slim (BP) tables per TC contrast, a summary table and heatmap | none |
+| 02 | `02_uniprot_summaries.Rmd` | `Top_gene_summaries/<code>_topgene_summs.csv`: NCBI gene summaries of the top-50 DEGs | NCBI Entrez (`rentrez`) |
+| 03 | `03_ortholog_lists.Rmd` | `Top_gene_summaries/<code>_topgene_summs_ortho.csv`, `ortho_species.tab.gz`: bivalve orthologs | OrthoDB |
+
+By default the runner runs step 01 only (`online: false`); steps 02 and 03 need network access,
+and their committed tables are kept. An NCBI API key, if you use one, goes in the
+`ENTREZ_KEY` environment variable (for example in `~/.Renviron`), never in a script.
+
+Packages: GSEABase, GO.db, tidyverse (step 01); rentrez (02); httr, jsonlite, dplyr, stringr,
+purrr (03); here, rmarkdown.
+
+## GO slims (step 01)
+
+Each TC DEG with a UniProt hit is mapped onto the generic GO slim: it belongs to a slim term
+when any of its GO IDs is that term or a descendant. The slim is pinned in
+`02_data/goslim_generic.obo` (GO release 2023-07-27, the release of the `GO.db` used here); the
+GO graph comes from `GO.db`. The earlier script (`06-get_GOSlims.Rmd`) lost most of the
+annotation: GO IDs kept a leading space after splitting on ";", which `GSEABase::GOCollection()`
+silently drops, so each gene contributed only its first-listed GO ID, and genes were then looked
+up through only the first GO ID of each slim term. Its tables are kept in
+`03_analyses/_superseded/goslims_genome/`; they listed 36-65% of the gene-to-slim links implied
+even by their own GO-ID column.
+
+Gill OA's "generation of precursor metabolites and energy" cell (100 up-regulated genes) is
+mostly LOCs annotated as mitochondrially encoded proteins (89 of the 103 genes in that term;
+see `tools/mt_encoded.R`): one mitochondrial signal counted many times.
 
 ## Layout
 
@@ -13,39 +50,18 @@ Authoritative annotation is Grace/Sam's (`Annotation.Rmd` and the numbered scrip
 08_gene-annotation/
 ├── gene-annotation.Rproj
 ├── 01_code/
-│   ├── _paths.R                             shared paths (cross-folder reads and writes)
-│   ├── 06-get_GOSlims.Rmd                   GO-slim (BP) assignment per DEG, per contrast
-│   ├── 17-uniprot_summaries.Rmd             NCBI gene summaries for the top-50 genes
-│   ├── 18-ortholog-lists.Rmd                bivalve orthologs for the top-50 genes (OrthoDB)
-│   ├── Annotation.Rmd                       HPC blast archive (does not source _paths.R)
-│   └── _superseded/06-annotation.Rmd(.md)   earlier annotation attempt (yours)
+│   ├── 00_run_gene_annotation.Rmd    batch runner
+│   ├── 01_go_slims.Rmd               GO slim (BP) per TC contrast, heatmap
+│   ├── 02_uniprot_summaries.Rmd      NCBI gene summaries for the top-50 DEGs
+│   ├── 03_ortholog_lists.Rmd         bivalve orthologs for the top-50 DEGs (OrthoDB)
+│   ├── _paths.R                      shared paths
+│   └── _superseded/06-annotation.Rmd(.md)   earlier annotation attempt
 ├── 02_data/
-│   └── Foot_proteins.txt                    byssal foot protein reference list
+│   ├── Foot_proteins.txt             byssal foot-protein coding sequences (reference)
+│   └── goslim_generic.obo            the pinned generic GO slim
 └── 03_analyses/
-    └── Top_gene_summaries/                  top-gene summary tables (incl. Top_50_genes/)
+    ├── goslims/                      step 01
+    ├── Top_gene_summaries/           steps 02-03
+    ├── _superseded/goslims_genome/   the earlier GO slim tables
+    └── knit_html/                    runner reports and logs (git-ignored)
 ```
-
-## Inputs and outputs (cross-folder)
-
-| path | read / written by |
-|---|---|
-| `../06_differential-expression/03_analyses/DEG_lists/GOterms_genome/*_sigs_ID.csv` | read by 06 (comma-separated, written by `04-File_joining`) |
-| `../06_differential-expression/03_analyses/DEG_lists/goslims_genome/` | written by 06 |
-| `03_analyses/Top_gene_summaries/Top_50_genes/` | written by `06_differential-expression/01_code/16-top_DEGs.Rmd`, read by 17 |
-| `03_analyses/Top_gene_summaries/*_topgene_summs.csv` | written by 17, read by 18 |
-| `03_analyses/Top_gene_summaries/*_topgene_summs_ortho.csv`, `ortho_species.tab.gz` | written by 18 |
-
-`Top_gene_summaries/` is written by both `16-top_DEGs` (in `06_differential-expression`) and
-the scripts here, so it is a shared DE/annotation product kept in this folder.
-
-## Runnability
-
-Every path resolves through `01_code/_paths.R`. The scripts need network access:
-
-- `06-get_GOSlims` needs the Bioconductor packages `GSEABase` and `GO.db` (installed on first
-  run if missing) and downloads `goslim_generic.obo` from the Gene Ontology Consortium.
-- `17-uniprot_summaries` queries NCBI Entrez through `rentrez`.
-- `18-ortholog-lists` downloads the OrthoDB species table and queries the OrthoDB API.
-
-`Annotation.Rmd` is the HPC blast record (`/home/shared/...` paths) and does not run outside
-that environment.

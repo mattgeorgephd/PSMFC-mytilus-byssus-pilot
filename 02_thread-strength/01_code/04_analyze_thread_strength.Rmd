@@ -1,0 +1,576 @@
+---
+title: "04_analyze_thread_strength"
+author: "Matt George"
+date: "2023-04-25"
+output: html_document
+---
+
+<!--
+PURPOSE
+  Analyze byssal-thread plaque adhesion (kPa) for Mytilus trossulus before and
+  after a 3-day stress exposure (ocean acidification OA, ocean warming OW,
+  hypoxia DO), relative to a pre-exposure baseline and a day-3 control arm.
+
+INPUT
+  03_analyses/03_assemble-thread-summary/thread-summary.xlsx, sheet "data" - the thread
+  summary written by script 03, which in turn reads script 02's extraction output.
+
+DATA MODEL (read this before editing the filters below)
+  Three columns, three different grains. They are easy to confuse, so each is named
+  for what it describes:
+    - thread_trt : what the THREAD was built in.
+                   lab_control | baseline | treatment_control | OA | OW | DO
+    - phase      : lab  = never entered the experimental system (day 0)
+                   pre  = shared holding system, before exposure (day 1)
+                   post = during the exposure (day 3)
+                   Derived from thread_trt if the column is absent.
+    - mussel_trt : the arm the ANIMAL was assigned to (its fate).
+                   lab_control | control | OA | OW | DO
+                   This is a DESTINY label. For a `pre` thread it describes the
+                   animal's future, not its past: a baseline thread from an OA
+                   animal is NOT an OA thread.
+
+  `phase` has THREE levels on purpose. The previous version derived a binary
+  timepoint from a `group` column whose "control" value pooled the day-0
+  lab-reference animals with the day-1 pre-exposure baselines. That put 11
+  animals which never entered the experimental system into a 54-animal
+  "baseline" reference pool. See INCLUDE_LAB_REFERENCE below.
+
+  The retired `group` column is not used. It was fully recoverable from
+  thread_trt, and its value "control" collided with both
+  mussel_trt == "control" and thread_trt == "treatment_control".
+
+FIGURE CONVENTION FOR THE LINE+BOX PANELS (one per arm)
+  - Left cluster  = the baseline reference pool (see INCLUDE_LAB_REFERENCE);
+    the SAME mussels appear on every panel.
+  - Right cluster = only mussels that produced threads in that arm at day 3.
+  - A connecting line is drawn only for mussels present on BOTH sides (true
+    repeated measures); unpaired mussels appear as a single point with no line.
+  - A boxplot of the per-mussel means flanks each cluster, offset so it never
+    overlaps the points or crosses the connecting lines.
+  - A panel is now built for the CONTROL arm too, not only OA/OW/DO. Whether it
+    has connecting lines depends on whether the T126-T135 baselines have a
+    measured plaque area; the script reports the pair count either way.
+  - Far-left grey cluster = the day-0 lab-reference animals, labelled "lab (day 0)"
+    (SHOW_LAB_REFERENCE_IN_PANELS). They are shown for comparison only: never in the
+    baseline pool, never paired, never in a model.
+
+THE TWO CONTROLS (see also 03_analyses/README.md)
+  - treatment_control / mussel_trt == "control": day-3 animals held three days under
+    ambient conditions in the same system as the stressor arms. This is the reference
+    for a STRESSOR effect (the ANCOVA reference arm; the DESeq2 TC contrasts).
+  - lab_control / phase == "lab": day-0 animals that never entered the experimental
+    system. They measure time in system and handling, and are confounded with both; a
+    descriptive comparison group only (DESC_lab_reference.csv), never a baseline and never
+    in the model.
+-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Load packages; set ggplot theme
+```{r message=FALSE, warning=FALSE}
+## Clear workspace
+rm(list = ls())
+
+## Load packages (auto-install any that are missing).
+load.lib <- c("readxl", "tidyverse", "emmeans", "broom", "colorspace", "here")
+              # emmeans: ANCOVA adjusted means and contrasts; broom: tidy lm output;
+              # colorspace: lightened violin fills in p2
+install.lib <- load.lib[!load.lib %in% installed.packages()]
+for (lib in install.lib) install.packages(lib, dependencies = TRUE)
+sapply(load.lib, require, character = TRUE)
+
+## ggplot theme (ggplot2 >= 3.4: line/rect widths use `linewidth`, not `size`)
+my_theme <- theme(line             = element_line(linewidth = 1.2),
+                  rect             = element_rect(linewidth = 1.2),
+                  text             = element_text(size = 14, color = "black"),
+                  panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text.x      = element_text(size = 16, color = "black"),
+                  axis.text.y      = element_text(size = 16, color = "black"),
+                  axis.title.x     = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)),
+                  axis.title.y     = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
+                  axis.ticks.x     = element_line(color = "black"),
+                  axis.ticks.y     = element_line(color = "black"),
+                  panel.border     = element_rect(color = "black", fill = NA, linewidth = 1.2),
+                  legend.key       = element_blank(),
+                  legend.position  = "none")
+
+## Palette, keyed on thread_trt: the repository's shared colours (tools/plot_style.R). Lab
+## reference light grey (outside the experiment), baseline blue, treatment control grey (the
+## reference arm), OA green, OW orange, DO purple, the same as every other figure.
+source(file.path(here::here(), "..", "tools", "plot_style.R"))
+treatment_colors <- THREAD_TRT_COLORS
+```
+
+```{r}
+# Create this script's output folder under 03_analyses (idempotent)
+out_dir <- here::here("03_analyses", "04_analyze-thread-strength")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+```
+
+### Configuration
+```{r}
+# Should the day-0 lab-reference animals (phase == "lab", mussel_trt == "lab_control")
+# count as part of the BASELINE REFERENCE POOL?
+#
+#   FALSE (default) - the pool is the day-1 pre-exposure threads only. These animals
+#                     went on to be exposed, so a before/after contrast against them
+#                     isolates the stressor.
+#   TRUE            - reproduces the previous behaviour, where the pool was 43
+#                     pre-exposure animals PLUS 11 lab-reference animals that never
+#                     entered the experimental system. That confounds "effect of the
+#                     stressor" with "effect of being in the system at all".
+#
+# This toggle affects the left cluster of the line+box panels only. It does NOT affect the
+# ANCOVA: lab animals have no day-3 pull, so they never have both timepoints.
+INCLUDE_LAB_REFERENCE <- FALSE
+if (isTRUE(INCLUDE_LAB_REFERENCE))
+  warning("INCLUDE_LAB_REFERENCE = TRUE: the day-0 lab-reference animals are being POOLED ",
+          "into the baseline reference. The left cluster of every line+box panel then ",
+          "confounds 'stressor' with 'being in the system at all'. ",
+          "This is the legacy behaviour and is not the analysis of record.", call. = FALSE)
+
+# Show the day-0 lab-reference animals in the line+box panels as their OWN labelled group
+# (grey cluster at the far left, "lab (day 0)"), never merged into the baseline cluster.
+# Ignored when INCLUDE_LAB_REFERENCE is TRUE (they are then inside the baseline pool).
+SHOW_LAB_REFERENCE_IN_PANELS <- TRUE
+```
+
+### Load data set; derive adhesion and timepoint
+```{r}
+# One copy of the input path: read here, recorded in RUN_provenance.txt below.
+thread_xlsx <- here::here("03_analyses", "03_assemble-thread-summary", "thread-summary.xlsx")
+thread_plot <- read_excel(thread_xlsx, sheet = "data", col_names = TRUE)
+
+# --- Schema normalisation -------------------------------------------------------------
+# Accepts the thread summary under either the old or the new column names, so this script
+# keeps working across the rename. `mussel`/`thread`/`thread_trt` are the names used below.
+ren <- c(mussel_ID = "mussel", thread_num = "thread", treatment = "thread_trt")
+for (from in names(ren)) {
+  to <- ren[[from]]
+  if (from %in% names(thread_plot) && !to %in% names(thread_plot))
+    names(thread_plot)[names(thread_plot) == from] <- to
+}
+
+need <- c("mussel", "thread", "thread_trt", "mussel_trt", "max_force", "pad_area")
+if (length(setdiff(need, names(thread_plot))) > 0)
+  stop("thread-summary.xlsx is missing required column(s): ",
+       paste(setdiff(need, names(thread_plot)), collapse = ", "),
+       "\nColumns present: ", paste(names(thread_plot), collapse = ", "))
+
+# `phase` is fully determined by thread_trt, so derive it if the thread summary predates it.
+if (!"phase" %in% names(thread_plot)) {
+  thread_plot$phase <- dplyr::case_when(
+    thread_plot$thread_trt == "lab_control" ~ "lab",
+    thread_plot$thread_trt == "baseline"    ~ "pre",
+    TRUE                                    ~ "post")
+  message("No `phase` column found; derived from thread_trt.")
+}
+
+# Canonical tag, so `mussel` joins regardless of how it was written.
+norm_id <- function(x) {
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
+}
+thread_plot$mussel <- norm_id(thread_plot$mussel)
+
+# --- Adhesion -------------------------------------------------------------------------
+# kPa = N / mm^2 * 1000. Recomputed here so the script does not depend on the
+# spreadsheet's cached formula column.
+thread_plot$adhesion_kpa <- thread_plot$max_force / thread_plot$pad_area * 1000
+
+# Drop rows with no plaque measurement, LOUDLY. Previously these passed through as NA and
+# were silently discarded by each model, so the n behind a contrast was never visible.
+n_all  <- nrow(thread_plot)
+no_pad <- thread_plot %>% filter(is.na(adhesion_kpa))
+if (nrow(no_pad) > 0) {
+  message(nrow(no_pad), " of ", n_all,
+          " thread(s) have no pad_area and cannot yield adhesion_kpa; excluded.")
+  no_pad %>% count(thread_trt, name = "threads_dropped") %>% knitr::kable() %>% print()
+}
+thread_plot <- thread_plot %>% filter(!is.na(adhesion_kpa))
+
+# --- Factors and the before/after axis -------------------------------------------------
+# `timepoint` is the two-level before/after axis, and it is deliberately NOT defined for
+# phase == "lab": those animals were never in the experimental system, so they have no
+# before/after position. They stay in the data as their own descriptive group.
+thread_plot$timepoint <- factor(dplyr::case_when(thread_plot$phase == "pre"  ~ "baseline",
+                                                 thread_plot$phase == "post" ~ "post",
+                                                 TRUE                        ~ NA_character_),
+                                levels = c("baseline", "post"))
+
+thread_trt_levels <- c("lab_control", "baseline", "treatment_control", "OW", "OA", "DO")
+thread_plot$thread_trt <- factor(thread_plot$thread_trt,
+                                 levels = intersect(thread_trt_levels,
+                                                    unique(thread_plot$thread_trt)))
+
+# `mussel_trt` lists control first; it is the reference arm of the ANCOVA.
+mussel_trt_levels <- c("control", "OA", "OW", "DO", "lab_control")
+unknown_arm <- setdiff(unique(thread_plot$mussel_trt), mussel_trt_levels)
+if (length(unknown_arm) > 0)
+  stop("Unrecognised mussel_trt value(s): ", paste(unknown_arm, collapse = ", "),
+       "\nAdd them to `mussel_trt_levels` rather than letting factor() silently NA them.")
+thread_plot$mussel_trt <- factor(thread_plot$mussel_trt,
+                                 levels = intersect(mussel_trt_levels,
+                                                    unique(thread_plot$mussel_trt)))
+
+thread_plot$mussel <- factor(thread_plot$mussel)
+thread_plot$thread <- factor(thread_plot$thread)
+
+# Structural check: every mussel maps to exactly one fate.
+bad_fate <- thread_plot %>% group_by(mussel) %>%
+  summarise(n_fate = n_distinct(mussel_trt), .groups = "drop") %>% filter(n_fate != 1)
+if (nrow(bad_fate) > 0)
+  stop("Mussel(s) carrying more than one mussel_trt: ",
+       paste(bad_fate$mussel, collapse = ", "))
+
+cat("Threads analysed:", nrow(thread_plot), "| mussels:", n_distinct(thread_plot$mussel), "\n")
+thread_plot %>% count(phase, thread_trt, mussel_trt) %>% knitr::kable()
+```
+
+### Per-mussel summaries (for the figures)
+```{r message=FALSE}
+# Collapse threads to one adhesion summary per mussel x thread_trt. Within a phase a mussel
+# carries a single thread_trt, so this yields one row per mussel per phase.
+per_mussel_means <- thread_plot %>%
+  group_by(mussel, phase, timepoint, thread_trt, mussel_trt) %>%
+  summarise(adh_mean = mean(adhesion_kpa),
+            adh_sd   = sd(adhesion_kpa),
+            n        = n(),
+            adh_se   = adh_sd / sqrt(n),
+            .groups  = "drop")
+
+# THE BASELINE REFERENCE POOL: the left cluster of the line+box panels.
+baseline_pool <- per_mussel_means %>%
+  filter(phase == "pre" | (INCLUDE_LAB_REFERENCE & phase == "lab"))
+
+cat("Baseline reference pool: ", n_distinct(baseline_pool$mussel), " mussels (",
+    if (INCLUDE_LAB_REFERENCE) "pre-exposure + lab-reference" else "pre-exposure only",
+    ").\n", sep = "")
+baseline_pool %>% count(phase, thread_trt, name = "mussels") %>% knitr::kable()
+
+# Fixed horizontal offset per mussel, computed ONCE over all mussels so the baseline
+# cluster looks identical across the arm panels. Used only for point/line placement.
+set.seed(1)
+mussel_offsets <- tibble(mussel = levels(thread_plot$mussel),
+                         xoff   = runif(nlevels(thread_plot$mussel), -0.08, 0.08))
+```
+
+### Distribution plots: adhesion by thread treatment
+```{r warning=FALSE}
+# These four panels summarize the distribution of adhesion. p1 (all threads) and
+# p3 (per-mussel means) correspond to the two manuscript panels; p2 and p4 restrict to
+# mussels measured at BOTH timepoints (true repeated measures).
+#
+# x is `thread_trt`, so each bar is one condition a thread was actually built in. The
+# previous version plotted a `treatment` column whose "control" bar POOLED day-0/day-1
+# baselines with day-3 control-arm threads; `baseline` and `treatment_control` are now
+# separate bars. Compare against the old figures with that in mind.
+
+# Mussels measured at both baseline and post-stress (repeated-measures subset).
+thread_plot_repeated <- thread_plot %>%
+  group_by(mussel) %>%
+  filter(n_distinct(timepoint[!is.na(timepoint)]) == 2) %>%
+  ungroup()
+
+thread_plot_all_mean <- per_mussel_means
+thread_plot_repeated_mean <- per_mussel_means %>%
+  group_by(mussel) %>%
+  filter(n_distinct(timepoint[!is.na(timepoint)]) == 2) %>%
+  ungroup()
+
+cat("Repeated-measures mussels (both timepoints):",
+    n_distinct(thread_plot_repeated$mussel), "\n")
+
+# p1: all threads, violin + box + jittered points
+p1 <- ggplot(thread_plot, aes(x = thread_trt, y = adhesion_kpa)) +
+      geom_violin(aes(fill = thread_trt), color = "black", linewidth = 1.2, bw = 12) +
+      geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = NA,
+                   width = 0.2, notch = FALSE, varwidth = FALSE, alpha = 0.8, coef = 0) +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5, alpha = .1) +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5,
+                 stroke = .7, shape = 1, color = "black") +
+      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
+      scale_fill_manual(values = treatment_colors) +
+      xlab(NULL) + ylab(NULL) + my_theme +
+      theme(axis.text.x = element_text(size = 12, angle = 25, hjust = 1)) +
+      ggtitle("all threads, violin + box + jittered points")
+p1
+
+# p2: repeated-measures mussels only, all threads
+p2 <- ggplot(thread_plot_repeated, aes(x = thread_trt, y = adhesion_kpa)) +
+      geom_violin(aes(fill = thread_trt,
+                      fill = after_scale(colorspace::lighten(fill, .5))),
+                  color = "black", linewidth = 1.2, bw = 12) +
+      geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = NA,
+                   width = 0.2, notch = FALSE, varwidth = FALSE, alpha = 0.8, coef = 0) +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5, alpha = .3) +
+      geom_point(position = position_jitter(width = .03, seed = 0), size = 5,
+                 stroke = .7, shape = 1, color = "black") +
+      scale_fill_manual(values = treatment_colors) +
+      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
+      xlab(NULL) + ylab(NULL) + my_theme +
+      theme(axis.text.x = element_text(size = 12, angle = 25, hjust = 1)) +
+      ggtitle("repeated-measures mussels only, all threads")
+p2
+
+# p3: all mussels, per-mussel means
+p3 <- ggplot(thread_plot_all_mean, aes(x = thread_trt, y = adh_mean)) +
+      geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = 16,
+                   notch = FALSE, varwidth = TRUE, alpha = 0.8) +
+      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
+      xlab(NULL) + ylab(NULL) + my_theme +
+      theme(axis.text.x = element_text(size = 11, angle = 25, hjust = 1)) +
+      ggtitle("all mussels, per-mussel means")
+p3
+
+# p4: repeated-measures mussels only, per-mussel means
+p4 <- ggplot(thread_plot_repeated_mean, aes(x = thread_trt, y = adh_mean)) +
+      geom_boxplot(colour = "black", linewidth = 0.8, outlier.shape = 16,
+                   notch = FALSE, varwidth = TRUE, alpha = 0.8) +
+      scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
+      xlab(NULL) + ylab(NULL) + my_theme +
+      theme(axis.text.x = element_text(size = 11, angle = 25, hjust = 1)) +
+      ggtitle("repeated-measures mussels only, per-mussel means")
+p4
+
+ggsave(file.path(out_dir, "BP_AllMussels_AllThreads.png"),
+       plot = p1, dpi = 1200, device = "png", width = 7, height = 5, units = "in")
+ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_AllThreads.png"),
+       plot = p2, dpi = 1200, device = "png", width = 8, height = 6, units = "in")
+ggsave(file.path(out_dir, "BP_AllMussels_MeanThreads.png"),
+       plot = p3, dpi = 1200, device = "png", width = 4.5, height = 4, units = "in")
+ggsave(file.path(out_dir, "BP_OnlyRepeatedMussels_MeanThreads.png"),
+       plot = p4, dpi = 1200, device = "png", width = 4.5, height = 4, units = "in")
+```
+
+### Line + box panels: baseline vs each day-3 arm
+```{r warning=FALSE}
+# One reusable builder, called once per day-3 arm.
+#
+# x-geometry (continuous axis):
+#   baseline points/lines/error bars live near x = 1 (within +/- 0.08)
+#   arm      points/lines/error bars live near x = 2 (within +/- 0.08)
+#   baseline box sits at x = 0.60, arm box at x = 2.40 (width 0.22)
+# so the boxes are always clear of the point clusters and the connecting lines.
+#
+# Coloring: baseline points/box in baseline blue; arm points/box in the arm color;
+# connecting lines neutral grey so they read as links rather than adding new colors.
+#
+# The control arm gets a panel too. Whether it shows connecting lines depends on whether
+# the day-3 control animals' own baseline threads have a measured plaque area;
+# the pair count is printed for every panel so an empty pairing is never silent.
+
+make_line_box <- function(trt_code, trt_label = trt_code,
+                          y_breaks = seq(0, 200, 25), y_lim = c(0, 210)) {
+
+  base_col <- treatment_colors[["baseline"]]
+  lab_col  <- treatment_colors[["lab_control"]]
+  trt_col  <- if (trt_code %in% names(treatment_colors)) treatment_colors[[trt_code]] else "grey60"
+  box_w <- 0.22; box_ctrl_x <- 0.60; box_trt_x <- 2.40; box_lab_x <- -0.40
+
+  ctrl <- baseline_pool %>% mutate(side = "control", xbase = 1, xbox = box_ctrl_x)
+  trt  <- per_mussel_means %>% filter(phase == "post", thread_trt == trt_code) %>%
+          mutate(side = "treatment", xbase = 2, xbox = box_trt_x)
+  # Day-0 lab-reference animals as their own cluster at the far left (x = 0). They are a
+  # descriptive group only: never pooled with the baseline, never paired, never modelled.
+  show_lab <- isTRUE(SHOW_LAB_REFERENCE_IN_PANELS) && !isTRUE(INCLUDE_LAB_REFERENCE)
+  lab  <- if (show_lab) per_mussel_means %>% filter(phase == "lab") %>%
+            mutate(side = "lab", xbase = 0, xbox = box_lab_x) else per_mussel_means[0, ]
+  show_lab <- show_lab && nrow(lab) > 0
+
+  if (nrow(trt) == 0) {
+    warning("No day-3 threads for arm '", trt_code, "'; panel skipped.", call. = FALSE)
+    return(NULL)
+  }
+
+  dat <- bind_rows(lab, ctrl, trt) %>%
+         left_join(mussel_offsets, by = "mussel") %>%
+         mutate(xpos = xbase + xoff)
+
+  # Connecting lines only for mussels present on both sides (true repeated measures).
+  paired_ids <- intersect(as.character(ctrl$mussel), as.character(trt$mussel))
+  lines_dat  <- dat %>% filter(side != "lab", as.character(mussel) %in% paired_ids)
+  message(trt_code, ": ", nrow(trt), " day-3 mussels, ", length(paired_ids),
+          " paired to a baseline", if (show_lab) paste0("; ", nrow(lab), " lab-reference animals shown") else "", ".")
+
+  x_breaks <- if (show_lab) c(0, 1, 2) else c(1, 2)
+  x_labels <- if (show_lab) c("lab\n(day 0)", "baseline", trt_label) else c("baseline", trt_label)
+  x_limits <- if (show_lab) c(-0.6, 2.6) else c(0.4, 2.6)
+
+  ggplot() +
+    { if (show_lab) geom_boxplot(data = filter(dat, side == "lab"),
+                                 aes(x = xbox, y = adh_mean, group = 1),
+                                 width = box_w, fill = lab_col, color = "black",
+                                 linewidth = 0.7, alpha = 0.55, outlier.shape = NA) } +
+    { if (show_lab) geom_errorbar(data = filter(dat, side == "lab"),
+                                  aes(x = xpos, ymin = adh_mean - adh_se, ymax = adh_mean + adh_se),
+                                  width = 0.04, linewidth = 0.6, color = "black", na.rm = TRUE) } +
+    { if (show_lab) geom_point(data = filter(dat, side == "lab"),
+                               aes(x = xpos, y = adh_mean), size = 3, color = lab_col) } +
+    { if (show_lab) geom_point(data = filter(dat, side == "lab"),
+                               aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") } +
+    geom_line(data = lines_dat,
+              aes(x = xpos, y = adh_mean, group = mussel),
+              color = "grey55", linewidth = 0.6, alpha = 0.8) +
+    geom_boxplot(data = filter(dat, side == "control"),
+                 aes(x = xbox, y = adh_mean, group = 1),
+                 width = box_w, fill = base_col, color = "black",
+                 linewidth = 0.7, alpha = 0.55, outlier.shape = NA) +
+    geom_boxplot(data = filter(dat, side == "treatment"),
+                 aes(x = xbox, y = adh_mean, group = 1),
+                 width = box_w, fill = trt_col, color = "black",
+                 linewidth = 0.7, alpha = 0.55, outlier.shape = NA) +
+    geom_errorbar(data = filter(dat, side == "control"),
+                  aes(x = xpos, ymin = adh_mean - adh_se, ymax = adh_mean + adh_se),
+                  width = 0.04, linewidth = 0.6, color = "black", na.rm = TRUE) +
+    geom_point(data = filter(dat, side == "control"),
+               aes(x = xpos, y = adh_mean), size = 3, color = base_col) +
+    geom_point(data = filter(dat, side == "control"),
+               aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") +
+    geom_errorbar(data = filter(dat, side == "treatment"),
+                  aes(x = xpos, ymin = adh_mean - adh_se, ymax = adh_mean + adh_se),
+                  width = 0.04, linewidth = 0.6, color = "black", na.rm = TRUE) +
+    geom_point(data = filter(dat, side == "treatment"),
+               aes(x = xpos, y = adh_mean), size = 3, color = trt_col) +
+    geom_point(data = filter(dat, side == "treatment"),
+               aes(x = xpos, y = adh_mean), size = 3, shape = 1, stroke = 0.6, color = "black") +
+    scale_x_continuous(breaks = x_breaks, labels = x_labels, limits = x_limits) +
+    scale_y_continuous(breaks = y_breaks, limits = y_lim) +
+    xlab(NULL) + ylab(NULL) + my_theme
+}
+
+# Build a panel for every day-3 arm actually present in the data.
+day3_arms <- per_mussel_means %>% filter(phase == "post") %>%
+             pull(thread_trt) %>% droplevels() %>% levels()
+
+panel_files <- c(treatment_control = "LineBox_CONTROL_BaselineVsDay3.png",
+                 OA = "LineBox_OA_BaselineVsTreatment.png",
+                 OW = "LineBox_OW_BaselineVsTreatment.png",
+                 DO = "LineBox_DO_BaselineVsTreatment.png")
+
+line_box_panels <- list()
+for (arm in day3_arms) {
+  pnl <- make_line_box(arm, trt_label = if (arm == "treatment_control") "control" else arm)
+  if (is.null(pnl)) next
+  line_box_panels[[arm]] <- pnl
+  print(pnl)
+  fn <- if (arm %in% names(panel_files)) panel_files[[arm]] else paste0("LineBox_", arm, ".png")
+  ggsave(file.path(out_dir, fn), plot = pnl,
+         dpi = 1200, device = "png", width = 4.5, height = 4.5, units = "in")
+}
+```
+
+<!--
+STATISTICS
+  One analysis: a per-animal ANCOVA (01_code/_ancova.R). Arms were assigned at random, so
+  the day-3 level is modelled with the animal's own baseline level as a covariate,
+  log(day-3 adhesion) ~ arm + log(baseline adhesion), one row per animal with threads at both
+  timepoints. Each stressor arm is compared with the day-3 treatment control,
+  with 95% CI and p reported both unadjusted and Dunnett-adjusted over the three comparisons.
+  The same model is fitted to peak force, plaque area and extension in script 05.
+
+  The per-mussel means above feed the figures only. The descriptive tables below (baseline
+  by future arm, the lab-reference comparison) carry no tests: under random assignment a
+  baseline difference between arms is chance by construction, and the ANCOVA adjusts for it.
+-->
+
+### Statistics: per-animal ANCOVA on adhesion
+```{r warning=FALSE}
+source(here::here("01_code", "_ancova.R"))
+
+adhesion_ancova <- fit_ancova(thread_plot, "adhesion_kpa", "log")
+cat("Animals in the ANCOVA:", nrow(adhesion_ancova$data), "\n")
+print(adhesion_ancova$data %>% count(arm, name = "animals"))
+knitr::kable(adhesion_ancova$tests, digits = 4)
+knitr::kable(adhesion_ancova$adjusted_means, digits = 3)
+knitr::kable(adhesion_ancova$vs_control %>%
+               select(arm, estimate, pct_change, ci_low, ci_high, p_unadjusted,
+                      ci_low_dunnett, ci_high_dunnett, p_dunnett), digits = 4)
+
+write_ancova_tables(list(adhesion_ancova), out_dir)
+save_ancova_diagnostics(list(adhesion_ancova), file.path(out_dir, "DIAG_ancova_residuals.png"))
+```
+
+### Description: baseline by future arm, and the lab reference (no tests)
+```{r warning=FALSE}
+# Per-mussel means (arithmetic, raw scale) for adhesion, peak force, plaque area and
+# extension, written as descriptive tables.
+#   DESC_baseline_by_arm.csv   pre-exposure (day 1) values by the arm each animal went on to,
+#                              the baseline table of a randomized design
+#   DESC_lab_reference.csv     day-0 lab-reference animals beside the day-1 pre-exposure and
+#                              day-3 control animals. The lab animals never entered the
+#                              experimental system; they are a descriptive comparison group only.
+metric_cols <- intersect(c("adhesion_kpa", "max_force", "pad_area", "max_displacement"),
+                         names(thread_plot))   # extension is optional in the thread summary
+pm_metrics <- thread_plot %>%
+  group_by(mussel, phase, mussel_trt) %>%
+  summarise(n_threads = n(), across(all_of(metric_cols), ~ mean(.x, na.rm = TRUE)),
+            .groups = "drop") %>%
+  mutate(across(all_of(metric_cols), ~ ifelse(is.nan(.x), NA_real_, .x)))
+
+describe <- function(d, group_col) {
+  bind_rows(lapply(metric_cols, function(m) d %>%
+    filter(!is.na(.data[[m]])) %>%
+    group_by(group = .data[[group_col]]) %>%
+    summarise(n = n(), mean = mean(.data[[m]]), sd = sd(.data[[m]]),
+              median = median(.data[[m]]), .groups = "drop") %>%
+    mutate(metric = m, .before = 1)))
+}
+
+baseline_desc <- describe(pm_metrics %>%
+                            filter(phase == "pre", mussel_trt %in% c("control", "OA", "OW", "DO")) %>%
+                            mutate(future_arm = factor(as.character(mussel_trt),
+                                                       levels = c("control", "OA", "OW", "DO"))),
+                          "future_arm") %>%
+  rename(future_arm = group)
+print(as.data.frame(baseline_desc %>% mutate(across(where(is.numeric), ~ signif(.x, 3)))))
+write.csv(baseline_desc, file.path(out_dir, "DESC_baseline_by_arm.csv"), row.names = FALSE)
+
+grp_lab  <- pm_metrics %>% filter(phase == "lab")
+grp_ctrl <- pm_metrics %>% filter(phase == "post", mussel_trt == "control")
+lab_desc <- describe(pm_metrics %>%
+                       filter(phase == "lab" | phase == "pre" |
+                                (phase == "post" & mussel_trt == "control")) %>%
+                       mutate(reference_group = factor(case_when(
+                                phase == "lab" ~ "lab_day0",
+                                phase == "pre" ~ "pre_exposure_day1",
+                                TRUE           ~ "control_day3"),
+                         levels = c("lab_day0", "pre_exposure_day1", "control_day3"))),
+                     "reference_group") %>%
+  rename(reference_group = group)
+print(as.data.frame(lab_desc %>% mutate(across(where(is.numeric), ~ signif(.x, 3)))))
+write.csv(lab_desc, file.path(out_dir, "DESC_lab_reference.csv"), row.names = FALSE)
+```
+
+### Provenance
+```{r}
+source(file.path(here::here(), "..", "tools", "pipeline_checks.R"))   # provenance_lines(), git state
+ts_repo_root <- psmfc_repo_root(here::here())
+ts_inputs <- c(thread_xlsx,
+               here::here("01_code", "04_analyze_thread_strength.Rmd"), here::here("01_code", "_ancova.R"))
+# Which configuration produced the files in this folder.
+writeLines(provenance_lines(c(paste0("generated       : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             paste0("input           : 03_analyses/03_assemble-thread-summary/thread-summary.xlsx"),
+             paste0("INCLUDE_LAB_REFERENCE : ", INCLUDE_LAB_REFERENCE),
+             paste0("SHOW_LAB_REFERENCE_IN_PANELS : ", SHOW_LAB_REFERENCE_IN_PANELS),
+             paste0("threads analysed: ", nrow(thread_plot)),
+             paste0("threads dropped (no pad_area): ", nrow(no_pad)),
+             paste0("baseline pool   : ", n_distinct(baseline_pool$mussel), " mussels (figures only)"),
+             paste0("lab reference   : ", n_distinct(grp_lab$mussel), " mussels (day 0, shown, never pooled)"),
+             paste0("day-3 control   : ", n_distinct(grp_ctrl$mussel), " mussels"),
+             paste0("model           : per-animal ANCOVA, log(day-3 adhesion) ~ arm + log(baseline adhesion)"),
+             paste0("ANCOVA animals  : ", nrow(adhesion_ancova$data), " (",
+                    paste(sprintf("%s %d", levels(adhesion_ancova$data$arm),
+                                  as.integer(table(adhesion_ancova$data$arm))), collapse = ", "), ")"),
+             paste0("multiplicity    : unadjusted and Dunnett (emmeans mvt, seed ", DUNNETT_SEED, ")"),
+             paste0("R / emmeans     : ", R.version.string, " / ",
+                    as.character(packageVersion("emmeans")))), ts_inputs, ts_repo_root, packages = "emmeans"),
+           file.path(out_dir, "RUN_provenance.txt"))
+```

@@ -1,17 +1,25 @@
 # 03_analyses
 
-| Subfolder / file | Produced by | Contents |
-|-----------|-------------|----------|
-| `DEG_lists/Foot/`, `DEG_lists/Gill/` | `02_5_DESeq_*`, `03-TC_shrinkage_filtration` (LC: `_superseeded/03-LC_Shrinkage_filtration`) | Per-contrast count and treatment tables, full apeglm results (`<X>_TC_apeglm.csv`; `GOA_TC.csv`), DEG lists (`<X>_TC_siggene*.csv`, `padj < 0.05`), MA plots |
-| `DEG_lists/DEG_provenance_check.csv` | `03_5-DEG_table_provenance_check` | Per contrast (`family` column; the six TC contrasts of record by default, the eight LC contrasts only on request): does each result table on disk reproduce from the committed inputs |
-| `DEG_lists/sensitivity_fourlevel/` | `02_6-DESeq_fourlevel_sensitivity` | One four-level DESeq2 model per tissue: `<X>_TC4_apeglm.csv`, `<X>_TC4_siggene.csv`, and `fourlevel_vs_pairwise_DEG_counts.csv` against the pairwise lists of record |
-| `DEG_lists/GOterms_genome/` | `04-File_joining` | DEG lists joined to the BLAST/UniProt/GO annotation: `_sigs_merged` (gene x hit), `_sigs_ID`, `_sigs_unID`; `clean_zenodo_files/` from `19-DEG_list_cleanup` |
-| `DEG_lists/DEG_join_summary.csv` | `04-File_joining` | Per contrast: DEG genes, merged rows, annotated / unannotated genes, mitochondrial DEGs. **Report `n_DEG_genes`, not merged rows.** |
-| `DEG_lists/DAVID_lists/`, `DEG_lists/REVIGO_lists/` | `07_enrichment/01_code/07-*`, `09-*` | Accession and GO-ID lists submitted to DAVID / REVIGO |
-| `DEG_lists/goslims_genome/` | `08_gene-annotation/01_code/06-get_GOSlims` | GO-slim mappings per contrast |
+Everything here is written by the scripts in `../01_code/` and rebuilt by
+`00_run_differential_expression.Rmd`.
 
-`DEG_lists/` is an intermediate: the DESeq scripts write it and the joining, venn, volcano,
-counts, and top-genes scripts read it back. Enrichment (in `../../07_enrichment/`) and the
-gene-mechanics pipeline (`../../09_gene-mechanics-correlation/`, which builds its DEG union from
-the `_TC_siggene*` files and its annotation map from `GOterms_genome/*_sigs_ID.csv`) also
-read it.
+| Folder / file | Produced by | Contents |
+|---|---|---|
+| `count_matrix/` | `01_clean_count_matrix` | `gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv` (with `region`), `library_crosswalk.csv` |
+| `DEG_lists/contrasts.csv`, `contrast_samples.csv` | `02_define_contrasts` | the 16 contrasts and the samples in each |
+| `DEG_lists/filter_summary.csv` | `03_deseq_contrasts` | samples, genes in the matrix and genes kept by the count filter, per contrast |
+| `DEG_lists/Foot/`, `DEG_lists/Gill/`, `DEG_lists/Foot_vs_Gill/` | `04_shrinkage_filtration` | per contrast: `<code>_apeglm.csv` (every gene kept by the filter), `<code>_siggene.csv` (padj < 0.05), `<code>_filter_counts.csv`, `<code>_MA_plots.pdf` |
+| `DEG_lists/DEG_counts.csv` | `04_shrinkage_filtration` | genes tested and DEGs (all, up, down) per contrast |
+| `DEG_lists/sensitivity_fourlevel/` | `05_fourlevel_sensitivity` | one four-level model per tissue against the pairwise TC lists |
+| `DEG_lists/GOterms_genome/` | `06_join_annotation` | TC DEG lists joined to the BLAST / UniProt / GO annotation (`_sigs_merged`, `_sigs_ID`, `_sigs_unID`); `clean_zenodo_files/` from `12_deg_list_cleanup` |
+| `DEG_lists/DEG_join_summary.csv` | `06_join_annotation` | per TC contrast: DEGs, annotated and unannotated genes, mitochondrial DEGs. Report `n_DEG_genes`, not merged rows |
+| `DEG_lists/DEG_overlap_TC_LC.csv` | `11_deg_figures_all_contrasts` | per tissue and stressor, DEGs found against the day-3 control only, the day-0 control only, or both |
+| `dds/` | `03_deseq_contrasts` | the fitted, filtered `DESeqDataSet` of each contrast (git-ignored) |
+| `figures/` | `03`, `08`-`11` | PCA, DEG counts, volcano, Venn and TC-vs-LC figures |
+| `top_DEGs/Top_50_genes/` | `07_top_degs` | per TC contrast, the 25 most up- and 25 most down-regulated annotated DEGs |
+| `_superseded/` | the previous scripts | per-contrast count and sample tables, kept as a record |
+| `knit_html/` | the runner | HTML reports and logs (git-ignored) |
+
+Read by: `07_enrichment` (contrasts and apeglm tables), `08_gene-annotation`
+(`GOterms_genome/`, `top_DEGs/`) and `09_gene-mechanics-correlation` (count matrix, sample
+table, TC DEG lists, `GOterms_genome/`).

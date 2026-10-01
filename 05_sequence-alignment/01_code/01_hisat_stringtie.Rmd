@@ -1,0 +1,238 @@
+---
+title: "01 - HISAT2 alignment and StringTie quantification (HPC)"
+author: "Steven Roberts"
+date: "`r format(Sys.time(), '%d %B, %Y')`"  
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    html_preview: true
+  html_document:
+    theme: readable
+    highlight: zenburn
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: true
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(DT)
+library(Biostrings)
+library(tm)
+library(pheatmap)
+library(DESeq2)
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = FALSE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 6,       # Set plot width in inches
+  fig.height = 4,      # Set plot height in inches
+  fig.align = "center", # Align plots to the center
+  comment = ""         # Prevents appending '##' to beginning of lines in code output
+)
+```
+
+# Differentially Expressed Genes
+ 
+
+
+# Reads
+
+```{r, engine='bash', eval=TRUE}
+ls /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/
+```
+
+
+# Genome
+
+
+```{r, engine='bash'}
+cd ../02_data
+
+/home/shared/datasets download genome accession GCF_036588685.1 --include gff3,gtf,rna,cds,protein,genome,seq-report
+```
+
+```{bash}
+cd ../02_data 
+unzip ncbi_dataset.zip
+```
+
+```{r, engine='bash', eval=TRUE}
+ls ../02_data/ncbi_dataset/data/GCF_036588685.1
+
+```
+
+
+
+
+# Hisat
+
+```{r, engine='bash'}
+/home/shared/hisat2-2.2.1/hisat2_extract_exons.py \
+../02_data/ncbi_dataset/data/GCF_036588685.1/genomic.gtf \
+> ../03_analyses/hisat/m_exon.tab
+```
+
+```{r, engine='bash'}
+/home/shared/hisat2-2.2.1/hisat2_extract_splice_sites.py \
+../02_data/ncbi_dataset/data/GCF_036588685.1/genomic.gtf \
+> ../03_analyses/hisat/m_spice_sites.tab
+```
+
+
+
+
+```{r, engine='bash'}
+/home/shared/hisat2-2.2.1/hisat2-build \
+../02_data/ncbi_dataset/data/GCF_036588685.1/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna \
+../03_analyses/hisat/PNRI_Mtr1.1.1.index \
+--exon ../03_analyses/hisat/m_exon.tab \
+--ss ../03_analyses/hisat/m_spice_sites.tab \
+-p 32 \
+../02_data/ncbi_dataset/data/GCF_036588685.1/genomic.gtf \
+2> ../03_analyses/hisat/hisat2-build_stats.txt
+```
+
+
+H9-T014F_S171_L099_R1_cmb.trim.fastq.gz
+
+/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/
+
+```{r, engine='bash', eval=TRUE}
+find /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz | xargs basename -s _L099_R1_cmb.trim.fastq.gz | xargs -I{} echo {}
+```
+
+
+
+
+
+```{r, engine='bash'}
+find /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz | xargs -I{} basename -s _L099_R1_cmb.trim.fastq.gz {} | xargs -I{} sh -c '/home/shared/hisat2-2.2.1/hisat2 \
+-x ../03_analyses/hisat/PNRI_Mtr1.1.1.index \
+--dta \
+-p 32 \
+-U /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/raw-trimmed/{}_L099_R1_cmb.trim.fastq.gz \
+-S ../03_analyses/hisat/{}.sam \
+> ../03_analyses/hisat/{}_hisat.stdout 2> ../03_analyses/hisat/{}_hisat.stderr'
+```
+
+
+Explanation
+xargs -I{}: This option allows you to replace {} in the command with the output from the previous command (i.e., basename). It's used twice: first, to strip the suffix from the filenames, and second, to construct and execute the hisat2 command.
+
+sh -c: This is used to execute a complex command within xargs. It's necessary because the output redirection (>, 2>) is shell functionality, and without sh -c, xargs wouldn't handle it correctly.
+
+
+
+
+```{r, engine='bash'}
+for samfile in ../03_analyses/hisat/*.sam; do
+  bamfile="${samfile%.sam}.bam"
+  sorted_bamfile="${samfile%.sam}.sorted.bam"
+  /home/shared/samtools-1.12/samtools view -bS -@ 20 "$samfile" > "$bamfile"
+  /home/shared/samtools-1.12/samtools sort -@ 20 "$bamfile" -o "$sorted_bamfile"
+  /home/shared/samtools-1.12/samtools index -@ 20 "$sorted_bamfile"
+done
+```
+
+,
+```{r, engine='bash'}
+rm ../03_analyses/hisat/*sam
+```
+
+
+```{r, engine='bash'}
+ls ../03_analyses/hisat/*sorted.bam | wc -l
+```
+
+
+
+
+# Stringtie
+
+`-B` writes the Ballgown tables (`*.ctab`) into the folder of the `-o` file, so each sample
+gets its own folder; with a shared folder every sample overwrote the previous one's tables.
+(The `.ctab` files committed in `../03_analyses/hisat/` are the last sample's, H9-T014F_S171.)
+
+
+
+
+```{r, engine='bash'}
+find ../03_analyses/hisat/*sorted.bam \
+| xargs basename -s .sorted.bam | xargs -I{} \
+sh -c 'mkdir -p ../03_analyses/hisat/{} && /home/shared/stringtie-2.2.1.Linux_x86_64/stringtie \
+-p 36 \
+-eB \
+-G ../02_data/ncbi_dataset/data/GCF_036588685.1/genomic.gff \
+-o ../03_analyses/hisat/{}/{}.gtf \
+../03_analyses/hisat/{}.sorted.bam'
+```
+
+
+
+# Sample list for prepDE
+
+One line per sample, `<sample ID> <path to its GTF>`, read by `02_prepDE.Rmd` (the R port of
+StringTie's `prepDE.py`; the original was run with its default read length, 75). The sample ID
+is the read file's base name (e.g. `A1-T001F_S100`), as in the original count matrices.
+
+```{r, engine='bash'}
+for d in ../03_analyses/hisat/*/; do
+  s=$(basename "$d")
+  [ -f "$d$s.gtf" ] && echo "$s $(cd "$d" && pwd)/$s.gtf"
+done > ../03_analyses/hisat/sample_list.txt
+wc -l ../03_analyses/hisat/sample_list.txt
+```
+
+Compare genome with gff...
+
+```{bash}
+head -30 ../02_data/ncbi_dataset/data/GCF_036588685.1/genomic.gff
+```
+
+
+```{bash}
+head ../02_data/ncbi_dataset/data/GCF_036588685.1/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna
+```
+
+
+
+
+
+```{bash}
+head ../03_analyses/hisat/*119.gtf
+
+```
+
+
+
+
+
+
+
+```{r, engine='bash'}
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+which multiqc
+
+
+multiqc ../03_analyses/hisat/ \
+-o ../03_analyses/hisat/
+```
+
+
+
+
+```{bash}
+head ../03_analyses/hisat/*gtf
+```

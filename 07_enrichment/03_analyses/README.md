@@ -1,11 +1,14 @@
 # 03_analyses
 
-| Item | Produced by | Contents |
-|------|-------------|----------|
-| `Func_annot_DAVID/` | DAVID web tool, from the lists `07-GOenrichment_listcreationforDAVID` writes | DAVID functional annotation chart/cluster results; `08-func_enrichment_DAVID_visual` reads the `*_DAVID_chart.xlsx` files |
-| `Revigo_results/` | REVIGO web tool, from the lists `09-GOenrichment_listcreation_REVIGO` writes | REVIGO summary tables (`*_revigo_table.tsv`) and copies of the submitted `*_ID_REVIGO.txt` lists |
-| `uniprot_BG_DAVID.txt` | an earlier run of `07-GOenrichment_listcreationforDAVID` | UniProt background list for DAVID, not de-duplicated (6,365 lines, 5,547 unique IDs). The current script writes a de-duplicated 5,581-ID list to `DAVID_lists/uniprot_BG_DAVID.txt`; every ID here is in it |
+One folder per script in `../01_code/`, each with its own README.
 
-The scripts write the submission lists to
-`../../06_differential-expression/03_analyses/DEG_lists/DAVID_lists/` and `REVIGO_lists/`. The
-`*_ID_REVIGO.txt` files in `Revigo_results/` are identical to the committed `REVIGO_lists/`.
+| Folder | Produced by | Contents |
+|---|---|---|
+| `01_go-inputs/` | `01_go_inputs` | `gene_annotation.tsv` (the annotation every method uses), `gene_sets_summary.csv` |
+| `02_topgo/` | `02_topgo` | topGO `weight01` results of every run, the TC BP p-values, dot plots |
+| `03_goseq/` | `03_goseq` | goseq results, the length-bias diagnostic, dot plots |
+| `04_clusterprofiler/` | `04_clusterprofiler` | clusterProfiler results, compareCluster dot plots |
+| `05_rrvgo/` | `05_rrvgo` | topGO BP terms grouped into clusters, parent-term plots |
+| `06_method-comparison/` | `06_method_comparison` | counts, overlap and correlation between methods; consensus terms |
+| `_superseded/` | the DAVID / REVIGO workflow | the submitted lists and what the web tools returned |
+| `knit_html/` | the runner | HTML reports and logs (git-ignored) |

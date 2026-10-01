@@ -1,4 +1,4 @@
-## Per-animal ANCOVA: the thread-strength analysis of record. Sourced by scripts 3 and 4.
+## Per-animal ANCOVA: the thread-strength analysis of record. Sourced by scripts 04 and 05.
 ##
 ## Arms were assigned at random, so each metric is modelled as the animal's day-3 level
 ## adjusted for its own baseline level:

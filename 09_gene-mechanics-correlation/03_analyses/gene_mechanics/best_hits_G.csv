@@ -1,13 +1,13 @@
 gene_set,metric,tier,feature,protein_name,n,slope,p_lm,q_lm,q_family,floor_flag,most_influential_mussel,influence_flag
-candidate,max_force,primary,LOC134728119,Collagen alpha-1(XXII) chain,45,-0.4360312808289299,0.00368113148565298,0.5412047596343168,0.618519725296362,caution,T029,robust
-candidate,pad_area,primary,LOC134718612,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),45,-0.3695813351474099,4.5884459285195766e-4,0.11516999280584138,0.23033998561168276,caution,T136,robust
-candidate,adhesion_kpa,exploratory,LOC134718614,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),45,0.7590496464752662,8.611604199507061e-4,0.2161512654076272,0.412901602960579,ok,T030,robust
-candidate,max_displacement,exploratory,LOC134711730,"Tryptophan--tRNA ligase, cytoplasmic (EC 6.1.1.2) (Tryptophanyl-tRNA synthetase) (TrpRS) [Cleaved into: T1-TrpRS; T2-TrpRS]",45,-0.03403180845531985,0.00231847711726152,0.47779305829255087,0.412901602960579,ok,T133,robust
-module,max_force,primary,HIF_hypoxia,11-gene module,45,-0.07080242457005928,0.18807076184766772,0.6626143312166639,0.6951212224907803,NA,NA,NA
-module,pad_area,primary,oxidative_detox,68-gene module,45,-0.027627393739696346,0.2583911998562387,0.6935595758914598,0.6951212224907803,NA,NA,NA
-module,adhesion_kpa,exploratory,byssal_structural,6-gene module,45,0.0709508707882674,0.2791737189701645,0.8447373482729329,0.7509592022959308,NA,NA,NA
-module,max_displacement,exploratory,tRNA_translation,33-gene module,45,-0.002177938934895471,0.2626965000536042,0.6544934888509499,0.7509592022959308,NA,NA,NA
-DEG_union,max_force,primary,LOC134703438,NA,45,-1.197207081223136,9.917673807194331e-4,0.26555871185985996,0.3889548209289459,ok,T057,robust
-DEG_union,pad_area,primary,LOC134716885,Fibrillin-2 [Cleaved into: Placensin],45,-0.7332305974365813,0.00165411886790831,0.6112147186026293,0.3889548209289459,ok,T030,robust
-DEG_union,adhesion_kpa,exploratory,LOC134683070,Lactadherin (MFGM) (Milk fat globule-EGF factor 8) (MFG-E8) (SED1) (Sperm surface protein SP47) (PP47),45,1.4146584812198706,0.00115009655737214,0.8096135531091576,0.8162139112423756,ok,T030,robust
-DEG_union,max_displacement,exploratory,LOC134720998,Sortilin-related receptor (Low-density lipoprotein receptor relative with 11 ligand-binding repeats) (LDLR relative with 11 ligand-binding repeats) (LR11) (Sorting protein-related receptor containing LDLR class A repeats) (SorLA),45,0.06544801500875419,0.00146810005254838,0.6394590854409978,0.8162139112423756,ok,T133,robust
+candidate,max_force,primary,LOC134728119,Collagen alpha-1(XXII) chain,46,-0.4159814252556806,0.00495002167695448,0.5886467800326457,0.7063761360391749,caution,T029,robust
+candidate,pad_area,primary,LOC134718612,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),46,-0.3684146333726007,3.558583585751619e-4,0.09003216471951596,0.18006432943903192,caution,T136,robust
+candidate,adhesion_kpa,exploratory,LOC134718614,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),46,0.7150842299323623,0.00150275197785987,0.22057071298355663,0.31034514198072494,ok,T030,robust
+candidate,max_displacement,exploratory,LOC134711730,"Tryptophan--tRNA ligase, cytoplasmic (EC 6.1.1.2) (Tryptophanyl-tRNA synthetase) (TrpRS) [Cleaved into: T1-TrpRS; T2-TrpRS]",46,-0.03379528246001916,0.00183999096036002,0.44788170561407525,0.31034514198072494,ok,T133,robust
+module,max_force,primary,HIF_hypoxia,11-gene module,46,-0.06998585612084757,0.18731805369103327,0.6482914594281362,0.6590970145555393,NA,NA,NA
+module,pad_area,primary,oxidative_detox,71-gene module,46,-0.030233579076958263,0.20620331561176142,0.5514589024507389,0.6590970145555393,NA,NA,NA
+module,adhesion_kpa,exploratory,byssal_structural,6-gene module,46,0.08128931471267685,0.21124520509609224,0.7398658602261401,0.7328938992108025,NA,NA,NA
+module,max_displacement,exploratory,tRNA_translation,33-gene module,46,-0.0022545567454793766,0.2284763532576489,0.6531239840489234,0.7328938992108025,NA,NA,NA
+DEG_union,max_force,primary,LOC134706590,Actin-related protein 2/3 complex subunit 2 (Arp2/3 complex 34 kDa subunit) (p34-ARC),46,0.970862357683596,7.980578515898717e-4,0.2753789663510406,0.4211678308898268,ok,T029,robust
+DEG_union,pad_area,primary,LOC134716885,Fibrillin-2 [Cleaved into: Placensin],46,-0.7365643589284587,0.0013556854649038,0.8761977778924573,0.4211678308898268,ok,T030,robust
+DEG_union,adhesion_kpa,exploratory,LOC134683070,Lactadherin (MFGM) (Milk fat globule-EGF factor 8) (MFG-E8) (SED1) (Sperm surface protein SP47) (PP47),46,1.3742425251006751,8.127068523914513e-4,0.7337091990872079,0.832232432596615,ok,T030,robust
+DEG_union,max_displacement,exploratory,LOC134720998,Sortilin-related receptor (Low-density lipoprotein receptor relative with 11 ligand-binding repeats) (LDLR relative with 11 ligand-binding repeats) (LR11) (Sorting protein-related receptor containing LDLR class A repeats) (SorLA),46,0.06543190865570846,0.00131892263864552,0.6638950706791271,0.832232432596615,ok,T133,robust

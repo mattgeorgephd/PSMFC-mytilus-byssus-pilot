@@ -1,0 +1,48 @@
+---
+title: "00 - Run the thread-strength analysis"
+author: "Byssus thread-strength analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  steps: "all"          # "all", or step numbers, e.g. [4, 5]
+  stop_on_fail: true    # stop at the first failed step
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Runs every numbered script in `01_code/` in order, each in its own R process, with an HTML
+report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
+Knit this file from inside `thread-strength.Rproj`, or let the repository-level
+`00_run_pipeline.Rmd` call it.
+
+| step | script | reads | writes to `03_analyses/` |
+|---|---|---|---|
+| 01 | `01_build_mussel_key.Rmd` | `../01_mussel-measurements/mussel-size-measurements.xlsx` | `01_build-mussel-key/` |
+| 02 | `02_extract_tensometer_data.Rmd` | `02_data/tensometer_output/`, the mussel key | `02_extract-tensometer-data/` |
+| 03 | `03_assemble_thread_summary.Rmd` | script 02's extraction, `02_data/pad_area_measurements.xlsx` | `03_assemble-thread-summary/` |
+| 04 | `04_analyze_thread_strength.Rmd` | the thread summary | `04_analyze-thread-strength/` |
+| 05 | `05_decompose_adhesion.Rmd` | the thread summary, script 04's ANCOVA | `05_decompose-adhesion/` |
+
+The whole run takes about a minute; script 02 draws one QC plot per trace.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+source(file.path(here::here(), "..", "tools", "run_steps.R"))
+html_dir <- here::here("03_analyses", "knit_html")
+run_log <- run_steps(here::here("01_code"), html_dir, steps = params$steps,
+                     stop_on_fail = isTRUE(params$stop_on_fail))
+finish_run(run_log, html_dir, "Thread-strength")
+```
+
+# After a run
+
+`03_analyses/04_analyze-thread-strength/STATS_ancova_vs_control.csv` holds each stressor arm's
+adhesion effect against the treatment control, and
+`03_analyses/05_decompose-adhesion/STATS_ancova_vs_control.csv` the same for peak force, plaque
+area and extension. `09_gene-mechanics-correlation` reads the thread summary, both
+`DATA_ancova_animals.csv` files, `mussel_response_classification.csv` and the extraction;
+run it after any change here.
