@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 For each accession in step 02's tables, asks OrthoDB (v12; Tegenfeldt et al. 2025, *Nucleic
 Acids Research* 53:D516) for its ortholog group at the Metazoa level (NCBI taxon 33208) and
-lists the bivalve species that have a member in that group: a check that a top DEG's best
+lists the bivalve species that have a member in that group (OrthoDB release 12.2): a check that a top DEG's best
 UniProt hit has relatives in bivalves.
 
 Writes, in `03_analyses/Top_gene_summaries/`, `<code>_topgene_summs_ortho.csv` (step 02's table
@@ -29,9 +29,13 @@ codes <- c("FOA", "FOW", "FDO", "GOA", "GOW", "GDO")
 # Species
 
 ```{r species}
-species_url <- "https://data.orthodb.org/current/download/odb12v1_species.tab.gz"
+## OrthoDB release 12.2 (odb12v2); the file name changes with each release
+species_url <- "https://data.orthodb.org/v12/download/odb_data_dump/odb12v2_species.tab.gz"
 dest_file <- file.path(topgenes, "ortho_species.tab.gz")
-download.file(species_url, destfile = dest_file, mode = "wb", quiet = TRUE)
+tmp <- tempfile(fileext = ".tab.gz")                         # so a failed download leaves the old copy
+download.file(species_url, destfile = tmp, mode = "wb", quiet = TRUE)
+stopifnot(file.size(tmp) > 1e5)
+file.copy(tmp, dest_file, overwrite = TRUE)
 ## no header; the columns, per OrthoDB's README: NCBI taxon, OrthoDB organism id, name, assembly, ...
 species_df <- read.delim(gzfile(dest_file), header = FALSE, sep = "\t", quote = "")[, 1:4]
 names(species_df) <- c("ncbi_taxid", "orthodb_key", "species_name", "assembly")
@@ -86,7 +90,7 @@ knitr::kable(data.frame(accessions = length(all_acc),
 writeLines(provenance_lines(
   c("[03_ortholog_lists.Rmd]",
     paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
-    "OrthoDB              : v12 API (search at level 33208, Metazoa; first group), odb12v1 species table"),
+    "OrthoDB              : v12 API (search at level 33208, Metazoa; first group), odb12v2 species table"),
   c(file.path(topgenes, paste0(codes, "_topgene_summs.csv")), dest_file, here::here("01_code", "03_ortholog_lists.Rmd")),
   repo_root, packages = c("httr", "jsonlite")),
   file.path(topgenes, "RUN_provenance_orthologs.txt"))
