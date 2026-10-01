@@ -1,165 +1,121 @@
 ---
 title: "02 - NCBI gene summaries for the top-50 DEGs"
 output: html_document
-date: "2025-04-02"
 ---
 
-```{r paths, include=FALSE}
-source(here::here("01_code", "_paths.R"))
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-```{r}
-## NCBI API key (optional): rentrez reads it from the ENTREZ_KEY environment variable, e.g. a
-## line `ENTREZ_KEY=<your key>` in ~/.Renviron. Never write the key into this file. Without a
-## key NCBI allows 3 requests per second instead of 10; rentrez throttles either way.
+# What this does
+
+For every UniProt accession in the six TC top-50 lists
+(`06_differential-expression/03_analyses/top_DEGs/Top_50_genes/<code>_topgenes.csv`), finds
+the NCBI Gene record of that protein and its summary, through NCBI E-utilities (rentrez; Winter
+2017, *The R Journal* 9:520):
+
+1. the UniProt accession in NCBI Protein (`<accession>[Accession]`; Swiss-Prot entries are
+   mirrored there);
+2. the protein's link to NCBI Gene (`protein_gene`);
+3. that gene's summary.
+
+The first version of this step searched NCBI Gene with the accession as free text and took the
+first hit, which is sometimes another gene whose record merely mentions the accession (for
+O95238, SPDEF, it returned AR). The linked route gives the gene of that protein or nothing.
+
+Writes, in `03_analyses/Top_gene_summaries/`, one file per contrast, `<code>_topgene_summs.csv`:
+one row per accession in the list, `UniProt_ID`, `uniprot_gene` (the UniProt gene name, from
+the list), `ncbi_gene_id`, `ncbi_symbol`, `ncbi_organism`, `symbol_matches` (the NCBI symbol is
+one of the UniProt gene names, ignoring case) and `Summary` (the NCBI summary, or why there is
+none, or `Error: <message>` when a request failed). And `RUN_provenance_summaries.txt`.
+
+NCBI allows 3 requests per second without an API key, counted per IP address; a shared address
+can exceed it even at that pace, so requests are spaced and retried with growing waits on a
+429 or a server error. An API key, if you have one, goes in the `ENTREZ_KEY` environment
+variable (for example `ENTREZ_KEY=<your key>` in `~/.Renviron`), never in this file.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # provenance_lines()
 ## rentrez is on CRAN; install once if missing (a headless knit cannot ask for a mirror)
 if (!requireNamespace("rentrez", quietly = TRUE))
   install.packages("rentrez", repos = "https://cloud.r-project.org")
 library(rentrez)
+codes <- c("FOA", "FOW", "FDO", "GOA", "GOW", "GDO")
 ```
 
+# Look up each accession once
 
-```{r}
+```{r lookup}
+lists <- setNames(lapply(codes, function(cd) read.csv(file.path(top50_in, paste0(cd, "_topgenes.csv")))), codes)
+acc <- unique(unlist(lapply(lists, function(d) d$uniprot_accession)))
+acc <- acc[!is.na(acc) & nzchar(acc)]
+cat(length(acc), "distinct accessions in the six lists\n")
 
-
-fetch_ncbi_summary <- function(uniprot_ids, email) {
-  entrez_db <- "gene"
-  summaries <- list()
-  
-  for (uniprot_id in uniprot_ids) {
-    tryCatch({
-      print("hello")
-      # Search for the UniProt ID in NCBI Protein database
-      search_results <- entrez_search(db = entrez_db, term = uniprot_id, retmax = 1)
-      print(search_results)
-      if (length(search_results$ids) > 0) {
-        ncbi_id <- search_results$ids[1]
-        print(ncbi_id)
-        # Fetch the summary for the retrieved NCBI ID
-        summary_results <- entrez_summary(db = entrez_db, id = ncbi_id)
-        print(summary_results$summary)
-        summaries[[uniprot_id]] <- summary_results$summary
-      } else {
-        summaries[[uniprot_id]] <- "No match found"
-      }
-    }, error = function(e) {
-      ## <<- so the error is recorded in fetch_ncbi_summary's list; a plain <- assigns to a
-      ## copy inside this handler, and the ID silently dropped out of the table
-      summaries[[uniprot_id]] <<- paste("Error:", e$message)
-    })
+n_retry <- 0
+ncbi <- function(f, ...) {                       # one spaced, retried E-utilities call
+  for (k in 1:6) {
+    Sys.sleep(if (nzchar(Sys.getenv("ENTREZ_KEY"))) 0.12 else 0.4)
+    r <- tryCatch(f(...), error = function(e) e)
+    if (!inherits(r, "error")) return(r)
+    if (!grepl("429|HTTP failure: 5|[Tt]imeout|timed out", conditionMessage(r))) stop(r)
+    n_retry <<- n_retry + 1
+    Sys.sleep(2^k)
   }
-  
-  return(summaries)
+  stop("no answer after 6 tries")
 }
-
-
+lookup <- function(a) {
+  row <- function(id = NA_character_, sym = NA_character_, org = NA_character_, summary)
+    data.frame(UniProt_ID = a, ncbi_gene_id = id, ncbi_symbol = sym, ncbi_organism = org, Summary = summary)
+  tryCatch({
+    p <- ncbi(entrez_search, db = "protein", term = paste0(a, "[Accession]"), retmax = 1)$ids
+    if (!length(p)) return(row(summary = "No NCBI protein record"))
+    g <- ncbi(entrez_link, dbfrom = "protein", id = p[1], db = "gene")$links$protein_gene
+    if (!length(g)) return(row(summary = "No NCBI gene linked to the protein"))
+    s <- ncbi(entrez_summary, db = "gene", id = g[1])
+    row(g[1], s$name, s$organism$scientificname, if (nzchar(s$summary)) s$summary else "No summary in NCBI Gene")
+  }, error = function(e) row(summary = paste("Error:", conditionMessage(e))))
+}
+found <- do.call(rbind, lapply(acc, lookup))
+stopifnot(nrow(found) == length(acc), !anyDuplicated(found$UniProt_ID))
+knitr::kable(as.data.frame(table(outcome = ifelse(!is.na(found$ncbi_gene_id), "gene found",
+                                                  sub(":.*$", "", found$Summary)))))
+cat("requests retried:", n_retry, "\n")
 ```
 
-### GOW
-```{r}
+# One table per contrast
 
-top_genes <- read.csv(file.path(top50_in, "GOW_topgenes.csv"))
-# Example usage
-uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
-email <- "sgleuch@uw.edu"  # Replace with your email
-
-GOW_summaries <- fetch_ncbi_summary(uniprot_ids, email)
-
-GOW_topgene_summs <- data.frame(UniProt_ID = names(GOW_summaries), Summary = unlist(GOW_summaries), stringsAsFactors = FALSE)
-
-# Write to CSV
-write.csv(GOW_topgene_summs, file.path(topgenes, "GOW_topgene_summs.csv"), row.names = FALSE)
+```{r write}
+for (cd in codes) {
+  d <- lists[[cd]]
+  d <- d[!is.na(d$uniprot_accession) & nzchar(d$uniprot_accession) & !duplicated(d$uniprot_accession), ]
+  out <- merge(data.frame(UniProt_ID = d$uniprot_accession, uniprot_gene = d$gene_name, order = seq_len(nrow(d))),
+               found, by = "UniProt_ID", all.x = TRUE)
+  stopifnot(nrow(out) == nrow(d))
+  out <- out[order(out$order), ]
+  names_up <- strsplit(toupper(ifelse(is.na(out$uniprot_gene), "", out$uniprot_gene)), " +")
+  out$symbol_matches <- ifelse(is.na(out$ncbi_symbol), NA,
+                               mapply(function(s, n) s %in% n, toupper(out$ncbi_symbol), names_up))
+  out <- out[, c("UniProt_ID", "uniprot_gene", "ncbi_gene_id", "ncbi_symbol", "ncbi_organism", "symbol_matches", "Summary")]
+  write.csv(out, file.path(topgenes, paste0(cd, "_topgene_summs.csv")), row.names = FALSE)
+}
+knitr::kable(do.call(rbind, lapply(codes, function(cd) {
+  o <- read.csv(file.path(topgenes, paste0(cd, "_topgene_summs.csv")))
+  data.frame(contrast = cd, accessions = nrow(o), gene_found = sum(!is.na(o$ncbi_gene_id)),
+             symbol_matches = sum(o$symbol_matches %in% TRUE), errors = sum(startsWith(o$Summary, "Error")))
+})))
 ```
 
-### FOW
-```{r}
+# Provenance
 
-top_genes <- read.csv(file.path(top50_in, "FOW_topgenes.csv"))
-# Example usage
-uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
-email <- "sgleuch@uw.edu"  # Replace with your email
-
-summaries <- fetch_ncbi_summary(uniprot_ids, email)
-
-topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
-
-# Write to CSV
-write.csv(topgene_summs, file.path(topgenes, "FOW_topgene_summs.csv"), row.names = FALSE)
+```{r provenance}
+writeLines(provenance_lines(
+  c("[02_uniprot_summaries.Rmd]",
+    paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+    "route                : UniProt accession -> NCBI Protein [Accession] -> protein_gene link -> Gene summary",
+    paste0("NCBI API key         : ", if (nzchar(Sys.getenv("ENTREZ_KEY"))) "yes" else "no"),
+    paste0("accessions           : ", length(acc), " (", sum(!is.na(found$ncbi_gene_id)), " with a gene; ", n_retry, " requests retried)")),
+  c(file.path(top50_in, paste0(codes, "_topgenes.csv")), here::here("01_code", "02_uniprot_summaries.Rmd")),
+  repo_root, packages = "rentrez"),
+  file.path(topgenes, "RUN_provenance_summaries.txt"))
 ```
-### GOA
-```{r}
-
-top_genes <- read.csv(file.path(top50_in, "GOA_topgenes.csv"))
-# Example usage
-uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
-email <- "sgleuch@uw.edu"  # Replace with your email
-
-summaries <- fetch_ncbi_summary(uniprot_ids, email)
-
-topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
-
-# Write to CSV
-write.csv(topgene_summs, file.path(topgenes, "GOA_topgene_summs.csv"), row.names = FALSE)
-```
-### FOA
-```{r}
-
-top_genes <- read.csv(file.path(top50_in, "FOA_topgenes.csv"))
-# Example usage
-uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
-email <- "sgleuch@uw.edu"  # Replace with your email
-
-summaries <- fetch_ncbi_summary(uniprot_ids, email)
-
-topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
-
-# Write to CSV
-write.csv(topgene_summs, file.path(topgenes, "FOA_topgene_summs.csv"), row.names = FALSE)
-```
-
-### GDO
-```{r}
-
-top_genes <- read.csv(file.path(top50_in, "GDO_topgenes.csv"))
-# Example usage
-uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
-email <- "sgleuch@uw.edu"  # Replace with your email
-
-summaries <- fetch_ncbi_summary(uniprot_ids, email)
-
-topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
-
-# Write to CSV
-write.csv(topgene_summs, file.path(topgenes, "GDO_topgene_summs.csv"), row.names = FALSE)
-```
-### FDO
-```{r}
-
-top_genes <- read.csv(file.path(top50_in, "FDO_topgenes.csv"))
-# Example usage
-uniprot_ids <- c(top_genes$uniprot_accession)  # Replace with your list
-email <- "sgleuch@uw.edu"  # Replace with your email
-
-summaries <- fetch_ncbi_summary(uniprot_ids, email)
-
-topgene_summs <- data.frame(UniProt_ID = names(summaries), Summary = unlist(summaries), stringsAsFactors = FALSE)
-
-# Write to CSV
-write.csv(topgene_summs, file.path(topgenes, "FDO_topgene_summs.csv"), row.names = FALSE)
-```
-
-
-```{r}
-test_result <- entrez_search(db="gene", term="Q9WVR6", retmax=1)
-print(test_result$ids) 
-
-
-```
-
-```{r}
-summary_results <- entrez_summary(db = "gene", id = "84551")
-```
-
-
-
-

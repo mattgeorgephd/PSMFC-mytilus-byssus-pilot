@@ -1,144 +1,93 @@
 ---
 title: "03 - Bivalve orthologs for the top-50 DEGs (OrthoDB)"
 output: html_document
-date: "2025-04-09"
 ---
 
-```{r paths, include=FALSE}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+For each accession in step 02's tables, asks OrthoDB (v12; Tegenfeldt et al. 2025, *Nucleic
+Acids Research* 53:D516) for its ortholog group at the Metazoa level (NCBI taxon 33208) and
+lists the bivalve species that have a member in that group: a check that a top DEG's best
+UniProt hit has relatives in bivalves.
+
+Writes, in `03_analyses/Top_gene_summaries/`, `<code>_topgene_summs_ortho.csv` (step 02's table
+plus `ortho_group`, the OrthoDB group used, and `bivalve_validation`, the bivalve species in it,
+empty when there are none, or `Error: <message>`), `ortho_species.tab.gz` (OrthoDB's species
+table) and `RUN_provenance_orthologs.txt`.
+
+```{r paths}
 source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # provenance_lines()
+suppressPackageStartupMessages({ library(httr); library(jsonlite) })
+codes <- c("FOA", "FOW", "FDO", "GOA", "GOW", "GDO")
 ```
 
-```{r}
-# Required packages
-library(httr)
-library(jsonlite)
-library(dplyr)
-library(stringr)
-library(purrr)
-library(RCurl)
-library(BiocManager)
-library(rentrez)
-```
+# Species
 
-
-```{r cars}
-
-
-# Step 1: Get the list of Mollusca species from OrthoDB
+```{r species}
 species_url <- "https://data.orthodb.org/current/download/odb12v1_species.tab.gz"
 dest_file <- file.path(topgenes, "ortho_species.tab.gz")
+download.file(species_url, destfile = dest_file, mode = "wb", quiet = TRUE)
+## no header; the columns, per OrthoDB's README: NCBI taxon, OrthoDB organism id, name, assembly, ...
+species_df <- read.delim(gzfile(dest_file), header = FALSE, sep = "\t", quote = "")[, 1:4]
+names(species_df) <- c("ncbi_taxid", "orthodb_key", "species_name", "assembly")
 
-# Download the file
-download.file(species_url, destfile = dest_file, mode = "wb")
-
-# Read the gzipped tab-delimited file
-species_df <- read.delim(gzfile(dest_file), header = FALSE, sep = "\t")
-species_df <- species_df[, 1:4]
-
-# Filter for Mollusca species
-mollusca_species <- c(6500, 370345, 6526, 112525,55810, 100452, 6565, 29159, 558553, 45954,188477,1093978, 80821, 2589376, 703304, 1735272, 6454,36100,356393, 225164, 6596, 6573, 6604,6549,6550, 29158, 42192, 37653, 2607531, 37623, 6465, 87960, 88005, 6579, 109671, 259542, 400727, 158019, 31201, 220873, 80829, 80833)
-mollusca_species <- as.integer(mollusca_species)
-mollusca_species <- as.data.frame(mollusca_species)
-colnames(mollusca_species) <- c("orthodb_id")
-
-mollusca_taxids <- left_join(mollusca_species, species_df, by = "orthodb_id")
-
-bivalve_species <- c(6565, 29159, 558553, 45954, 80821, 2589376, 356393, 6596, 6573, 6604,6549,6550, 29158, 42192, 37623, 6579, 31201, 220873, 80829, 80833)
-bivalve_species <- as.integer(bivalve_species)
-bivalve_species <- as.data.frame(bivalve_species)
-colnames(bivalve_species) <- c("orthodb_id")
-
-bivalve_taxids <- left_join(bivalve_species, mollusca_taxids, by = "orthodb_id")
-
+## bivalve species in OrthoDB (NCBI taxon IDs), as chosen in the original analysis
+bivalve_ids <- c(6565, 29159, 558553, 45954, 80821, 2589376, 356393, 6596, 6573, 6604, 6549, 6550,
+                 29158, 42192, 37623, 6579, 31201, 220873, 80829, 80833)
+bivalve_taxids <- merge(data.frame(ncbi_taxid = bivalve_ids), species_df, by = "ncbi_taxid", all.x = TRUE)
+knitr::kable(bivalve_taxids[, c("ncbi_taxid", "orthodb_key", "species_name")])
 ```
 
+# Orthologs
 
-```{r}
-get_orthologs_for_uniprot <- function(topgene_summs, bivalve_taxids){
-  uniprot_ids <- topgene_summs$UniProt_ID
-  topgene_summs$bivalve_validation <- NA  # Initialize new column
-
-  for (i in seq_along(uniprot_ids)){
-    tryCatch({
-
-      # OrthoDB search
-      gene_URL <- paste0("https://data.orthodb.org/v12/search?query=", uniprot_ids[i], "&take=10000&level=33208")
-      ortho_group <- GET(gene_URL)
-      if (ortho_group$status_code != 200) next
-
-      ortho_json <- content(ortho_group, as = "text", encoding = "UTF-8")
-      ortho <- fromJSON(ortho_json, flatten = TRUE)
-      if (length(ortho$data) == 0) next
-      groupID <- ortho$data[[1]]
-
-      # Get orthologs
-      group_url <- paste0("https://data.orthodb.org/v12/orthologs?id=", groupID)
-      print(group_url)
-      group_response <- GET(group_url)
-      if (group_response$status_code != 200) next
-
-      group_json <- content(group_response, as = "text", encoding = "UTF-8")
-      group_data <- fromJSON(group_json, flatten = TRUE)
-      group_data <- as.data.frame(group_data)
-
-      # Filter for bivalves
-      mollusc_list <- bivalve_taxids[bivalve_taxids$orthodb_key %in% group_data$data.organism.id, c("orthodb_key", "species_name")]
-      mollusc_listicle <- as.list(mollusc_list$species_name)
-      topgene_summs$bivalve_validation[i] <- paste(mollusc_listicle, collapse = ", ")
-    }, error = function(e) {
-      ## record the failure and go on to the next ID: the tryCatch is the loop's last statement,
-      ## so returning from the handler continues the loop (a `next` here stopped the whole step,
-      ## because a handler is a function, not part of the loop)
-      message(sprintf("Error on UniProt ID '%s': %s", uniprot_ids[i], e$message))
-      topgene_summs$bivalve_validation[i] <<- paste0("Error: ", conditionMessage(e))
-    })
+```{r orthologs}
+odb_get <- function(url) {                                    # spaced, retried request
+  for (k in 1:5) {
+    Sys.sleep(0.25)
+    r <- tryCatch(GET(url, timeout(60)), error = function(e) e)
+    if (!inherits(r, "error") && status_code(r) == 200) return(fromJSON(content(r, as = "text", encoding = "UTF-8"), flatten = TRUE))
+    if (!inherits(r, "error") && status_code(r) < 500 && status_code(r) != 429) stop("HTTP ", status_code(r))
+    Sys.sleep(2^k)
   }
-
-  return(topgene_summs)
+  stop("no answer after 5 tries")
 }
-
-
-
-  
-  
+bivalves_of <- function(acc) {
+  tryCatch({
+    hit <- odb_get(paste0("https://data.orthodb.org/v12/search?query=", acc, "&level=33208"))
+    if (length(hit$data) == 0) return(c(NA_character_, ""))
+    group <- hit$data[[1]]
+    members <- odb_get(paste0("https://data.orthodb.org/v12/orthologs?id=", group))
+    orgs <- members$data$organism.id
+    c(group, paste(bivalve_taxids$species_name[bivalve_taxids$orthodb_key %in% orgs], collapse = ", "))
+  }, error = function(e) c(NA_character_, paste0("Error: ", conditionMessage(e))))
+}
+all_acc <- unique(unlist(lapply(codes, function(cd) read.csv(file.path(topgenes, paste0(cd, "_topgene_summs.csv")))$UniProt_ID)))
+res <- setNames(lapply(all_acc, bivalves_of), all_acc)
+for (cd in codes) {
+  s <- read.csv(file.path(topgenes, paste0(cd, "_topgene_summs.csv")))
+  s$ortho_group <- vapply(res[s$UniProt_ID], `[`, "", 1)
+  s$bivalve_validation <- vapply(res[s$UniProt_ID], `[`, "", 2)
+  write.csv(s, file.path(topgenes, paste0(cd, "_topgene_summs_ortho.csv")), row.names = FALSE)
+}
+knitr::kable(data.frame(accessions = length(all_acc),
+                        with_group = sum(!is.na(vapply(res, `[`, "", 1))),
+                        with_bivalves = sum(nzchar(vapply(res, `[`, "", 2)) & !startsWith(vapply(res, `[`, "", 2), "Error")),
+                        errors = sum(startsWith(vapply(res, `[`, "", 2), "Error"))))
 ```
 
-```{r}
-# Replace this with your actual vector of UniProt IDs
-top_genes_summs <- read.csv(file.path(topgenes, "GOW_topgene_summs.csv"))
-GOW_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(GOW_topgene_summs_biv, file.path(topgenes, "GOW_topgene_summs_ortho.csv"))
-```
+# Provenance
 
-```{r}
-top_genes_summs <- read.csv(file.path(topgenes, "GOA_topgene_summs.csv"))
-
-GOA_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(GOA_topgene_summs_biv, file.path(topgenes, "GOA_topgene_summs_ortho.csv"))
-```
-
-```{r}
-top_genes_summs <- read.csv(file.path(topgenes, "GDO_topgene_summs.csv"))
-
-GDO_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(GDO_topgene_summs_biv, file.path(topgenes, "GDO_topgene_summs_ortho.csv"))
-```
-```{r}
-top_genes_summs <- read.csv(file.path(topgenes, "FOW_topgene_summs.csv"))
-
-FOW_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(FOW_topgene_summs_biv, file.path(topgenes, "FOW_topgene_summs_ortho.csv"))
-```
-```{r}
-top_genes_summs <- read.csv(file.path(topgenes, "FOA_topgene_summs.csv"))
-
-FOA_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(FOA_topgene_summs_biv, file.path(topgenes, "FOA_topgene_summs_ortho.csv"))
-```
-
-```{r}
-top_genes_summs <- read.csv(file.path(topgenes, "FDO_topgene_summs.csv"))
-
-FDO_topgene_summs_biv <- get_orthologs_for_uniprot(top_genes_summs, bivalve_taxids)
-write.csv(FDO_topgene_summs_biv, file.path(topgenes, "FDO_topgene_summs_ortho.csv"))
+```{r provenance}
+writeLines(provenance_lines(
+  c("[03_ortholog_lists.Rmd]",
+    paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+    "OrthoDB              : v12 API (search at level 33208, Metazoa; first group), odb12v1 species table"),
+  c(file.path(topgenes, paste0(codes, "_topgene_summs.csv")), dest_file, here::here("01_code", "03_ortholog_lists.Rmd")),
+  repo_root, packages = c("httr", "jsonlite")),
+  file.path(topgenes, "RUN_provenance_orthologs.txt"))
 ```
