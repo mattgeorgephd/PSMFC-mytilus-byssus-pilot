@@ -36,7 +36,11 @@ Conventions and how to run are in `AGENTS.md`.
   x axis is titled Tissue (it read Treatment).
 - **Provenance.** `07` records the GO release and package versions behind its results
   (`03_analyses/01_go-inputs/RUN_provenance.txt`), as `02` and `09` already did for theirs.
-- **Documentation.** A README in every new folder; `AGENTS.md` and this file.
+- **08 NCBI summaries.** Step 02 records a failed request as `Error: <message>`; it used to drop
+  the accession silently. Two committed summary tables (FOA, GOA) turned out to come from an
+  earlier top-50 list; documented in `Top_gene_summaries/README.md`.
+- **Documentation.** A README in every new folder (and in the folders that were missing one);
+  `AGENTS.md` and this file.
 
 ## In progress
 
@@ -53,7 +57,7 @@ Conventions and how to run are in `AGENTS.md`.
 | Interpreting LC contrasts | byssal plaque genes are expressed in day-0 foot and mostly absent at day 3, controls included, so LC contrasts mix byssal secretion state into the stressor effect | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,174 of 7,393 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
 | Iso-Seq branch | design in `04_iso-seq-transcriptome/README.md`; not implemented until it is wanted | Matt |
-| `08` steps 02-03 (NCBI summaries, OrthoDB orthologs) | need network access; not rerun since the restructure | anyone with network |
+| `08` steps 02-03 (NCBI summaries, OrthoDB orthologs) | need network access; not rerun since the restructure, and the FOA and GOA tables predate the current top-50 lists | anyone with network |
 | `03_blast/` and `05` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used | HPC user |
 
 ## Up next

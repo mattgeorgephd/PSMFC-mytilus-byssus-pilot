@@ -57,8 +57,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   the `paths` chunks of `09`, `00_run_pipeline.Rmd` and `tools/pipeline_checks.R`, so renaming
   a numbered folder means updating them.
 - **Nothing is deleted.** Retire a script or output to a `_superseded/` folder with a README
-  saying what replaced it. Every folder has a README listing its files and what produces them;
-  update it in the same change as the code.
+  saying what replaced it. Every analysis folder (which lists its scripts) and its `02_data/`
+  and `03_analyses/` have a README listing the files and what produces them; output subfolders
+  have their own or are listed in their parent's. Update them in the same change as the code.
 - **Figures.** Colours come only from `tools/plot_style.R`: control grey, OA green, OW orange,
   DO purple (thread strength adds baseline blue and lab reference light grey); red up, blue
   down; neutral greys for significance scales and set categories. The palette is checked for

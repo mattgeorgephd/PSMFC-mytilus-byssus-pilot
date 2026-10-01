@@ -43,7 +43,9 @@ fetch_ncbi_summary <- function(uniprot_ids, email) {
         summaries[[uniprot_id]] <- "No match found"
       }
     }, error = function(e) {
-      summaries[[uniprot_id]] <- paste("Error:", e$message)
+      ## <<- so the error is recorded in fetch_ncbi_summary's list; a plain <- assigns to a
+      ## copy inside this handler, and the ID silently dropped out of the table
+      summaries[[uniprot_id]] <<- paste("Error:", e$message)
     })
   }
   

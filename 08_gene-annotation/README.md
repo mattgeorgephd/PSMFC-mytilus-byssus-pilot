@@ -22,7 +22,9 @@ repository-level `00_run_pipeline.Rmd` do it, after 06).
 | 03 | `03_ortholog_lists.Rmd` | `Top_gene_summaries/<code>_topgene_summs_ortho.csv`, `ortho_species.tab.gz`: bivalve orthologs | OrthoDB |
 
 By default the runner runs step 01 only (`online: false`); steps 02 and 03 need network access,
-and their committed tables are kept. An NCBI API key, if you use one, goes in the
+and their committed tables are kept. Two of those tables (FOA, GOA) were fetched from an earlier
+top-50 list; see `03_analyses/Top_gene_summaries/README.md`. Step 02 now records a failed NCBI
+request as `Error: <message>` instead of dropping the accession. An NCBI API key, if you use one, goes in the
 `ENTREZ_KEY` environment variable (for example in `~/.Renviron`), never in a script.
 
 Packages: GSEABase, GO.db, tidyverse (step 01); rentrez (02); httr, jsonlite, dplyr, stringr,
