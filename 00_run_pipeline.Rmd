@@ -25,17 +25,22 @@ its folder's `03_analyses/knit_html/`; this file leaves one per stage, and `run_
 | stage | runner | needs | about |
 |---|---|---|---|
 | 02 | `02_thread-strength/01_code/00_run_thread_strength.Rmd` | `01_mussel-measurements/` | 1 min |
-| 05 | `05_sequence-alignment/01_code/00_run_sequence_alignment.Rmd` | committed StringTie tables | 1 min |
+| 05 | `05_sequence-alignment/01_code/00_run_sequence_alignment.Rmd` | committed StringTie and FastQC tables | 1 min |
 | 06 | `06_differential-expression/01_code/00_run_differential_expression.Rmd` | 05 | 10 min |
+| 04 | `04_iso-seq-transcriptome/01_code/00_run_isoseq.Rmd` | 06, committed Iso-Seq gene counts | 10 min |
 | 07 | `07_enrichment/01_code/00_run_enrichment.Rmd` | 06, 05, `03_blast/` | 8 min |
 | 08 | `08_gene-annotation/01_code/00_run_gene_annotation.Rmd` | 06 | 1 min |
 | 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 06, 07, `03_blast/` | 4 min |
 
+Stage 04 runs after 06 because it repeats 06's contrasts on the Iso-Seq reference and
+compares the two; it reads committed gene counts, so only its last step runs here.
+
 Not run here, because they need data or machines outside this repository: the BLAST
-annotation (`03_blast/`, HPC), the Iso-Seq transcriptome check (`04_iso-seq-transcriptome/`,
-downloads the transcriptome), HISAT2 + StringTie (`05_sequence-alignment` step 01, HPC) and,
-unless `online_annotation` is true, 08's NCBI and OrthoDB queries. Their committed outputs are
-what the stages above read.
+annotation (`03_blast/`, HPC), the Iso-Seq steps 01-03 (`04_iso-seq-transcriptome/`, which
+download the transcriptome and the reads and run minimap2 and salmon; set that runner's
+`online: true`), HISAT2 + StringTie (`05_sequence-alignment` step 01, HPC), 05 step 03's
+recipe check and, unless `online_annotation` is true, 08's NCBI and OrthoDB queries. Their
+committed outputs are what the stages above read.
 
 Knit this file from the repository root (`PSMFC-mytilus-byssus-pilot.Rproj`). The packages
 each stage needs are listed in its folder's README.
@@ -47,10 +52,11 @@ source(file.path(repo_root, "tools", "run_steps.R"))
 html_dir <- file.path(repo_root, "knit_html")
 
 stages <- data.frame(
-  stage  = c("02", "05", "06", "07", "08", "09"),
+  stage  = c("02", "05", "06", "04", "07", "08", "09"),
   runner = c("02_thread-strength/01_code/00_run_thread_strength.Rmd",
              "05_sequence-alignment/01_code/00_run_sequence_alignment.Rmd",
              "06_differential-expression/01_code/00_run_differential_expression.Rmd",
+             "04_iso-seq-transcriptome/01_code/00_run_isoseq.Rmd",
              "07_enrichment/01_code/00_run_enrichment.Rmd",
              "08_gene-annotation/01_code/00_run_gene_annotation.Rmd",
              "09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd"))
@@ -83,6 +89,8 @@ finish_run(run_log, html_dir, "Pipeline")
   `05_decompose-adhesion/`.
 - Differential expression: `06_differential-expression/03_analyses/DEG_lists/DEG_counts.csv`
   and `figures/`.
+- Iso-Seq reference (sensitivity): `04_iso-seq-transcriptome/03_analyses/04_isoseq-de/`
+  (`reference_agreement.csv`).
 - GO enrichment: `07_enrichment/03_analyses/02_topgo/` (of record) and
   `06_method-comparison/consensus_terms_TC_BP.csv`.
 - GO slims: `08_gene-annotation/03_analyses/goslims/`.

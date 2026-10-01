@@ -15,13 +15,14 @@ Fits the treatment-control (TC) contrasts of record to the Iso-Seq gene counts o
 exactly as `06_differential-expression` fits them to the genome counts, and compares the two
 references gene by gene. It answers whether the DEG results depend on the reference.
 
-- **Same samples, model and thresholds as 06:** the samples of each contrast in
+- **Same samples, model, order and thresholds as 06:** the samples of each contrast in
   `06 .../DEG_lists/contrast_samples.csv`, `~ treatment` with the day-3 control as reference,
-  genes kept with at least 10 counts in a third of the samples, apeglm shrinkage (Zhu, Ibrahim
-  and Love 2019), DEG at padj < 0.05. Counts are summed read counts (step 03), rounded, with
-  no length offset.
+  fitted on every feature, then features kept with at least 10 counts in a third of the
+  samples, apeglm shrinkage (Zhu, Ibrahim and Love 2019, *Bioinformatics* 35:2084), DEG at
+  padj < 0.05. Counts are summed read counts (step 03), rounded, with no length offset.
 - **Mitochondrial genes** are left out, as in 06: the genes of
-  `06 .../count_matrix/mitochondrial_loci.csv`.
+  `06 .../count_matrix/mitochondrial_loci.csv`, and the unassigned isoforms step 02 flags
+  with a mitochondrial CDS hit below its identity cut-off (`mt_hit`).
 - **Comparison:** genes are matched by their LOC key (`gene_key()`); only coding genes can
   match (step 02 maps isoforms through the CDS). For each contrast: DEGs in both, in one
   reference only, and genome DEGs whose gene received no Iso-Seq isoform; the correlation of
@@ -54,25 +55,33 @@ ti   <- fread(file.path(de06, "count_matrix", "treatmentinfo_clean.csv"))
 mt   <- fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))
 stopifnot(nrow(contrasts) == 6, all(cs[code %in% contrasts$code, sample.1] %in% colnames(counts)))
 mt_keys <- unique(mt$LOC_ID)
-cat("Iso-Seq features:", nrow(counts), "| mitochondrial genes left out:", sum(rownames(counts) %in% mt_keys), "\n")
-counts <- counts[!rownames(counts) %in% mt_keys, ]
+iso_map <- fread(file.path(map_dir, "isoform_gene_map.csv.gz"), select = c("gene", "status", "mt_hit"))
+mt_like <- unique(iso_map[status == "unassigned" & mt_hit == TRUE, gene])
+cat("Iso-Seq features:", nrow(counts), "| left out: mitochondrial genes", sum(rownames(counts) %in% mt_keys),
+    ", unassigned isoforms with a mitochondrial hit", sum(rownames(counts) %in% mt_like), "\n")
+counts <- counts[!rownames(counts) %in% c(mt_keys, mt_like), ]
 ```
 
 # Fit each TC contrast
 
 ```{r fit}
+## the order of 06 steps 03-04: fit every feature of the contrast's samples, then keep features
+## with >= 10 counts in a third of them, then apeglm on the kept ones, whose pvalue and padj
+## lfcShrink takes from results(). Features with no read in these samples are dropped first;
+## DESeq2 ignores all-zero rows, so this changes nothing but the run time.
 fit_one <- function(row) {
   smp <- cs[code == row$code, sample.1]
   cd  <- as.data.frame(ti[match(smp, sample.1), .(sample.1, treatment)]); rownames(cd) <- cd$sample.1
   cd$treatment <- factor(cd$treatment, levels = c(row$ref_level, row$test_level))
+  stopifnot(!anyNA(cd$treatment))
   m <- round(counts[, smp])
-  m <- m[rowSums(m >= 10) >= ncol(m) / 3, ]                      # the genome filter
+  m <- m[rowSums(m) > 0, ]
   dds <- DESeq(DESeqDataSetFromMatrix(m, cd, ~ treatment), quiet = TRUE)
   stopifnot(resultsNames(dds)[2] == sprintf("treatment_%s_vs_%s", row$test_level, row$ref_level))
-  shr <- lfcShrink(dds, coef = 2, type = "apeglm", quiet = TRUE)
-  res <- results(dds, name = resultsNames(dds)[2])
+  keep <- rowSums(counts(dds) >= 10) >= ncol(dds) / 3
+  shr <- lfcShrink(dds[keep, ], coef = 2, type = "apeglm", quiet = TRUE)
   out <- data.table(feature = rownames(shr), baseMean = shr$baseMean, log2FoldChange = shr$log2FoldChange,
-                    lfcSE = shr$lfcSE, pvalue = res$pvalue, padj = res$padj)
+                    lfcSE = shr$lfcSE, pvalue = shr$pvalue, padj = shr$padj)
   fwrite(out, file.path(de_dir, sprintf("%s_isoseq_apeglm.csv", row$code)))
   out[, code := row$code][]
 }
@@ -90,7 +99,7 @@ genome <- rbindlist(lapply(seq_len(nrow(contrasts)), function(i) {
 }))
 genome[, deg := !is.na(padj) & padj < params$padj_cutoff]
 stopifnot(!anyDuplicated(genome[, .(code, feature)]))
-isoform_genes <- unique(fread(file.path(map_dir, "isoform_gene_map.csv.gz"), select = "gene")$gene)
+isoform_genes <- unique(iso_map$gene)
 
 agree <- rbindlist(lapply(contrasts$code, function(cd) {
   g <- genome[code == cd]; i <- iso[code == cd]

@@ -37,6 +37,10 @@ gene of its best alignment:
 
 Isoforms without such a hit (non-coding transcripts, and 3' fragments that end before the
 CDS starts) stay unassigned and are kept as their own features, named `isoseq:<isoform>`.
+`mt_hit` marks isoforms with a same-strand alignment of at least `min_aln` bases to a
+mitochondrial CDS (the genes of `06 .../count_matrix/mitochondrial_loci.csv`) at any identity:
+mitochondrial transcripts too divergent from the genome's mitogenome to pass `min_identity`
+would otherwise stay unassigned, and step 04 leaves them out with the mitochondrial genes.
 Genes without a CDS (non-coding genes) cannot receive isoforms this way, which limits the
 comparison to coding genes. A genome-based map would remove both limits; it needs the genome
 FASTA (`GCF_036588685.1`) and the StringTie coordinates already in
@@ -46,7 +50,7 @@ Writes, in `03_analyses/02_isoform-gene-map/`:
 
 - `isoform_gene_map.csv.gz`: one row per isoform: `isoform`, `gene` (LOC key via
   `gene_key()`, or `isoseq:<isoform>`), `status` (`assigned`, `ambiguous`, `unassigned`), the
-  best CDS, identity, aligned bases, isoform and CDS lengths, and the runner-up gene;
+  best CDS, identity, aligned bases, isoform and CDS lengths, the runner-up gene and `mt_hit`;
 - `isoform_gene_map_summary.csv`: isoforms and genes by status;
 - `RUN_provenance.txt`: settings, minimap2 version and input MD5s.
 
@@ -112,6 +116,11 @@ map <- merge(all_iso, best[, .(isoform, gene, status, cds, identity = round(iden
                                isoform_len, cds_len, AS, runner_up_gene, runner_up_AS)],
              by = "isoform", all.x = TRUE, sort = FALSE)
 map[is.na(gene), `:=`(gene = paste0("isoseq:", isoform), status = "unassigned")]
+## any same-strand hit to a mitochondrial CDS, whatever its identity (see above)
+mt_genes <- unique(fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))$LOC_ID)
+stopifnot(length(mt_genes) == 143)
+map[, mt_hit := isoform %in% aln[strand == "+" & matches >= params$min_aln & gene %in% mt_genes, isoform]]
+stopifnot(map[status != "unassigned" & mt_hit, all(gene %in% mt_genes)])
 ## antisense-only isoforms, as a check on the strand rule
 anti <- setdiff(unique(aln[strand == "-" & identity >= params$min_identity & matches >= params$min_aln, isoform]),
                 best$isoform)
@@ -122,6 +131,8 @@ summ <- rbind(map[, .(isoforms = .N, genes = uniqueN(gene)), by = status],
 summ <- rbind(summ, data.table(status = "unassigned with only an antisense hit", isoforms = length(anti), genes = NA))
 summ <- rbind(summ, data.table(status = "genes with a CDS that received an isoform", isoforms = NA,
                                genes = uniqueN(map[status != "unassigned", gene])))
+summ <- rbind(summ, data.table(status = "unassigned with a mitochondrial CDS hit below the identity cut-off",
+                               isoforms = map[status == "unassigned" & mt_hit, .N], genes = NA))
 fwrite(summ, file.path(map_dir, "isoform_gene_map_summary.csv"))
 knitr::kable(summ)
 ```
@@ -135,7 +146,8 @@ settings <- c("[02_isoform_gene_map.Rmd]",
               paste0("assignment           : same strand, identity >= ", params$min_identity, ", aligned >= ",
                      params$min_aln, " bp; ambiguous when another gene scores >= ", params$ambiguous_ratio, " of the best"),
               paste0("isoforms / CDS       : ", nrow(map), " / ", nrow(cds)))
-writeLines(provenance_lines(settings, c(isoseq_fa, cds_fa, here::here("01_code", "02_isoform_gene_map.Rmd")),
+writeLines(provenance_lines(settings, c(isoseq_fa, cds_fa, file.path(de06, "count_matrix", "mitochondrial_loci.csv"),
+                                        here::here("01_code", "02_isoform_gene_map.Rmd")),
                             repo_root, packages = c("data.table")),
            file.path(map_dir, "RUN_provenance.txt"))
 ```
