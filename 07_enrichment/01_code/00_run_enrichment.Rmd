@@ -22,18 +22,18 @@ Knit this file from inside `enrichment.Rproj`, or let the repository-level
 
 | step | script | writes to `03_analyses/` |
 |---|---|---|
-| 01 | `01_go_inputs.Rmd` | `01_go-inputs/`: gene annotation (best BLAST hit, GO by ontology, transcript length, mitochondrial flag) and gene-set sizes |
+| 01 | `01_go_inputs.Rmd` | `01_go-inputs/`: gene annotation (best BLAST hit, GO by ontology, transcript length) and gene-set sizes |
 | 02 | `02_topgo.Rmd` | `02_topgo/`: topGO weight01 Fisher, the enrichment of record |
 | 03 | `03_goseq.Rmd` | `03_goseq/`: goseq Wallenius with length bias, and the length-bias diagnostic |
 | 04 | `04_clusterprofiler.Rmd` | `04_clusterprofiler/`: clusterProfiler `enricher`, compareCluster view |
 | 05 | `05_rrvgo.Rmd` | `05_rrvgo/`: topGO terms reduced to clusters (REVIGO-style) |
 | 06 | `06_method_comparison.Rmd` | `06_method-comparison/`: agreement between the methods, consensus terms |
 
-Every method uses the same genes: for each of the 16 contrasts in
-`06_differential-expression/03_analyses/DEG_lists/contrasts.csv`, the universe is the genes
-DESeq2 tested (non-missing adjusted p) and up- and down-regulated DEGs (padj < 0.05) are
-tested separately. Step 02 takes about five minutes on four cores; the rest about four
-together. Step 05 needs `org.Hs.eg.db` (installed on first run if missing), for a column it
+Every method uses the same genes: for each of the 7 contrasts in
+`06_differential-expression/03_analyses/DEG_lists/contrasts.csv` (six TC, one foot vs gill),
+the universe is the genes DESeq2 tested (non-missing adjusted p) and up- and down-regulated
+DEGs (padj < 0.05) are tested separately, in each of the three ontologies. Step 02 takes about
+three minutes on four cores; the rest about five together. Step 05 needs `org.Hs.eg.db` (installed on first run if missing), for a column it
 then replaces; see the script.
 
 ```{r run}

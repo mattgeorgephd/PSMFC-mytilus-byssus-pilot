@@ -2,7 +2,7 @@
 title: "02 - GO enrichment with topGO (primary method)"
 output: html_document
 params:
-  families: ["TC", "LC", "FG"]      # contrast families (06 contrasts.csv)
+  families: ["TC", "FG"]            # contrast families (06 contrasts.csv)
   ontologies: ["BP", "MF", "CC"]
   p_cutoff: 0.01                    # weight01 Fisher p for an enriched term
   cores: 4                          # parallel runs; set to 1 on Windows (no forking)
@@ -31,12 +31,12 @@ exact test:
 
 Writes, in `03_analyses/02_topgo/`:
 
-- `topgo_enriched.csv`: every enriched term of every run, with its significant genes and how
-  many of them are mitochondrially encoded protein LOCs (`n_mt_encoded`, see script 01);
-- `topgo_all_terms_TC_BP.csv`: every tested BP term of the TC runs (p-values only), read by
-  scripts 05 and 06;
+- `topgo_enriched.csv`: every enriched term of every run, with its significant genes;
+- `topgo_all_terms_TC_<ontology>.csv`: every tested term of the TC runs (p-values only), one
+  file per ontology, read by script 06;
 - `topgo_run_summary.csv`: genes, DEGs, terms tested and enriched per run;
-- `topgo_<family>_BP_dotplot.png`: the five most significant BP terms of each run.
+- `topgo_<family>_<ontology>_dotplot.png`: the five most significant terms of each run, for
+  every family and ontology (BP, MF, CC), so every candidate figure exists.
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
@@ -44,7 +44,6 @@ source(here::here("01_code", "_go_helpers.R"))
 source(file.path(repo_root, "tools", "plot_style.R"))
 suppressPackageStartupMessages({ library(topGO); library(GO.db); library(dplyr); library(ggplot2) })
 annot <- read_annotation()
-mt    <- mt_genes(annot)
 cores <- if (.Platform$OS.type == "windows") 1L else as.integer(params$cores)
 runs  <- runs_for(unlist(params$families))
 jobs  <- merge(runs, data.frame(ontology = unlist(params$ontologies)), by = NULL)
@@ -74,10 +73,10 @@ run_topgo <- function(code, direction, ontology) {
                       p_weight01 = unname(score(w01)[ids]), p_classic = unname(score(cls)[ids]))
   enr <- terms$GO.ID[terms$p_weight01 < params$p_cutoff]
   sig <- sigGenes(gd)
-  in_term <- lapply(genesInTerm(gd, enr), intersect, sig)
-  terms$genes <- ""; terms$n_mt_encoded <- NA_integer_
+  in_term <- lapply(genesInTerm(gd, enr)[enr], intersect, sig)   # indexed by GO ID, not position
+  stopifnot(identical(names(in_term), enr))
+  terms$genes <- ""
   terms$genes[match(enr, terms$GO.ID)] <- vapply(in_term, function(g) paste(sort(g), collapse = ";"), "")
-  terms$n_mt_encoded[match(enr, terms$GO.ID)] <- vapply(in_term, function(g) sum(g %in% mt), 0L)
   list(summary = cbind(summ, terms_tested = nrow(terms), enriched = length(enr)), terms = terms)
 }
 
@@ -95,32 +94,33 @@ write.csv(run_summary, file.path(out_topgo, "topgo_run_summary.csv"), row.names 
 
 enriched <- terms %>% filter(p_weight01 < params$p_cutoff) %>%
   select(code, family, direction, ontology, GO.ID, Term, Annotated, Significant, Expected,
-         p_weight01, p_classic, n_mt_encoded, genes) %>%
+         p_weight01, p_classic, genes) %>%
   arrange(match(code, contrasts$code), desc(direction == "up"), ontology, p_weight01)
 write.csv(enriched, file.path(out_topgo, "topgo_enriched.csv"), row.names = FALSE)
-write.csv(terms %>% filter(family == "TC", ontology == "BP") %>%
-            select(code, direction, GO.ID, Annotated, Significant, p_weight01, p_classic),
-          file.path(out_topgo, "topgo_all_terms_TC_BP.csv"), row.names = FALSE)
+for (o in unlist(params$ontologies))
+  write.csv(terms %>% filter(family == "TC", ontology == o) %>%
+              select(code, direction, GO.ID, Annotated, Significant, p_weight01, p_classic),
+            file.path(out_topgo, sprintf("topgo_all_terms_TC_%s.csv", o)), row.names = FALSE)
 knitr::kable(run_summary %>% filter(ontology == "BP"), caption = "BP runs")
 ```
 
 # Figures
 
 ```{r dotplots, fig.width = 10, fig.height = 9}
-dotplot_family <- function(fam, n_top = 5) {
-  e <- enriched %>% filter(family == fam, ontology == "BP")
+dotplot_family <- function(fam, ont, n_top = 5) {
+  e <- enriched %>% filter(family == fam, ontology == ont)
   if (!nrow(e)) return(invisible(NULL))
   top <- e %>% group_by(code, direction) %>% slice_min(p_weight01, n = n_top, with_ties = FALSE) %>% ungroup()
   d <- e %>% filter(GO.ID %in% top$GO.ID) %>%
-    transmute(code, direction, Term, p = p_weight01, n = Significant, mt = n_mt_encoded)
+    transmute(code, direction, Term, p = p_weight01, n = Significant)
   print(go_dotplot(d, contrasts$code[contrasts$family == fam],
-                   title = sprintf("topGO, biological process: %s", FAMILY_TITLE[[fam]]),
+                   title = sprintf("topGO, %s: %s", ONT_NAME[[ont]], FAMILY_TITLE[[fam]]),
                    caption = sprintf(paste("The %d most significant terms of each contrast and direction",
                                            "(weight01 Fisher p < %s; a point only where the term is enriched).",
                                            "Universe: the contrast's tested genes. Colour capped at p = 1e-%d."),
                                      n_top, params$p_cutoff, P_CAP),
-                   file = file.path(out_topgo, sprintf("topgo_%s_BP_dotplot.png", fam)),
+                   file = file.path(out_topgo, sprintf("topgo_%s_%s_dotplot.png", fam, ont)),
                    p_label = "-log10 p\n(weight01)"))
 }
-for (fam in unique(runs$family)) dotplot_family(fam)
+for (fam in unique(runs$family)) for (ont in unlist(params$ontologies)) dotplot_family(fam, ont)
 ```

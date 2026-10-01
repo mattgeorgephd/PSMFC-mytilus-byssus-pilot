@@ -1,0 +1,7 @@
+"method_1","method_2","runs_both_enriched","runs_only_one","median_jaccard_when_both","median_spearman"
+"classic","clusterProfiler",6,2,0.571068548387097,1
+"classic","goseq",5,1,0.642857142857143,0.951081009631414
+"goseq","clusterProfiler",5,3,0.75,0.990639384027248
+"weight01","classic",6,5,0.226495726495726,0.637960906861042
+"weight01","clusterProfiler",8,3,0.319327731092437,0.46739456818044
+"weight01","goseq",5,6,0.272727272727273,0.640557849961565

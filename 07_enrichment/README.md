@@ -1,6 +1,7 @@
 # 07_enrichment
 
-GO enrichment of the DEG lists of every contrast in `06_differential-expression`: topGO as
+GO enrichment of the DEG lists of every contrast in `06_differential-expression` (the six
+treatment-control contrasts and foot vs gill in the day-3 controls): topGO as
 the method of record, goseq and clusterProfiler for comparison, rrvgo to collapse redundant
 terms the way REVIGO does, and a comparison of the methods. It replaces the DAVID and REVIGO
 web workflow, whose lists were built from an older version of the DEG tables and whose results
@@ -31,17 +32,20 @@ on; step 05 replaces it), tidyverse, patchwork, here, rmarkdown.
 
 ## Design
 
-- **Gene sets.** For each of the 16 contrasts (`06 .../DEG_lists/contrasts.csv`) the universe is
+- **Gene sets.** For each of the 7 contrasts (`06 .../DEG_lists/contrasts.csv`) the universe is
   the genes DESeq2 gave an adjusted p (independent filtering leaves the others at NA, so they
   could never be DEGs). Up- and down-regulated DEGs (padj < 0.05) are tested separately against
   that universe.
 - **Annotation.** The genome-wide BLAST (`03_blast/03_analyses/genome-foot/LOC_GO_list.txt`)
-  can give several hits per LOC; the highest bitscore is kept, as in `09`. GO IDs are trimmed
-  and checked against `GO.db`. topGO takes the direct annotation and walks the GO graph itself;
+  can give several hits per LOC; the highest bitscore is kept, as in `08` and `09`. Genes are
+  joined to it through `gene_key()` (`tools/gene_ids.R`). GO IDs are trimmed and checked
+  against `GO.db`. The mitochondrial loci are in no universe (06 leaves them out). topGO takes the direct annotation and walks the GO graph itself;
   goseq and clusterProfiler get each gene's terms plus all their ancestors.
 - **Terms tested.** At least 10 annotated genes; goseq and clusterProfiler also cap at 500.
 - **Enriched.** topGO `weight01` p < 0.01 (conventionally not FDR-adjusted, because
   decorrelated p-values are not independent); goseq and clusterProfiler BH p < 0.05.
+- **Ontologies.** Biological process, molecular function and cellular component, each
+  tested and drawn separately.
 - **Length bias.** goseq weights by median reference-transcript length. In 3' Tag-seq, one
   tag per transcript, there is little to correct: `03_goseq/goseq_pwf_TC_BP.png` shows no
   consistent trend, and goseq and clusterProfiler p-values agree almost perfectly (Spearman
@@ -51,21 +55,27 @@ on; step 05 replaces it), tidyverse, patchwork, here, rmarkdown.
 
 | run | topGO `weight01` | goseq | clusterProfiler |
 |---|---|---|---|
-| Foot OA up | 14 (tRNA aminoacylation, amino-acid transport, glucose starvation) | 23 | 31 |
-| Foot DO down | 19 (axonemal dynein assembly, cilium movement) | 34 | 59 |
-| Gill OA up | 12 (mitochondrial electron transport) | 14 | 14 |
-| the other nine runs | 0-20 each | 0 | 0-1 |
+| Foot OA up | 9 (tRNA aminoacylation, neutral amino-acid transport, glucose starvation) | 20 | 26 |
+| Foot DO down | 19 (axonemal dynein assembly, cilium movement) | 26 | 55 |
+| Gill OA up | 19 (glutathione metabolism, cellular detoxification, proton-motive-force-driven ATP synthesis, protein folding) | 9 | 10 |
+| the other nine runs | 0-22 each | 0 | 0 |
 
-Where an FDR-controlled method also finds terms, topGO's terms agree in part (Jaccard 0.09 to
-0.30), as expected from `weight01` preferring specific terms over their parents. In the runs
-where neither goseq nor clusterProfiler finds anything, read topGO's list as exploratory.
-`06_method-comparison/consensus_terms_TC_BP.csv` lists the 30 terms that topGO and at least
-one other method call.
+Where an FDR-controlled method also finds terms, topGO's terms agree in part (median Jaccard
+0.17 with goseq, 0.21 with clusterProfiler), as expected from `weight01` preferring specific
+terms over their parents. In the runs where neither goseq nor clusterProfiler finds anything,
+read topGO's list as exploratory. `06_method-comparison/consensus_terms_TC_<ontology>.csv`
+lists the terms topGO and at least one FDR-controlled method call: 27 in BP, 42 in MF and 26
+in CC.
 
-The Gill OA up terms are carried by LOCs annotated as mitochondrially encoded proteins (87 of
-the 88 DEGs in the top term, "ATP synthesis coupled electron transport"; see
-`tools/mt_encoded.R`): one mitochondrial signal counted many times. The dot plots mark such
-terms with a triangle, and every enriched-term table has `n_mt_encoded`.
+Before the mitochondrial loci were separated, Gill OA up was dominated by mitochondrial
+electron transport (87 of the 88 DEGs in "ATP synthesis coupled electron transport" were
+copies of mitochondrial genes). Without them its terms are glutathione metabolism,
+detoxification and nuclear-encoded ATP synthase subunits; the mitochondrial genes themselves
+are tested in `06_differential-expression` step 13.
+
+The manuscript GO figure is not chosen yet; every option is drawn for every family and
+ontology: the topGO, goseq and clusterProfiler dot plots, the rrvgo parent-term view and the
+method comparison.
 
 ## Layout
 

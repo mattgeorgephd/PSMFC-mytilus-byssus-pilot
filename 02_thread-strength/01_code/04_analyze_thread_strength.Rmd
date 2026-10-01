@@ -327,7 +327,8 @@ p3 <- ggplot(thread_plot_all_mean, aes(x = thread_trt, y = adh_mean)) +
       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
       xlab(NULL) + ylab(NULL) + my_theme +
       theme(axis.text.x = element_text(size = 11, angle = 25, hjust = 1)) +
-      ggtitle("all mussels, per-mussel means")
+      ggtitle("all mussels,\nper-mussel means") +                      # two lines: one is clipped at 4.5 in
+      theme(plot.title = element_text(size = 13))
 p3
 
 # p4: repeated-measures mussels only, per-mussel means
@@ -337,7 +338,8 @@ p4 <- ggplot(thread_plot_repeated_mean, aes(x = thread_trt, y = adh_mean)) +
       scale_y_continuous(breaks = seq(0, 200, 25), limits = c(0, 210)) +
       xlab(NULL) + ylab(NULL) + my_theme +
       theme(axis.text.x = element_text(size = 11, angle = 25, hjust = 1)) +
-      ggtitle("repeated-measures mussels only, per-mussel means")
+      ggtitle("repeated-measures mussels only,\nper-mussel means") +
+      theme(plot.title = element_text(size = 13))
 p4
 
 ggsave(file.path(out_dir, "BP_AllMussels_AllThreads.png"),
@@ -474,7 +476,8 @@ STATISTICS
   log(day-3 adhesion) ~ arm + log(baseline adhesion), one row per animal with threads at both
   timepoints. Each stressor arm is compared with the day-3 treatment control,
   with 95% CI and p reported both unadjusted and Dunnett-adjusted over the three comparisons.
-  The same model is fitted to peak force, plaque area and extension in script 05.
+  The same model is fitted to the mean and the maximum thread peak force and to plaque area in
+  script 05. Extension is not analysed (the distal thread under test differed in length).
 
   The per-mussel means above feed the figures only. The descriptive tables below (baseline
   by future arm, the lab-reference comparison) carry no tests: under random assignment a
@@ -500,20 +503,22 @@ save_ancova_diagnostics(list(adhesion_ancova), file.path(out_dir, "DIAG_ancova_r
 
 ### Description: baseline by future arm, and the lab reference (no tests)
 ```{r warning=FALSE}
-# Per-mussel means (arithmetic, raw scale) for adhesion, peak force, plaque area and
-# extension, written as descriptive tables.
+# Per-mussel values (raw scale) written as descriptive tables: the arithmetic mean of the
+# threads for adhesion, peak force (mean_force) and plaque area, and the largest thread peak
+# force (max_force).
 #   DESC_baseline_by_arm.csv   pre-exposure (day 1) values by the arm each animal went on to,
 #                              the baseline table of a randomized design
 #   DESC_lab_reference.csv     day-0 lab-reference animals beside the day-1 pre-exposure and
 #                              day-3 control animals. The lab animals never entered the
 #                              experimental system; they are a descriptive comparison group only.
-metric_cols <- intersect(c("adhesion_kpa", "max_force", "pad_area", "max_displacement"),
-                         names(thread_plot))   # extension is optional in the thread summary
+metric_cols <- c("adhesion_kpa", "mean_force", "max_force", "pad_area")
 pm_metrics <- thread_plot %>%
   group_by(mussel, phase, mussel_trt) %>%
-  summarise(n_threads = n(), across(all_of(metric_cols), ~ mean(.x, na.rm = TRUE)),
-            .groups = "drop") %>%
-  mutate(across(all_of(metric_cols), ~ ifelse(is.nan(.x), NA_real_, .x)))
+  summarise(n_threads    = n(),
+            adhesion_kpa = mean(adhesion_kpa),
+            mean_force   = mean(max_force),        # each thread's peak force, averaged
+            max_force    = max(max_force),         # the animal's strongest thread
+            pad_area     = mean(pad_area), .groups = "drop")
 
 describe <- function(d, group_col) {
   bind_rows(lapply(metric_cols, function(m) d %>%

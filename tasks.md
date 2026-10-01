@@ -18,8 +18,8 @@ Conventions and how to run are in `AGENTS.md`.
   `03_analyses/`; regenerated results match the committed ones.
 - **05 alignment to DE handoff.** `_prepde.R`, an R port of `prepDE.py3` (byte-identical on
   test data), and `02_prepDE.Rmd`, which rebuilds the gene matrix from committed data.
-- **06 differential expression.** The 16 contrasts defined by rule in one script (they
-  reproduce the old sample lists exactly); one saved DESeq2 fit per contrast, so shrinkage runs
+- **06 differential expression.** The contrasts defined by rule in one script (16 at first,
+  reproducing the old sample lists exactly; 7 since the LC retirement); one saved DESeq2 fit per contrast, so shrinkage runs
   on its own; LC and foot-vs-gill results drawn; TC manuscript figures saved to `figures/`.
 - **Foot regions.** FX libraries recorded as foot (the rest of the foot, without the phenol
   gland) with a `region` column and a crosswalk to the RNA isolation log; they enter no
@@ -41,33 +41,47 @@ Conventions and how to run are in `AGENTS.md`.
   earlier top-50 list; documented in `Top_gene_summaries/README.md`.
 - **Documentation.** A README in every new folder (and in the folders that were missing one);
   `AGENTS.md` and this file.
+- **Mitochondrial genes on their own.** The 143 mitochondrial loci (12 protein and 5 RNA genes
+  of the mitochondrial genome, 126 nuclear-scaffold copies) are out of the genome DE, GO and
+  gene-mechanics universes and tested per protein in `06` step 13, with a manuscript figure
+  (`figures/MT_mitochondrial_expression.png`): Gill OA raises 8 of 12 proteins, Foot OA 5,
+  OW and DO none.
+- **Lab controls retired.** The day-0 animals are not used as a control anywhere (different
+  foot dissection); LC contrasts and their GO results moved to `_superseded/` in 06 and 07.
+- **Thread metrics.** `mean_force` (mean of the animal's thread peak forces) and `max_force`
+  (its strongest thread) replace the old per-animal `max_force`; extension removed from 02 and
+  09 (thread length under test not controlled).
+- **GO terms in gene mechanics.** `09` step 05 tests DEG sets, every enriched GO term and the
+  mitochondrial share against the thread metrics.
+- **All GO figure options drawn** for every family and ontology (topGO, goseq, clusterProfiler
+  dot plots, rrvgo parents, method comparison).
+- **Naming audit.** One gene key (`tools/gene_ids.R`); best BLAST hit by bitscore everywhere
+  (06 top-50 labels, 06 Zenodo lists and 08 GO slims took the first-listed hit); name-based
+  column selection in 06 step 06; GO term labels in figures cut, not edited, and kept unique;
+  topGO gene lists indexed by GO ID. Checked: the BLAST table's columns are consistent row by
+  row, and every gene listed under an enriched topGO term is annotated to it.
+- **Figure fixes.** Failure-mode colours (greys), clipped titles, DEG-count panel spacing, the
+  mitochondrial figure's estimates and intervals now from the same Wald model as its p-values.
 
 ## In progress
 
 - Review and merge of the pull request carrying this work (branch `claude/jolly-clarke-7afl1v`).
-- Proofreading the regenerated figures (new colours) before they go into the manuscript.
+- Proofreading the regenerated figures before they go into the manuscript.
 
 ## Blocked or waiting on a decision
 
 | item | why it is blocked | who |
 |---|---|---|
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
+| Iso-Seq branch | the trimmed reads (lab server) and the trimming command are not in the repository; owl, gannet and NCBI are not reachable from the cloud environment used here; no isoform-to-gene table exists yet. Design in `04_iso-seq-transcriptome/README.md` | Matt (inputs), anyone with access |
 | Download large inputs from gannet in the scripts (curl) | needs the list of gannet file paths each script should fetch; planned as a follow-up pull request | Matt |
-| Mitochondrially encoded protein LOCs | about 140 LOCs (116 of Gill OA's 711 TC DEGs) carry one mitochondrial signal; decide whether to keep them (now flagged), collapse them to one gene per protein, or exclude them from DEG counts and GO | Matt |
-| Interpreting LC contrasts | byssal plaque genes are expressed in day-0 foot and mostly absent at day 3, controls included, so LC contrasts mix byssal secretion state into the stressor effect | Matt |
+| Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,174 of 7,393 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
-| Iso-Seq branch | design in `04_iso-seq-transcriptome/README.md`; not implemented until it is wanted | Matt |
+| Outlier-replaced genes | DESeq2 replaces extreme counts and refits (Wald p) while apeglm fold changes use the original counts; 13 TC DEGs are affected, 1 by more than 25% (06 README). Kept as the DESeq2 convention; refit apeglm on the replaced counts if preferred | Matt |
 | `08` steps 02-03 (NCBI summaries, OrthoDB orthologs) | need network access; not rerun since the restructure, and the FOA and GOA tables predate the current top-50 lists | anyone with network |
 | `03_blast/` and `05` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used | HPC user |
 
 ## Up next
 
-- Decide the three analysis questions above (mitochondrial LOCs, LC interpretation, region
-  contrast), then rerun `00_run_pipeline.Rmd`.
-- Gannet download follow-up pull request.
-- Choose the manuscript GO figure: the topGO TC dot plot, or the rrvgo parent-term view of the
-  same terms (`07_enrichment/03_analyses/02_topgo/`, `05_rrvgo/`).
-- Optional figure polish, left as drawn: the failure-mode figure (`02` step 05) colours
-  "peeling" orange, close to the OW orange; the two per-mussel-mean box plots (`02` step 04)
-  clip their titles; `panel.spacing` in the DEG-count figure (`06` step 10) is set before
-  `theme_classic()` and so has no effect.
+- Choose the manuscript GO figure.
+- Gannet download follow-up pull request; then the Iso-Seq branch once its inputs are reachable.

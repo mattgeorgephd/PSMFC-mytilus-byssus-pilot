@@ -28,7 +28,7 @@ The load chunk accepts the thread summary under either column spelling:
 it completely. A missing required column is a hard stop that names what is missing and what
 is present. Rows with no `pad_area` are dropped, and the script prints the per-arm count of
 dropped rows.
-`adhesion_kpa = max_force / pad_area * 1000` is recomputed, never read from the sheet.
+`adhesion_kpa = max_force / pad_area * 1000` is recomputed per thread (`max_force` is the thread's peak force), never read from the sheet.
 
 ---
 
@@ -130,7 +130,9 @@ with its level, so it is modelled on the log scale and arm effects read as ratio
 
 No other test is run. The baseline table by future arm (`DESC_baseline_by_arm.csv`) and the
 lab-reference comparison (`DESC_lab_reference.csv`) are descriptive: n, mean, SD and median
-of the per-mussel means for adhesion, force, area and extension. Under random assignment a
+of the per-mussel values for adhesion, mean peak force (`mean_force`, the mean of the
+animal's thread peak forces), maximum peak force (`max_force`, its strongest thread) and
+plaque area. Extension is not reported (see the folder README). Under random assignment a
 baseline difference between arms is chance by construction, so it is not tested; the
 ANCOVA adjusts for it. Sample sizes are small; results are descriptive of this pilot.
 

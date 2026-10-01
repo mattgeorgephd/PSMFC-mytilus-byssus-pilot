@@ -5,11 +5,20 @@
 ##
 ##     y_day3 ~ arm + y_baseline        (lm, one row per animal)
 ##
-## on the metric's model scale. For a positive, right-skewed metric (adhesion, peak force,
-## plaque area) the per-animal value is the mean of the log thread values, i.e. the log of the
-## geometric mean, and arm effects read as ratios. Extension stays on its own scale (mm).
-## Only animals with threads at both timepoints enter; the lab-reference animals have no
-## day-3 pull and never do. The day-3 treatment control is the reference arm.
+## on the log scale (every metric is positive and right-skewed), so arm effects read as
+## ratios. THREAD_METRICS below defines each metric from a thread-level column of the thread
+## summary and how it is summarised per animal and timepoint:
+##
+##   adhesion_kpa  mean of the log thread adhesions (log of the geometric mean)
+##   mean_force    mean of the log thread peak forces (`max_force` of each trace): the
+##                 animal's typical thread
+##   max_force     the largest thread peak force: the animal's strongest thread
+##   pad_area      mean of the log plaque areas
+##
+## Extension at break is not analysed: the thread was cut near the plaque-distal junction, so
+## the length of distal thread under test differed between pulls and extension cannot be
+## measured. Only animals with threads at both timepoints enter; the lab-reference animals
+## have no day-3 pull and never do. The day-3 treatment control is the reference arm.
 ##
 ## Reported per metric:
 ##   tests           F for arm and for baseline, each adjusted for the other (drop1)
@@ -23,18 +32,33 @@
 ANCOVA_ARMS  <- c("control", "OA", "OW", "DO")
 DUNNETT_SEED <- 20260930
 
-ancova_data <- function(threads, metric, scale) {
-  stopifnot(scale %in% c("log", "raw"), metric %in% names(threads))
+## metric -> thread-level column, per-animal summary, model scale, figure label
+THREAD_METRICS <- data.frame(
+  metric = c("adhesion_kpa", "mean_force", "max_force", "pad_area"),
+  column = c("adhesion_kpa", "max_force",  "max_force", "pad_area"),
+  agg    = c("mean",         "mean",       "max",       "mean"),
+  scale  = c("log",          "log",        "log",       "log"),
+  label  = c("Adhesion", "Mean peak force", "Maximum peak force", "Plaque area"),
+  stringsAsFactors = FALSE)
+metric_spec <- function(metric) {
+  i <- match(metric, THREAD_METRICS$metric)
+  if (is.na(i)) stop("Unknown metric '", metric, "'; see THREAD_METRICS in _ancova.R.")
+  as.list(THREAD_METRICS[i, ])
+}
+
+ancova_data <- function(threads, metric, scale = metric_spec(metric)$scale,
+                        column = metric_spec(metric)$column, agg = metric_spec(metric)$agg) {
+  stopifnot(scale %in% c("log", "raw"), agg %in% c("mean", "max"), column %in% names(threads))
   d <- threads %>%
     filter(phase %in% c("pre", "post"), as.character(mussel_trt) %in% ANCOVA_ARMS,
-           !is.na(.data[[metric]]))
-  if (scale == "log" && any(d[[metric]] <= 0))
-    stop(metric, " has non-positive values; it cannot be modelled on the log scale.")
+           !is.na(.data[[column]]))
+  if (scale == "log" && any(d[[column]] <= 0))
+    stop(column, " has non-positive values; it cannot be modelled on the log scale.")
   d %>%
-    mutate(v = if (scale == "log") log(.data[[metric]]) else .data[[metric]],
+    mutate(v = if (scale == "log") log(.data[[column]]) else .data[[column]],
            mussel = as.character(mussel), arm = as.character(mussel_trt)) %>%
     group_by(mussel, arm, phase) %>%
-    summarise(value = mean(v), n_threads = n(), .groups = "drop") %>%
+    summarise(value = if (agg == "max") max(v) else mean(v), n_threads = n(), .groups = "drop") %>%
     pivot_wider(names_from = phase, values_from = c(value, n_threads)) %>%
     filter(!is.na(value_pre), !is.na(value_post)) %>%
     transmute(mussel, arm = factor(arm, levels = ANCOVA_ARMS),
@@ -43,7 +67,7 @@ ancova_data <- function(threads, metric, scale) {
     arrange(arm, mussel)
 }
 
-fit_ancova <- function(threads, metric, scale) {
+fit_ancova <- function(threads, metric, scale = metric_spec(metric)$scale) {
   is_log <- scale == "log"   # a plain flag: inside mutate()/tibble() `scale` would mean the column
   d <- ancova_data(threads, metric, scale)
   missing_arms <- setdiff(ANCOVA_ARMS, as.character(unique(d$arm)))

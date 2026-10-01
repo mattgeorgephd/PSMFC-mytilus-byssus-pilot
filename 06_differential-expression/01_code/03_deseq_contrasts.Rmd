@@ -13,7 +13,10 @@ Fits one DESeq2 model per contrast defined by script 02 and saves the fitted obj
 shrinkage step (script 04) runs on its own instead of needing an interactive session. For each
 contrast, exactly as the original analysis did:
 
-1. subset the clean count matrix to the contrast's samples;
+1. subset the clean count matrix to the contrast's samples, leaving out the mitochondrial
+   loci listed by script 01 (the mitogenome genes and their nuclear copies, analysed on their
+   own in script 13), so the genome results and the GO enrichment built on them carry one
+   nuclear gene per row;
 2. set the design variable's levels explicitly (reference first) and fit `~ <variable>`;
 3. check that the second coefficient is `<variable>_<test>_vs_<reference>`, which fixes the
    sign of every log2 fold change;
@@ -29,6 +32,10 @@ source(here::here("01_code", "_paths.R"))
 source(file.path(repo_root, "tools", "plot_style.R"))
 suppressPackageStartupMessages({ library(DESeq2); library(ggplot2) })
 gcm <- as.matrix(read.csv(file.path(cnt, "gene_count_matrix_clean.csv"), row.names = 1, check.names = FALSE))
+mtl <- read.csv(file.path(cnt, "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
+stopifnot(all(mtl$gene %in% rownames(gcm)))
+gcm <- gcm[!rownames(gcm) %in% mtl$gene, ]                 # nuclear genes only (see step 1 above)
+cat("mitochondrial rows left out:", nrow(mtl), "| genes kept:", nrow(gcm), "\n")
 ti  <- read.csv(file.path(cnt, "treatmentinfo_clean.csv"), row.names = 1, colClasses = "character")
 contrasts <- read.csv(file.path(deg, "contrasts.csv"), colClasses = "character")
 cs        <- read.csv(file.path(deg, "contrast_samples.csv"), colClasses = "character")
@@ -59,11 +66,12 @@ knitr::kable(summary_tbl)
 
 # PCA of the variance-stabilised counts
 
-Blind variance-stabilising transform (`vst(blind = TRUE)`), top 500 most variable genes, as
-`DESeq2::plotPCA`. The original analysis drew the day-3 panels. The all-sample panel shows
+Blind variance-stabilising transform (`vst(blind = TRUE)`), top 500 most variable nuclear
+genes, as `DESeq2::plotPCA`. The original analysis drew the day-3 panels. The all-sample panel shows
 how tissue dominates the variation, which is why every contrast stays within one tissue, and
 that the day-0 libraries of the rest of the foot (no phenol gland) separate from the
-phenol-gland-to-tip libraries of the same animals, which is why they enter no contrast.
+phenol-gland-to-tip libraries of the same animals. It is the only place the day-0 libraries
+appear: they enter no contrast (scripts 01 and 02).
 
 ```{r pca}
 pca_data <- function(samples) {

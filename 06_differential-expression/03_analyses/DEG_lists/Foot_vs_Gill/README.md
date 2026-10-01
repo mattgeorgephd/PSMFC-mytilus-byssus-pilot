@@ -6,7 +6,9 @@ from the fits of `03_deseq_contrasts.Rmd`. Positive log2 fold changes are higher
 | Contrast | Samples |
 |---|---|
 | `FG_TC` | the 12 day-3 treatment controls, foot and gill |
-| `FG_LC` | the 12 day-0 lab controls, foot (phenol gland to tip) and gill |
+
+The day-0 version (`FG_LC`) is retired with the other day-0 contrasts; its tables are in
+`../../_superseded/LC_contrasts/Foot_vs_Gill/`.
 
 Per contrast: `<code>_apeglm.csv` (every gene kept by the count filter), `<code>_siggene.csv`
 (padj < 0.05), `<code>_filter_counts.csv` and `<code>_MA_plots.pdf`. Volcano plots:

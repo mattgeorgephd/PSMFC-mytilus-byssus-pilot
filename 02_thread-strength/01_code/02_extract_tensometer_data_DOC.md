@@ -102,9 +102,8 @@ with `mussel_trt == "control"` (the control tank arm) and `thread_trt == "treatm
 | `thread` | | integer |
 | `note` | | technician note, `""` if none |
 | `species`, `mussel_trt`, `rna_sequenced` | | joined from the mussel key |
-| `max_force` | N | peak of the force channel |
-| `integral` | N·s | area under the force/time curve |
-| `max_displacement` | mm | peak extension |
+| `max_force` | N | peak of the force channel: the thread's peak force |
+| `integral` | N·s | area under the force/time curve; not analysed (see below) |
 | `n_points` | | samples in the trace |
 | `duration_s` | s | |
 | `n_na_force` | | missing force samples that were zero-filled |
@@ -127,7 +126,14 @@ every later plot.
 
 ---
 
-## 4. How the two derived quantities are computed
+## 4. How the derived quantities are computed
+
+Peak force is the maximum of the force channel. Displacement is read (it is in every trace)
+but no longer summarised: each thread was cut near the junction of the plaque and the
+distal region, so the length of distal thread under test varied between pulls and
+displacement at break does not measure the plaque. An earlier version wrote it as
+`max_displacement`; it was removed rather than left in the tables unanalysed. The integral
+depends on the same uncontrolled length and is kept only as a record.
 
 ### The integral is a trapezoid on the raw trace
 

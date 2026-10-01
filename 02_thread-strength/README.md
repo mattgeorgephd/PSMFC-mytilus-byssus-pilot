@@ -19,7 +19,7 @@ plaque measurements, noted below. It reads one file from outside this folder
 │   ├── 02_extract_tensometer_data.Rmd  raw traces     -> trace-level extraction
 │   ├── 03_assemble_thread_summary.Rmd  extraction + plaque areas -> thread summary
 │   ├── 04_analyze_thread_strength.Rmd  thread summary -> adhesion plots + ANCOVA
-│   ├── 05_decompose_adhesion.Rmd       thread summary -> force / area / extension ANCOVA
+│   ├── 05_decompose_adhesion.Rmd       thread summary -> force and area ANCOVA
 │   ├── _ancova.R                       the per-animal ANCOVA scripts 04 and 05 source
 │   └── *_DOC.md                        companion documentation, one per script
 ├── 02_data/
@@ -31,7 +31,7 @@ plaque measurements, noted below. It reads one file from outside this folder
     │   └── QC_plots/<source_folder>/        per-trace loess QC jpgs
     ├── 03_assemble-thread-summary/          script 03: thread-summary.xlsx, input to 04, 05 and 09
     ├── 04_analyze-thread-strength/          script 04: figures + STATS_ancova_*.csv
-    ├── 05_decompose-adhesion/               script 05: force / area / extension ANCOVA
+    ├── 05_decompose-adhesion/               script 05: force and area ANCOVA
     └── knit_html/                           runner reports and logs (git-ignored)
 ```
 
@@ -95,8 +95,8 @@ The scripts, in run order:
    overwrites that file on every run, so do not edit it by hand.
 4. `04_analyze_thread_strength.Rmd`: adhesion (kPa) figures and the per-animal
    ANCOVA (day-3 level adjusted for the animal's baseline; each arm vs control).
-5. `05_decompose_adhesion.Rmd`: the same ANCOVA on peak force, plaque area and
-   extension separately. Read this alongside script 04; it reads script 04's output.
+5. `05_decompose_adhesion.Rmd`: the same ANCOVA on mean peak force, maximum peak force and
+   plaque area separately. Read this alongside script 04; it reads script 04's output.
 
 `09_gene-mechanics-correlation` reads this folder's outputs (the thread summary, script 05's
 `mussel_response_classification.csv`, both `DATA_ancova_animals.csv` files and script 02's
@@ -110,5 +110,31 @@ row per trace. They cannot be derived from a force trace. Script 03 joins the me
 the traces; a trace with a blank `pad_area` is carried through and then excluded, with a
 count, by scripts 04 and 05.
 
-`adhesion_kpa = max_force / pad_area * 1000` is recomputed by script 04 rather than trusted
-from a cached spreadsheet formula.
+`adhesion_kpa = max_force / pad_area * 1000` is recomputed per thread by script 04 rather
+than trusted from a cached spreadsheet formula.
+
+## Force metrics and what is not measured
+
+Each trace gives one thread's peak force (`max_force`, N, the column name at thread level).
+Per animal and timepoint the threads are summarised two ways:
+
+| metric | per-animal value | in the ANCOVA |
+|---|---|---|
+| `mean_force` | the animal's typical thread: the mean of its threads' peak forces | mean of the log peak forces (the geometric mean), the scale the model uses |
+| `max_force` | the animal's strongest thread: the largest peak force | log of the largest peak force |
+
+Descriptive tables (`DESC_*.csv`, script 04) give the arithmetic mean for `mean_force`; the
+model uses the geometric mean, as it has since the per-animal ANCOVA was introduced. With
+three threads per animal at day 3 (one animal has four) the two means differ little, but
+they are not the same number. `max_force` rests on one thread per animal, so it is noisier
+and carries the largest-of-n bias of a maximum: an animal with more threads tends to have a
+larger maximum. Baselines had one to three threads (16 of 48 animals had one or two), so
+`max_force` is exploratory in `09_gene-mechanics-correlation`; `mean_force` is primary.
+
+**Extension is not analysed.** The pulls ran at a constant rate, so displacement could be
+turned into extension, but each thread was cut near the junction of the plaque and the
+distal region, so the length of distal thread under test varied from pull to pull. Extension
+therefore cannot be compared between threads, and scripts 02 to 05 no longer extract or test
+it (the raw traces still hold the displacement channel). The `integral` column (area under
+the force-time curve, N·s) is kept in the extraction for completeness but depends on the
+same uncontrolled length and is not analysed.

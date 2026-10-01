@@ -222,7 +222,7 @@ byssal_collagen,LOC134705706,Collagen alpha-1(V) chain,38.346,3.87e-53,genome_bl
 byssal_collagen,LOC134680970,Collagen alpha-6(VI) chain,28.824,8.979999999999997e-55,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134694200,Collagen alpha-1(XV) chain [Cleaved into: Restin (Endostatin-XV) (Related to endostatin) (Restin-I); Restin-2 (Restin-II); Restin-3 (Restin-III); Restin-4 (Restin-IV)],42.146,3.0099999999999998e-52,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134681037,Ficolin-2 (37 kDa elastin-binding protein) (Collagen/fibrinogen domain-containing protein 2) (EBP-37) (Ficolin-B) (Ficolin-beta) (Hucolin) (L-ficolin) (Serum lectin p35),45.54,7.47e-59,genome_blast,FALSE,TRUE
-byssal_collagen,LOC134694060,Collagen alpha-4(VI) chain,22.619,1.8699999999999998e-48,genome_blast,FALSE,TRUE
+byssal_collagen,LOC134694060,Collagen alpha-4(VI) chain,22.619,1.8699999999999998e-48,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134722782,Collagen alpha-3(VI) chain,31.563,1.1999999999999999e-46,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134718739,Collagen-like protein 2,39.292,4.19e-45,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134707834,Collagen alpha-2(I) chain (Alpha-2 type I collagen),36.596,5.68e-41,genome_blast,FALSE,TRUE

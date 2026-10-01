@@ -30,14 +30,17 @@ FOW_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"))
 FOA_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"))
 FDO_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"))
 
-# Select only unique identifiers
-GOW_sigs_ID<- unique(GOW_sigs_ID)
-GOA_sigs_ID<- unique(GOA_sigs_ID)
-GDO_sigs_ID<- unique(GDO_sigs_ID)
+# One row per gene: its best UniProt hit (highest bitscore; ties in table order), the rule 07
+# and 09 use. A gene with several hits (one per transcript) used to be labelled by whichever
+# hit came first in the table, which for LOC134695253 in GDO was not the best one.
+best_hit <- function(d) d %>% arrange(desc(bitscore)) %>% distinct(gene, .keep_all = TRUE)
+GOW_sigs_ID<- best_hit(GOW_sigs_ID)
+GOA_sigs_ID<- best_hit(GOA_sigs_ID)
+GDO_sigs_ID<- best_hit(GDO_sigs_ID)
 
-FOW_sigs_ID<- unique(FOW_sigs_ID)
-FOA_sigs_ID<- unique(FOA_sigs_ID)
-FDO_sigs_ID<- unique(FDO_sigs_ID)
+FOW_sigs_ID<- best_hit(FOW_sigs_ID)
+FOA_sigs_ID<- best_hit(FOA_sigs_ID)
+FDO_sigs_ID<- best_hit(FDO_sigs_ID)
 
 
 ```

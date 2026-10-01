@@ -1,18 +1,18 @@
-generated : 2026-10-01 06:02:10
+generated : 2026-10-01 18:16:48
 input     : 03_analyses/03_assemble-thread-summary/thread-summary.xlsx
-model     : per-animal ANCOVA, day-3 level ~ arm + baseline level (log: force, area; raw: extension)
+model     : per-animal ANCOVA, log(day-3 level) ~ arm + log(baseline level); mean_force and pad_area geometric means, max_force the largest thread
+animals   : mean_force 48 (control 12, OA 12, OW 12, DO 12)
 animals   : max_force 48 (control 12, OA 12, OW 12, DO 12)
 animals   : pad_area 48 (control 12, OA 12, OW 12, DO 12)
-animals   : max_displacement 48 (control 12, OA 12, OW 12, DO 12)
 multiplicity : unadjusted and Dunnett (emmeans mvt, seed 20260930)
 classified animals: 61 (48 paired)
 R / emmeans : R version 4.4.3 (2025-02-28) / 2.0.4
-code commit          : 9f714a3098d4
-uncommitted changes  : no
+code commit          : 5ba5614718ef
+uncommitted changes  : YES, 23 tracked file(s) differ from the commit: M 02_thread-strength/01_code/02_extract_tensometer_data.Rmd; M 02_thread-strength/01_code/03_assemble_thread_summary.Rmd; M 02_thread-strength/01_code/04_analyze_thread_strength.Rmd; M 02_thread-strength/01_code/05_decompose_adhesion.Rmd; M 02_thread-strength/01_code/_ancova.R; M 06_differential-expression/01_code/00_run_differential_expression.Rmd; M 06_differential-expression/01_code/01_clean_count_matrix.Rmd; M 06_differential-expression/01_code/02_define_contrasts.Rmd; M 06_differential-expression/01_code/03_deseq_contrasts.Rmd; M 06_differential-expression/01_code/04_shrinkage_filtration.Rmd ...
 R                    : R version 4.4.3 (2025-02-28)
 packages             : emmeans 2.0.4
 inputs (md5, repo-relative path):
-  9a6ef22fe1325b8051811738007bbff2  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
-  7acf8d1bfccfeadbcbf834535f774dfb  02_thread-strength/01_code/05_decompose_adhesion.Rmd
-  a67c347cad811fcd8b44480f107451d6  02_thread-strength/01_code/_ancova.R
+  55d4810b1ebd0116b634a47cfc30dd79  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
+  368f9b47a493fdc894bd5c9a46dc2b3a  02_thread-strength/01_code/05_decompose_adhesion.Rmd
+  95ad5e8b9d6029d12d4c8d407b79bc6e  02_thread-strength/01_code/_ancova.R
   39e378e11109e3a5c02a9631957bb4ce  02_thread-strength/03_analyses/04_analyze-thread-strength/STATS_ancova_vs_control.csv

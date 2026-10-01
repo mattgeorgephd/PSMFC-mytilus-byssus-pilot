@@ -1,0 +1,327 @@
+---
+title: "05 - Thread mechanics against DEG sets, enriched GO terms and mitochondrial expression"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+params:
+  tissue: "F"                       # "F" foot (default) or "G" gill
+  ontologies: ["BP", "MF", "CC"]    # GO ontologies whose enriched terms are tested
+  min_genes: 3                      # smallest gene set scored
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 9)
+```
+
+# What this does
+
+Scripts 01 and 02 test single genes and six keyword modules. This script asks the same
+question of the gene sets the differential expression and the GO enrichment found:
+**within an arm, and with the animal's own baseline held constant, do animals whose
+stress-responsive genes are expressed more strongly make weaker or stronger plaques?**
+
+Three kinds of set, all for this script's tissue and the treatment-control (TC) contrasts of
+record:
+
+1. **DEG sets**: the up- and the down-regulated DEGs of each stressor
+   (`06_differential-expression`, `<T><X>_TC_siggene.csv`), six sets;
+2. **enriched GO terms**: every term topGO `weight01` enriched in one of those runs
+   (`07_enrichment/03_analyses/02_topgo/topgo_enriched.csv`), scored on the DEGs that put it
+   there (the term's genes in that run). `fdr_supported` marks the terms a method with
+   false-discovery control also enriched (topGO `classic`, goseq or clusterProfiler, BH < 0.05;
+   `06_method-comparison/consensus_terms_TC_<ontology>.csv`); outside those, topGO's lists
+   are exploratory;
+3. **mitochondrial expression**: the reads of the 12 mitochondrial protein genes (the
+   mitochondrial genome's genes and their copies on unplaced scaffolds) as a share of the
+   library's nuclear reads, on the log scale, from `06 .../mitochondrial/mt_share_by_sample.csv`.
+   These loci are left out of every gene set above.
+
+**Score.** A set's score is the first principal component of its member genes' VST values
+(standardised per gene), oriented so that a higher score means higher expression of the set,
+exactly as script 02 scores its modules; members are the set's genes that passed script 01's
+expression filter, and a set needs at least `min_genes` of them.
+
+**Test.** The score goes through the per-animal ANCOVA every script here fits,
+`level_day3 ~ score + treatment + level_baseline`, for each metric of script 01
+(`metrics_config_<T>.csv`). `partial_r` is the score's partial correlation with the day-3
+level. BH correction runs in two families, the whole-response scores (the six DEG sets and the
+mitochondrial share) and the GO terms: within family and metric (`q_lm`) and within family
+and tier (`q_family`).
+
+**How to read it.** Each set was selected because its genes differ between arms, and the
+treatment term removes those arm differences, so a slope here is an association among
+animals of the same arm. Sets share genes (a GO term is a subset of its run's DEG set, and
+parent and child terms overlap), so their tests are not independent. With 10 to 12 animals
+per arm this is exploratory, as script 01 explains; quote q beside p.
+
+Writes, in `03_analyses/go_mechanics/`:
+
+- `mechanics_sets_<T>.csv`: one row per set: type, run, ontology, GO term, genes scored and
+  their IDs, variance explained by the score, FDR support;
+- `mechanics_set_associations_<T>.csv`: one row per set and metric: correction family, n,
+  slope, partial r with a 95% interval, p, `q_lm`, `q_family`;
+- `go_mechanics_<T>.png`: the partial correlations of every set with every metric;
+- `RUN_provenance_<T>.txt`.
+
+```{r inputs}
+suppressPackageStartupMessages({ library(tidyverse) })
+TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
+stopifnot(TISSUE %in% c("F", "G"))
+ONTOLOGIES <- if (exists("params") && !is.null(params$ontologies)) unlist(params$ontologies) else c("BP", "MF", "CC")
+MIN_GENES  <- if (exists("params") && !is.null(params$min_genes)) params$min_genes else 3
+FDR_ALPHA  <- 0.10                          # as scripts 01 and 02
+
+find_repo_root <- function(start = getwd()) {
+  d <- normalizePath(start, winslash = "/", mustWork = FALSE)
+  for (i in 1:8) {
+    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    d <- dirname(d)
+  }
+  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+}
+repo_root <- find_repo_root()
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance
+source(file.path(repo_root, "tools", "plot_style.R"))        # shared colours
+source(file.path(repo_root, "tools", "gene_ids.R"))          # gene_key()
+IN_DIR  <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "gene_mechanics")
+OUT_DIR <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "go_mechanics")
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+DE  <- file.path(repo_root, "06_differential-expression", "03_analyses")
+GO  <- file.path(repo_root, "07_enrichment", "03_analyses")
+need <- function(f) { if (!file.exists(f)) stop("Missing ", f, " - run the step that writes it first."); f }
+
+## script 01's handoffs: the animals, their expression and the metrics, as scripts 01 and 02 use them
+mcfg <- read_csv(need(file.path(IN_DIR, sprintf("metrics_config_%s.csv", TISSUE))), show_col_types = FALSE)
+metrics    <- mcfg$metric
+arms_kept  <- strsplit(mcfg$arms[1], ";", fixed = TRUE)[[1]]
+COVARIATES <- strsplit(mcfg$covariates[1], ";", fixed = TRUE)[[1]]
+scale_of <- function(m) mcfg$scale[match(m, mcfg$metric)]
+tier_of  <- function(m) mcfg$tier[match(m, mcfg$metric)]
+label_of <- function(m) sub(" \\(.*\\)$", "", mcfg$label[match(m, mcfg$metric)])
+on_scale <- function(m, v) if (scale_of(m) == "log") log(v) else v
+paired <- read_csv(need(file.path(IN_DIR, sprintf("paired_sample_manifest_%s.csv", TISSUE))), show_col_types = FALSE) %>%
+  mutate(treatment = factor(treatment, levels = arms_kept))
+vp_df <- read_csv(need(file.path(IN_DIR, sprintf("vst_paired_%s.csv", TISSUE))), show_col_types = FALSE)
+vp <- as.matrix(vp_df[, -1]); rownames(vp) <- vp_df[[1]]
+stopifnot(all(paired$sample %in% colnames(vp)))
+vp <- vp[, paired$sample, drop = FALSE]
+key <- gene_key                                # tools/gene_ids.R: "gene-LOC1|LOC1" -> "LOC1"
+cat("Paired animals:", nrow(paired), "| genes passing the expression filter:", nrow(vp), "\n")
+```
+
+# The sets
+
+```{r sets}
+tissue_dir <- ifelse(TISSUE == "F", "Foot", "Gill")
+codes <- paste0(TISSUE, c("OA", "OW", "DO"), "_TC")
+run_label <- function(code, direction)
+  sprintf("%s %s, %s", tissue_dir, substr(code, 2, 3), ifelse(direction == "up", "up", "down"))
+
+## 1. DEG sets
+deg_files <- file.path(DE, "DEG_lists", tissue_dir, paste0(codes, "_siggene.csv"))
+warn_unless(all(file.exists(deg_files)), "Missing DEG list(s): ", paste(basename(deg_files[!file.exists(deg_files)]), collapse = ", "))
+deg_sets <- bind_rows(lapply(codes[file.exists(deg_files)], function(cd) {
+  d <- read.csv(file.path(DE, "DEG_lists", tissue_dir, paste0(cd, "_siggene.csv")), stringsAsFactors = FALSE)
+  bind_rows(lapply(c("up", "down"), function(dir) {
+    g <- key(d$gene[if (dir == "up") d$log2FoldChange > 0 else d$log2FoldChange < 0])
+    tibble(set_type = "DEG set", code = cd, direction = dir, ontology = NA_character_, GO.ID = NA_character_,
+           Term = sprintf("all %s DEGs", ifelse(dir == "up", "up-regulated", "down-regulated")),
+           genes_listed = length(g), members = list(intersect(g, rownames(vp))))
+  }))
+}))
+
+## 2. enriched GO terms, scored on the DEGs that enriched them
+tg_file <- file.path(GO, "02_topgo", "topgo_enriched.csv")
+warn_unless(file.exists(tg_file), "Missing ", tg_file, "; run 07_enrichment first. GO terms are skipped.")
+tg <- if (file.exists(tg_file)) read.csv(tg_file, stringsAsFactors = FALSE) else NULL
+cons <- bind_rows(lapply(ONTOLOGIES, function(o) {
+  f <- file.path(GO, "06_method-comparison", sprintf("consensus_terms_TC_%s.csv", o))
+  if (file.exists(f)) read.csv(f, stringsAsFactors = FALSE) %>% transmute(code, direction, GO.ID, ontology = o, fdr_methods = methods)
+}))
+go_sets <- if (is.null(tg)) NULL else tg %>%
+  filter(code %in% codes, ontology %in% ONTOLOGIES) %>%
+  left_join(cons, by = c("code", "direction", "GO.ID", "ontology")) %>%
+  transmute(set_type = "GO term", code, direction, ontology, GO.ID, Term,
+            genes_listed = Significant, fdr_methods,
+            members = lapply(strsplit(genes, ";", fixed = TRUE), function(g) intersect(key(g), rownames(vp))))
+warn_unless(is.null(tg) || nrow(go_sets) > 0, "No enriched TC terms for tissue ", TISSUE, " in ", tg_file, ".")
+
+sets <- bind_rows(deg_sets, go_sets) %>%
+  mutate(n_genes = lengths(members),
+         fdr_supported = case_when(set_type != "GO term" ~ NA,
+                                   TRUE ~ !is.na(fdr_methods)),
+         set_id = ifelse(set_type == "DEG set", paste(code, direction),
+                         paste(code, direction, ontology, GO.ID)),
+         run = run_label(code, direction)) %>%
+  select(-any_of("fdr_methods"))
+cat("Sets:", nrow(sets), "| with at least", MIN_GENES, "expressed genes:", sum(sets$n_genes >= MIN_GENES), "\n")
+print(table(sets$set_type, scored = sets$n_genes >= MIN_GENES))
+```
+
+# Scores and the ANCOVA
+
+```{r scores}
+## first principal component of the standardised member genes, oriented to the set's mean
+## expression; the same score script 02 gives its modules
+set_score <- function(locs) {
+  z <- t(scale(t(vp[locs, , drop = FALSE])))
+  z <- z[stats::complete.cases(z), , drop = FALSE]
+  if (nrow(z) < MIN_GENES) return(NULL)
+  pc <- prcomp(t(z), center = TRUE, scale. = FALSE)
+  sc <- pc$x[, 1]
+  if (suppressWarnings(cor(sc, colMeans(vp[rownames(z), , drop = FALSE]))) < 0) sc <- -sc
+  list(score = unname(sc), var_expl = summary(pc)$importance[2, 1])
+}
+
+## the ANCOVA of scripts 01 and 02 on one score
+ANCOVA_FORMULA <- reformulate(c("x", COVARIATES, "base"), response = "y")
+fit_score <- function(x, metric) {
+  dat <- data.frame(y    = on_scale(metric, paired[[metric]]), x = x,
+                    base = on_scale(metric, paired[[paste0("base_", metric)]]),
+                    paired[, COVARIATES, drop = FALSE])
+  dat <- dat[stats::complete.cases(dat) & is.finite(dat$y) & is.finite(dat$base), , drop = FALSE]
+  if (nrow(dat) < 6) return(NULL)
+  fm <- lm(ANCOVA_FORMULA, data = dat)
+  co <- summary(fm)$coefficients
+  t  <- co["x", "t value"]; df <- fm$df.residual
+  r  <- t / sqrt(t^2 + df)
+  tibble(metric = metric, tier = tier_of(metric), n = nrow(dat),
+         slope = co["x", "Estimate"], se = co["x", "Std. Error"], p_lm = co["x", "Pr(>|t|)"],
+         partial_r = r, partial_r_lo = tanh(atanh(r) - qnorm(0.975) / sqrt(df - 1)),
+         partial_r_hi = tanh(atanh(r) + qnorm(0.975) / sqrt(df - 1)))
+}
+
+scored <- sets %>% filter(n_genes >= MIN_GENES)
+scores <- lapply(scored$members, set_score)
+keep <- !vapply(scores, is.null, TRUE)
+scored <- scored[keep, ]; scores <- scores[keep]
+scored$pc1_var <- round(vapply(scores, `[[`, 0, "var_expl"), 3)
+
+## 3. mitochondrial expression: log of the mitochondrial protein reads as a share of nuclear reads
+mt_file <- file.path(DE, "mitochondrial", "mt_share_by_sample.csv")
+warn_unless(file.exists(mt_file), "Missing ", mt_file, "; run 06_differential-expression step 13. ",
+            "The mitochondrial row is skipped.")
+if (file.exists(mt_file)) {
+  mt <- read.csv(mt_file, stringsAsFactors = FALSE)
+  mt_score <- log(mt$mt_reads_pct_of_nuclear[match(paired$sample, mt$sample.1)])
+  warn_unless(!anyNA(mt_score), "Mitochondrial share missing for some paired samples.")
+  scored <- bind_rows(scored, tibble(set_type = "mitochondrial", code = NA, direction = NA,
+                                     Term = "mitochondrial protein genes (% of nuclear reads, log)",
+                                     n_genes = 12L, set_id = "mitochondrial", run = "all samples",
+                                     members = list(character(0)), pc1_var = NA_real_))
+  scores <- c(scores, list(list(score = mt_score)))
+}
+
+assoc <- bind_rows(lapply(seq_len(nrow(scored)), function(i)
+  bind_rows(lapply(metrics, function(m) fit_score(scores[[i]]$score, m))) %>%
+    mutate(set_id = scored$set_id[i], .before = 1))) %>%
+  left_join(scored %>% select(set_id, set_type, run, code, direction, ontology, GO.ID, Term, n_genes,
+                              fdr_supported), by = "set_id") %>%
+  ## two correction families: the whole-response scores (six DEG sets and the mitochondrial
+  ## share, which alone would be a family of one whose q is its p) and the GO terms
+  mutate(bh_family = ifelse(set_type == "GO term", "GO terms", "DEG sets and mitochondrial")) %>%
+  group_by(bh_family, metric) %>% mutate(q_lm = p.adjust(p_lm, "BH")) %>% ungroup() %>%
+  group_by(bh_family, tier)   %>% mutate(q_family = p.adjust(p_lm, "BH")) %>% ungroup() %>%
+  select(set_type, set_id, bh_family, run, code, direction, ontology, GO.ID, Term, n_genes, fdr_supported, metric,
+         tier, n, slope, se, partial_r, partial_r_lo, partial_r_hi, p_lm, q_lm, q_family) %>%
+  arrange(factor(set_type, levels = c("DEG set", "mitochondrial", "GO term")), factor(metric, levels = metrics), p_lm)
+
+write_csv(sets %>% mutate(scored = set_id %in% scored$set_id,
+                          members = vapply(members, paste, "", collapse = ";")) %>%
+            left_join(scored %>% select(set_id, pc1_var), by = "set_id") %>%
+            select(set_type, set_id, run, code, direction, ontology, GO.ID, Term, genes_listed, n_genes,
+                   scored, pc1_var, fdr_supported, members),
+          file.path(OUT_DIR, sprintf("mechanics_sets_%s.csv", TISSUE)))
+write_csv(assoc, file.path(OUT_DIR, sprintf("mechanics_set_associations_%s.csv", TISSUE)))
+
+cat("\nSmallest p per set type and metric:\n")
+assoc %>% group_by(set_type, metric) %>% slice_min(p_lm, n = 2, with_ties = FALSE) %>% ungroup() %>%
+  transmute(set_type, metric, run, Term = substr(Term, 1, 45), n_genes, partial_r = round(partial_r, 2),
+            p_lm = signif(p_lm, 2), q_lm = signif(q_lm, 2), q_family = signif(q_family, 2)) %>%
+  as.data.frame() %>% print()
+cat("\nSet x metric tests with q_lm <", FDR_ALPHA, ":", sum(assoc$q_lm < FDR_ALPHA, na.rm = TRUE),
+    "of", nrow(assoc), "\n")
+```
+
+# Figure
+
+```{r figure}
+## GO term names are cut, not edited: short_name() is for UniProt names, whose parentheses
+## hold alternative names, while a GO name's parentheses are part of it
+R_CAP <- 0.5   # colour scale limit; partial r beyond it is drawn at full colour
+go_label <- function(term, width = 44)
+  ifelse(nchar(term) <= width, term, paste0(trimws(substr(term, 1, width - 3)), "..."))
+fig <- assoc %>%
+  mutate(group = case_when(set_type == "DEG set" ~ "DEG sets",
+                           set_type == "mitochondrial" ~ "Mito-\nchondrial",
+                           TRUE ~ paste("GO", ontology)),
+         group = factor(group, levels = c("DEG sets", "Mito-\nchondrial", paste("GO", ONTOLOGIES))),
+         row = ifelse(set_type == "GO term",
+                      sprintf("%s | %s%s", run, go_label(Term), ifelse(fdr_supported, " (FDR)", "")),
+                      ifelse(set_type == "DEG set", sprintf("%s | %s", run, Term), Term)),
+         metric = factor(metric, levels = metrics, labels = vapply(metrics, label_of, "")),
+         mark = case_when(q_lm < FDR_ALPHA ~ "q < 0.1", p_lm < 0.05 ~ "p < 0.05", TRUE ~ ""))
+## two terms whose shortened names coincide would share a row; give them their GO IDs
+fig <- fig %>% group_by(group, row) %>%
+  mutate(row = if (n_distinct(GO.ID) > 1) sprintf("%s [%s]", row, GO.ID) else row) %>% ungroup()
+stopifnot(!anyDuplicated(distinct(fig, row, set_id)$row))
+row_levels <- fig %>% distinct(group, row, code, direction) %>%
+  arrange(group, match(code, codes), desc(direction == "up"), row) %>% pull(row) %>% unique()
+fig$row <- factor(fig$row, levels = rev(row_levels))
+p <- ggplot(fig, aes(metric, row, fill = partial_r)) +
+  geom_tile(colour = "white", linewidth = 0.4) +
+  geom_text(aes(label = ifelse(mark == "", "", ifelse(mark == "q < 0.1", "**", "*"))), size = 3, vjust = 0.75) +
+  facet_grid(group ~ ., scales = "free_y", space = "free_y") +
+  scale_fill_gradient2(low = DIRECTION_COLORS[["down"]], mid = "white", high = DIRECTION_COLORS[["up"]],
+                       midpoint = 0, limits = c(-R_CAP, R_CAP), oob = scales::squish,
+                       breaks = c(-R_CAP, -R_CAP / 2, 0, R_CAP / 2, R_CAP),
+                       labels = c(paste0("-", R_CAP, " or less"), -R_CAP / 2, 0, R_CAP / 2, paste0(R_CAP, " or more")),
+                       name = "partial r\n(ANCOVA)") +
+  scale_x_discrete(position = "top") +
+  labs(x = NULL, y = NULL,
+       title = sprintf("%s: thread mechanics against DEG sets, enriched GO terms and mitochondrial expression",
+                       tissue_dir),
+       caption = paste(strwrap(sprintf(paste(
+         "Partial correlation of each set's score (first principal component of its genes' VST expression) with",
+         "the day-3 level, arm and the animal's baseline held constant; n = %d animals. Red: higher set expression",
+         "goes with a higher value; colour capped at |r| = %s. *: p < 0.05; **: BH q < %s within family (response-level sets; GO terms) and metric. (FDR) after a GO term:",
+         "a method with FDR control (topGO classic, goseq or clusterProfiler, BH < 0.05) also enriched it.",
+         "Sets were chosen for differing between arms; exploratory."),
+         sum(!is.na(paired$base_mean_force)), R_CAP, FDR_ALPHA), width = 120), collapse = "\n")) +
+  theme_psmfc(9) +
+  theme(panel.grid = element_blank(), strip.text.y = element_text(angle = 0),
+        plot.title.position = "plot", plot.caption = element_text(hjust = 0), plot.caption.position = "plot")
+ggsave(file.path(OUT_DIR, sprintf("go_mechanics_%s.png", TISSUE)), p,
+       width = 10, height = 2.2 + 0.17 * length(row_levels), dpi = 300, limitsize = FALSE)
+p
+```
+
+# Provenance
+
+```{r provenance}
+prov <- file.path(OUT_DIR, sprintf("RUN_provenance_%s.txt", TISSUE))
+settings <- c(
+  "[05_go_term_mechanics.Rmd]",
+  paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+  paste0("tissue               : ", TISSUE),
+  paste0("reported test        : ANCOVA level_day3 ~ score + ", paste(COVARIATES, collapse = " + "),
+         " + level_baseline (script 01's metrics, scales and animals)"),
+  paste0("metrics [tier]       : ", paste(sprintf("%s [%s]", mcfg$metric, mcfg$tier), collapse = ", ")),
+  paste0("ontologies           : ", paste(ONTOLOGIES, collapse = ", ")),
+  paste0("MIN_GENES / FDR_ALPHA: ", MIN_GENES, " / ", FDR_ALPHA),
+  paste0("sets scored          : ", paste(sprintf("%s %d", names(table(scored$set_type)), as.integer(table(scored$set_type))),
+                                          collapse = ", "), " (of ", nrow(sets) + file.exists(mt_file), " sets)"),
+  paste0("animals in the fits  : ", sum(!is.na(paired$base_mean_force))))
+inputs <- c(file.path(IN_DIR, sprintf(c("metrics_config_%s.csv", "paired_sample_manifest_%s.csv", "vst_paired_%s.csv"), TISSUE)),
+            deg_files, tg_file,
+            file.path(GO, "06_method-comparison", sprintf("consensus_terms_TC_%s.csv", ONTOLOGIES)),
+            mt_file,
+            file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "05_go_term_mechanics.Rmd"),
+            file.path(repo_root, "tools", c("pipeline_checks.R", "plot_style.R", "gene_ids.R")))
+writeLines(provenance_lines(settings, inputs, repo_root, packages = c("dplyr", "readr")), prov)
+cat(readLines(prov), sep = "\n")
+```

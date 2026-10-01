@@ -1,5 +1,5 @@
-metric,scale,tier,label,arms,covariates,exclude_floor_genes
-max_force,log,primary,Peak force (N),control;OA;OW;DO,treatment,TRUE
-pad_area,log,primary,Plaque area (mm^2),control;OA;OW;DO,treatment,TRUE
-adhesion_kpa,log,exploratory,Adhesion (kPa),control;OA;OW;DO,treatment,TRUE
-max_displacement,raw,exploratory,Extension at break (mm),control;OA;OW;DO,treatment,TRUE
+metric,column,agg,scale,tier,label,arms,covariates,exclude_floor_genes
+mean_force,max_force,mean,log,primary,Mean peak force (N),control;OA;OW;DO,treatment,TRUE
+pad_area,pad_area,mean,log,primary,Plaque area (mm^2),control;OA;OW;DO,treatment,TRUE
+max_force,max_force,max,log,exploratory,Maximum peak force (N),control;OA;OW;DO,treatment,TRUE
+adhesion_kpa,adhesion_kpa,mean,log,exploratory,Adhesion (kPa),control;OA;OW;DO,treatment,TRUE

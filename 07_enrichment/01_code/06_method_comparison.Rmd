@@ -9,8 +9,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 # What this does
 
-Compares the three methods on the treatment-control (TC) contrasts, biological process, the
-same genes and universes throughout:
+Compares the three methods on the treatment-control (TC) contrasts, in each ontology (BP, MF,
+CC), the same genes and universes throughout:
 
 | method | annotation | test | enriched |
 |---|---|---|---|
@@ -28,107 +28,122 @@ overlap with the other three is expected to be partial.
 For each run: the number of enriched terms per method, the Jaccard overlap of each pair's
 enriched sets, and the Spearman correlation of their p-values over the terms both tested
 (clusterProfiler lists only terms holding at least one DEG). Writes, in
-`03_analyses/06_method-comparison/`: `method_counts_TC_BP.csv`, `method_agreement_TC_BP.csv`
-(per run and pair), `method_pair_summary_TC_BP.csv` (per pair),
-`consensus_terms_TC_BP.csv` (terms enriched by `weight01` and by at least one other method)
-and `method_comparison_TC_BP.png`.
+`03_analyses/06_method-comparison/`, one set per ontology: `method_counts_TC_<ontology>.csv`,
+`method_agreement_TC_<ontology>.csv` (per run and pair), `method_pair_summary_TC_<ontology>.csv`
+(per pair), `consensus_terms_TC_<ontology>.csv` (terms enriched by `weight01` and by at least
+one other method) and `method_comparison_TC_<ontology>.png`.
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
 source(here::here("01_code", "_go_helpers.R"))
 source(file.path(repo_root, "tools", "plot_style.R"))
 suppressPackageStartupMessages({ library(dplyr); library(tidyr); library(ggplot2); library(patchwork) })
-tg <- read.csv(file.path(out_topgo, "topgo_all_terms_TC_BP.csv")) %>%
-  group_by(code, direction) %>% mutate(padj_classic = p.adjust(p_classic, "BH")) %>% ungroup()
-gs <- read.csv(file.path(out_goseq, "goseq_all_terms_TC_BP.csv"))
-cp <- read.csv(file.path(out_cp, "clusterprofiler_all_terms_TC_BP.csv"))
+ONTOLOGIES <- c("BP", "MF", "CC")
 METHODS <- c(weight01 = "topGO weight01 (p < 0.01)", classic = "topGO classic (BH < 0.05)",
              goseq = "goseq (BH < 0.05)", clusterProfiler = "clusterProfiler (BH < 0.05)")
-## method colours stay clear of the treatment colours (tools/plot_style.R); bars also carry
-## their counts, since goseq's brown and clusterProfiler's magenta are close for deuteranopes
-METHOD_COLORS <- c(weight01 = "#2a78d6", classic = "#4a3aa7", goseq = "#a6611a", clusterProfiler = "#c2185b")
-long <- bind_rows(
-  tg %>% transmute(code, direction, GO.ID, method = "weight01", p = p_weight01, enriched = p_weight01 < 0.01),
-  tg %>% transmute(code, direction, GO.ID, method = "classic", p = p_classic, enriched = padj_classic < 0.05),
-  gs %>% transmute(code, direction, GO.ID, method = "goseq", p = p_over, enriched = padj < 0.05),
-  cp %>% transmute(code, direction, GO.ID, method = "clusterProfiler", p = p, enriched = padj < 0.05))
 runs <- runs_for("TC")
+read_long <- function(ont) {
+  tg <- read.csv(file.path(out_topgo, sprintf("topgo_all_terms_TC_%s.csv", ont))) %>%
+    group_by(code, direction) %>% mutate(padj_classic = p.adjust(p_classic, "BH")) %>% ungroup()
+  gs <- read.csv(file.path(out_goseq, sprintf("goseq_all_terms_TC_%s.csv", ont)))
+  cp <- read.csv(file.path(out_cp, sprintf("clusterprofiler_all_terms_TC_%s.csv", ont)))
+  list(tg = tg, long = bind_rows(
+    tg %>% transmute(code, direction, GO.ID, method = "weight01", p = p_weight01, enriched = p_weight01 < 0.01),
+    tg %>% transmute(code, direction, GO.ID, method = "classic", p = p_classic, enriched = padj_classic < 0.05),
+    gs %>% transmute(code, direction, GO.ID, method = "goseq", p = p_over, enriched = padj < 0.05),
+    cp %>% transmute(code, direction, GO.ID, method = "clusterProfiler", p = p, enriched = padj < 0.05)))
+}
 ```
 
 # Counts, overlap and correlation
 
 ```{r compare}
-counts <- long %>% group_by(code, direction, method) %>% summarise(enriched = sum(enriched), .groups = "drop") %>%
-  complete(nesting(code, direction), method = names(METHODS), fill = list(enriched = 0L))
-write.csv(counts %>% pivot_wider(names_from = method, values_from = enriched) %>%
-            arrange(match(code, contrasts$code), desc(direction == "up")),
-          file.path(out_cmp, "method_counts_TC_BP.csv"), row.names = FALSE)
+compare_ontology <- function(ont) {
+  x <- read_long(ont); long <- x$long; tg <- x$tg
+  counts <- long %>% group_by(code, direction, method) %>% summarise(enriched = sum(enriched), .groups = "drop") %>%
+    complete(nesting(code, direction), method = names(METHODS), fill = list(enriched = 0L))
+  write.csv(counts %>% pivot_wider(names_from = method, values_from = enriched) %>%
+              arrange(match(code, contrasts$code), desc(direction == "up")),
+            file.path(out_cmp, sprintf("method_counts_TC_%s.csv", ont)), row.names = FALSE)
 
-pairs <- combn(names(METHODS), 2, simplify = FALSE)
-agree <- bind_rows(lapply(seq_len(nrow(runs)), function(i) bind_rows(lapply(pairs, function(pr) {
-  a <- long %>% filter(code == runs$code[i], direction == runs$direction[i], method == pr[1])
-  b <- long %>% filter(code == runs$code[i], direction == runs$direction[i], method == pr[2])
-  ea <- a$GO.ID[a$enriched]; eb <- b$GO.ID[b$enriched]
-  both <- inner_join(a, b, by = "GO.ID")
-  data.frame(code = runs$code[i], direction = runs$direction[i], method_1 = pr[1], method_2 = pr[2],
-             enriched_1 = length(ea), enriched_2 = length(eb), shared = length(intersect(ea, eb)),
-             jaccard = if (length(ea) && length(eb)) length(intersect(ea, eb)) / length(union(ea, eb)) else NA,
-             terms_compared = nrow(both),
-             spearman = if (nrow(both) > 10) suppressWarnings(cor(both$p.x, both$p.y, method = "spearman")) else NA)
-}))))
-write.csv(agree, file.path(out_cmp, "method_agreement_TC_BP.csv"), row.names = FALSE)
-pair_summary <- agree %>% group_by(method_1, method_2) %>%
-  summarise(runs_both_enriched = sum(enriched_1 > 0 & enriched_2 > 0),
-            runs_only_one = sum(xor(enriched_1 > 0, enriched_2 > 0)),
-            median_jaccard_when_both = median(jaccard, na.rm = TRUE),
-            median_spearman = median(spearman, na.rm = TRUE), .groups = "drop")
-write.csv(pair_summary, file.path(out_cmp, "method_pair_summary_TC_BP.csv"), row.names = FALSE)
-knitr::kable(pair_summary, digits = 2, caption = "over the 12 TC runs; Jaccard only where both methods enriched a term")
+  pairs <- combn(names(METHODS), 2, simplify = FALSE)
+  agree <- bind_rows(lapply(seq_len(nrow(runs)), function(i) bind_rows(lapply(pairs, function(pr) {
+    a <- long %>% filter(code == runs$code[i], direction == runs$direction[i], method == pr[1])
+    b <- long %>% filter(code == runs$code[i], direction == runs$direction[i], method == pr[2])
+    ea <- a$GO.ID[a$enriched]; eb <- b$GO.ID[b$enriched]
+    both <- inner_join(a, b, by = "GO.ID")
+    data.frame(code = runs$code[i], direction = runs$direction[i], method_1 = pr[1], method_2 = pr[2],
+               enriched_1 = length(ea), enriched_2 = length(eb), shared = length(intersect(ea, eb)),
+               jaccard = if (length(ea) && length(eb)) length(intersect(ea, eb)) / length(union(ea, eb)) else NA,
+               terms_compared = nrow(both),
+               spearman = if (nrow(both) > 10) suppressWarnings(cor(both$p.x, both$p.y, method = "spearman")) else NA)
+  }))))
+  write.csv(agree, file.path(out_cmp, sprintf("method_agreement_TC_%s.csv", ont)), row.names = FALSE)
+  pair_summary <- agree %>% group_by(method_1, method_2) %>%
+    summarise(runs_both_enriched = sum(enriched_1 > 0 & enriched_2 > 0),
+              runs_only_one = sum(xor(enriched_1 > 0, enriched_2 > 0)),
+              median_jaccard_when_both = median(jaccard, na.rm = TRUE),
+              median_spearman = median(spearman, na.rm = TRUE), .groups = "drop")
+  write.csv(pair_summary, file.path(out_cmp, sprintf("method_pair_summary_TC_%s.csv", ont)), row.names = FALSE)
 
-consensus <- long %>% filter(enriched) %>% group_by(code, direction, GO.ID) %>%
-  summarise(methods = paste(method[order(match(method, names(METHODS)))], collapse = ";"),
-            n_methods = n(), .groups = "drop") %>%
-  filter(grepl("weight01", methods), n_methods >= 2) %>%
-  left_join(tg %>% select(code, direction, GO.ID, Annotated, Significant, p_weight01), by = c("code", "direction", "GO.ID")) %>%
-  mutate(Term = go_term(GO.ID)) %>%
-  arrange(match(code, contrasts$code), desc(direction == "up"), p_weight01) %>%
-  select(code, direction, GO.ID, Term, Annotated, Significant, p_weight01, methods, n_methods)
-write.csv(consensus, file.path(out_cmp, "consensus_terms_TC_BP.csv"), row.names = FALSE)
-knitr::kable(consensus, digits = 6)
+  consensus <- long %>% filter(enriched) %>% group_by(code, direction, GO.ID) %>%
+    summarise(methods = paste(method[order(match(method, names(METHODS)))], collapse = ";"),
+              n_methods = n(), .groups = "drop") %>%
+    filter(grepl("weight01", methods), n_methods >= 2) %>%
+    left_join(tg %>% select(code, direction, GO.ID, Annotated, Significant, p_weight01), by = c("code", "direction", "GO.ID")) %>%
+    mutate(Term = go_term(GO.ID)) %>%
+    arrange(match(code, contrasts$code), desc(direction == "up"), p_weight01) %>%
+    select(code, direction, GO.ID, Term, Annotated, Significant, p_weight01, methods, n_methods)
+  write.csv(consensus, file.path(out_cmp, sprintf("consensus_terms_TC_%s.csv", ont)), row.names = FALSE)
+  list(counts = counts, agree = agree, pairs = pairs, pair_summary = pair_summary, consensus = consensus)
+}
+cmp <- setNames(lapply(ONTOLOGIES, compare_ontology), ONTOLOGIES)
+for (o in ONTOLOGIES) {
+  print(knitr::kable(cmp[[o]]$pair_summary, digits = 2,
+                     caption = sprintf("%s: over the 12 TC runs; Jaccard only where both methods enriched a term", o)))
+  print(knitr::kable(cmp[[o]]$consensus, digits = 6, caption = sprintf("%s consensus terms", o)))
+}
 ```
 
-# Figure
+# Figures
 
-```{r figure, fig.width = 11, fig.height = 6}
+Panel A is a small multiple, one column per method in a single grey, so the figure needs no
+method colours: four more hues could not be told apart for colour-vision deficiency without
+reusing the treatment, direction or tissue colours, which mean something else everywhere
+else in the repository.
+
+```{r figure, fig.width = 13, fig.height = 6.5}
 run_levels <- rev(paste(rep(contrast_label(unique(runs$code)), each = 2), c("up", "down")))
-cnt <- counts %>% mutate(run = factor(paste(contrast_label(code), direction), levels = run_levels),
-                         method = factor(method, levels = rev(names(METHODS))))
-pa <- ggplot(cnt, aes(enriched, run, fill = method)) +
-  geom_col(position = position_dodge(width = 0.85), width = 0.8) +
-  geom_text(aes(label = ifelse(enriched > 0, enriched, "")), position = position_dodge(width = 0.85),
-            hjust = -0.25, size = 2.5) +
-  scale_fill_manual(values = METHOD_COLORS, labels = METHODS, breaks = names(METHODS), name = NULL,
-                    guide = guide_legend(nrow = 2)) +
-  scale_x_continuous(expand = expansion(mult = c(0, 0.12))) +
-  labs(x = "enriched BP terms", y = NULL, title = "A. Enriched terms per method") +
-  theme_psmfc(9) + theme(legend.position = "top", legend.justification = "left")
-jac <- agree %>% mutate(run = factor(paste(contrast_label(code), direction), levels = run_levels),
-                        pair = factor(paste(c(weight01 = "weight01", classic = "classic", goseq = "goseq",
-                                              clusterProfiler = "clusterProfiler")[method_1], "vs",
-                                            c(weight01 = "weight01", classic = "classic", goseq = "goseq",
-                                              clusterProfiler = "clusterProfiler")[method_2]),
-                                      levels = unique(paste(sapply(pairs, `[`, 1), "vs", sapply(pairs, `[`, 2)))))
-pb <- ggplot(jac, aes(pair, run)) +
-  geom_tile(aes(fill = jaccard), colour = "white", linewidth = 0.6) +
-  geom_text(aes(label = ifelse(is.na(jaccard), "-", sprintf("%.2f", jaccard))), size = 2.5) +
-  scale_fill_gradient(low = "#f2f2f2", high = "#5a5a5a", limits = c(0, 1), na.value = "#ffffff", name = "Jaccard") +
-  labs(x = NULL, y = NULL, title = "B. Overlap of enriched sets") +
-  theme_psmfc(9) + theme(axis.text.x = element_text(angle = 35, hjust = 1), panel.grid = element_blank())
-p <- (pa | pb) + plot_layout(widths = c(1, 1.1)) +
-  plot_annotation(title = "GO enrichment methods compared: TC contrasts, biological process",
-                  caption = paste("Same genes and universes for every method. Jaccard = shared / either;",
-                                  "'-': at least one of the two methods enriched no term in that run."),
-                  theme = theme(plot.caption = element_text(hjust = 0)))
-ggsave(file.path(out_cmp, "method_comparison_TC_BP.png"), p, width = 11, height = 6.5, dpi = 300)
-p
+short <- c(weight01 = "weight01", classic = "classic", goseq = "goseq", clusterProfiler = "clusterProfiler")
+draw_comparison <- function(ont) {
+  x <- cmp[[ont]]
+  cnt <- x$counts %>% mutate(run = factor(paste(contrast_label(code), direction), levels = run_levels),
+                             method = factor(method, levels = names(METHODS), labels = unname(METHODS)))
+  pa <- ggplot(cnt, aes(enriched, run)) +
+    geom_col(fill = "grey45", width = 0.7) +
+    geom_text(aes(label = ifelse(enriched > 0, enriched, "")), hjust = -0.25, size = 2.6) +
+    facet_wrap(~ method, nrow = 1, labeller = label_wrap_gen(width = 16)) +
+    scale_x_continuous(expand = expansion(mult = c(0, 0.25))) +
+    labs(x = sprintf("enriched %s terms", ont), y = NULL, title = "A. Enriched terms per method") +
+    theme_psmfc(9) + theme(panel.grid.major.y = element_blank())
+  jac <- x$agree %>% mutate(run = factor(paste(contrast_label(code), direction), levels = run_levels),
+                            pair = factor(paste(short[method_1], "vs", short[method_2]),
+                                          levels = unique(paste(short[sapply(x$pairs, `[`, 1)], "vs",
+                                                                short[sapply(x$pairs, `[`, 2)]))))
+  pb <- ggplot(jac, aes(pair, run)) +
+    geom_tile(aes(fill = jaccard), colour = "white", linewidth = 0.6) +
+    geom_text(aes(label = ifelse(is.na(jaccard), "-", sprintf("%.2f", jaccard))), size = 2.5) +
+    scale_fill_gradient(low = "#f2f2f2", high = "#5a5a5a", limits = c(0, 1), na.value = "#ffffff", name = "Jaccard") +
+    labs(x = NULL, y = NULL, title = "B. Overlap of enriched sets") +
+    theme_psmfc(9) + theme(axis.text.x = element_text(angle = 35, hjust = 1), panel.grid = element_blank(),
+                           axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  p <- (pa | pb) + plot_layout(widths = c(1.6, 1)) +
+    plot_annotation(title = sprintf("GO enrichment methods compared: TC contrasts, %s", ONT_NAME[[ont]]),
+                    caption = paste("Same genes and universes for every method. Jaccard = shared / either;",
+                                    "'-': at least one of the two methods enriched no term in that run."),
+                    theme = theme(plot.caption = element_text(hjust = 0)))
+  ggsave(file.path(out_cmp, sprintf("method_comparison_TC_%s.png", ont)), p, width = 13, height = 6.5, dpi = 300)
+  p
+}
+for (o in ONTOLOGIES) print(draw_comparison(o))
 ```

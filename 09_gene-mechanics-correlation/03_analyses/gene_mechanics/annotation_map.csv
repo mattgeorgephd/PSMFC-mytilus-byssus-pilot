@@ -4,7 +4,7 @@ LOC134724759,"Dynein beta chain, ciliary",72.452,0,genome_blast,TRUE,TRUE
 LOC134695214,"Dynein beta chain, ciliary",71.887,0,genome_blast,FALSE,TRUE
 LOC134708221,"Dynein beta chain, ciliary",70.642,0,genome_blast,FALSE,TRUE
 LOC134724992,"Dynein beta chain, ciliary",68.479,0,genome_blast,FALSE,TRUE
-LOC134722045,Dynein axonemal heavy chain 5 (Axonemal beta dynein heavy chain 5) (Ciliary dynein heavy chain 5),67.26,0,genome_blast,FALSE,TRUE
+LOC134722045,Dynein axonemal heavy chain 5 (Axonemal beta dynein heavy chain 5) (Ciliary dynein heavy chain 5),67.26,0,genome_blast,TRUE,TRUE
 LOC134720925,Dynein axonemal heavy chain 8 (Axonemal beta dynein heavy chain 8) (Ciliary dynein heavy chain 8),64.833,0,genome_blast,FALSE,TRUE
 LOC134681153,Dynein axonemal heavy chain 10 (Axonemal beta dynein heavy chain 10) (Ciliary dynein heavy chain 10),64.815,0,genome_blast,FALSE,TRUE
 LOC134697361,Cytoplasmic dynein 2 heavy chain 1 (Dynein heavy chain isotype 1B),64.978,0,genome_blast,FALSE,TRUE
@@ -12,7 +12,7 @@ LOC134712723,Dynein axonemal heavy chain 2 (Axonemal beta dynein heavy chain 2) 
 LOC134687118,Dynein axonemal heavy chain 5 (Axonemal beta dynein heavy chain 5) (Ciliary dynein heavy chain 5),62.066,0,genome_blast,TRUE,TRUE
 LOC134687300,Dynein axonemal heavy chain 1 (Axonemal beta dynein heavy chain 1) (Ciliary dynein heavy chain 1) (mDHC7),63.84,0,genome_blast,FALSE,TRUE
 LOC134694790,Dynein axonemal heavy chain 7 (Axonemal beta dynein heavy chain 7) (Ciliary dynein heavy chain 7) (Dynein heavy chain-like protein 2) (hDHC2),67.908,0,genome_blast,TRUE,TRUE
-LOC134718844,Dynein axonemal heavy chain 6 (Axonemal beta dynein heavy chain 6) (Ciliary dynein heavy chain 6),63.08,0,genome_blast,FALSE,TRUE
+LOC134718844,Dynein axonemal heavy chain 6 (Axonemal beta dynein heavy chain 6) (Ciliary dynein heavy chain 6),63.08,0,genome_blast,TRUE,TRUE
 LOC134712724,Dynein axonemal heavy chain 2 (Axonemal beta dynein heavy chain 2) (Ciliary dynein heavy chain 2),62,0,genome_blast,FALSE,TRUE
 LOC134725790,Dynein axonemal heavy chain 3 (Axonemal beta dynein heavy chain 3) (HsADHC3) (Ciliary dynein heavy chain 3) (Dnahc3-b),63.473,0,genome_blast,TRUE,TRUE
 LOC134697014,E3 ubiquitin-protein ligase HERC2 (EC 2.3.2.26) (HECT domain and RCC1-like domain-containing protein 2) (HECT-type E3 ubiquitin transferase HERC2),57.062,0,genome_blast,FALSE,TRUE
@@ -349,7 +349,7 @@ LOC134708645,Byssal protease inhibitor-like protein 1,51.084,0,genome_blast,FALS
 LOC134711622,Diacylglycerol kinase delta (DAG kinase delta) (EC 2.7.1.107) (130 kDa diacylglycerol kinase) (Diglyceride kinase delta) (DGK-delta),56.26,0,genome_blast,FALSE,TRUE
 LOC134725393,Protein sidekick-1,37.086,0,genome_blast,FALSE,TRUE
 LOC134702392,Intermembrane lipid transfer protein VPS13B (Cohen syndrome protein 1) (Vacuolar protein sorting-associated protein 13B),30.507,0,genome_blast,FALSE,TRUE
-LOC134708244,Superkiller complex protein 2 (Ski2) (EC 3.6.4.13) (Helicase-like protein) (HLP),51.12,0,genome_blast,TRUE,TRUE
+LOC134708244,Superkiller complex protein 2 (Ski2) (EC 3.6.4.13) (Helicase-like protein) (HLP),51.12,0,genome_blast,FALSE,TRUE
 LOC134721377,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)",62.668,0,genome_blast,TRUE,TRUE
 LOC134710664,"Spectrin beta chain, non-erythrocytic 5 (Beta-V spectrin)",30.81,0,genome_blast,FALSE,TRUE
 LOC134712860,26S proteasome non-ATPase regulatory subunit 1 (26S proteasome regulatory subunit RPN2) (26S proteasome regulatory subunit S1),71.813,0,genome_blast,TRUE,TRUE
@@ -383,7 +383,7 @@ LOC134714353,Transcription initiation factor TFIID subunit 2 (TBP-associated fac
 LOC134724487,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter),46.017,0,genome_blast,FALSE,TRUE
 LOC134680882,Unconventional myosin-Ic (Myosin I beta) (MMI-beta) (MMIb),55.857,0,genome_blast,FALSE,TRUE
 LOC134697412,Polyubiquitin-C [Cleaved into: Ubiquitin; Ubiquitin-related],100,0,genome_blast,FALSE,TRUE
-LOC134685125,ATP-dependent RNA helicase dhx29 (EC 3.6.4.13) (DEAH box protein 29),48.364,0,genome_blast,TRUE,TRUE
+LOC134685125,ATP-dependent RNA helicase dhx29 (EC 3.6.4.13) (DEAH box protein 29),48.364,0,genome_blast,FALSE,TRUE
 LOC134715050,Polyubiquitin-C [Cleaved into: Ubiquitin; Ubiquitin-related],99.836,0,genome_blast,TRUE,TRUE
 LOC134711199,Cilia- and flagella-associated protein 61,47.972,0,genome_blast,FALSE,TRUE
 LOC134721837,Vacuolar protein sorting-associated protein 35 (Vesicle protein sorting 35),75,0,genome_blast,FALSE,TRUE
@@ -444,7 +444,7 @@ LOC134716070,Catenin alpha-2 (Alpha N-catenin),65.479,0,genome_blast,FALSE,TRUE
 LOC134720998,Sortilin-related receptor (Low-density lipoprotein receptor relative with 11 ligand-binding repeats) (LDLR relative with 11 ligand-binding repeats) (LR11) (Sorting protein-related receptor containing LDLR class A repeats) (SorLA),34.655,0,genome_blast,TRUE,TRUE
 LOC134725545,DNA topoisomerase 3-alpha (EC 5.6.2.1) (DNA topoisomerase III alpha),54.944,0,genome_blast,FALSE,TRUE
 LOC134708586,Dolichyl-diphosphooligosaccharide--protein glycosyltransferase subunit STT3B (Oligosaccharyl transferase subunit STT3B) (STT3-B) (EC 2.4.99.18) (Source of immunodominant MHC-associated peptides homolog),74.827,0,genome_blast,TRUE,TRUE
-LOC134687228,Intraflagellar transport protein 88 homolog (Recessive polycystic kidney disease protein Tg737) (Tetratricopeptide repeat protein 10) (TPR repeat protein 10) (TgN(Imorpk)737Rpw),68.154,0,genome_blast,TRUE,TRUE
+LOC134687228,Intraflagellar transport protein 88 homolog (Recessive polycystic kidney disease protein Tg737) (Tetratricopeptide repeat protein 10) (TPR repeat protein 10) (TgN(Imorpk)737Rpw),68.154,0,genome_blast,FALSE,TRUE
 LOC134710189,Ral GTPase-activating protein subunit beta (p170),42.802,0,genome_blast,FALSE,TRUE
 LOC134708149,Potassium channel subfamily T member 2 (KNa1.2) (Sequence like an intermediate conductance potassium channel subunit) (Sodium and chloride-activated ATP-sensitive potassium channel Slo2.1),50.972,0,genome_blast,FALSE,TRUE
 LOC134711898,Cohesin subunit SA-1 (SCC3 homolog 1) (Stromal antigen 1),53.86,0,genome_blast,FALSE,TRUE
@@ -507,7 +507,7 @@ LOC134725687,Tolloid-like protein 1 (EC 3.4.24.-) (Chicken tolloid-like protein 
 LOC134725814,Small G protein signaling modulator 3 homolog (RUN and TBC1 domain-containing protein 3),68.085,0,genome_blast,FALSE,TRUE
 LOC134697300,Byssal HSP-like protein 1,81.517,0,genome_blast,TRUE,TRUE
 LOC134710272,DNA replication licensing factor mcm7 (EC 3.6.4.12) (CDC47 homolog) (Minichromosome maintenance protein 7),76.838,0,genome_blast,FALSE,TRUE
-LOC134691555,Ectopic P granules protein 5 homolog,31.284,0,genome_blast,TRUE,TRUE
+LOC134691555,Ectopic P granules protein 5 homolog,31.284,0,genome_blast,FALSE,TRUE
 LOC134712125,Serine/threonine-protein kinase ULK4 (EC 2.7.11.1) (Unc-51-like kinase 4),44.666,0,genome_blast,FALSE,TRUE
 LOC134720856,V-type proton ATPase catalytic subunit A (V-ATPase subunit A) (EC 7.1.2.2) (V-ATPase 69 kDa subunit) (Vacuolar proton pump subunit alpha),84.528,0,genome_blast,FALSE,TRUE
 LOC134725143,VPS35 endosomal protein-sorting factor-like (Esophageal cancer-associated protein),55.092,0,genome_blast,FALSE,TRUE
@@ -810,7 +810,7 @@ LOC134697021,"cGMP-dependent 3',5'-cyclic phosphodiesterase (EC 3.1.4.17) (Cycli
 LOC134690801,Protein transport protein Sec61 subunit alpha isoform 2 (Sec61 alpha-2),90.126,0,genome_blast,TRUE,TRUE
 LOC134721102,Golgi apparatus protein 1 (CFR-1) (Cysteine-rich fibroblast growth factor receptor) (E-selectin ligand 1) (ESL-1) (Golgi sialoglycoprotein MG-160),40.975,0,genome_blast,TRUE,TRUE
 LOC134696548,Kelch-like protein 5,70.191,0,genome_blast,FALSE,TRUE
-LOC134709888,Dipeptidyl peptidase 3 (EC 3.4.14.4) (Dipeptidyl aminopeptidase III) (Dipeptidyl arylamidase III) (Dipeptidyl peptidase III) (DPP III) (Enkephalinase B),57.83,0,genome_blast,FALSE,TRUE
+LOC134709888,Dipeptidyl peptidase 3 (EC 3.4.14.4) (Dipeptidyl aminopeptidase III) (Dipeptidyl arylamidase III) (Dipeptidyl peptidase III) (DPP III) (Enkephalinase B),57.83,0,genome_blast,TRUE,TRUE
 LOC134724888,Tubulin alpha-2/alpha-4 chain (EC 3.6.5.-),98.38,0,genome_blast,FALSE,TRUE
 LOC134691134,Exostosin-like 3 (EC 2.4.1.223) (EXT-related protein 1) (Glucuronyl-galactosyl-proteoglycan 4-alpha-N-acetylglucosaminyltransferase) (Hereditary multiple exostoses gene isolog) (Multiple exostosis-like protein 3) (Putative tumor suppressor protein EXTL3),49.282,0,genome_blast,FALSE,TRUE
 LOC134686033,Ubiquitin carboxyl-terminal hydrolase 48 (EC 3.4.19.12) (Ubiquitin specific peptidase 48),44.853,0,genome_blast,FALSE,TRUE
@@ -1091,7 +1091,7 @@ LOC134682940,"Acyl-CoA synthetase short-chain family member 3, mitochondrial (EC
 LOC134695667,Heat shock protein 70 A1,65.798,0,genome_blast,FALSE,TRUE
 LOC134710330,"Acetyl-coenzyme A synthetase 2-like, mitochondrial (EC 6.2.1.1) (Acetate--CoA ligase 2) (Acetyl-CoA synthetase 2) (AceCS2) (Acyl-CoA synthetase short-chain family member 1) (Propionate--CoA ligase) (EC 6.2.1.17)",62.541,0,genome_blast,FALSE,TRUE
 LOC134711738,Pecanex-like protein 4 (Hepatitis C virus F protein-binding protein 2) (HCV F protein-binding protein 2) (Pecanex homolog protein 4),39.236,0,genome_blast,FALSE,TRUE
-LOC134712334,Serine/threonine-protein phosphatase 2A 56 kDa regulatory subunit delta isoform (PP2A B subunit isoform B'-delta) (PP2A B subunit isoform B'-gamma) (PP2A B subunit isoform B56-delta) (PP2A B subunit isoform PR61-delta) (PP2A B subunit isoform R5-delta),74.63,0,genome_blast,TRUE,TRUE
+LOC134712334,Serine/threonine-protein phosphatase 2A 56 kDa regulatory subunit delta isoform (PP2A B subunit isoform B'-delta) (PP2A B subunit isoform B'-gamma) (PP2A B subunit isoform B56-delta) (PP2A B subunit isoform PR61-delta) (PP2A B subunit isoform R5-delta),74.63,0,genome_blast,FALSE,TRUE
 LOC134691254,Glutamate--cysteine ligase catalytic subunit (EC 6.3.2.2) (GCS heavy chain) (Gamma-ECS) (Gamma-glutamylcysteine synthetase),60.196,0,genome_blast,FALSE,TRUE
 LOC134700869,Zinc finger protein 208 (Zinc finger protein 91-like),43.918,0,genome_blast,FALSE,TRUE
 LOC134716053,Superkiller complex protein 3 (Ski3),39.573,0,genome_blast,FALSE,TRUE
@@ -1116,10 +1116,10 @@ LOC134724882,Tubulin alpha-4A chain (EC 3.6.5.-) (Alpha-tubulin 4) (Tubulin alph
 LOC134681071,Protein strawberry notch homolog 1,71.098,0,genome_blast,FALSE,TRUE
 LOC134687984,Protein mono-ADP-ribosyltransferase PARP4 (EC 2.4.2.-) (ADP-ribosyltransferase diphtheria toxin-like 4) (ARTD4) (Poly [ADP-ribose] polymerase 4) (PARP-4) (Vault poly(ADP-ribose) polymerase) (VPARP) (mVparp),38.907,0,genome_blast,FALSE,TRUE
 LOC134697651,Glutamate receptor,48.444,0,genome_blast,FALSE,TRUE
-LOC134703150,NADH-ubiquinone oxidoreductase chain 5 (EC 7.1.1.2) (NADH dehydrogenase subunit 5),81.025,0,genome_blast,TRUE,TRUE
+LOC134703150,NADH-ubiquinone oxidoreductase chain 5 (EC 7.1.1.2) (NADH dehydrogenase subunit 5),81.025,0,genome_blast,FALSE,TRUE
 LOC134703959,NADH-ubiquinone oxidoreductase chain 5 (EC 7.1.1.2) (NADH dehydrogenase subunit 5),81.025,0,genome_blast,FALSE,TRUE
 LOC134704078,NADH-ubiquinone oxidoreductase chain 5 (EC 7.1.1.2) (NADH dehydrogenase subunit 5),81.025,0,genome_blast,FALSE,TRUE
-LOC134704092,NADH-ubiquinone oxidoreductase chain 5 (EC 7.1.1.2) (NADH dehydrogenase subunit 5),81.025,0,genome_blast,TRUE,TRUE
+LOC134704092,NADH-ubiquinone oxidoreductase chain 5 (EC 7.1.1.2) (NADH dehydrogenase subunit 5),81.025,0,genome_blast,FALSE,TRUE
 LOC134704274,NADH-ubiquinone oxidoreductase chain 5 (EC 7.1.1.2) (NADH dehydrogenase subunit 5),81.025,0,genome_blast,FALSE,TRUE
 LOC134680962,"Choline dehydrogenase, mitochondrial (CDH) (CHD) (EC 1.1.99.1)",65.536,0,genome_blast,FALSE,TRUE
 LOC134718720,Cilia- and flagella-associated protein 337 (WD repeat-containing protein 49),40.073,0,genome_blast,FALSE,TRUE
@@ -1186,7 +1186,7 @@ LOC134687540,CTP synthase 1-A (EC 6.3.4.2) (CTP synthetase 1-A) (UTP--ammonia li
 LOC134706881,Plexin-A2 (Semaphorin receptor OCT),30.932,0,genome_blast,FALSE,TRUE
 LOC134723308,Pre-rRNA-processing protein TSR1 homolog,53.894,0,genome_blast,TRUE,TRUE
 LOC134724705,26S proteasome regulatory subunit 6A (26S proteasome AAA-ATPase subunit RPT5) (Proteasome 26S subunit ATPase 3) (Spermatogenic cell/sperm-associated Tat-binding protein homolog SATA) (Tat-binding protein 1) (TBP-1),86.936,0,genome_blast,FALSE,TRUE
-LOC134724841,26S proteasome regulatory subunit 6A (26S proteasome AAA-ATPase subunit RPT5) (Proteasome 26S subunit ATPase 3) (Spermatogenic cell/sperm-associated Tat-binding protein homolog SATA) (Tat-binding protein 1) (TBP-1),86.936,0,genome_blast,TRUE,TRUE
+LOC134724841,26S proteasome regulatory subunit 6A (26S proteasome AAA-ATPase subunit RPT5) (Proteasome 26S subunit ATPase 3) (Spermatogenic cell/sperm-associated Tat-binding protein homolog SATA) (Tat-binding protein 1) (TBP-1),86.936,0,genome_blast,FALSE,TRUE
 LOC134686506,Fibropellin-1 (Epidermal growth factor-related protein 1) (Fibropellin-I) (SpEGF I) (UEGF-1),48.635,0,genome_blast,FALSE,TRUE
 LOC134693336,DNA ligase 3 (EC 6.5.1.1) (DNA ligase III) (Polydeoxyribonucleotide synthase [ATP] 3),51.738,0,genome_blast,FALSE,TRUE
 LOC134717458,Dual serine/threonine and tyrosine protein kinase (EC 2.7.12.1) (Dusty protein kinase) (Dusty PK) (Receptor-interacting serine/threonine-protein kinase 5),45.172,0,genome_blast,FALSE,TRUE
@@ -1657,7 +1657,7 @@ LOC134691464,mRNA-capping enzyme [Includes: mRNA 5'-triphosphate monophosphatase
 LOC134697029,"Actin, cytoplasmic (EC 3.6.4.-) [Cleaved into: Actin, cytoplasmic, intermediate form]",80.749,0,genome_blast,FALSE,TRUE
 LOC134715016,Cytosolic carboxypeptidase 1 (EC 3.4.17.-) (EC 3.4.17.24) (ATP/GTP-binding protein 1) (Protein deglutamylase CCP1),54.676,0,genome_blast,FALSE,TRUE
 LOC134691290,"Glutaminase kidney isoform, mitochondrial (GLS) (EC 3.5.1.2) (K-glutaminase) (L-glutamine amidohydrolase) [Cleaved into: Glutaminase kidney isoform, mitochondrial 68 kDa chain; Glutaminase kidney isoform, mitochondrial 65 kDa chain]",58.902,0,genome_blast,FALSE,TRUE
-LOC134697375,"Myotubularin-related protein 8 (Phosphatidylinositol-3,5-bisphosphate 3-phosphatase) (EC 3.1.3.95) (Phosphatidylinositol-3-phosphate phosphatase) (EC 3.1.3.64)",57.35,0,genome_blast,TRUE,TRUE
+LOC134697375,"Myotubularin-related protein 8 (Phosphatidylinositol-3,5-bisphosphate 3-phosphatase) (EC 3.1.3.95) (Phosphatidylinositol-3-phosphate phosphatase) (EC 3.1.3.64)",57.35,0,genome_blast,FALSE,TRUE
 LOC134719243,Mitochondrial-processing peptidase subunit beta (EC 3.4.24.64) (Beta-MPP),70.288,0,genome_blast,FALSE,TRUE
 LOC134704835,Neurogenic locus Notch protein [Cleaved into: Processed neurogenic locus Notch protein],34.249,0,genome_blast,FALSE,TRUE
 LOC134708042,Integrin beta-PS (Position-specific antigen beta subunit) (Protein myospheroid) (Protein olfactory C),50.286,0,genome_blast,FALSE,TRUE
@@ -1671,29 +1671,29 @@ LOC134725166,Voltage-dependent T-type calcium channel subunit alpha-1H (Low-volt
 LOC134684994,"ATP-dependent RNA helicase DEAH12, chloroplastic (EC 3.6.4.13)",29.818,0,genome_blast,TRUE,TRUE
 LOC134691161,Pumilio homolog 2 (Pumilio-2),77.751,0,genome_blast,FALSE,TRUE
 LOC134696313,Cyclic nucleotide-gated channel alpha-3 (CNG channel alpha-3) (CNG-3) (CNG3) (Cone photoreceptor cGMP-gated channel subunit alpha-3) (Gustatory cyclic nucleotide-gated cation channel) (CNGgust),60.169,0,genome_blast,FALSE,TRUE
-LOC134702633,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134702630,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134702863,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134702881,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134702885,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134702905,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703103,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703416,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703422,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703425,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703644,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703645,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703824,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703940,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703961,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134703962,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134704059,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134704117,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134704240,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134704387,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
-LOC134704394,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
+LOC134702633,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134702630,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134702863,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134702881,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134702885,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134702905,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703103,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703416,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703422,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703425,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703644,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703645,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703824,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703940,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703961,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134703962,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134704059,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134704117,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134704240,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134704387,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
+LOC134704394,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
 LOC134704429,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
-LOC134704441,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,TRUE,TRUE
+LOC134704441,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.836,0,genome_blast,FALSE,TRUE
 LOC134712781,Serine/threonine-protein kinase PAK 3 (EC 2.7.11.1) (Beta-PAK) (p21-activated kinase 3) (PAK-3) (p65-PAK),63.158,0,genome_blast,FALSE,TRUE
 LOC134714789,RecQ-like DNA helicase BLM (EC 5.6.2.4) (Bloom syndrome protein homolog) (xBLM) (DNA 3'-5' helicase BLM) (RecQ helicase homolog),51.142,0,genome_blast,FALSE,TRUE
 LOC134718469,Mothers against decapentaplegic homolog 3 (MAD homolog 3) (Mad3) (Mothers against DPP homolog 3) (SMAD family member 3) (SMAD 3) (Smad3),77.647,0,genome_blast,FALSE,TRUE
@@ -1738,7 +1738,7 @@ LOC134686694,Frizzled-4 (Fz-4) (hFz4) (FzE4) (CD antigen CD344),60.229,0,genome_
 LOC134686877,Cold shock domain-containing protein E1 (N-ras upstream gene protein) (Protein UNR),47.208,0,genome_blast,FALSE,TRUE
 LOC134697363,PGAP2-interacting protein (Cell wall biogenesis protein 43 C-terminal homolog),49.209,0,genome_blast,FALSE,TRUE
 LOC134698907,Glycogen synthase kinase-3 beta (GSK-3 beta) (EC 2.7.11.26) (Serine/threonine-protein kinase GSK3B) (EC 2.7.11.1),78.68,0,genome_blast,FALSE,TRUE
-CYTB,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.027,0,genome_blast,TRUE,TRUE
+CYTB,Cytochrome b (Complex III subunit 3) (Complex III subunit III) (Cytochrome b-c1 complex subunit 3) (Ubiquinol-cytochrome-c reductase complex cytochrome b subunit),90.027,0,genome_blast,FALSE,TRUE
 LOC134706205,Formimidoyltransferase-cyclodeaminase (Formiminotransferase-cyclodeaminase) (FTCD) [Includes: Glutamate formimidoyltransferase (EC 2.1.2.5) (Glutamate formiminotransferase) (Glutamate formyltransferase); Formimidoyltetrahydrofolate cyclodeaminase (EC 4.3.1.4) (Formiminotetrahydrofolate cyclodeaminase)],57.459,0,genome_blast,FALSE,TRUE
 LOC134708298,"Medium-chain specific acyl-CoA dehydrogenase, mitochondrial (MCAD) (EC 1.3.8.7)",76.501,0,genome_blast,FALSE,TRUE
 LOC134710145,Serine palmitoyltransferase 2 (EC 2.3.1.50) (Long chain base biosynthesis protein 2) (LCB 2) (Serine-palmitoyl-CoA transferase 2) (SPT 2),65.361,0,genome_blast,FALSE,TRUE
@@ -2215,7 +2215,7 @@ LOC134690879,Protein lap4 (Protein scribble) (Protein smell-impaired),57.809,1.9
 LOC134712788,Alpha-L-fucosidase (EC 3.2.1.51) (Alpha-L-fucoside fucohydrolase),60.412,0,genome_blast,FALSE,TRUE
 LOC134714750,Nicotinamide phosphoribosyltransferase (NAmPRTase) (Nampt) (EC 2.4.2.12) (Pre-B-cell colony-enhancing factor 1 homolog) (PBEF) (Visfatin),59.544,0,genome_blast,TRUE,TRUE
 LOC134686810,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT2) (Solute carrier family 6 member 5),48.339,0,genome_blast,FALSE,TRUE
-LOC134690273,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT2) (Solute carrier family 6 member 5),48.173,0,genome_blast,TRUE,TRUE
+LOC134690273,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT2) (Solute carrier family 6 member 5),48.173,0,genome_blast,FALSE,TRUE
 LOC134707997,Serine/threonine-protein phosphatase 6 catalytic subunit (PP6C) (EC 3.1.3.16) (Protein phosphatase V) (PP-V),86.711,0,genome_blast,FALSE,TRUE
 LOC134714647,Xylulose kinase (Xylulokinase) (EC 2.7.1.17),54.302,0,genome_blast,FALSE,TRUE
 LOC134722063,Probable tubulin polyglutamylase TTLL9 (EC 6.3.2.-) (Tubulin--tyrosine ligase-like protein 9),61.468,0,genome_blast,FALSE,TRUE
@@ -2366,7 +2366,7 @@ LOC134712589,COP9 signalosome complex subunit 5 (Signalosome subunit 5) (EC 3.4.
 LOC134707570,Guanine nucleotide exchange factor VAV2 (VAV-2),37.983,0,genome_blast,FALSE,TRUE
 LOC134708214,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT2) (Solute carrier family 6 member 5),45.746,0,genome_blast,FALSE,TRUE
 LOC134708467,Glutamine synthetase (GS) (EC 6.3.1.2) (Glutamate--ammonia ligase) (Palmitoyltransferase GLUL) (EC 2.3.1.225),69.577,0,genome_blast,TRUE,TRUE
-LOC134715441,Protein FAM184A,35.106,1.36e-177,genome_blast,FALSE,TRUE
+LOC134715441,Protein FAM184A,35.106,1.36e-177,genome_blast,TRUE,TRUE
 LOC134715616,Cytoplasmic polyadenylation element-binding protein 3 (CPE-BP3) (CPE-binding protein 3) (CPEB-3),52.273,0,genome_blast,FALSE,TRUE
 LOC134728189,RING-type E3 ubiquitin-protein ligase PPIL2 (EC 2.3.2.27) (CYC4) (Cyclophilin-60) (Cyclophilin-like protein Cyp-60) (Cyp60) (hCyP-60) (Probable inactive peptidyl-prolyl cis-trans isomerase-like 2) (PPIase) (Rotamase PPIL2),55.388,0,genome_blast,FALSE,TRUE
 LOC134693828,Segment polarity protein dishevelled homolog DVL-3 (Dishevelled-3) (DSH homolog 3),60.377,0,genome_blast,TRUE,TRUE
@@ -2434,7 +2434,7 @@ LOC134715690,KAT8 regulatory NSL complex subunit 3 (NSL complex protein NSL3) (N
 LOC134723042,RING finger and SPRY domain-containing protein 1,52.899,0,genome_blast,FALSE,TRUE
 LOC134724672,"Cytohesin-1 (PH, SEC7 and coiled-coil domain-containing protein 1) (SEC7 homolog B2-1)",69.036,0,genome_blast,FALSE,TRUE
 LOC134724816,"Cytohesin-1 (PH, SEC7 and coiled-coil domain-containing protein 1) (SEC7 homolog B2-1)",69.036,0,genome_blast,FALSE,TRUE
-LOC134681012,Apoptosis-inducing factor 3 (EC 1.-.-.-) (Apoptosis-inducing factor-like protein),48.362,0,genome_blast,TRUE,TRUE
+LOC134681012,Apoptosis-inducing factor 3 (EC 1.-.-.-) (Apoptosis-inducing factor-like protein),48.362,0,genome_blast,FALSE,TRUE
 LOC134683837,Protein zyg-11 homolog B,42.681,0,genome_blast,FALSE,TRUE
 LOC134708404,Annexin A6 (Annexin VI) (Annexin-6),44.179,3.7899999999999994e-180,genome_blast,FALSE,TRUE
 LOC134712230,Cell division cycle protein 20 homolog (mmCdc20) (p55CDC),52.581,0,genome_blast,FALSE,TRUE
@@ -2531,7 +2531,7 @@ LOC134726839,Hydroxysteroid dehydrogenase-like protein 2 (EC 1.-.-.-),65.238,0,g
 LOC134727745,F-box/LRR-repeat protein 14 (F-box and leucine-rich repeat protein 14),67.866,0,genome_blast,FALSE,TRUE
 LOC134685138,"Peroxisomal acyl-coenzyme A oxidase 1 (AOX) (EC 1.3.3.6) (Palmitoyl-CoA oxidase) (Peroxisomal fatty acyl-CoA oxidase) (Straight-chain acyl-CoA oxidase) [Cleaved into: Peroxisomal acyl-CoA oxidase 1, A chain; Peroxisomal acyl-CoA oxidase 1, B chain; Peroxisomal acyl-CoA oxidase 1, C chain]",44.411,0,genome_blast,FALSE,TRUE
 LOC134706441,Polyribonucleotide 5'-hydroxyl-kinase Clp1 (EC 2.7.1.78) (Polyadenylation factor Clp1) (Polynucleotide kinase Clp1) (Pre-mRNA cleavage complex II protein Clp1),57.729,0,genome_blast,FALSE,TRUE
-LOC134708006,High-affinity choline transporter 1,53.054,0,genome_blast,TRUE,TRUE
+LOC134708006,High-affinity choline transporter 1,53.054,0,genome_blast,FALSE,TRUE
 LOC134711683,Zinc finger FYVE domain-containing protein 26,34.218,2.7899999999999997e-152,genome_blast,FALSE,TRUE
 LOC134715195,"Probable isocitrate dehydrogenase [NAD] subunit alpha, mitochondrial (EC 1.1.1.41) (Isocitric dehydrogenase subunit alpha) (NAD(+)-specific ICDH subunit alpha)",72.941,0,genome_blast,FALSE,TRUE
 LOC134716052,Dual specificity mitogen-activated protein kinase kinase 1 (MAP kinase kinase 1) (MAPKK 1) (EC 2.7.12.2) (ERK activator kinase 1) (MAPK/ERK kinase 1) (MEK1),71.662,0,genome_blast,FALSE,TRUE
@@ -2596,7 +2596,7 @@ LOC134721056,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT
 LOC134721530,Deoxynucleoside triphosphate triphosphohydrolase SAMHD1 (dNTPase) (EC 3.1.5.-),48.829,1.4699999999999998e-180,genome_blast,FALSE,TRUE
 LOC134724931,Poly(ADP-ribose) glycohydrolase (EC 3.2.1.143),49.631,1.1199999999999998e-174,genome_blast,FALSE,TRUE
 LOC134726508,Splicing factor U2AF 50 kDa subunit (U2 auxiliary factor 50 kDa subunit) (U2 snRNP auxiliary factor large subunit),73.74,0,genome_blast,TRUE,TRUE
-LOC134725827,Signal recognition particle subunit SRP68 (SRP68) (Signal recognition particle 68 kDa protein),50.088,0,genome_blast,FALSE,TRUE
+LOC134725827,Signal recognition particle subunit SRP68 (SRP68) (Signal recognition particle 68 kDa protein),50.088,0,genome_blast,TRUE,TRUE
 LOC134695692,Alkylated DNA repair protein alkB homolog 8 (Probable alpha-ketoglutarate-dependent dioxygenase ABH8) (S-adenosyl-L-methionine-dependent tRNA methyltransferase ABH8) (tRNA (carboxymethyluridine(34)-5-O)-methyltransferase ABH8) (EC 2.1.1.229),43.62,2.31e-179,genome_blast,FALSE,TRUE
 LOC134701425,Dihydroxyacetone phosphate acyltransferase (EC 2.3.1.42) (Glycerone-phosphate O-acyltransferase),41.46,8.779999999999999e-179,genome_blast,FALSE,TRUE
 LOC134712548,Alpha-L-fucosidase (EC 3.2.1.51) (Alpha-L-fucoside fucohydrolase),59.955,0,genome_blast,FALSE,TRUE
@@ -2868,7 +2868,7 @@ LOC134727364,Endoplasmic reticulum chaperone BiP (EC 3.6.4.10) (78 kDa glucose-r
 LOC134695897,"Alpha-1,3-mannosyl-glycoprotein 4-beta-N-acetylglucosaminyltransferase B (EC 2.4.1.145) (N-glycosyl-oligosaccharide-glycoprotein N-acetylglucosaminyltransferase IVb) (GlcNAc-T IVb) (GnT-IVb) (N-acetylglucosaminyltransferase IVb) (UDP-N-acetylglucosamine: alpha-1,3-D-mannoside beta-1,4-N-acetylglucosaminyltransferase IVb)",45.766,6.34e-172,genome_blast,FALSE,TRUE
 LOC134701645,"Myelin regulatory factor (EC 3.4.-.-) (Myelin gene regulatory factor) [Cleaved into: Myelin regulatory factor, N-terminal; Myelin regulatory factor, C-terminal]",51.737,7.41e-158,genome_blast,FALSE,TRUE
 LOC134712775,Alpha-L-fucosidase (EC 3.2.1.51) (Alpha-L-fucoside fucohydrolase),56.264,2.0499999999999996e-174,genome_blast,FALSE,TRUE
-LOC134716050,Very low-density lipoprotein receptor (VLDL receptor) (VLDL-R),41.026,1.5299999999999999e-161,genome_blast,TRUE,TRUE
+LOC134716050,Very low-density lipoprotein receptor (VLDL receptor) (VLDL-R),41.026,1.5299999999999999e-161,genome_blast,FALSE,TRUE
 LOC134686718,"Solute carrier family 25 member 3 (Phosphate carrier protein, mitochondrial) (Phosphate transport protein) (PTP)",70.141,1.2699999999999998e-177,genome_blast,TRUE,TRUE
 LOC134690485,"Solute carrier family 25 member 3 (Phosphate carrier protein, mitochondrial) (Phosphate transport protein) (PTP)",70.141,1.2699999999999998e-177,genome_blast,TRUE,TRUE
 LOC134724985,Leucine-rich repeat-containing protein 45,42.113,1.19e-167,genome_blast,FALSE,TRUE
@@ -2885,7 +2885,7 @@ LOC134721353,Protein sel-1 homolog 3 (Suppressor of lin-12-like protein 3) (Sel-
 LOC134724961,GPI inositol-deacylase (EC 3.1.-.-) (Post-GPI attachment to proteins factor 1),33.979,4.6699999999999995e-161,genome_blast,FALSE,TRUE
 LOC134728347,EF-hand calcium-binding domain-containing protein 5,39.645,1.2899999999999998e-150,genome_blast,FALSE,TRUE
 LOC134680628,Active breakpoint cluster region-related protein,36.761,4.0899999999999996e-157,genome_blast,FALSE,TRUE
-LOC134691295,Bystin,58.685,1.9399999999999997e-174,genome_blast,TRUE,TRUE
+LOC134691295,Bystin,58.685,1.9399999999999997e-174,genome_blast,FALSE,TRUE
 LOC134701079,Bystin,58.685,1.9399999999999997e-174,genome_blast,FALSE,TRUE
 LOC134695285,Atrial natriuretic peptide receptor 1 (EC 4.6.1.2) (Atrial natriuretic peptide receptor type A) (ANP-A) (ANPR-A) (NPR-A) (Guanylate cyclase A) (GC-A),44.372,3.7299999999999993e-159,genome_blast,FALSE,TRUE
 LOC134712807,5'-nucleotidase domain-containing protein 3 (EC 3.1.3.-),52.55,5.89e-172,genome_blast,FALSE,TRUE
@@ -2947,7 +2947,7 @@ LOC134721358,Intraflagellar transport protein 57 homolog,63.98,2.559999999999999
 LOC134681057,Gametogenetin-binding protein 2 (Protein ZNF403),63.866,2.9499999999999997e-165,genome_blast,FALSE,TRUE
 LOC134696114,Protein wntless homolog (Integral membrane protein GPR177),50.841,5.2199999999999995e-168,genome_blast,FALSE,TRUE
 LOC134706945,Myogenesis-regulating glycosidase (EC 3.2.1.-) (Nuclear envelope transmembrane protein 37) (Uncharacterized family 31 glucosidase KIAA1161),42.964,5.3899999999999996e-164,genome_blast,FALSE,TRUE
-LOC134715511,Protein hu-li tai shao (Adducin-like protein),43.281,2.0899999999999998e-156,genome_blast,TRUE,TRUE
+LOC134715511,Protein hu-li tai shao (Adducin-like protein),43.281,2.0899999999999998e-156,genome_blast,FALSE,TRUE
 LOC134721262,Nucleoporin SEH1 (GATOR2 complex protein SEH1) (Nup107-160 subcomplex subunit SEH1),69.113,2.09e-173,genome_blast,FALSE,TRUE
 LOC134688290,DNA topoisomerase 2-binding protein 1 (DNA topoisomerase II-beta-binding protein 1) (TopBP1) (DNA topoisomerase II-binding protein 1),35.377,4.1699999999999994e-145,genome_blast,FALSE,TRUE
 LOC134693144,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT2) (Solute carrier family 6 member 5),43.163,4.13e-163,genome_blast,FALSE,TRUE
@@ -3130,7 +3130,7 @@ LOC134712436,Replication factor C subunit 4 (Activator 1 subunit 4),65.833,4.839
 LOC134712559,Rho guanine nucleotide exchange factor 7 (Beta-Pix) (PAK-interacting exchange factor beta),42.654,4.1499999999999994e-157,genome_blast,FALSE,TRUE
 LOC134715531,Protein SERAC1 (Serine active site-containing protein 1),46.49,4.8799999999999995e-158,genome_blast,FALSE,TRUE
 LOC134716023,Acetylcholine receptor subunit alpha-like (MARA1),52.314,3.6199999999999996e-162,genome_blast,FALSE,TRUE
-LOC134716071,Solute carrier family 23 member 2 (Na(+)/L-ascorbic acid transporter 2) (Sodium-dependent vitamin C transporter 2),44.87,1.13e-158,genome_blast,TRUE,TRUE
+LOC134716071,Solute carrier family 23 member 2 (Na(+)/L-ascorbic acid transporter 2) (Sodium-dependent vitamin C transporter 2),44.87,1.13e-158,genome_blast,FALSE,TRUE
 LOC134717553,Beta-hexosaminidase (EC 3.2.1.52) (Beta-N-acetylhexosaminidase) (Chitobiase) (N-acetyl-beta-glucosaminidase),34.926,4.1699999999999994e-145,genome_blast,FALSE,TRUE
 LOC134721025,Lariat debranching enzyme A (EC 3.1.4.-),60.109,4.1299999999999993e-160,genome_blast,FALSE,TRUE
 LOC134726218,Phenolphthiocerol/phthiocerol polyketide synthase subunit C (EC 2.3.1.292) ((Phenol)carboxyphthiodiolenone synthase subunit D) (Beta-ketoacyl-acyl-carrier-protein synthase I) (Phthiocerol synthesis polyketide synthase type I PpsD),31.754,4.6899999999999996e-135,genome_blast,FALSE,TRUE
@@ -3209,7 +3209,7 @@ LOC134688123,5'-nucleotidase (5'-NT) (EC 3.1.3.35) (EC 3.1.3.5) (EC 3.1.3.89) (E
 LOC134690953,VWFA and cache domain-containing protein 1 (Cache domain-containing protein 1),29.759,9.999999999999999e-143,genome_blast,FALSE,TRUE
 LOC134693197,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT2) (Solute carrier family 6 member 5),42.546,8.71e-155,genome_blast,FALSE,TRUE
 LOC134722939,Eukaryotic translation initiation factor 3 subunit I (eIF3i) (Eukaryotic translation initiation factor 3 subunit 2) (eIF-3-beta) (eIF3 p36),66.975,1.1999999999999999e-165,genome_blast,FALSE,TRUE
-LOC134727934,Coiled-coil domain-containing protein 162,32.326,2.33e-140,genome_blast,FALSE,TRUE
+LOC134727934,Coiled-coil domain-containing protein 162,32.326,2.33e-140,genome_blast,TRUE,TRUE
 LOC134685594,Pumilio homolog 3,43.654,2.0399999999999996e-153,genome_blast,FALSE,TRUE
 LOC134692129,DNA methyltransferase 1-associated protein 1 (DNMAP1) (DNMT1-associated protein 1) (MAT1-mediated transcriptional repressor),59.848,1.3399999999999999e-160,genome_blast,FALSE,TRUE
 LOC134706781,Enhancer of polycomb homolog 1,51.532,3.6399999999999993e-152,genome_blast,FALSE,TRUE
@@ -3376,7 +3376,7 @@ LOC134691643,Adhesion G protein-coupled receptor L2 (Calcium-independent alpha-l
 LOC134706730,Integrin beta-1-A,36.99,5.23e-146,genome_blast,FALSE,TRUE
 LOC134707414,N-chimaerin (A-chimaerin) (Alpha-chimerin) (N-chimerin) (NC) (Rho GTPase-activating protein 2),49.453,1.0800000000000001e-154,genome_blast,FALSE,TRUE
 LOC134707675,A disintegrin and metalloproteinase with thrombospondin motifs 13 (ADAM-TS 13) (ADAM-TS13) (ADAMTS-13) (EC 3.4.24.87) (von Willebrand factor-cleaving protease) (vWF-CP) (vWF-cleaving protease),34.387,4.3299999999999994e-133,genome_blast,FALSE,TRUE
-LOC134711555,Delta(14)-sterol reductase LBR (Delta-14-SR) (EC 1.3.1.70) (3-beta-hydroxysterol Delta (14)-reductase) (C-14 sterol reductase) (C14SR) (Integral nuclear envelope inner membrane protein) (Lamin-B receptor) (Sterol C14-reductase),48.326,1.8399999999999998e-151,genome_blast,FALSE,TRUE
+LOC134711555,Delta(14)-sterol reductase LBR (Delta-14-SR) (EC 1.3.1.70) (3-beta-hydroxysterol Delta (14)-reductase) (C-14 sterol reductase) (C14SR) (Integral nuclear envelope inner membrane protein) (Lamin-B receptor) (Sterol C14-reductase),48.326,1.8399999999999998e-151,genome_blast,TRUE,TRUE
 LOC134717638,Disintegrin and metalloproteinase domain-containing protein 10 (ADAM 10) (EC 3.4.24.81) (Kuzbanian protein homolog) (Mammalian disintegrin-metalloprotease) (Myelin-associated metalloproteinase) (CD antigen CD156c),37.781,1.16e-147,genome_blast,FALSE,TRUE
 LOC134719007,Coronin-2A (IR10) (WD repeat-containing protein 2),41.549,8.009999999999999e-153,genome_blast,FALSE,TRUE
 LOC134718223,Aminopeptidase N (AP-N) (hAPN) (EC 3.4.11.2) (Alanyl aminopeptidase) (Aminopeptidase M) (AP-M) (Microsomal aminopeptidase) (Myeloid plasma membrane glycoprotein CD13) (gp150) (CD antigen CD13),40.095,1.2799999999999997e-144,genome_blast,FALSE,TRUE
@@ -3472,27 +3472,27 @@ LOC134684990,Pyridoxal 5'-phosphate synthase subunit SNZERR (PLP synthase subuni
 LOC134683287,E3 ubiquitin-protein ligase rfwd3.S (EC 2.3.2.27) (RING finger and WD repeat domain-containing protein 3.S),47.368,4.0099999999999996e-144,genome_blast,FALSE,TRUE
 LOC134691061,"Hydroxymethylglutaryl-CoA lyase, mitochondrial (HL) (HMG-CoA lyase) (EC 4.1.3.4) (3-hydroxy-3-methylglutarate-CoA lyase)",66.877,4.579999999999999e-157,genome_blast,FALSE,TRUE
 LOC134693707,"Alkaline phosphatase, tissue-nonspecific isozyme (AP-TNAP) (TNAP) (TNSALP) (EC 3.1.3.1) (Alkaline phosphatase liver/bone/kidney isozyme) (Phosphoamidase) (Phosphocreatine phosphatase) (EC 3.9.1.1)",50.731,1.7199999999999996e-151,genome_blast,FALSE,TRUE
-LOC134702373,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134702752,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134702864,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134702884,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
+LOC134702373,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134702752,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134702864,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134702884,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134702913,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134703071,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
-LOC134703118,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134703146,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134703358,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134703379,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134703411,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134703428,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134703448,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
+LOC134703118,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134703146,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134703358,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134703379,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134703411,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134703428,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134703448,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134703458,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
-LOC134703487,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
+LOC134703487,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134703529,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134703637,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134703819,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
-LOC134703957,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134704203,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
-LOC134704269,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,TRUE,TRUE
+LOC134703957,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134704203,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
+LOC134704269,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134704392,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134704440,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),79.612,1.7e-157,genome_blast,FALSE,TRUE
 LOC134688432,Protocadherin Fat 4 (hFat4) (Cadherin family member 14) (FAT tumor suppressor homolog 4) (Fat-like cadherin protein FAT-J),28.411,1.02e-124,genome_blast,FALSE,TRUE
@@ -3529,7 +3529,7 @@ LOC134693479,Kinesin-like protein KIF20A (Kinesin-like protein 174) (Rab6-intera
 LOC134695920,Alcohol dehydrogenase class-3 chain L (EC 1.1.1.1) (Alcohol dehydrogenase class-III chain L) (Glutathione-dependent formaldehyde dehydrogenase) (FALDH) (FDH) (GSH-FDH) (EC 1.1.1.-) (S-(hydroxymethyl)glutathione dehydrogenase) (EC 1.1.1.284),56.684,4.59e-154,genome_blast,FALSE,TRUE
 LOC134697186,Small ribosomal subunit protein uS3 (EC 4.2.99.18) (40S ribosomal protein S3),91.139,1.8299999999999996e-158,genome_blast,FALSE,TRUE
 LOC134701105,"Glutaminase kidney isoform, mitochondrial (GLS) (EC 3.5.1.2) (K-glutaminase) (L-glutamine amidohydrolase) [Cleaved into: Glutaminase kidney isoform, mitochondrial 68 kDa chain; Glutaminase kidney isoform, mitochondrial 65 kDa chain]",63.222,6.1e-151,genome_blast,FALSE,TRUE
-ND2,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),78.964,2.65e-156,genome_blast,TRUE,TRUE
+ND2,NADH-ubiquinone oxidoreductase chain 2 (EC 7.1.1.2) (NADH dehydrogenase subunit 2),78.964,2.65e-156,genome_blast,FALSE,TRUE
 LOC134707284,"Glycerol-3-phosphate dehydrogenase [NAD(+)], cytoplasmic (GPD-C) (GPDH-C) (EC 1.1.1.8)",59.714,6.64e-154,genome_blast,FALSE,TRUE
 LOC134710323,Interferon regulatory factor 2-binding protein-like B (Enhanced at puberty protein 1 homolog B),41.219,3.9099999999999996e-146,genome_blast,FALSE,TRUE
 LOC134720934,Histone-lysine N-methyltransferase 2A (Lysine N-methyltransferase 2A) (EC 2.1.1.364) (ALL-1) (Cysteine methyltransferase KMT2A) (EC 2.1.1.-) (Myeloid/lymphoid or mixed-lineage leukemia) (Myeloid/lymphoid or mixed-lineage leukemia protein 1) (Zinc finger protein HRX) [Cleaved into: MLL cleavage product N320 (N-terminal cleavage product of 320 kDa) (p320); MLL cleavage product C180 (C-terminal cleavage product of 180 kDa) (p180)],61.224,5.17e-122,genome_blast,TRUE,TRUE
@@ -3829,30 +3829,30 @@ LOC134681131,Solute carrier family 13 member 2 (Na(+)/dicarboxylate cotransporte
 LOC134687677,Ankyrin-1 (ANK-1) (Ankyrin-R) (Erythrocyte ankyrin),29.695,6.419999999999999e-119,genome_blast,FALSE,TRUE
 LOC134687444,BTB/POZ domain-containing protein 10 (Glucose metabolism-related protein 1),74.007,2.19e-143,genome_blast,FALSE,TRUE
 LOC134694862,Chitin synthase chs-2 (EC 2.4.1.16) (Chitin-UDP acetyl-glucosaminyl transferase chs-2),38.109,4.54e-127,genome_blast,FALSE,TRUE
-LOC134702374,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134702754,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134702866,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134702880,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134702999,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703072,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703116,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703143,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703351,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703360,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703412,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703429,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703459,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703471,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703489,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703649,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134703823,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134704069,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134704201,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134704208,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134704253,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134704271,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134704390,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
-LOC134704444,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,TRUE,TRUE
+LOC134702374,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134702754,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134702866,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134702880,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134702999,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703072,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703116,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703143,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703351,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703360,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703412,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703429,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703459,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703471,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703489,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703649,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134703823,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134704069,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134704201,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134704208,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134704253,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134704271,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134704390,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
+LOC134704444,Cytochrome c oxidase subunit 3 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide III),89.434,1.2199999999999997e-148,genome_blast,FALSE,TRUE
 LOC134719986,Inter-alpha-trypsin inhibitor heavy chain H3 (ITI heavy chain H3) (ITI-HC3) (Inter-alpha-inhibitor heavy chain 3),34.51,5.579999999999999e-132,genome_blast,FALSE,TRUE
 LOC134709980,Nuclear exosome regulator NRDE2 (Protein NRDE2 homolog),30.485,2.91e-127,genome_blast,FALSE,TRUE
 LOC134710029,Zinc transporter 6-A (ZnT-6-A) (Solute carrier family 30 member 6-A),60.641,5.4e-143,genome_blast,FALSE,TRUE
@@ -3891,7 +3891,7 @@ LOC134687056,Small ribosomal subunit protein eS4 (40S ribosomal protein S4),73.7
 LOC134687493,Low-density lipoprotein receptor-related protein 6 (LRP-6),37.351,1.84e-128,genome_blast,FALSE,TRUE
 LOC134691997,Protein DDI1 homolog 2 (EC 3.4.23.-),58.967,3.6899999999999996e-143,genome_blast,FALSE,TRUE
 LOC134693853,Mitochondrial 2-oxoglutarate/malate carrier protein (OGCP) (alpha-oxoglutarate carrier) (Solute carrier family 25 member 11) (SLC25A11),69.697,5.66e-147,genome_blast,FALSE,TRUE
-ND1,NADH-ubiquinone oxidoreductase chain 1 (EC 7.1.1.2) (NADH dehydrogenase subunit 1),88.929,3.91e-147,genome_blast,TRUE,TRUE
+ND1,NADH-ubiquinone oxidoreductase chain 1 (EC 7.1.1.2) (NADH dehydrogenase subunit 1),88.929,3.91e-147,genome_blast,FALSE,TRUE
 LOC134728010,Calcium-independent phospholipase A2-gamma (EC 3.1.1.-) (EC 3.1.1.5) (Intracellular membrane-associated calcium-independent phospholipase A2 gamma) (iPLA2-gamma) (PNPLA-gamma) (Patatin-like phospholipase domain-containing protein 8) (iPLA2-2),46.353,9.68e-135,genome_blast,FALSE,TRUE
 LOC134686118,"Dolichyl pyrophosphate Man9GlcNAc2 alpha-1,3-glucosyltransferase (EC 2.4.1.267) (Asparagine-linked glycosylation protein 6 homolog) (Dol-P-Glc:Man(9)GlcNAc(2)-PP-Dol alpha-1,3-glucosyltransferase) (Dolichyl-P-Glc:Man9GlcNAc2-PP-dolichyl glucosyltransferase)",50.408,1.3999999999999999e-140,genome_blast,FALSE,TRUE
 LOC134707730,Heparan sulfate 2-O-sulfotransferase 1 (EC 2.8.2.-),56.286,1.2399999999999999e-144,genome_blast,FALSE,TRUE
@@ -3951,7 +3951,7 @@ LOC134721547,Protein turtle,33.842,8.41e-121,genome_blast,FALSE,TRUE
 LOC134690696,X-ray repair cross-complementing protein 5 (EC 3.6.4.-) (ATP-dependent DNA helicase 2 subunit 2) (ATP-dependent DNA helicase II 80 kDa subunit) (CTC box-binding factor 85 kDa subunit) (CTC85) (CTCBF) (DNA repair protein XRCC5) (Ku autoantigen protein p86 homolog) (Ku80) (Nuclear factor IV),39.885,7.009999999999999e-134,genome_blast,FALSE,TRUE
 LOC134690078,Gamma-tubulin complex component 6 (GCP-6),40.55,1.26e-116,genome_blast,FALSE,TRUE
 LOC134693401,Zinc finger protein 226,51.269,2.74e-136,genome_blast,FALSE,TRUE
-LOC134702767,NADH-ubiquinone oxidoreductase chain 1 (EC 7.1.1.2) (NADH dehydrogenase subunit 1),88.489,1.2799999999999997e-144,genome_blast,TRUE,TRUE
+LOC134702767,NADH-ubiquinone oxidoreductase chain 1 (EC 7.1.1.2) (NADH dehydrogenase subunit 1),88.489,1.2799999999999997e-144,genome_blast,FALSE,TRUE
 LOC134714581,"Isocitrate dehydrogenase [NAD] subunit gamma, mitochondrial (Isocitric dehydrogenase subunit gamma) (NAD(+)-specific ICDH subunit gamma)",59.654,2.4199999999999995e-143,genome_blast,FALSE,TRUE
 LOC134723123,"DNA/RNA-binding protein KIN17 (Binding to curved DNA) (KIN, antigenic determinant of recA protein)",57.538,2.4499999999999998e-142,genome_blast,FALSE,TRUE
 LOC134685316,Diphthine methyl ester synthase (EC 2.1.1.314) (Diphthamide biosynthesis methyltransferase),70.221,2.25e-146,genome_blast,FALSE,TRUE
@@ -3998,30 +3998,30 @@ LOC134687673,Serine/threonine-protein phosphatase 6 regulatory ankyrin repeat su
 LOC134695907,Protein WWC2 (BH-3-only member B) (WW domain-containing protein 2),47.653,1.32e-122,genome_blast,FALSE,TRUE
 LOC134700259,Protocadherin-9,33.333,4.9400000000000004e-123,genome_blast,FALSE,TRUE
 LOC134701633,Choline/ethanolaminephosphotransferase 1 (EC 2.7.8.1) (EC 2.7.8.2) (1-alkenyl-2-acylglycerol choline phosphotransferase) (EC 2.7.8.22),54.496,7.68e-142,genome_blast,FALSE,TRUE
-LOC134702605,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134702634,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134702751,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134702856,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134702870,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134702882,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134702888,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134702904,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134703102,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134703421,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134703454,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134703577,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134703817,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134703825,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134703939,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134703960,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134704060,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134704066,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134704115,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134704249,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134704275,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
-LOC134704386,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,TRUE,TRUE
+LOC134702605,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134702634,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134702751,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134702856,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134702870,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134702882,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134702888,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134702904,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134703102,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134703421,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134703454,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134703577,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134703817,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134703825,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134703939,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134703960,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134704060,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134704066,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134704115,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134704249,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134704275,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
+LOC134704386,Cytochrome c oxidase subunit 2 (EC 7.1.1.9) (Cytochrome c oxidase polypeptide II),90.909,6.789999999999999e-147,genome_blast,FALSE,TRUE
 LOC134714110,Protein KRI1 homolog,45.578,1.13e-131,genome_blast,FALSE,TRUE
-LOC134690884,Omega-amidase NIT2 (EC 3.5.1.3) (Nitrilase homolog 2),67.91,2.6999999999999997e-145,genome_blast,FALSE,TRUE
+LOC134690884,Omega-amidase NIT2 (EC 3.5.1.3) (Nitrilase homolog 2),67.91,2.6999999999999997e-145,genome_blast,TRUE,TRUE
 LOC134712176,TOG array regulator of axonemal microtubules protein 1 (Crescerin-1) (Protein FAM179B),44.253,1.33e-116,genome_blast,FALSE,TRUE
 LOC134715085,Band 4.1-like protein 4A (Erythrocyte membrane protein band 4.1-like 4A) (Protein NBL4),40.781,4.659999999999999e-128,genome_blast,FALSE,TRUE
 LOC134691339,MYND-type zinc finger-containing chromatin reader ZMYND8 (Cutaneous T-cell lymphoma-associated antigen se14-3) (CTCL-associated antigen se14-3) (Protein kinase C-binding protein 1) (Rack7) (Transcription coregulator ZMYND8) (Zinc finger MYND domain-containing protein 8),56.522,3.54e-120,genome_blast,FALSE,TRUE
@@ -4037,7 +4037,7 @@ LOC134720784,Tetratricopeptide repeat protein 5 (TPR repeat protein 5) (Stress-r
 LOC134721407,NudC domain-containing protein 1,37.479,1.65e-135,genome_blast,FALSE,TRUE
 LOC134685120,Sodium- and chloride-dependent glycine transporter 1 (GlyT-1) (GlyT1) (xGlyT1) (Solute carrier family 6 member 9),41.196,4.63e-134,genome_blast,FALSE,TRUE
 LOC134687362,Lysosomal acid lipase/cholesteryl ester hydrolase (Acid cholesteryl ester hydrolase) (LAL) (EC 3.1.1.13) (Cholesteryl esterase) (Diacylglycerol lipase) (Lipase A) (Sterol esterase) (Triacylglycerol ester hydrolase) (Triacylglycerol lipase),53.117,3.8e-141,genome_blast,FALSE,TRUE
-LOC134687369,SH3 and multiple ankyrin repeat domains protein 2 (Shank2) (Cortactin-binding protein 1) (CortBP1) (Proline-rich synapse-associated protein 1),50.735,3.05e-115,genome_blast,TRUE,TRUE
+LOC134687369,SH3 and multiple ankyrin repeat domains protein 2 (Shank2) (Cortactin-binding protein 1) (CortBP1) (Proline-rich synapse-associated protein 1),50.735,3.05e-115,genome_blast,FALSE,TRUE
 LOC134688336,Peroxisomal targeting signal 2 receptor (PTS2 receptor) (Peroxin-7),60.968,1.6599999999999998e-143,genome_blast,FALSE,TRUE
 LOC134688348,Androglobin,34.358,9.679999999999999e-116,genome_blast,TRUE,TRUE
 LOC134691270,PAS domain-containing serine/threonine-protein kinase (PAS-kinase) (PASKIN) (EC 2.7.11.1),51.604,1.15e-120,genome_blast,FALSE,TRUE
@@ -4071,7 +4071,7 @@ LOC134715416,Zinc finger RNA-binding protein,60.714,4.6299999999999997e-125,geno
 LOC134721516,Enhancer of mRNA-decapping protein 4,39.091,9.119999999999997e-119,genome_blast,FALSE,TRUE
 LOC134727760,Na(+)/citrate cotransporter (NaCT) (Sodium-coupled citrate transporter) (Sodium-dependent citrate transporter) (Solute carrier family 13 member 5),45.091,8.61e-135,genome_blast,FALSE,TRUE
 LOC134697336,FHF complex subunit HOOK-interacting protein 1A,49.336,3.6299999999999994e-130,genome_blast,FALSE,TRUE
-LOC134718752,"Band 4.1-like protein 3 (4.1B) (Differentially expressed in adenocarcinoma of the lung protein 1) (DAL-1) (DAL1P) (mDAL-1) (Erythrocyte membrane protein band 4.1-like 3) [Cleaved into: Band 4.1-like protein 3, N-terminally processed]",56.268,6.749999999999999e-120,genome_blast,TRUE,TRUE
+LOC134718752,"Band 4.1-like protein 3 (4.1B) (Differentially expressed in adenocarcinoma of the lung protein 1) (DAL-1) (DAL1P) (mDAL-1) (Erythrocyte membrane protein band 4.1-like 3) [Cleaved into: Band 4.1-like protein 3, N-terminally processed]",56.268,6.749999999999999e-120,genome_blast,FALSE,TRUE
 LOC134684759,F-actin-capping protein subunit alpha,64.875,2.99e-143,genome_blast,FALSE,TRUE
 LOC134686417,Excitatory amino acid transporter 3 (Excitatory amino-acid carrier 1) (Sodium-dependent glutamate/aspartate transporter 3) (Solute carrier family 1 member 1),54.481,2.2699999999999998e-136,genome_blast,FALSE,TRUE
 LOC134690476,Formylglycine-generating enzyme (FGE) (EC 1.8.3.7) (C-alpha-formylglycine-generating enzyme 1) (Sulfatase-modifying factor 1),57.492,2.13e-140,genome_blast,FALSE,TRUE
@@ -4595,7 +4595,7 @@ LOC134721438,"b(0,+)-type amino acid transporter 1 (b(0,+)AT1) (Glycoprotein-ass
 LOC134721933,Electron transfer flavoprotein subunit beta (Beta-ETF),72.157,1.4399999999999998e-132,genome_blast,FALSE,TRUE
 LOC134723111,mRNA cap guanine-N7 methyltransferase (EC 2.1.1.56) (RG7MT1) (mRNA (guanine-N(7))-methyltransferase) (mRNA cap methyltransferase) (hCMT1) (hMet) (hcm1p),54.441,2.3499999999999998e-126,genome_blast,TRUE,TRUE
 LOC134724481,UNC93-like protein MFSD11 (Major facilitator superfamily domain-containing protein 11),49.561,2.2399999999999997e-126,genome_blast,FALSE,TRUE
-LOC134725309,Inter-alpha-trypsin inhibitor heavy chain H4 (ITI heavy chain H4) (ITI-HC4) (Inter-alpha-inhibitor heavy chain 4) (Inter-alpha-trypsin inhibitor family heavy chain-related protein) (IHRP) (Plasma kallikrein sensitive glycoprotein 120) (Gp120) (PK-120) [Cleaved into: 70 kDa inter-alpha-trypsin inhibitor heavy chain H4; 35 kDa inter-alpha-trypsin inhibitor heavy chain H4],38.194,2.6700000000000002e-117,genome_blast,TRUE,TRUE
+LOC134725309,Inter-alpha-trypsin inhibitor heavy chain H4 (ITI heavy chain H4) (ITI-HC4) (Inter-alpha-inhibitor heavy chain 4) (Inter-alpha-trypsin inhibitor family heavy chain-related protein) (IHRP) (Plasma kallikrein sensitive glycoprotein 120) (Gp120) (PK-120) [Cleaved into: 70 kDa inter-alpha-trypsin inhibitor heavy chain H4; 35 kDa inter-alpha-trypsin inhibitor heavy chain H4],38.194,2.6700000000000002e-117,genome_blast,FALSE,TRUE
 LOC134725314,Carboxypeptidase E (CPE) (EC 3.4.17.10) (Carboxypeptidase H) (CPH) (Enkephalin convertase) (Prohormone-processing carboxypeptidase),47.836,1.27e-125,genome_blast,FALSE,TRUE
 LOC134681587,"Endoglucanase (EC 3.2.1.4) (CMCase) (Cellulase) (Endo-1,4-beta-glucanase)",100,2.43e-134,genome_blast,FALSE,TRUE
 LOC134728178,Ultra-long-chain fatty acid omega-hydroxylase (EC 1.14.14.177) (Cytochrome P450 4F22),41.372,2.08e-124,genome_blast,FALSE,TRUE
@@ -4729,7 +4729,7 @@ LOC134708492,Cytoplasmic dynein 2 intermediate chain 1 (Dynein 2 intermediate ch
 LOC134710565,Adenylate cyclase type 10 (EC 4.6.1.1) (Germ cell soluble adenylyl cyclase) (sAC) (Testicular soluble adenylyl cyclase),28.21,1.02e-103,genome_blast,FALSE,TRUE
 LOC134710851,von Willebrand factor A domain-containing protein 5A (Loss of heterozygosity 11 chromosomal region 2 gene A protein homolog) (Mast cell surface antigen 1) (Masa-1),37.355,4.4100000000000005e-117,genome_blast,FALSE,TRUE
 LOC134713787,SKI family transcriptional corepressor 1 homolog-B (Ladybird homeobox corepressor 1 homolog-B),63.696,9.629999999999998e-118,genome_blast,FALSE,TRUE
-LOC134715630,Cilia- and flagella-associated protein 99,39.785,1e-117,genome_blast,TRUE,TRUE
+LOC134715630,Cilia- and flagella-associated protein 99,39.785,1e-117,genome_blast,FALSE,TRUE
 LOC134718937,Ras-related protein Rab-11A (EC 3.6.5.2),86.574,8.479999999999999e-131,genome_blast,FALSE,TRUE
 LOC134719196,Ras-related protein Rab-11A (EC 3.6.5.2),86.574,8.479999999999999e-131,genome_blast,FALSE,TRUE
 LOC134723798,Solute carrier family 23 member 2 (Na(+)/L-ascorbic acid transporter 2) (Sodium-dependent vitamin C transporter 2),36.937,5.9e-118,genome_blast,FALSE,TRUE
@@ -5114,10 +5114,10 @@ LOC134681815,"Malate dehydrogenase, mitochondrial (EC 1.1.1.37)",56.818,4.199999
 LOC134686796,"Reticulon-4-interacting protein 1 homolog, mitochondrial",44.503,9.649999999999999e-118,genome_blast,FALSE,TRUE
 LOC134686135,ALK tyrosine kinase receptor (EC 2.7.10.1) (Anaplastic lymphoma kinase) (CD antigen CD246),44.199,3.01e-100,genome_blast,FALSE,TRUE
 LOC134697470,Vascular endothelial growth factor receptor 3 (VEGFR-3) (EC 2.7.10.1) (Endothelial kinase receptor EK2) (Quek 2) (Quek2),48.889,2.5199999999999996e-107,genome_blast,FALSE,TRUE
-LOC134703434,ATP synthase subunit a (F-ATPase protein 6),88.608,1.1100000000000001e-122,genome_blast,TRUE,TRUE
-LOC134703648,ATP synthase subunit a (F-ATPase protein 6),88.608,1.1100000000000001e-122,genome_blast,TRUE,TRUE
-LOC134703803,ATP synthase subunit a (F-ATPase protein 6),88.608,1.1100000000000001e-122,genome_blast,TRUE,TRUE
-ATP6,ATP synthase subunit a (F-ATPase protein 6),88.235,1.32e-122,genome_blast,TRUE,TRUE
+LOC134703434,ATP synthase subunit a (F-ATPase protein 6),88.608,1.1100000000000001e-122,genome_blast,FALSE,TRUE
+LOC134703648,ATP synthase subunit a (F-ATPase protein 6),88.608,1.1100000000000001e-122,genome_blast,FALSE,TRUE
+LOC134703803,ATP synthase subunit a (F-ATPase protein 6),88.608,1.1100000000000001e-122,genome_blast,FALSE,TRUE
+ATP6,ATP synthase subunit a (F-ATPase protein 6),88.235,1.32e-122,genome_blast,FALSE,TRUE
 LOC134724181,OTU domain-containing protein 5-A (EC 3.4.19.12) (Deubiquitinating enzyme A) (DUBA),46.489,1.2799999999999999e-113,genome_blast,FALSE,TRUE
 LOC134683634,Syntenin-1 (Scaffold protein Pbp1) (Syndecan-binding protein 1),55.7,2.84e-120,genome_blast,TRUE,TRUE
 LOC134684286,Voltage-gated purine nucleotide uniporter SLC17A9 (Solute carrier family 17 member 9) (Vesicular nucleotide transporter) (VNUT),41.395,3.0999999999999996e-116,genome_blast,FALSE,TRUE
@@ -5172,7 +5172,7 @@ LOC134694223,Ankyrin-2 (ANK-2) (Ankyrin-B) (Brain ankyrin),29.682,1.439999999999
 LOC134697481,Heat shock 70 kDa protein 12A,36.19,1.4099999999999998e-110,genome_blast,FALSE,TRUE
 LOC134695636,"A-kinase anchor protein 17A (AKAP-17A) (721P) (B-lymphocyte antigen) (Protein XE7) (Protein kinase A-anchoring protein 17A) (PRKA17A) (Splicing factor, arginine/serine-rich 17A)",62.03,1.26e-111,genome_blast,FALSE,TRUE
 LOC134697372,Mechanosensory protein 2,68.657,2.49e-117,genome_blast,FALSE,TRUE
-LOC134699212,Coiled-coil domain-containing protein 42 homolog,67.667,4.3899999999999986e-119,genome_blast,FALSE,TRUE
+LOC134699212,Coiled-coil domain-containing protein 42 homolog,67.667,4.3899999999999986e-119,genome_blast,TRUE,TRUE
 LOC134701692,Protein KTI12 homolog,56.934,1.14e-120,genome_blast,FALSE,TRUE
 LOC134720163,"Endoglucanase E-4 (EC 3.2.1.4) (Cellulase E-4) (Cellulase E4) (Endo-1,4-beta-glucanase E-4)",45.898,1.84e-100,genome_blast,FALSE,TRUE
 LOC134682811,DNA-binding protein P3A2,53.846,8.52e-114,genome_blast,FALSE,TRUE
@@ -6024,7 +6024,7 @@ LOC134709338,Trans-L-3-hydroxyproline dehydratase (EC 4.2.1.77) (Trans-3-hydroxy
 LOC134711602,Putative serine protease K12H4.7 (EC 3.4.-.-),37.403,8.33e-100,genome_blast,FALSE,TRUE
 LOC134712302,Divergent protein kinase domain 2A (Deleted in autism protein 1 homolog),40.852,3.4e-101,genome_blast,FALSE,TRUE
 LOC134716237,Cholinesterase (EC 3.1.1.8) (Acylcholine acylhydrolase) (Butyrylcholine esterase) (Choline esterase II) (EQ-BCHE) (Pseudocholinesterase),35.824,1.76e-98,genome_blast,FALSE,TRUE
-LOC134721116,Regulation of nuclear pre-mRNA domain-containing protein 1B (Cell cycle-related and expression-elevated protein in tumor),49.185,6.08e-104,genome_blast,TRUE,TRUE
+LOC134721116,Regulation of nuclear pre-mRNA domain-containing protein 1B (Cell cycle-related and expression-elevated protein in tumor),49.185,6.08e-104,genome_blast,FALSE,TRUE
 LOC134721694,Eukaryotic translation initiation factor 2 subunit 2 (Eukaryotic translation initiation factor 2 subunit beta) (eIF2-beta),80.588,2.3099999999999998e-104,genome_blast,TRUE,TRUE
 LOC134721727,Vacuolar protein sorting-associated protein 4B (EC 3.6.4.6),41.801,2.7499999999999995e-101,genome_blast,FALSE,TRUE
 LOC134722057,Palmitoyltransferase ZDHHC3 (EC 2.3.1.225) (Acyltransferase ZDHHC3) (EC 2.3.1.-) (Zinc finger DHHC domain-containing protein 3),58.175,2.24e-105,genome_blast,FALSE,TRUE
@@ -6224,7 +6224,7 @@ LOC134689784,Protein DD3-3,33.687,1.57e-93,genome_blast,FALSE,TRUE
 LOC134705428,Cytochrome P450 2D3 (EC 1.14.14.1) (CYPIID3) (Cytochrome P450-DB3) (Debrisoquine 4-hydroxylase),37.553,1.2499999999999998e-96,genome_blast,FALSE,TRUE
 LOC134711246,AP-5 complex subunit mu-1 (Adaptor-related protein complex 5 subunit mu-1) (Mu5) (Mu-2-related death-inducing protein) (MuD),36.463,4.4400000000000003e-97,genome_blast,FALSE,TRUE
 LOC134711397,Activator of 90 kDa heat shock protein ATPase homolog 1 (AHA1) (p38),46.199,4.119999999999999e-101,genome_blast,FALSE,TRUE
-LOC134714522,Interferon-induced helicase C domain-containing protein 1 (EC 3.6.4.13) (Helicase with 2 CARD domains) (Helicard) (Interferon induced with helicase C domain protein 1) (Melanoma differentiation-associated protein 5) (MDA-5) (RIG-I-like receptor 2) (RLR-2),26.825,6.269999999999999e-87,genome_blast,FALSE,TRUE
+LOC134714522,Interferon-induced helicase C domain-containing protein 1 (EC 3.6.4.13) (Helicase with 2 CARD domains) (Helicard) (Interferon induced with helicase C domain protein 1) (Melanoma differentiation-associated protein 5) (MDA-5) (RIG-I-like receptor 2) (RLR-2),26.825,6.269999999999999e-87,genome_blast,TRUE,TRUE
 LOC134716674,Transposon Tf2-9 polyprotein (Retrotransposable element Tf2 155 kDa protein),28.939,7.43e-84,genome_blast,FALSE,TRUE
 LOC134715995,E3 ubiquitin-protein ligase KCMF1 (EC 2.3.2.27) (FGF-induced in gastric cancer) (Potassium channel modulatory factor) (PCMF) (ZZ-type zinc finger-containing protein 1),54.683,8.79e-99,genome_blast,FALSE,TRUE
 LOC134718222,Zinc finger protein 45 (BRC1744) (Zinc finger protein 13) (Zinc finger protein KOX5),44.241,2.54e-94,genome_blast,FALSE,TRUE
@@ -6795,7 +6795,7 @@ LOC134693289,Cytochrome P450 2D27 (EC 1.14.14.-) (CYPIID27),37.029,2.54999999999
 LOC134692727,Ventricular zone-expressed PH domain-containing protein homolog 1 (Protein melted),41.274,8.28e-82,genome_blast,FALSE,TRUE
 LOC134697493,Heat shock 70 kDa protein 12A,37.975,7.479999999999999e-87,genome_blast,FALSE,TRUE
 LOC134697504,Ankyrin-1 (ANK-1) (Ankyrin-R) (Erythrocyte ankyrin),35.556,1.78e-77,genome_blast,FALSE,TRUE
-LOC134695853,Glycine receptor subunit alpha-2,38.776,5.919999999999999e-90,genome_blast,TRUE,TRUE
+LOC134695853,Glycine receptor subunit alpha-2,38.776,5.919999999999999e-90,genome_blast,FALSE,TRUE
 LOC134699308,GAS2-like protein 1 (Growth arrest-specific protein 2-like 1),44.699,6.42e-80,genome_blast,FALSE,TRUE
 LOC134706235,3'-5' exoribonuclease HELZ2 (EC 3.1.13.1) (ATP-dependent RNA helicase PRIC285) (EC 3.6.4.13) (PPAR-gamma DNA-binding domain-interacting protein 1) (PDIP1) (PPAR-gamma DBD-interacting protein 1),38.971,6.23e-83,genome_blast,FALSE,TRUE
 LOC134721502,WASH complex subunit 1 (WAS protein family homolog 1),52.857,2.8e-88,genome_blast,FALSE,TRUE
@@ -6963,7 +6963,7 @@ LOC134718500,"RalA-binding protein 1 (RalBP1) (Cytocentrin) (Dinitrophenyl S-glu
 LOC134719738,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),30.146,5.53e-83,genome_blast,FALSE,TRUE
 LOC134720617,"Cytochrome c1, heme protein, mitochondrial (EC 7.1.1.8) (Complex III subunit 4) (Complex III subunit IV) (Cytochrome b-c1 complex subunit 4) (Ubiquinol-cytochrome-c reductase complex cytochrome c1 subunit) (Cytochrome c-1)",58.197,8.640000000000001e-91,genome_blast,FALSE,TRUE
 LOC134721343,Coiled-coil domain-containing protein 149,50,4.2e-87,genome_blast,FALSE,TRUE
-LOC134721732,Protein NDRG3 (N-myc downstream-regulated gene 3 protein),43.953,2.0899999999999997e-89,genome_blast,TRUE,TRUE
+LOC134721732,Protein NDRG3 (N-myc downstream-regulated gene 3 protein),43.953,2.0899999999999997e-89,genome_blast,FALSE,TRUE
 LOC134724967,B9 domain-containing protein 1 (MKS1-related protein 1),64.948,2.05e-94,genome_blast,FALSE,TRUE
 LOC134725200,N-alpha-acetyltransferase 60 (EC 2.3.1.259) (Histone acetyltransferase type B protein 4) (HAT4) (EC 2.3.1.48) (N-acetyltransferase 15) (N-alpha-acetyltransferase F) (NatF),58.879,2.84e-93,genome_blast,FALSE,TRUE
 LOC134725943,Synaptotagmin-15 (Chr10Syt) (Synaptotagmin XV) (SytXV),43.667,1.11e-87,genome_blast,FALSE,TRUE
@@ -7313,7 +7313,7 @@ LOC134691529,Zinc finger protein 235 (Zinc finger protein 270) (Zinc finger prot
 LOC134692292,Atrial natriuretic peptide receptor 1 (EC 4.6.1.2) (Atrial natriuretic peptide receptor type A) (ANP-A) (ANPR-A) (NPR-A) (Guanylate cyclase A) (GC-A),54.867,1.59e-75,genome_blast,FALSE,TRUE
 LOC134696192,Glycine receptor subunit alphaZ1,38.107,1.77e-84,genome_blast,FALSE,TRUE
 LOC134696146,Protein YIPF5 (YIP1 family member 5),55.513,3.2799999999999996e-89,genome_blast,FALSE,TRUE
-LOC134726697,Solute carrier family 35 member E1 homolog,50,2.02e-85,genome_blast,FALSE,TRUE
+LOC134726697,Solute carrier family 35 member E1 homolog,50,2.02e-85,genome_blast,TRUE,TRUE
 LOC134701883,Putative deoxyribonuclease TATDN2 (EC 3.1.21.-),44.238,8.2e-74,genome_blast,FALSE,TRUE
 LOC134704907,Mytilin-2 (Mytilus uncharacterized protein 2) (MUSP-2),78.571,3.84e-84,genome_blast,FALSE,TRUE
 LOC134706565,Polycomb complex protein BMI-1 (Polycomb group RING finger protein 4),57.759,7.93e-83,genome_blast,FALSE,TRUE
@@ -8140,7 +8140,7 @@ LOC134681612,"Beta-1,3-galactosyl-O-glycosyl-glycoprotein beta-1,6-N-acetylgluco
 LOC134727315,Aplysianin-A,28.963,1.08e-71,genome_blast,FALSE,TRUE
 LOC134681837,Protein unc-93 homolog A (Unc-93A),35.279,3.88e-73,genome_blast,FALSE,TRUE
 LOC134685091,Zinc finger protein 436 (Zinc finger protein 46) (Zfp-46) (Zinc finger protein MLZ-4),51.111,1.12e-71,genome_blast,FALSE,TRUE
-LOC134682938,Dynein axonemal intermediate chain 7,36.198,4.1099999999999995e-68,genome_blast,TRUE,TRUE
+LOC134682938,Dynein axonemal intermediate chain 7,36.198,4.1099999999999995e-68,genome_blast,FALSE,TRUE
 LOC134688280,Protein ced-11 (Cell death protein 11),24.878,4.13e-63,genome_blast,FALSE,TRUE
 LOC134690690,Polyadenylate-binding protein 1 (PABP-1) (Poly(A)-binding protein 1),70.807,6.909999999999999e-76,genome_blast,FALSE,TRUE
 LOC134693483,Tigger transposable element-derived protein 6,37.421,1.1899999999999998e-72,genome_blast,FALSE,TRUE
@@ -8706,7 +8706,7 @@ LOC134712831,Protein CWC15 homolog A,66.957,2.6400000000000003e-73,genome_blast,
 LOC134714930,Osteoclast-stimulating factor 1,53.769,2.1999999999999997e-73,genome_blast,FALSE,TRUE
 LOC134714117,Carbohydrate sulfotransferase 15 (EC 2.8.2.33) (B-cell RAG-associated gene protein) (hBRAG) (N-acetylgalactosamine 4-sulfate 6-O-sulfotransferase) (GalNAc4S-6ST),36.446,3e-66,genome_blast,FALSE,TRUE
 LOC134716027,Translocon-associated protein subunit beta (TRAP-beta) (Glycoprotein 25H) (gp25H) (Signal sequence receptor subunit beta) (SSR-beta),57.754,2.7099999999999998e-74,genome_blast,FALSE,TRUE
-LOC134716279,Early growth response protein 1 (EGR-1) (Nerve growth factor-induced protein A) (NGFI-A) (Transcription factor Zif268) (Zinc finger protein Krox-24),80,8.54e-65,genome_blast,FALSE,TRUE
+LOC134716279,Early growth response protein 1 (EGR-1) (Nerve growth factor-induced protein A) (NGFI-A) (Transcription factor Zif268) (Zinc finger protein Krox-24),80,8.54e-65,genome_blast,TRUE,TRUE
 LOC134722258,Transposon Ty3-I Gag-Pol polyprotein (Gag3-Pol3) (Transposon Ty3-2 TYA-TYB polyprotein) [Cleaved into: Capsid protein (CA) (p24); Spacer peptide p3; Nucleocapsid protein p11 (NC); Ty3 protease (PR) (EC 3.4.23.-) (p16); Spacer peptide J; Reverse transcriptase/ribonuclease H (RT) (RT-RH) (EC 2.7.7.49) (EC 2.7.7.7) (EC 3.1.26.4) (p55); Integrase p52 (IN); Integrase p49 (IN)],25.634,3.62e-59,genome_blast,FALSE,TRUE
 LOC134720732,UPF0598 protein C8orf82 homolog,54.494,2.02e-73,genome_blast,FALSE,TRUE
 LOC134722785,Zinc finger protein 568,56.5,1.06e-68,genome_blast,FALSE,TRUE
@@ -9477,7 +9477,7 @@ LOC134710321,Cyclin-dependent kinase inhibitor 3 (EC 3.1.3.16) (EC 3.1.3.48) (CD
 LOC134711194,Leucine-rich repeat-containing protein 74A (Leucine-rich repeat-containing protein 74),31.486,1.27e-57,genome_blast,FALSE,TRUE
 LOC134710644,Interferon-induced protein 44 (p44) (Microtubule-associated protein 44),31.555,1.95e-59,genome_blast,FALSE,TRUE
 LOC134711559,Motile sperm domain-containing protein 1,47.186,2.16e-65,genome_blast,FALSE,TRUE
-LOC134711899,Ectonucleoside triphosphate diphosphohydrolase 1 (EC 3.6.1.5) (ATP diphosphohydrolase) (ATP-DPH) (ATPDase) (Ecto-ATP diphosphohydrolase 1) (Ecto-ATPDase 1) (Ecto-ATPase 1) (Ecto-apyrase) (Lymphoid cell activation antigen) (Nucleoside triphosphate diphosphohydrolase 1) (NTPDase1) (CD antigen CD39) [Cleaved into: Ectonucleoside triphosphate diphosphohydrolase 1 27 kDa subunit; Ectonucleoside triphosphate diphosphohydrolase 1 54 kDa subunit],31.59,1.86e-58,genome_blast,TRUE,TRUE
+LOC134711899,Ectonucleoside triphosphate diphosphohydrolase 1 (EC 3.6.1.5) (ATP diphosphohydrolase) (ATP-DPH) (ATPDase) (Ecto-ATP diphosphohydrolase 1) (Ecto-ATPDase 1) (Ecto-ATPase 1) (Ecto-apyrase) (Lymphoid cell activation antigen) (Nucleoside triphosphate diphosphohydrolase 1) (NTPDase1) (CD antigen CD39) [Cleaved into: Ectonucleoside triphosphate diphosphohydrolase 1 27 kDa subunit; Ectonucleoside triphosphate diphosphohydrolase 1 54 kDa subunit],31.59,1.86e-58,genome_blast,FALSE,TRUE
 LOC134712289,Neutral cholesterol ester hydrolase 1 (NCEH) (EC 3.1.1.-) (Acetylalkylglycerol acetylhydrolase) (2-acetyl MAGE hydrolase) (EC 3.1.1.71) (Arylacetamide deacetylase-like 1),33.333,1.6e-60,genome_blast,FALSE,TRUE
 LOC134712826,Sodium/potassium-transporting ATPase subunit beta (Sodium/potassium-dependent ATPase beta subunit),38.006,1.38e-62,genome_blast,FALSE,TRUE
 LOC134715137,PDZ domain-containing protein 7,43.172,2.74e-52,genome_blast,FALSE,TRUE
@@ -9818,7 +9818,7 @@ LOC134690747,tRNA-splicing endonuclease subunit Sen2 (EC 4.6.1.16) (tRNA-intron 
 LOC134690009,Ankyrin-1 (ANK-1) (Ankyrin-R) (Erythrocyte ankyrin),29.476,1.06e-49,genome_blast,FALSE,TRUE
 LOC134693865,Protein mono-ADP-ribosyltransferase PARP12 (EC 2.4.2.-) (ADP-ribosyltransferase diphtheria toxin-like 12) (ARTD12) (Poly [ADP-ribose] polymerase 12) (PARP-12) (Zinc finger CCCH domain-containing protein 1),30.68,4.34e-51,genome_blast,FALSE,TRUE
 LOC134693867,Protein mono-ADP-ribosyltransferase PARP12 (EC 2.4.2.-) (ADP-ribosyltransferase diphtheria toxin-like 12) (ARTD12) (Poly [ADP-ribose] polymerase 12) (PARP-12) (Zinc finger CCCH domain-containing protein 1),31.602,2.41e-51,genome_blast,FALSE,TRUE
-LOC134692861,EF-hand domain-containing protein D2 (Swiprosin-1),64.331,9.07e-63,genome_blast,TRUE,TRUE
+LOC134692861,EF-hand domain-containing protein D2 (Swiprosin-1),64.331,9.07e-63,genome_blast,FALSE,TRUE
 LOC134695511,Fibrinogen C domain-containing protein 1,47.768,4.1600000000000005e-59,genome_blast,FALSE,TRUE
 LOC134696152,Carbonic anhydrase-related protein 10,37.024,8.73e-60,genome_blast,FALSE,TRUE
 LOC134696610,UDP-glucuronosyltransferase 2B10 (UDPGT 2B10) (EC 2.4.1.17),30.669,2.3899999999999996e-55,genome_blast,FALSE,TRUE
@@ -9846,7 +9846,7 @@ LOC134710625,Zonadhesin,33.981,1.75e-48,genome_blast,FALSE,TRUE
 LOC134711586,Mediator of RNA polymerase II transcription subunit 4 (Mediator complex subunit 4),54.404,3.9599999999999995e-61,genome_blast,FALSE,TRUE
 LOC134712480,1-deoxyxylulose-5-phosphate synthase YajO (EC 1.1.-.-),36.202,1.01e-58,genome_blast,FALSE,TRUE
 LOC134712895,Ubiquitin-associated domain-containing protein 2 (UBA domain-containing protein 2) (Phosphoglycerate dehydrogenase-like protein 1),36.932,9.380000000000001e-59,genome_blast,FALSE,TRUE
-LOC134715039,Junction-mediating and -regulatory protein,29.084,3.53e-51,genome_blast,TRUE,TRUE
+LOC134715039,Junction-mediating and -regulatory protein,29.084,3.53e-51,genome_blast,FALSE,TRUE
 LOC134716265,Homeobox protein XHOX-7.1,47.601,4.15e-60,genome_blast,FALSE,TRUE
 LOC134720634,Byssal tyrosinase-like protein-1,28.529,2.06e-53,genome_blast,FALSE,TRUE
 LOC134721246,Dual specificity protein phosphatase 22-B (EC 3.1.3.16) (EC 3.1.3.48),57.692,7.69e-62,genome_blast,FALSE,TRUE
@@ -10017,7 +10017,7 @@ LOC134688015,GTPase IMAP family member 4 (Immunity-associated nucleotide 1 prote
 LOC134686407,Blood vessel epicardial substance (BVES) (Popeye domain-containing protein 1) (Popeye protein 1),38.519,2.8299999999999996e-57,genome_blast,FALSE,TRUE
 LOC134688312,Histone deacetylase complex subunit SAP18 (18 kDa Sin3-associated polypeptide) (Sin3-associated polypeptide p18),62.092,3.21e-63,genome_blast,FALSE,TRUE
 LOC134692170,Metal tolerance protein 10 (AtMTP10),38.32,1.4499999999999996e-55,genome_blast,FALSE,TRUE
-LOC134694060,Collagen alpha-4(VI) chain,22.619,1.8699999999999998e-48,genome_blast,FALSE,TRUE
+LOC134694060,Collagen alpha-4(VI) chain,22.619,1.8699999999999998e-48,genome_blast,TRUE,TRUE
 LOC134696515,Ankyrin repeat domain-containing protein 50,30.769,2.71e-49,genome_blast,FALSE,TRUE
 LOC134698879,RNA-binding protein 42 (RNA-binding motif protein 42),64.189,4.57e-56,genome_blast,FALSE,TRUE
 LOC134700349,Prostaglandin E2 receptor EP4 subtype (PGE receptor EP4 subtype) (PGE2 receptor EP4 subtype) (Prostanoid EP4 receptor),34.132,1.0599999999999999e-54,genome_blast,FALSE,TRUE
@@ -10319,7 +10319,7 @@ LOC134723780,"Phosphatidylglycerophosphatase and protein-tyrosine phosphatase 1 
 LOC134724476,Protein Tob1 (Transducer of erbB-2 1),61.224,6.889999999999998e-55,genome_blast,FALSE,TRUE
 LOC134724495,Cytochrome P450 10 (EC 1.14.-.-) (CYPX),27.236,1.37e-51,genome_blast,FALSE,TRUE
 LOC134724683,BUB3-interacting and GLEBS motif-containing protein ZNF207 (BuGZ) (xBuGZ) (Zinc finger protein 207),83.158,4.8499999999999997e-54,genome_blast,FALSE,TRUE
-LOC134726293,BUB3-interacting and GLEBS motif-containing protein ZNF207 (BuGZ) (xBuGZ) (Zinc finger protein 207),83.158,4.8499999999999997e-54,genome_blast,TRUE,TRUE
+LOC134726293,BUB3-interacting and GLEBS motif-containing protein ZNF207 (BuGZ) (xBuGZ) (Zinc finger protein 207),83.158,4.8499999999999997e-54,genome_blast,FALSE,TRUE
 LOC134725063,Homeobox protein unc-4 homolog (Homeobox protein Uncx4.1),59.551,3e-53,genome_blast,FALSE,TRUE
 LOC134725558,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein),36.145,3.11e-54,genome_blast,FALSE,TRUE
 LOC134681792,Fibrinogen C domain-containing protein 1,46.083,4.02e-51,genome_blast,FALSE,TRUE
@@ -10898,7 +10898,7 @@ LOC134712861,5-hydroxytryptamine receptor 2A (5-HT-2) (5-HT-2A) (Serotonin recep
 LOC134715274,Sperm flagellar protein 1,42.339,2.86e-54,genome_blast,FALSE,TRUE
 LOC134715608,Failed axon connections homolog,32.283,7.919999999999999e-52,genome_blast,FALSE,TRUE
 LOC134719071,Zinc finger protein 26 (Zfp-26) (Protein mKR3),26.97,2.79e-44,genome_blast,FALSE,TRUE
-LOC134721018,Cytochrome P450 1A2 (EC 1.14.14.1) (CYPIA2) (Cholesterol 25-hydroxylase) (Cytochrome P450-P2) (Cytochrome P450-P3) (Hydroperoxy icosatetraenoate dehydratase) (EC 4.2.1.152),25.974,1.5399999999999998e-48,genome_blast,TRUE,TRUE
+LOC134721018,Cytochrome P450 1A2 (EC 1.14.14.1) (CYPIA2) (Cholesterol 25-hydroxylase) (Cytochrome P450-P2) (Cytochrome P450-P3) (Hydroperoxy icosatetraenoate dehydratase) (EC 4.2.1.152),25.974,1.5399999999999998e-48,genome_blast,FALSE,TRUE
 LOC134721267,Translocon-associated protein subunit alpha (TRAP-alpha) (Signal sequence receptor subunit alpha) (SSR-alpha),55.263,2.9e-53,genome_blast,TRUE,TRUE
 LOC134724999,Monocarboxylate transporter 12 (MCT 12) (Solute carrier family 16 member 12),26.464,3.95e-49,genome_blast,FALSE,TRUE
 LOC134726667,Protein Wnt-8b,35.448,2.81e-49,genome_blast,FALSE,TRUE
@@ -12298,7 +12298,7 @@ LOC134707776,Anhydro-N-acetylmuramic acid kinase (EC 2.7.1.170) (AnhMurNAc kinas
 LOC134708159,Zinc finger protein 283,42.932,1.16e-39,genome_blast,FALSE,TRUE
 LOC134710319,F-box/WD repeat-containing protein 7 (F-box and WD-40 domain-containing protein 7) (F-box protein FBW7) (F-box protein Fbxw6) (F-box-WD40 repeat protein 6) (SEL-10),30.496,8.2e-38,genome_blast,FALSE,TRUE
 LOC134711788,Schwannomin-interacting protein 1 (SCHIP-1),43.86,9.969999999999999e-40,genome_blast,FALSE,TRUE
-LOC134711910,Splicing regulator SDE2 (Replication stress response regulator SDE2),54.412,7.22e-42,genome_blast,TRUE,TRUE
+LOC134711910,Splicing regulator SDE2 (Replication stress response regulator SDE2),54.412,7.22e-42,genome_blast,FALSE,TRUE
 LOC134712190,Intraflagellar transport protein 43 homolog A,48.205,1.2299999999999999e-46,genome_blast,FALSE,TRUE
 LOC134712599,Toll-like receptor 13,27.243,4.1199999999999997e-38,genome_blast,FALSE,TRUE
 LOC134715578,Probable serine/threonine-protein kinase drkA (EC 2.7.11.1) (Receptor-like kinase 1) (Receptor-like kinase A) (Vesicle-associated receptor tyrosine kinase-like protein 1),33.569,3.86e-39,genome_blast,FALSE,TRUE
@@ -12332,7 +12332,7 @@ LOC134684833,Mitochondrial inner membrane protease ATP23 homolog (EC 3.4.24.-) (
 LOC134695753,A disintegrin and metalloproteinase with thrombospondin motifs like (ADAMTS-like) (EC 3.4.24.-) (BmADAMTS-like),31.296,6.55e-39,genome_blast,FALSE,TRUE
 LOC134697430,PCNA-interacting partner (PARI) (PARP-1 binding protein) (PARP1-binding protein) (PARPBP),29.894,4.1699999999999996e-39,genome_blast,FALSE,TRUE
 LOC134706434,Isopentenyl phosphate kinase (AtIPK) (IPK) (EC 2.7.4.26),33.851,2.18e-44,genome_blast,FALSE,TRUE
-LOC134706605,COMM domain-containing protein 3 (Protein Bup) (Protein PIL),39.487,4.41e-47,genome_blast,TRUE,TRUE
+LOC134706605,COMM domain-containing protein 3 (Protein Bup) (Protein PIL),39.487,4.41e-47,genome_blast,FALSE,TRUE
 LOC134707026,Neuronal acetylcholine receptor subunit alpha-2,30.581,1.04e-40,genome_blast,FALSE,TRUE
 LOC134705081,Pancreas transcription factor 1 subunit alpha (Pancreas-specific transcription factor 1a) (bHLH transcription factor p48),56.944,1.49e-45,genome_blast,FALSE,TRUE
 LOC134705877,"Beta,beta-carotene 15,15'-dioxygenase (EC 1.13.11.63) (Beta-carotene dioxygenase 1) (Beta-carotene oxygenase 1)",24.131,3.91e-40,genome_blast,FALSE,TRUE
@@ -12445,28 +12445,28 @@ LOC134693951,Tubulin delta chain (Delta-tubulin),31.33,3.52e-41,genome_blast,FAL
 LOC134697249,Ankyrin-2 (ANK-2) (Ankyrin-B) (Brain ankyrin) (Non-erythroid ankyrin),23.799,1.5399999999999998e-35,genome_blast,FALSE,TRUE
 LOC134699376,PiggyBac transposable element-derived protein 4,31.538,1.23e-39,genome_blast,FALSE,TRUE
 LOC134700907,Ankyrin-3 (ANK-3) (Ankyrin-G),28.144,1.86e-36,genome_blast,FALSE,TRUE
-LOC134701763,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134702139,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134702607,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,4.419999999999999e-47,genome_blast,TRUE,TRUE
-LOC134702687,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134702699,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,4.419999999999999e-47,genome_blast,TRUE,TRUE
-LOC134702766,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134702890,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134702911,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134703084,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134703109,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134703311,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134703343,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,2.0299999999999998e-47,genome_blast,TRUE,TRUE
-LOC134703353,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134703446,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134703470,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134703483,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134703528,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134704205,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134704239,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134704254,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,4.419999999999999e-47,genome_blast,TRUE,TRUE
-LOC134704382,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,TRUE,TRUE
-LOC134704389,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,4.419999999999999e-47,genome_blast,TRUE,TRUE
+LOC134701763,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134702139,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134702607,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,4.419999999999999e-47,genome_blast,FALSE,TRUE
+LOC134702687,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134702699,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,4.419999999999999e-47,genome_blast,FALSE,TRUE
+LOC134702766,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134702890,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134702911,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134703084,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134703109,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134703311,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134703343,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,2.0299999999999998e-47,genome_blast,FALSE,TRUE
+LOC134703353,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134703446,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134703470,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134703483,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134703528,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134704205,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134704239,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134704254,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,4.419999999999999e-47,genome_blast,FALSE,TRUE
+LOC134704382,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,1.66e-47,genome_blast,FALSE,TRUE
+LOC134704389,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),70.732,4.419999999999999e-47,genome_blast,FALSE,TRUE
 LOC134717428,Translocon-associated protein subunit delta (TRAP-delta) (Signal sequence receptor subunit delta) (SSR-delta),43.243,1.21e-46,genome_blast,TRUE,TRUE
 LOC134718873,Amiloride-sensitive sodium channel subunit beta (Beta-NaCH) (Epithelial Na(+) channel subunit beta) (Beta-ENaC) (Nonvoltage-gated sodium channel 1 subunit beta) (SCNEB),25.787,3.42e-38,genome_blast,FALSE,TRUE
 LOC134707505,Glutathione S-transferase (EC 2.5.1.18) (GST class-sigma),43.35,1.0899999999999999e-45,genome_blast,FALSE,TRUE
@@ -12829,7 +12829,7 @@ LOC134707266,STING ER exit protein (STEEP),57.062,7.71e-44,genome_blast,FALSE,TR
 LOC134707313,Paired mesoderm homeobox protein 2 (PRX-2) (Homeobox protein S8),62.044,3.3299999999999995e-42,genome_blast,FALSE,TRUE
 LOC134707486,Centrosomal protein of 70 kDa (Cep70),37.864,1.55e-36,genome_blast,FALSE,TRUE
 LOC134705879,Neuronal acetylcholine receptor subunit alpha-6,29.811,3.19e-39,genome_blast,FALSE,TRUE
-LOC134707644,Cilia- and flagella-associated protein 77,38.4,1.2899999999999998e-42,genome_blast,FALSE,TRUE
+LOC134707644,Cilia- and flagella-associated protein 77,38.4,1.2899999999999998e-42,genome_blast,TRUE,TRUE
 LOC134710126,E2F-associated phosphoprotein (EAPP),43.511,5.96e-42,genome_blast,FALSE,TRUE
 LOC134710497,Testis-specific serine/threonine-protein kinase 3 (TSK-3) (TSSK-3) (Testis-specific kinase 3) (EC 2.7.11.1) (Serine/threonine-protein kinase 22C),42.529,1.84e-42,genome_blast,FALSE,TRUE
 LOC134710844,Muscarinic acetylcholine receptor M3,52.308,7.57e-40,genome_blast,FALSE,TRUE
@@ -12928,7 +12928,7 @@ LOC134725051,Zinc metalloproteinase nas-4 (EC 3.4.24.-) (Nematode astacin 4),38.
 LOC134725540,Calcium-regulated heat-stable protein 1 (Calcium-regulated heat-stable protein of 24 kDa) (CRHSP-24),64.423,3.71e-45,genome_blast,FALSE,TRUE
 LOC134728229,Differentially expressed in FDCP 6 homolog,30.814,1.41e-35,genome_blast,FALSE,TRUE
 LOC134728242,Fibrinogen C domain-containing protein 1,51.095,7.07e-40,genome_blast,FALSE,TRUE
-LOC134728267,Mannan polymerase II complex anp1 subunit (M-Pol II subunit anp1),33.333,8.91e-39,genome_blast,FALSE,TRUE
+LOC134728267,Mannan polymerase II complex anp1 subunit (M-Pol II subunit anp1),33.333,8.91e-39,genome_blast,TRUE,TRUE
 LOC134680625,Putative methyltransferase DDB_G0268948 (EC 2.1.1.-),35.317,1.36e-41,genome_blast,FALSE,TRUE
 LOC134681800,"Sulfotransferase 1E1 (ST1E1) (EC 2.8.2.4) (Estrogen sulfotransferase) (Sulfotransferase, estrogen-preferring)",34.276,2.16e-41,genome_blast,FALSE,TRUE
 LOC134680799,Toll-like receptor 1 (Toll/interleukin-1 receptor-like protein) (TIL) (CD antigen CD281),28.924,2.1799999999999997e-35,genome_blast,FALSE,TRUE
@@ -13232,7 +13232,7 @@ LOC134718232,ATP-dependent DNA helicase PIF1 (EC 3.6.4.12) (DNA repair and recom
 LOC134720553,Ganglioside-induced differentiation-associated protein 1 (GDAP1),31.27,1.54e-38,genome_blast,FALSE,TRUE
 LOC134720876,Cytochrome b-245 light chain (Cytochrome b(558) alpha chain) (Cytochrome b558 subunit alpha) (Neutrophil cytochrome b 22 kDa polypeptide) (Superoxide-generating NADPH oxidase light chain subunit) (p22 phagocyte B-cytochrome) (p22-phox) (p22phox),55.396,2.9599999999999995e-42,genome_blast,FALSE,TRUE
 LOC134721034,Prenylated Rab acceptor protein 1 (PRA1 family protein 1) (Prenylin),46.703,1.14e-41,genome_blast,FALSE,TRUE
-LOC134721319,Prefoldin subunit 4 (Protein C-1),55.738,1.33e-43,genome_blast,FALSE,TRUE
+LOC134721319,Prefoldin subunit 4 (Protein C-1),55.738,1.33e-43,genome_blast,TRUE,TRUE
 LOC134721405,NF-kappa-B inhibitor alpha (I-kappa-B-alpha) (IkB-alpha) (IkappaBalpha) (REL-associated protein pp40),39.437,7.13e-38,genome_blast,FALSE,TRUE
 LOC134722987,"Cysteine-rich, acidic integral membrane protein",32.121,5.2800000000000004e-36,genome_blast,FALSE,TRUE
 LOC134721896,"Galactoside 2-alpha-L-fucosyltransferase Sec1 (EC 2.4.1.-) (Alpha(1,2)FT 3) (GDP-L-fucose:beta-D-galactoside 2-alpha-L-fucosyltransferase 3) (Secretory blood group protein 1)",29.93,4.44e-38,genome_blast,FALSE,TRUE
@@ -13267,7 +13267,7 @@ LOC134692274,Acetylcholine receptor subunit alpha-1-B,28.395,2.6099999999999996e
 LOC134692343,Monocarboxylate transporter 12 (MCT 12) (Solute carrier family 16 member 12),26.84,1.06e-35,genome_blast,FALSE,TRUE
 LOC134692512,Resact receptor (EC 4.6.1.2) (Guanylate cyclase),34.553,4.79e-33,genome_blast,FALSE,TRUE
 LOC134692862,Translocation protein SEC62 (Translocation protein 1) (TP-1) (hTP-1),51.825,1.4999999999999999e-36,genome_blast,FALSE,TRUE
-LOC134695850,"Heart- and neural crest derivatives-expressed protein 2 (Deciduum, heart, autonomic nervous system and neural crest derivatives-expressed protein 2) (dHAND)",48.095,2.13e-41,genome_blast,TRUE,TRUE
+LOC134695850,"Heart- and neural crest derivatives-expressed protein 2 (Deciduum, heart, autonomic nervous system and neural crest derivatives-expressed protein 2) (dHAND)",48.095,2.13e-41,genome_blast,FALSE,TRUE
 LOC134696149,Deleted in malignant brain tumors 1 protein (Apactin) (CRP-ductin) (Glycoprotein 300) (gp300) (Hensin) (Mucin-like glycoprotein) (Muclin) (Vomeroglandin) (p80),28.138,1.21e-33,genome_blast,FALSE,TRUE
 LOC134699044,Ganglioside-induced differentiation-associated protein 1 (GDAP1),31.661,2.54e-38,genome_blast,FALSE,TRUE
 LOC134699097,Cytochrome b-245 light chain (Cytochrome b(558) alpha chain) (Cytochrome b558 subunit alpha) (Neutrophil cytochrome b 22 kDa polypeptide) (Superoxide-generating NADPH oxidase light chain subunit) (p22 phagocyte B-cytochrome) (p22-phox) (p22phox),55.396,2.9599999999999995e-42,genome_blast,FALSE,TRUE
@@ -13364,7 +13364,7 @@ LOC134680650,Protein draper,34.091,4.2099999999999997e-35,genome_blast,FALSE,TRU
 LOC134680662,Vitamin K epoxide reductase complex subunit 1-like protein 1 (VKORC1-like protein 1) (EC 1.17.4.4),44.872,1.7e-41,genome_blast,FALSE,TRUE
 LOC134681135,VWFA and cache domain-containing protein 1 (Cache domain-containing protein 1),30.029,1.4e-34,genome_blast,FALSE,TRUE
 LOC134685300,Four-jointed box protein 1 (Four-jointed protein homolog),29.041,3.38e-35,genome_blast,FALSE,TRUE
-LOC134685664,DNA-directed RNA polymerase I subunit RPA43 (DNA-directed RNA polymerase I subunit F) (Twist neighbor protein),40.828,2.95e-37,genome_blast,TRUE,TRUE
+LOC134685664,DNA-directed RNA polymerase I subunit RPA43 (DNA-directed RNA polymerase I subunit F) (Twist neighbor protein),40.828,2.95e-37,genome_blast,FALSE,TRUE
 LOC134683363,Tectonic-1,34.868,1.58e-33,genome_blast,FALSE,TRUE
 LOC134686514,Acetylcholine receptor subunit beta-like 1 (Nicotinic acetylcholine receptor beta 1),33.083,7.529999999999998e-37,genome_blast,FALSE,TRUE
 LOC134687713,Organic anion transporter 3 (hOAT3) (Organic anion/dicarboxylate exchanger) (Solute carrier family 22 member 8),28.857,4.2700000000000004e-36,genome_blast,FALSE,TRUE
@@ -13515,7 +13515,7 @@ LOC134697236,RNA-binding protein 41 (RNA-binding motif protein 41),51.969,4.9899
 LOC134696226,Coiled-coil domain-containing protein 134,44.872,4.12e-39,genome_blast,FALSE,TRUE
 LOC134701527,Ethyl acetate hydrolase (EC 3.1.1.113) (Ethyl acetate esterase) (Short-chain aliphatic ester esterase),32.609,3.3099999999999996e-37,genome_blast,FALSE,TRUE
 LOC134702078,ATP-dependent DNA helicase PIF1 (EC 3.6.4.12) (DNA repair and recombination helicase PIF1),31.224,7.43e-32,genome_blast,FALSE,TRUE
-ND6,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),69.919,3.11e-41,genome_blast,TRUE,TRUE
+ND6,NADH-ubiquinone oxidoreductase chain 6 (EC 7.1.1.2) (NADH dehydrogenase subunit 6),69.919,3.11e-41,genome_blast,FALSE,TRUE
 LOC134722801,Peptidyl-prolyl cis-trans isomerase Fkbp12 (PPIase Fkbp12) (EC 5.2.1.8) (12 kDa FK506-binding protein) (12 kDa FKBP) (Macrolide-binding protein) (Peptidyl-prolyl cis-trans isomerase) (PPIase) (Rotamase),68.817,1.2399999999999998e-42,genome_blast,FALSE,TRUE
 LOC134724615,GTPase IMAP family member 4 (Immunity-associated nucleotide 1 protein) (IAN-1) (Immunity-associated protein 4),38.537,9.219999999999999e-35,genome_blast,FALSE,TRUE
 LOC134680886,Receptor-type tyrosine-protein phosphatase epsilon (Protein-tyrosine phosphatase epsilon) (R-PTP-epsilon) (EC 3.1.3.48),33.465,7.34e-36,genome_blast,FALSE,TRUE
@@ -13978,7 +13978,7 @@ LOC134707778,Sodium-dependent glucose transporter 1 (Major facilitator superfami
 LOC134707841,Transmembrane protein 169,41.606,1.1299999999999999e-35,genome_blast,FALSE,TRUE
 LOC134708293,EGF-like domain-containing protein 2,26.997,2.25e-33,genome_blast,FALSE,TRUE
 LOC134708628,GTPase IMAP family member 9 (Immune-associated nucleotide-binding protein 7) (IAN-7) (Immunity-associated nucleotide-binding protein 7),36.19,1.32e-34,genome_blast,FALSE,TRUE
-LOC134708433,Golgi-associated plant pathogenesis-related protein 1 (GAPR-1) (Golgi-associated PR-1 protein) (Glioma pathogenesis-related protein 2) (GliPR 2),46.405,1.55e-34,genome_blast,TRUE,TRUE
+LOC134708433,Golgi-associated plant pathogenesis-related protein 1 (GAPR-1) (Golgi-associated PR-1 protein) (Glioma pathogenesis-related protein 2) (GliPR 2),46.405,1.55e-34,genome_blast,FALSE,TRUE
 LOC134709172,Putative nuclease HARBI1 (EC 3.1.-.-) (Harbinger transposase-derived nuclease),37.766,3.5e-35,genome_blast,FALSE,TRUE
 LOC134709219,Ribonuclease P protein subunit p20 (RNaseP protein p20) (Ribonucleases P/MRP protein subunit POP7 homolog) (hPOP7),56.452,2.69e-38,genome_blast,FALSE,TRUE
 LOC134710211,Post-GPI attachment to proteins factor 4 (Post-GPI attachment to proteins GalNAc transferase 4) (Transmembrane protein 246),30.864,7.48e-33,genome_blast,FALSE,TRUE
@@ -14030,7 +14030,7 @@ LOC134695729,Ganglioside GM2 activator (Cerebroside sulfate activator protein) (
 LOC134695845,Leucine-rich repeat-containing protein 74B,29.467,8.89e-32,genome_blast,FALSE,TRUE
 LOC134700914,Insulin-like growth factor-binding protein complex acid labile subunit (ALS),37.333,2.42e-33,genome_blast,FALSE,TRUE
 LOC134701395,Ribonuclease P protein subunit p20 (RNaseP protein p20) (Ribonucleases P/MRP protein subunit POP7 homolog) (hPOP7),56.452,2.92e-38,genome_blast,FALSE,TRUE
-LOC134701368,Ribosomal RNA processing protein 36 homolog,45.024,4.7499999999999996e-35,genome_blast,TRUE,TRUE
+LOC134701368,Ribosomal RNA processing protein 36 homolog,45.024,4.7499999999999996e-35,genome_blast,FALSE,TRUE
 LOC134712944,Uncharacterized protein C3orf20,24.044,5.32e-29,genome_blast,TRUE,TRUE
 LOC134721628,Metabotropic glutamate receptor 5 (mGluR5),24.696,1.7299999999999999e-28,genome_blast,FALSE,TRUE
 LOC134708881,Vesicular glutamate transporter 1 (VGluT1) (Brain-specific Na(+)-dependent inorganic phosphate cotransporter) (Solute carrier family 17 member 7),46.711,2.45e-34,genome_blast,FALSE,TRUE
@@ -14057,7 +14057,7 @@ LOC134711090,A disintegrin and metalloproteinase with thrombospondin motifs 13 (
 LOC134714359,Zinc finger SWIM domain-containing protein 8 homolog (Protein dorado),34.746,1.79e-28,genome_blast,FALSE,TRUE
 LOC134713839,WW domain-containing oxidoreductase (EC 1.1.1.-),32.432,5.2700000000000004e-33,genome_blast,FALSE,TRUE
 LOC134716590,Prominin-1-A (Prominin-like protein 1),27.95,1.8300000000000002e-29,genome_blast,FALSE,TRUE
-LOC134715729,Coiled-coil domain-containing protein 124,50,3.76e-36,genome_blast,FALSE,TRUE
+LOC134715729,Coiled-coil domain-containing protein 124,50,3.76e-36,genome_blast,TRUE,TRUE
 LOC134714179,Zinc finger protein 853,52.727,2.8e-32,genome_blast,FALSE,TRUE
 LOC134714195,Homeobox protein EMX2 (Empty spiracles homolog 2) (Empty spiracles-like protein 2),64.602,2.8099999999999997e-35,genome_blast,FALSE,TRUE
 LOC134716861,Lim and transglutaminase domain protein ltd-1 (Kyphoscoliosis inactive peptidase homolog ltd-1),24.59,1.7300000000000001e-29,genome_blast,FALSE,TRUE
@@ -14308,7 +14308,7 @@ LOC134705222,Neuronal acetylcholine receptor subunit alpha-9-I (Nicotinic acetyl
 LOC134705328,NMDA receptor synaptonuclear signaling and neuronal migration factor (Nasal embryonic luteinizing hormone-releasing hormone factor) (Nasal embryonic LHRH factor),32.889,2.62e-29,genome_blast,FALSE,TRUE
 LOC134708077,Cartilage matrix protein (Matrilin-1),37.037,5.14e-29,genome_blast,FALSE,TRUE
 LOC134706149,Temptin,47.009,2.66e-34,genome_blast,FALSE,TRUE
-LOC134709918,Transport and Golgi organization protein 1 homolog (TANGO1) (C219-reactive peptide) (D320) (Melanoma inhibitory activity protein 3),29.909,2.2000000000000002e-27,genome_blast,FALSE,TRUE
+LOC134709918,Transport and Golgi organization protein 1 homolog (TANGO1) (C219-reactive peptide) (D320) (Melanoma inhibitory activity protein 3),29.909,2.2000000000000002e-27,genome_blast,TRUE,TRUE
 LOC134710268,E3 ubiquitin-protein ligase rnf168 (EC 2.3.2.27) (RING finger protein 168) (RING-type E3 ubiquitin transferase rnf168),45.402,5.470000000000001e-29,genome_blast,FALSE,TRUE
 LOC134711162,eIF-2-alpha kinase GCN2 (Eukaryotic translation initiation factor 2-alpha kinase 4) (EC 2.7.11.1) (GCN2-like protein) (mGCN2),49.275,1.7500000000000001e-29,genome_blast,FALSE,TRUE
 LOC134712284,Neuronal acetylcholine receptor subunit alpha-7,28.198,1.2799999999999999e-30,genome_blast,FALSE,TRUE
@@ -14472,7 +14472,7 @@ LOC134709713,Mediator of RNA polymerase II transcription subunit 29 (Intersex-li
 LOC134712526,A-kinase anchor protein 14 (AKAP-14) (TAKAP-1.2) (Testis-specific A-kinase-anchoring protein TAKAP-80),37.41,5.47e-32,genome_blast,FALSE,TRUE
 LOC134714491,Transient receptor potential cation channel subfamily M member-like 2 (nvTRPM2),28.617,2.14e-28,genome_blast,FALSE,TRUE
 LOC134714874,Low-density lipoprotein receptor-related protein (LRP),33.333,3.51e-29,genome_blast,FALSE,TRUE
-LOC134714979,Small nuclear ribonucleoprotein G (snRNP-G) (Sm protein G) (Sm-G) (SmG),73.684,8.499999999999999e-38,genome_blast,FALSE,TRUE
+LOC134714979,Small nuclear ribonucleoprotein G (snRNP-G) (Sm protein G) (Sm-G) (SmG),73.684,8.499999999999999e-38,genome_blast,TRUE,TRUE
 LOC134716357,LETM1 domain-containing protein 1 (Cervical cancer receptor) (MCC-32),25.246,6.229999999999999e-31,genome_blast,FALSE,TRUE
 LOC134718484,AP-4 complex accessory subunit RUSC2 (Interacting protein of Rab1) (Iporin) (RUN and SH3 domain-containing protein 2),35.849,2.0600000000000002e-26,genome_blast,FALSE,TRUE
 LOC134718794,Periostin (PN) (Osteoblast-specific factor 2) (OSF-2),26.763,2.8800000000000002e-27,genome_blast,FALSE,TRUE
@@ -14822,7 +14822,7 @@ LOC134710597,Protein SON (Negative regulatory element-binding protein) (NRE-bind
 LOC134711648,Galaxin,31.008,6.73e-28,genome_blast,FALSE,TRUE
 LOC134709479,Cdc42 homolog (EC 3.6.5.2),36.702,1.7199999999999998e-32,genome_blast,FALSE,TRUE
 LOC134709484,Cdc42 homolog (25 kDa GTP-binding protein),35.795,1.36e-32,genome_blast,FALSE,TRUE
-LOC134709486,Cdc42 homolog (25 kDa GTP-binding protein),35.795,1.8099999999999998e-32,genome_blast,TRUE,TRUE
+LOC134709486,Cdc42 homolog (25 kDa GTP-binding protein),35.795,1.8099999999999998e-32,genome_blast,FALSE,TRUE
 LOC134711668,Cdc42 homolog (EC 3.6.5.2),32.955,1.4999999999999997e-32,genome_blast,FALSE,TRUE
 LOC134712046,NADH dehydrogenase [ubiquinone] 1 alpha subcomplex assembly factor 3,41.667,6.599999999999999e-32,genome_blast,FALSE,TRUE
 LOC134714363,Toll-like receptor 6 (CD antigen CD286),28.302,1.1300000000000001e-26,genome_blast,FALSE,TRUE
@@ -14874,7 +14874,7 @@ LOC134714860,Glyoxylate/hydroxypyruvate reductase A (EC 1.1.1.79) (EC 1.1.1.81) 
 LOC134714867,Glyoxylate/hydroxypyruvate reductase A (EC 1.1.1.79) (EC 1.1.1.81) (2-ketoacid reductase),27.673,3.81e-29,genome_blast,FALSE,TRUE
 LOC134707212,Histone-lysine N-methyltransferase PRDM9 (Hybrid sterility protein 1) (Meiosis-induced factor containing a PR/SET domain and zinc-finger motif) (PR domain zinc finger protein 9) (PR domain-containing protein 9) (Protein-lysine N-methyltransferase PRDM9) (EC 2.1.1.-) ([histone H3]-lysine36 N-trimethyltransferase PRDM9) (EC 2.1.1.359) ([histone H3]-lysine4 N-trimethyltransferase PRDM9) (EC 2.1.1.354) ([histone H3]-lysine9 N-trimethyltransferase PRDM9) (EC 2.1.1.355) ([histone H4]-N-methyl-L-lysine20 N-methyltransferase PRDM9) (EC 2.1.1.362) ([histone H4]-lysine20 N-methyltransferase PRDM9) (EC 2.1.1.361),43.448,5.53e-28,genome_blast,FALSE,TRUE
 LOC134682661,Toll-like receptor Tollo (Toll-like receptor 8),40.411,1.39e-25,genome_blast,FALSE,TRUE
-LOC134685650,R-spondin-2 (Roof plate-specific spondin-2),36.42,6.8699999999999996e-31,genome_blast,TRUE,TRUE
+LOC134685650,R-spondin-2 (Roof plate-specific spondin-2),36.42,6.8699999999999996e-31,genome_blast,FALSE,TRUE
 LOC134691350,Transient receptor potential cation channel subfamily M member-like 2 (nvTRPM2),29.721,5.12e-25,genome_blast,FALSE,TRUE
 LOC134706596,Sarcoplasmic calcium-binding protein (SCP),32.955,1.6e-30,genome_blast,FALSE,TRUE
 LOC134706858,Stimulated by retinoic acid gene 6 protein-like (STRA6-like protein) (Retinol-binding protein 4 receptor 2) (RBP4 receptor 2),31.849,2.43e-28,genome_blast,FALSE,TRUE
@@ -15660,7 +15660,7 @@ LOC134723079,Putative ankyrin repeat protein L93,36.478,5.2900000000000005e-27,g
 LOC134722154,Protein Flattop homolog (Cilia- and flagella-associated protein 126),60,6.64e-28,genome_blast,FALSE,TRUE
 LOC134726075,Zinc finger MYM-type protein 1,29.767,4.8e-25,genome_blast,FALSE,TRUE
 LOC134725409,Protein TASOR (Transgene activation suppressor protein),30.172,2.9700000000000003e-21,genome_blast,FALSE,TRUE
-LOC134725610,p53 and DNA damage-regulated protein 1,47.619,1.1200000000000001e-29,genome_blast,TRUE,TRUE
+LOC134725610,p53 and DNA damage-regulated protein 1,47.619,1.1200000000000001e-29,genome_blast,FALSE,TRUE
 LOC134727404,"Protocadherin Fat 1 (Cadherin family member 7) (Cadherin-related tumor suppressor homolog) (Protein fat homolog) [Cleaved into: Protocadherin Fat 1, nuclear form]",26.514,3.68e-22,genome_blast,FALSE,TRUE
 LOC134727414,Multiple epidermal growth factor-like domains protein 6 (Multiple EGF-like domains protein 6) (Epidermal growth factor-like protein 3) (EGF-like protein 3),34.637,4.44e-24,genome_blast,FALSE,TRUE
 LOC134681731,BPTI/Kunitz domain-containing protein,44.915,1.0400000000000001e-29,genome_blast,FALSE,TRUE
@@ -15888,7 +15888,7 @@ LOC134721873,PSME3-interacting protein (NEFA-interacting nuclear protein NIP30) 
 LOC134723098,Protein NipSnap homolog 3A (NipSnap3A),32.258,4.3300000000000004e-26,genome_blast,FALSE,TRUE
 LOC134724527,PDZ and LIM domain protein 3,36.145,9.69e-24,genome_blast,FALSE,TRUE
 LOC134726666,Carbohydrate sulfotransferase 9 (EC 2.8.2.-) (GalNAc-4-O-sulfotransferase 2) (GalNAc-4-ST2) (GalNAc4ST-2) (N-acetylgalactosamine-4-O-sulfotransferase 2),31.602,1.4499999999999998e-23,genome_blast,FALSE,TRUE
-LOC134725826,Tubulin polymerization-promoting protein family member 3,37.569,5.2300000000000004e-27,genome_blast,TRUE,TRUE
+LOC134725826,Tubulin polymerization-promoting protein family member 3,37.569,5.2300000000000004e-27,genome_blast,FALSE,TRUE
 LOC134681809,Endonuclease domain-containing 1 protein (EC 3.1.30.-),29.96,9.639999999999999e-24,genome_blast,FALSE,TRUE
 LOC134680974,Zinc finger protein pita (Protein spotted-dick),33.333,1.6400000000000002e-21,genome_blast,FALSE,TRUE
 LOC134727723,E3 SUMO-protein ligase ZBED1 (EC 2.3.2.-) (DNA replication-related element-binding factor) (Putative Ac-like transposable element) (Zinc finger BED domain-containing protein 1) (dREF homolog),26.846,1.6000000000000002e-23,genome_blast,FALSE,TRUE
@@ -16523,7 +16523,7 @@ LOC134706709,Partner of Y14 and mago B (PYM homolog 1 exon junction complex-asso
 LOC134708494,Homeobox protein php-3 (Posterior Hox protein paralog 3),43.651,2.6500000000000003e-21,genome_blast,FALSE,TRUE
 LOC134705598,Tenascin (TN) (Cytotactin) (GMEM) (GP 150-225) (Glioma-associated-extracellular matrix antigen) (Hexabrachion) (JI) (Myotendinous antigen) (Neuronectin) (Tenascin-C) (TN-C),43.363,4.99e-22,genome_blast,FALSE,TRUE
 LOC134714460,Proteasome assembly chaperone 4 (PAC-4) (mPAC4),44.248,2.1699999999999997e-24,genome_blast,FALSE,TRUE
-LOC134715734,"Large ribosomal subunit protein mL51 (39S ribosomal protein L51, mitochondrial) (L51mt) (MRP-L51)",45.217,1.49e-22,genome_blast,TRUE,TRUE
+LOC134715734,"Large ribosomal subunit protein mL51 (39S ribosomal protein L51, mitochondrial) (L51mt) (MRP-L51)",45.217,1.49e-22,genome_blast,FALSE,TRUE
 LOC134722960,Perlucin,37.956,1.55e-23,genome_blast,FALSE,TRUE
 LOC134721979,Cilia- and flagella-associated protein 90 (Y regulated sperm protein),39.2,1.68e-23,genome_blast,FALSE,TRUE
 LOC134726007,Ribonuclease P protein subunit p21 (RNaseP protein p21),37.681,8.53e-24,genome_blast,FALSE,TRUE
@@ -16648,7 +16648,7 @@ LOC134707927,Golgi-associated plant pathogenesis-related protein 1 (GAPR-1) (Gol
 LOC134709622,Perlucin,35.507,3.94e-21,genome_blast,FALSE,TRUE
 LOC134713884,"Succinate dehydrogenase assembly factor 4, mitochondrial (SDH assembly factor 4) (SDHAF4) (Starvation-upregulated protein)",63.636,2.39e-22,genome_blast,FALSE,TRUE
 LOC134727134,"NADH dehydrogenase [ubiquinone] iron-sulfur protein 6, mitochondrial (Complex I-13kD-A) (CI-13kD-A) (NADH-ubiquinone oxidoreductase 13 kDa-A subunit)",42.857,6.160000000000001e-22,genome_blast,FALSE,TRUE
-LOC134681735,Zinc finger HIT domain-containing protein 3 (HNF-4a coactivator) (Thyroid hormone receptor interactor 3) (Thyroid receptor-interacting protein 3) (TR-interacting protein 3) (TRIP-3),43.357,2.7700000000000004e-21,genome_blast,TRUE,TRUE
+LOC134681735,Zinc finger HIT domain-containing protein 3 (HNF-4a coactivator) (Thyroid hormone receptor interactor 3) (Thyroid receptor-interacting protein 3) (TR-interacting protein 3) (TRIP-3),43.357,2.7700000000000004e-21,genome_blast,FALSE,TRUE
 LOC134690932,Galactose-specific lectin nattectin (CTL),32.716,3.660000000000001e-21,genome_blast,FALSE,TRUE
 LOC134693020,Calmodulin (CaM),40.741,2.2100000000000003e-21,genome_blast,FALSE,TRUE
 LOC134694992,Thread protein-1,40.708,9.59e-21,genome_blast,FALSE,TRUE

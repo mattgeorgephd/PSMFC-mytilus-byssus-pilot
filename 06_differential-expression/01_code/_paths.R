@@ -18,5 +18,10 @@ top     <- here::here("03_analyses", "top_DEGs")            # top-50 tables per 
 figs    <- here::here("03_analyses", "figures")             # volcano, MA, PCA, DEG counts
 for (d in c(cnt, deg, dds_dir, top, figs)) dir.create(d, recursive = TRUE, showWarnings = FALSE)
 
+# Outputs of this analysis (continued)
+mito    <- here::here("03_analyses", "mitochondrial")       # mitochondrial genes on their own (13)
+dir.create(mito, recursive = TRUE, showWarnings = FALSE)
+
 # Cross-folder reads
 blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot")   # LOC_GO_list.txt
+t_data   <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "t_data.ctab")  # gene -> sequence

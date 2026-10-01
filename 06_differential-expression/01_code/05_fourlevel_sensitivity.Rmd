@@ -29,7 +29,8 @@ made on numbers rather than on habit. The four-level model can shift the counts 
 dispersion helps low-count genes in the smaller contrasts and hurts genes whose variance
 differs between arms).
 
-Steps per tissue: subset the master matrix to the day-3 samples in `treatmentinfo_clean.csv`;
+Steps per tissue: subset the master matrix (nuclear genes; the mitochondrial loci are left out
+as in script 03) to the day-3 samples in `treatmentinfo_clean.csv`;
 `DESeqDataSetFromMatrix(~ treatment)` with `control` as the reference level; `DESeq()`; keep
 genes with >= 10 counts in at least a third of the samples (the same filter as script 03, now
 applied over all four arms); `lfcShrink(type = "apeglm")` per stressor coefficient; DEGs at
@@ -46,6 +47,10 @@ ARMS <- c("control", "OA", "OW", "DO")          # reference first: coefficient n
 
 master <- as.matrix(read.csv(file.path(cnt, "gene_count_matrix_clean.csv"),
                              row.names = 1, check.names = FALSE))
+## nuclear genes only, as in the primary fits (script 03): the mitochondrial loci are analysed
+## on their own in script 13
+mtl <- read.csv(file.path(cnt, "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
+master <- master[!rownames(master) %in% mtl$gene, ]
 ti <- read.csv(file.path(cnt, "treatmentinfo_clean.csv"), row.names = 1, stringsAsFactors = FALSE)
 cat("Master count matrix:", nrow(master), "genes x", ncol(master), "samples\n")
 

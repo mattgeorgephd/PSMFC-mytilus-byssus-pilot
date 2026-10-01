@@ -32,28 +32,40 @@ has no batch runner and the repository-level runner does not call it. The
 
 ## Running the expression pipeline on the Iso-Seq transcriptome
 
-The analysis of record maps reads to the genome. To run the same chain against the Iso-Seq
-transcriptome instead, as a sensitivity branch:
+The analysis of record maps reads to the genome. Running the same chain against the Iso-Seq
+transcriptome, as a sensitivity branch, is planned but **not implemented**: three inputs are
+not in the repository (checked 2026-10-01).
 
-1. **Reference.** Collapse redundant isoforms (the transcriptome holds several per gene), then
-   build a transcript-to-gene table, either by clustering or by mapping each isoform to its
-   genome LOC (`03_blast/01_code/03_isoseq_vs_genome_blast.Rmd` already blasts one against the
-   other).
-2. **Quantification.** Pseudo-align against the collapsed transcriptome with salmon, using
-   `--noLengthCorrection` (meant for 3' tag protocols such as QuantSeq, whose counts do not
-   scale with transcript length), and summarise to genes with tximport. Then pass the raw
-   counts (`txi$counts`, `countsFromAbundance = "no"`) to `DESeqDataSetFromMatrix()` without a
-   length offset, as the tximport vignette recommends for 3' tagged RNA-seq (Soneson, Love and
-   Robinson 2015, F1000Research 4:1521). The superseded `01_code/_superseded/isoseq-as-reference/`
-   kallisto runs are a starting point.
+| needed | where it is | status |
+|---|---|---|
+| trimmed Tag-seq reads | lab server, `byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz` (paths in `01_code/_superseded/isoseq-as-reference/01-kallisto-genome.Rmd`) | not in the repository; the trimming command that made them (and that the HISAT2 run of `05` also used) is not recorded either |
+| `Mtros-hq_transcripts.fasta` | owl (`https://owl.fish.washington.edu/halfshell/genomic-databank/`) | downloadable by `01_isoseq_transcriptome_check.Rmd` where owl is reachable |
+| isoform-to-gene table | none | must be built (step 1 below); no script here maps isoforms to genome LOCs. `03_blast/01_code/03_isoseq_vs_genome_blast.Rmd` blasts the byssal foot-protein sequences against each reference separately, not one reference against the other |
+
+The design, once those exist:
+
+1. **Isoform-to-gene table.** Align the isoforms to the genome (GCF_036588685.1) with a
+   spliced long-read aligner (minimap2 `-ax splice:hq`; Li 2018, Bioinformatics 34:3094) and
+   assign each isoform to the reference gene (LOC) it overlaps in the genome annotation. This
+   gives genes comparable with the genome branch. Isoforms that overlap no LOC form their own
+   genes (clustered, for example, by shared alignment locus).
+2. **Quantification.** Pseudo-align the trimmed reads to the isoforms with salmon
+   (Patro et al. 2017, Nature Methods 14:417) using `--noLengthCorrection`, which is meant for
+   3' tag protocols whose counts do not scale with transcript length, and summarise to genes
+   with tximport. Pass the raw counts (`txi$counts`, `countsFromAbundance = "no"`) to
+   `DESeqDataSetFromMatrix()` without a length offset, as the tximport vignette recommends
+   for 3' tagged RNA-seq (Soneson, Love and Robinson 2015, F1000Research 4:1521).
 3. **Differential expression.** Write the gene matrix to
    `04_iso-seq-transcriptome/03_analyses/counts/` and point `06_differential-expression` at it
    through one parameter (the count file of `01_clean_count_matrix.Rmd`), with an output root
-   per reference so the genome results are not overwritten.
-4. **Annotation and GO.** Annotate the transcriptome genes from
-   `03_blast/03_analyses/transcriptome-uniprot/` into the same `gene_annotation.tsv` layout
-   `07_enrichment` uses; the enrichment, GO slim and gene-mechanics scripts then run unchanged.
+   per reference so the genome results are not overwritten. The mitochondrial transcripts
+   are separated as in the genome branch (`tools/mt_encoded.R`).
+4. **Annotation and GO.** Annotate the genes from the isoform BLAST already here
+   (`03_blast/03_analyses/transcriptome-uniprot/Mtros-hq-uniprot_blastx.tab`, best hit per
+   gene) into the `gene_annotation.tsv` layout `07_enrichment` uses; the enrichment, GO slim
+   and gene-mechanics scripts then run unchanged.
 5. **Comparison.** Report, per contrast, the overlap of DEGs between references (through the
-   isoform-to-LOC map) and whether the enriched terms agree.
+   isoform-to-LOC table) and whether the enriched terms agree.
 
-None of this is implemented yet; it is the design if the branch is wanted.
+The superseded kallisto runs in `01_code/_superseded/isoseq-as-reference/` are a starting
+point for step 2 only; they used the full transcriptome without an isoform-to-gene table.

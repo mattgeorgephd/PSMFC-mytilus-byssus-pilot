@@ -51,6 +51,7 @@ find_repo_root <- function(start = here::here()) {
   stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
 }
 repo_root   <- find_repo_root()
+source(file.path(repo_root, "tools", "gene_ids.R"))   # gene_key(): count-matrix name -> LOC key
 DE_DIR      <- file.path(repo_root, "06_differential-expression")
 COUNT_FILE  <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_matrix_clean.csv")
 TI_FILE     <- file.path(DE_DIR, "03_analyses", "count_matrix", "treatmentinfo_clean.csv")
@@ -87,7 +88,6 @@ read_thread_summary <- function(path) {
     d$phase <- dplyr::case_when(d$thread_trt == "lab_control" ~ "lab",
                                 d$thread_trt == "baseline"    ~ "pre",
                                 TRUE                          ~ "post")
-  if (!"max_displacement" %in% names(d)) d$max_displacement <- NA_real_
   d %>% mutate(mussel = norm_id(mussel), adhesion_kpa = max_force / pad_area * 1000) %>%
     filter(!is.na(adhesion_kpa))
 }
@@ -172,15 +172,17 @@ if (USE_RAW_THREAD_SET) {
 }
 samples_wanted <- paste0(thread_mussels, TISSUE)
 
-## per-mussel thread mechanics (day-3 means, all four arms) for cross-reference
+## per-mussel thread mechanics (day 3, all four arms) for cross-reference: arithmetic means of
+## the threads, and the strongest thread for max_force (each thread's peak force is the
+## thread summary's `max_force` column)
 mech <- thr_raw %>%
   filter(phase == "post") %>%
   group_by(mussel, treatment = mussel_trt) %>%
-  summarise(n_plaques        = n(),
-            max_force        = mean(max_force,        na.rm = TRUE),
-            pad_area         = mean(pad_area,         na.rm = TRUE),
-            adhesion_kpa     = mean(adhesion_kpa,     na.rm = TRUE),
-            max_displacement = mean(max_displacement, na.rm = TRUE), .groups = "drop")
+  summarise(n_plaques    = n(),
+            mean_force   = mean(max_force,    na.rm = TRUE),
+            max_force    = max(max_force,     na.rm = TRUE),
+            pad_area     = mean(pad_area,     na.rm = TRUE),
+            adhesion_kpa = mean(adhesion_kpa, na.rm = TRUE), .groups = "drop")
 ```
 
 ---
@@ -197,7 +199,7 @@ dds <- DESeqDataSetFromMatrix(round(as.matrix(cm_t)),
                               DataFrame(row.names = colnames(cm_t)), design = ~ 1)
 dds <- dds[rowSums(counts(dds)) > 0, ]
 vmat <- assay(vst(dds, blind = TRUE))
-rownames(vmat) <- sub("^gene-", "", sub(".*\\|", "", sub("^gene-", "", rownames(vmat))))
+rownames(vmat) <- gene_key(rownames(vmat))
 
 samples_have <- intersect(samples_wanted, colnames(vmat))
 cat("Thread-having mussels:", length(thread_mussels),
@@ -249,7 +251,7 @@ build_table <- function(tcode) {
   sg <- find_sig(tcode); if (is.null(sg)) { message("no siggene for ", tcode); return(NULL) }
   gcol <- grep("gene", names(sg), ignore.case = TRUE, value = TRUE)[1]
   sg <- sg %>%
-    mutate(LOC_ID = sub("^gene-", "", sub(".*\\|", "", sub("^gene-", "", .data[[gcol]]))))
+    mutate(LOC_ID = gene_key(.data[[gcol]]))
   if (SIG_ONLY && "padj" %in% names(sg)) sg <- filter(sg, padj < 0.05)
   sg <- sg %>% filter(LOC_ID %in% rownames(vmat))
   ## direction by sign, not by rank position: with fewer than 2 x N_TOP DEGs, or with most of
@@ -261,6 +263,7 @@ build_table <- function(tcode) {
       mutate(direction = "down"))
   cols <- order_samples(tcode)
   expr <- vmat[top$LOC_ID, cols, drop = FALSE]
+  stopifnot(!anyDuplicated(annot$LOC_ID))   # so the join keeps one row per gene, in expr's order
   out <- top %>%
     left_join(annot, by = "LOC_ID") %>%
     transmute(direction, LOC_ID, protein_name,

@@ -28,26 +28,27 @@ own folder's `03_analyses/`; later folders read earlier ones.
 | `00_experiment_plan/` | experimental design slides and photos | reference only |
 | `00_treatment_conditions/` | tank DO, pH, temperature and salinity record and summary table | reference only |
 | `01_mussel-measurements/` | mussel size, condition and thread-production workbooks | input: `mussel-size-measurements.xlsx` feeds `02_thread-strength` script 01 |
-| `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, force, plaque area and extension | `01_code/00_run_thread_strength.Rmd` |
+| `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, mean and maximum peak force and plaque area | `01_code/00_run_thread_strength.Rmd` |
 | `03_blast/` | BLAST annotation of the genome CDS and the Iso-Seq transcriptome; the `genome-foot/` GO mapping used downstream | HPC method record; outputs committed |
-| `04_iso-seq-transcriptome/` | QC of the Iso-Seq transcriptome (superseded isoseq-as-reference DE kept); design for an Iso-Seq branch | knit `01_code/01_isoseq_transcriptome_check.Rmd` |
+| `04_iso-seq-transcriptome/` | QC of the Iso-Seq transcriptome (superseded isoseq-as-reference DE kept); design for an Iso-Seq branch, blocked on inputs not in the repository | knit `01_code/01_isoseq_transcriptome_check.Rmd` |
 | `05_sequence-alignment/` | read QC, HISAT2 + StringTie alignment (HPC record) and the count matrices | `01_code/00_run_sequence_alignment.Rmd` |
-| `06_differential-expression/` | DESeq2 for 16 contrasts (TC of record, LC, foot vs gill), DEG annotation, figures | `01_code/00_run_differential_expression.Rmd` |
+| `06_differential-expression/` | DESeq2 for 7 contrasts (each stressor vs the day-3 treatment control, and foot vs gill), DEG annotation, figures; the mitochondrial genes on their own | `01_code/00_run_differential_expression.Rmd` |
 | `07_enrichment/` | GO enrichment: topGO (of record), goseq, clusterProfiler, rrvgo, method comparison | `01_code/00_run_enrichment.Rmd` |
 | `08_gene-annotation/` | GO slims of the TC DEGs; NCBI summaries and orthologs for the top DEGs (network) | `01_code/00_run_gene_annotation.Rmd` |
-| `09_gene-mechanics-correlation/` | per-gene ANCOVA of day-3 thread mechanics on expression, foot and gill | `01_code/00_run_gene_mechanics_by_tissue.Rmd` |
+| `09_gene-mechanics-correlation/` | per-animal ANCOVA of day-3 thread mechanics on genes, DEG sets, enriched GO terms and mitochondrial expression, foot and gill | `01_code/00_run_gene_mechanics_by_tissue.Rmd` |
 
 Run order: `02_thread-strength` and `05` -> `06` (independent of each other), then
 `07_enrichment` and `08_gene-annotation` (they read `06`), and
-`09_gene-mechanics-correlation` last (it reads `02`, `03` and `06`). `00_run_pipeline.Rmd`
+`09_gene-mechanics-correlation` last (it reads `02`, `03`, `06` and `07`). `00_run_pipeline.Rmd`
 follows this order.
 
 Other folders:
 
 - `tools/`: shared helpers (README inside): `run_steps.R` (the runners), `plot_style.R` (the
   one set of figure colours: control grey, OA green, OW orange, DO purple; red up, blue
-  down), `mt_encoded.R` (flags LOCs annotated as mitochondrially encoded proteins) and
-  `pipeline_checks.R` (run checks and `RUN_provenance*.txt`).
+  down), `gene_ids.R` (`gene_key()`, the one way gene names are joined to annotation),
+  `mt_encoded.R` (the mitochondrial loci of the count matrix) and `pipeline_checks.R` (run
+  checks and `RUN_provenance*.txt`).
 - `instrument-reference/`: tensometer manual, LabVIEW logger and wiring notes.
 - `template-oyster-pipeline/`: Tag-seq code from the triploid oyster heatwave project, kept as
   a template; not part of this analysis.
@@ -55,8 +56,9 @@ Other folders:
 ## Samples
 
 Tissue was foot or gill. Every animal has a library of the phenol gland to the tip of the foot
-(IDs ending `F`) and of the gill (`G`); the twelve day-0 lab controls also have a library of
-the rest of the foot (`FX`), which no contrast uses. The sample sheets name these
+(IDs ending `F`) and of the gill (`G`); the twelve day-0 animals also have a library of the
+rest of the foot (`FX`). The day-0 animals are not used as a control (their feet were
+dissected differently); every contrast is against the day-3 treatment control. The sample sheets name these
 inconsistently; `06_differential-expression/03_analyses/count_matrix/library_crosswalk.csv`
 maps every library to its RNA isolation record.
 

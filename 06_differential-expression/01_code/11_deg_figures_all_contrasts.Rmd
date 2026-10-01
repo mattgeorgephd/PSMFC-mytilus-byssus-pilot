@@ -1,5 +1,5 @@
 ---
-title: "11 - DEG figures for every contrast family (TC, LC, foot vs gill)"
+title: "11 - DEG figures for every contrast (TC and foot vs gill)"
 output: html_document
 ---
 
@@ -9,16 +9,15 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 # What this does
 
-Draws the results of all 16 contrasts from script 04, including the lab-control (LC) and
-foot-vs-gill (FG) contrasts that had tables but no figures. Scripts 08-10 keep drawing the
-manuscript figures for the six treatment-control (TC) contrasts.
+Draws the results of the seven contrasts from script 04: the six treatment-control (TC)
+contrasts and the foot-vs-gill contrast of the day-3 controls (FG), which had tables but no
+figures. Scripts 08-10 keep drawing the manuscript figures for the TC contrasts.
 
 1. `DEG_counts_all_contrasts.png`: up- and down-regulated DEGs per contrast, by family.
 2. `volcano_<family>.png`: volcano plots (apeglm log2 fold change against -log10 adjusted p).
-3. `TC_vs_LC_overlap.png` and `DEG_lists/DEG_overlap_TC_LC.csv`: for each tissue and
-   stressor, how many DEGs are found against the day-3 control only (TC), against the day-0
-   lab control only (LC), or both. LC lists carry the stressor effect plus three days in the
-   system and handling, so most of their DEGs are not TC DEGs.
+
+The day-0 lab-control (LC) contrasts were retired (scripts 01 and 02); their figures are kept in
+`03_analyses/_superseded/LC_contrasts/`.
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
@@ -43,7 +42,7 @@ save_fig <- function(plot, name, w, h) {
 
 ```{r counts, fig.width = 10, fig.height = 5}
 cnt_long <- counts %>%
-  mutate(family = factor(family, levels = c("TC", "LC", "FG")),
+  mutate(family = factor(family, levels = c("TC", "FG")),
          code = factor(code, levels = rev(contrasts$code))) %>%
   pivot_longer(c(n_up, n_down), names_to = "direction", values_to = "n") %>%
   mutate(direction = ifelse(direction == "n_up", "up", "down"),
@@ -57,15 +56,15 @@ save_fig(ggplot(cnt_long, aes(signed, code, fill = direction)) +
                              labels = c(up = "Up-regulated", down = "Down-regulated"), name = NULL) +
            scale_x_continuous(labels = abs, expand = expansion(mult = 0.15)) +
            labs(x = "DEGs (apeglm padj < 0.05)", y = NULL,
-                caption = "TC: vs day-3 treatment control (of record). LC: vs day-0 lab control. FG: gill vs foot within controls.") +
+                caption = "TC: vs day-3 treatment control (of record). FG: gill vs foot in the day-3 controls.") +
            theme_psmfc() + theme(legend.position = "top"),
-         "DEG_counts_all_contrasts.png", 9, 6.5)
+         "DEG_counts_all_contrasts.png", 9, 4.5)
 ```
 
 # Volcano plots
 
 ```{r volcano, fig.width = 11, fig.height = 7}
-for (fam in c("TC", "LC", "FG")) {
+for (fam in c("TC", "FG")) {
   d <- bind_rows(lapply(contrasts$code[contrasts$family == fam], read_full)) %>%
     filter(!is.na(padj)) %>%
     mutate(status = case_when(padj < PADJ & log2FoldChange > 0 ~ "up",
@@ -74,7 +73,7 @@ for (fam in c("TC", "LC", "FG")) {
                           levels = sprintf("%s\n%s", contrasts$code[contrasts$family == fam],
                                            label_of[contrasts$code[contrasts$family == fam]])))
   n_lab <- d %>% group_by(panel) %>% summarise(lab = sprintf("up %d / down %d", sum(status == "up"), sum(status == "down")))
-  ncol_f <- if (fam == "FG") 2 else 4
+  ncol_f <- if (fam == "FG") 1 else 3
   p <- ggplot(d, aes(log2FoldChange, -log10(padj), colour = status)) +
     geom_point(data = filter(d, status == "ns"), size = 0.5, alpha = 0.4) +
     geom_point(data = filter(d, status != "ns"), size = 0.7, alpha = 0.7) +
@@ -86,31 +85,6 @@ for (fam in c("TC", "LC", "FG")) {
                         labels = c(up = "Up", down = "Down", ns = "Not significant"), name = NULL) +
     labs(x = "log2 fold change (apeglm)", y = "-log10 adjusted p") +
     theme_psmfc(10) + theme(legend.position = "top")
-  save_fig(p, sprintf("volcano_%s.png", fam), if (fam == "FG") 8 else 12, if (fam == "FG") 4.5 else if (fam == "LC") 7 else 7)
+  save_fig(p, sprintf("volcano_%s.png", fam), if (fam == "FG") 4.5 else 10, if (fam == "FG") 4.5 else 7)
 }
-```
-
-# Treatment control vs lab control
-
-```{r overlap, fig.width = 9, fig.height = 4.5}
-sig_genes <- function(code) { d <- read_full(code); d$gene[!is.na(d$padj) & d$padj < PADJ] }
-ov <- bind_rows(lapply(c("F", "G"), function(t) bind_rows(lapply(c("OA", "OW", "DO"), function(x) {
-  tc <- sig_genes(paste0(t, x, "_TC")); lc <- sig_genes(paste0(t, x, "_LC"))
-  data.frame(tissue = TISSUE_LABELS[[t]], stressor = x,
-             TC_only = length(setdiff(tc, lc)), both = length(intersect(tc, lc)), LC_only = length(setdiff(lc, tc)),
-             share_of_TC_also_LC = round(length(intersect(tc, lc)) / max(length(tc), 1), 3))
-}))))
-write.csv(ov, file.path(deg, "DEG_overlap_TC_LC.csv"), row.names = FALSE)
-knitr::kable(ov)
-ov_long <- ov %>% pivot_longer(c(TC_only, both, LC_only), names_to = "set", values_to = "n") %>%
-  mutate(set = factor(set, levels = c("TC_only", "both", "LC_only")),
-         stressor = factor(stressor, levels = c("OA", "OW", "DO")))
-save_fig(ggplot(ov_long, aes(stressor, n, fill = set)) +
-           geom_col(width = 0.7, colour = "white", linewidth = 0.3) +
-           facet_wrap(~ tissue, scales = "free_y") +
-           scale_fill_manual(values = c(TC_only = "#4d4d4d", both = "#8c8c8c", LC_only = "#cccccc"),   # neutral: red/blue mean up/down
-                             labels = c(TC_only = "vs day-3 control only (TC)", both = "both",
-                                        LC_only = "vs day-0 lab control only (LC)"), name = NULL) +
-           labs(x = NULL, y = "DEGs (padj < 0.05)") + theme_psmfc() + theme(legend.position = "top"),
-         "TC_vs_LC_overlap.png", 8.5, 4.5)
 ```

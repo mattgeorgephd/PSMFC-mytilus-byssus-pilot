@@ -12,9 +12,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   sampled for Tag-seq.
 - **Analysis.** One reproducible chain, runnable from the committed data: thread mechanics
   (`02`) and the Tag-seq counts (`05`) through differential expression (`06`), GO enrichment
-  across treatments (`07`, `08`) and the per-animal gene-mechanics associations (`09`).
+  across treatments (`07`, `08`) and the per-animal associations of thread mechanics with
+  genes, DEG sets, enriched GO terms and mitochondrial expression (`09`).
 - **Manuscript.** Linked from `README.md`. The contrasts of record are stressor vs day-3
-  treatment control (TC).
+  treatment control (TC). The mitochondrial genes have their own analysis and figure
+  (`06` step 13, `figures/MT_mitochondrial_expression.png`).
 
 ## How to run
 
@@ -52,6 +54,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   after the step). Later folders read earlier folders' outputs and never write into them.
   `02_data/` holds inputs only; the one exception is a script downloading an external input,
   which is git-ignored.
+- **Gene names and keys.** Join count-matrix genes to annotation only through `gene_key()`
+  (`tools/gene_ids.R`); never rebuild the key with an ad hoc `sub()`. One BLAST hit per gene:
+  the highest bitscore (ties in table order). Select and rename columns by name, never by
+  position, and check a join kept one row per gene before binding columns to it.
 - **Paths.** `here::here()` anchored on the folder's `.Rproj`, and `repo_root` (its parent)
   for other folders. Never absolute paths. Folder names are hard-coded in each `_paths.R`,
   the `paths` chunks of `09`, `00_run_pipeline.Rmd` and `tools/pipeline_checks.R`, so renaming
@@ -65,23 +71,36 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   down; neutral greys for significance scales and set categories. The palette is checked for
   colour-vision deficiency; keep a legend or labels on every figure.
 - **Statistics of record.**
-  - Control of record: the day-3 treatment control (TC). Lab-control (LC, day 0) and
-    foot-vs-gill (FG) contrasts are computed and drawn, but nothing of record rests on them.
+  - Control: the day-3 treatment control (TC), the only one. The day-0 "lab control"
+    animals are not a control anywhere: their feet were dissected differently (two pieces at
+    day 0, one at day 3). The LC contrasts are retired to
+    `06_differential-expression/03_analyses/_superseded/LC_contrasts/`. The foot-vs-gill
+    contrast in the day-3 controls (`FG_TC`) is computed and drawn, but nothing of record
+    rests on it.
   - DEGs: apeglm-shrunk DESeq2, padj < 0.05, after keeping genes with at least 10 counts in a
     third of the contrast's samples; one model per contrast, defined in
-    `06_differential-expression/01_code/02_define_contrasts.Rmd`.
+    `06_differential-expression/01_code/02_define_contrasts.Rmd`. The 143 mitochondrial loci
+    (`count_matrix/mitochondrial_loci.csv`) are left out of these fits and of 07 to 09's gene
+    universes, and tested per protein (gene plus nuclear copies summed) in `06` step 13.
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.
   - Thread strength: per-animal ANCOVA, day-3 level adjusted for the animal's own baseline,
-    each arm against control.
+    each arm against control, on the log scale. `max_force` in the thread table is one
+    thread's peak force; per animal, `mean_force` is the mean of its threads' peak forces
+    (geometric mean in the model; primary) and `max_force` its strongest thread
+    (exploratory). Extension is not analysed: threads were cut near the plaque, so the
+    length of distal thread under test was not controlled.
 - **Samples.** `F` libraries are the phenol gland to the tip of the foot (every animal); `FX`
-  are the rest of the foot (day-0 animals only, in no contrast); `G` are gill. T051F and T051G
+  are the rest of the foot (day-0 animals only); `G` are gill. No contrast uses a day-0
+  library. T051F and T051G
   were removed at QC; T047 has no foot library. `library_crosswalk.csv` (06) maps every library
   to its RNA isolation record.
-- **Known data issues** (see the folder READMEs): about 140 LOCs annotated as mitochondrially
-  encoded proteins carry one mitochondrial signal many times over (`tools/mt_encoded.R`; they
-  dominate Gill OA); byssal plaque genes are expressed at day 0 and mostly absent at day 3.
+- **Known data issues** (see the folder READMEs): 126 LOCs on unplaced scaffolds are copies of
+  the mitochondrial protein genes and split their reads with them (`tools/mt_encoded.R`;
+  handled as above); byssal plaque genes are expressed in the day-0 libraries and mostly
+  absent at day 3, which the different day-0 dissection may explain; the Iso-Seq branch
+  (`04`) is designed but blocked on inputs not in the repository.
 - **Secrets.** API keys go in environment variables (`ENTREZ_KEY` in `~/.Renviron`), never in
   a file in the repository.
 - **Writing.** READMEs and comments in plain language, with commas or semicolons rather than

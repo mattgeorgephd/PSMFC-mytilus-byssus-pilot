@@ -61,24 +61,20 @@ runs_for <- function(families) {
              direction = rep(c("up", "down"), nrow(cs)))
 }
 
-## mitochondrially encoded protein LOCs (tools/mt_encoded.R) among a set of genes
-mt_genes <- function(annot) annot$gene[annot$mt_encoded]
+ONT_NAME <- c(BP = "biological process", MF = "molecular function", CC = "cellular component")
 
 ## short labels for figures; the family (and so the reference group) goes in the title
 contrast_label <- function(code) {
   tissue <- ifelse(substr(code, 1, 1) == "G", "Gill", "Foot")
   x <- substr(code, 2, 3)
-  ifelse(code == "FG_TC", "Day-3 controls", ifelse(code == "FG_LC", "Day-0 controls",
-         ifelse(x == "TC", paste(tissue, "control, day 3"), paste(tissue, x))))
+  ifelse(code == "FG_TC", "Day-3 controls", paste(tissue, x))
 }
 FAMILY_TITLE <- c(TC = "stressor vs day-3 treatment control (TC, of record)",
-                  LC = "vs day-0 lab control (LC)",
-                  FG = "gill vs foot within controls (FG)")
+                  FG = "gill vs foot in the day-3 controls (FG)")
 
 ## Dot plot of GO terms x contrasts, one panel per direction. `d` has one row per enriched term
-## and run: code, direction, Term, p (the method's p for colour), n (DEGs in term) and mt
-## (DEGs in term that are mitochondrially encoded protein LOCs). Colour is capped at P_CAP so
-## one extreme term does not wash out the rest.
+## and run: code, direction, Term, p (the method's p for colour) and n (DEGs in term, or terms in
+## a cluster). Colour is capped at P_CAP so one extreme term does not wash out the rest.
 P_CAP <- 10
 go_dotplot <- function(d, codes, title, caption, file, p_label = "-log10 p", n_label = "DEGs in term") {
   d <- d %>%
@@ -86,20 +82,14 @@ go_dotplot <- function(d, codes, title, caption, file, p_label = "-log10 p", n_l
                               levels = c("Up-regulated", "Down-regulated")),
            contrast = factor(contrast_label(code), levels = unique(contrast_label(codes))),
            Term = factor(Term, levels = rev(unique(Term[order(match(code, codes), p)]))),
-           logp = pmin(-log10(p), P_CAP),
-           mt_mostly = factor(ifelse(!is.na(mt) & mt >= n / 2, "mostly mtDNA-protein LOCs", "other"),
-                              levels = c("other", "mostly mtDNA-protein LOCs")))
+           logp = pmin(-log10(p), P_CAP))
   p <- ggplot(d, aes(contrast, Term)) +
-    geom_point(aes(size = n, colour = logp, shape = mt_mostly)) +
+    geom_point(aes(size = n, colour = logp)) +
     facet_wrap(~ direction, drop = FALSE) +
     scale_colour_gradient(low = "#cfcfcf", high = "#1a1a1a", limits = c(0, P_CAP),   # neutral: red and blue mean up and down
                           breaks = seq(0, P_CAP, 2.5), labels = c(seq(0, P_CAP - 2.5, 2.5), paste0(P_CAP, "+")),
                           name = p_label) +
     scale_size_area(max_size = 6, name = n_label) +
-    scale_shape_manual(values = c(other = 16, "mostly mtDNA-protein LOCs" = 17), drop = FALSE,
-                       labels = c(other = "other terms",
-                                  "mostly mtDNA-protein LOCs" = "half or more of its DEGs are LOCs\nannotated as mtDNA-encoded proteins"),
-                       name = NULL) +
     scale_x_discrete(drop = FALSE) +
     labs(x = NULL, y = NULL, title = title,
          caption = paste(strwrap(caption, width = 110), collapse = "\n")) +

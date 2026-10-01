@@ -2,7 +2,7 @@
 title: "04 - GO enrichment with clusterProfiler (comparison across contrasts)"
 output: html_document
 params:
-  families: ["TC", "LC", "FG"]
+  families: ["TC", "FG"]
   ontologies: ["BP", "MF", "CC"]
   padj_cutoff: 0.05
   cores: 4                          # set to 1 on Windows (no forking)
@@ -30,8 +30,9 @@ universe, and `merge_result()` combines the runs into the same `compareClusterRe
 `compareCluster()` would return; `enrichplot::dotplot()` draws it.
 
 Writes, in `03_analyses/04_clusterprofiler/`: `clusterprofiler_enriched.csv`,
-`clusterprofiler_all_terms_TC_BP.csv`, `clusterprofiler_run_summary.csv` and
-`clusterprofiler_<family>_BP_dotplot.png`.
+`clusterprofiler_all_terms_TC_<ontology>.csv` (one per ontology, read by script 06),
+`clusterprofiler_run_summary.csv` and `clusterprofiler_<family>_<ontology>_dotplot.png` for
+every family and ontology.
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
@@ -41,7 +42,6 @@ suppressPackageStartupMessages({
   library(clusterProfiler); library(enrichplot); library(GO.db); library(dplyr); library(ggplot2)
 })
 annot <- read_annotation()
-mt    <- mt_genes(annot)
 cores <- if (.Platform$OS.type == "windows") 1L else as.integer(params$cores)
 runs  <- runs_for(unlist(params$families))
 onts  <- unlist(params$ontologies)
@@ -68,7 +68,6 @@ run_cp <- function(code, direction, ontology) {
   genes <- strsplit(r$geneID, "/", fixed = TRUE)
   terms <- data.frame(code, direction, ontology, GO.ID = r$ID, Count = r$Count,
                       GeneRatio = r$GeneRatio, BgRatio = r$BgRatio, p = r$pvalue, padj = r$p.adjust,
-                      n_mt_encoded = vapply(genes, function(g) sum(g %in% mt), 0L),
                       genes = vapply(genes, function(g) paste(sort(g), collapse = ";"), ""))
   x@result <- r[r$p.adjust < params$padj_cutoff, ]
   list(summary = cbind(summ, terms_tested = nrow(r), enriched = nrow(x@result)), terms = terms,
@@ -86,19 +85,20 @@ terms <- bind_rows(lapply(res, `[[`, "terms")) %>% left_join(distinct(runs, code
 run_summary <- bind_rows(lapply(res, `[[`, "summary")) %>% left_join(distinct(runs, code, family), by = "code")
 write.csv(run_summary, file.path(out_cp, "clusterprofiler_run_summary.csv"), row.names = FALSE)
 enriched <- terms %>% filter(padj < params$padj_cutoff) %>%
-  select(code, family, direction, ontology, GO.ID, Term, Count, GeneRatio, BgRatio, p, padj, n_mt_encoded, genes) %>%
+  select(code, family, direction, ontology, GO.ID, Term, Count, GeneRatio, BgRatio, p, padj, genes) %>%
   arrange(match(code, contrasts$code), desc(direction == "up"), ontology, padj)
 write.csv(enriched, file.path(out_cp, "clusterprofiler_enriched.csv"), row.names = FALSE)
-write.csv(terms %>% filter(family == "TC", ontology == "BP") %>% select(code, direction, GO.ID, Count, p, padj),
-          file.path(out_cp, "clusterprofiler_all_terms_TC_BP.csv"), row.names = FALSE)
+for (o in onts)
+  write.csv(terms %>% filter(family == "TC", ontology == o) %>% select(code, direction, GO.ID, Count, p, padj),
+            file.path(out_cp, sprintf("clusterprofiler_all_terms_TC_%s.csv", o)), row.names = FALSE)
 knitr::kable(run_summary %>% filter(ontology == "BP"), caption = "BP runs")
 ```
 
 # compareCluster view
 
 ```{r dotplots, fig.width = 11, fig.height = 9}
-for (fam in unique(runs$family)) {
-  idx <- which(jobs$ontology == "BP" & jobs$family == fam & !vapply(res, function(r) is.null(r$obj), TRUE))
+for (fam in unique(runs$family)) for (ont in onts) {
+  idx <- which(jobs$ontology == ont & jobs$family == fam & !vapply(res, function(r) is.null(r$obj), TRUE))
   if (!length(idx)) next
   objs <- setNames(lapply(res[idx], `[[`, "obj"),
                    paste(contrast_label(jobs$code[idx]), jobs$direction[idx], sep = ", "))
@@ -106,7 +106,7 @@ for (fam in unique(runs$family)) {
   merged@compareClusterResult$Cluster <- factor(merged@compareClusterResult$Cluster, levels = names(objs))
   p <- suppressMessages(dotplot(merged, showCategory = 5, label_format = 60, font.size = 9) +
     scale_fill_gradient(low = "#1a1a1a", high = "#cfcfcf", name = "adjusted p")) +   # neutral: red and blue mean up and down
-    labs(x = NULL, title = "clusterProfiler, biological process", subtitle = FAMILY_TITLE[[fam]],
+    labs(x = NULL, title = sprintf("clusterProfiler, %s", ONT_NAME[[ont]]), subtitle = FAMILY_TITLE[[fam]],
          caption = paste(strwrap(sprintf(paste(
            "The 5 most significant terms of each contrast and direction (BH-adjusted hypergeometric p < %s).",
            "Runs with no enriched term are not shown. Universe: the contrast's tested genes; terms of 10 to 500 genes."),
@@ -115,7 +115,7 @@ for (fam in unique(runs$family)) {
           plot.caption.position = "plot", plot.title.position = "plot")
   n_terms <- length(unique(as.data.frame(merged)$Description[
     as.data.frame(merged) %>% group_by(Cluster) %>% mutate(r = rank(p.adjust, ties.method = "first")) %>% pull(r) <= 5]))
-  ggsave(file.path(out_cp, sprintf("clusterprofiler_%s_BP_dotplot.png", fam)), p,
+  ggsave(file.path(out_cp, sprintf("clusterprofiler_%s_%s_dotplot.png", fam, ont)), p,
          width = 6.5 + 0.55 * length(objs), height = 2.8 + 0.2 * n_terms, dpi = 300, limitsize = FALSE)
   print(p)
 }

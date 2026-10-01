@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
 
 # Purpose
 
-Scripts 01 to 04 take a knit parameter `tissue` (`"F"` foot, the default, or `"G"` gill).
+Scripts 01 to 05 take a knit parameter `tissue` (`"F"` foot, the default, or `"G"` gill).
 This runner renders them in order for each tissue requested, each in its own R process, so
 the gill analysis is the same code as the foot analysis with one parameter changed and the
 two cannot drift apart. Reports and logs carry the tissue in their name
@@ -28,10 +28,11 @@ with `run_log.csv`.
 | 02 | `02_gene_mechanics_expanded.Rmd` | `gene_mechanics/`: pathway modules, influence check, best hits |
 | 03 | `03_rna_thread_manifest_and_expression_tables.Rmd` | `expr_tables/`: RNA x thread manifest, top DEG expression tables |
 | 04 | `04_byssus_foot_gene_list_expression.Rmd` | `byssus_genes/`: byssus/foot gene list and its expression |
+| 05 | `05_go_term_mechanics.Rmd` | `go_mechanics/`: mechanics against DEG sets, enriched GO terms and mitochondrial expression |
 
 Every output is tissue-suffixed (`_F` / `_G`) except `annotation_map.csv`, a
-tissue-independent LOC-to-protein map. Run after `02_thread-strength` and
-`06_differential-expression`; the repository-level `00_run_pipeline.Rmd` runs them in order.
+tissue-independent LOC-to-protein map. Run after `02_thread-strength`,
+`06_differential-expression` and `07_enrichment` (step 05 reads its topGO results); the repository-level `00_run_pipeline.Rmd` runs them in order.
 If a step fails, that tissue's chain stops (later steps read its outputs), the other tissue
 still runs, and the runner fails after writing `run_log.csv`.
 

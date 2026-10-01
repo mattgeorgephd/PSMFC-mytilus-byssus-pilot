@@ -29,7 +29,7 @@ its folder's `03_analyses/knit_html/`; this file leaves one per stage, and `run_
 | 06 | `06_differential-expression/01_code/00_run_differential_expression.Rmd` | 05 | 10 min |
 | 07 | `07_enrichment/01_code/00_run_enrichment.Rmd` | 06, 05, `03_blast/` | 8 min |
 | 08 | `08_gene-annotation/01_code/00_run_gene_annotation.Rmd` | 06 | 1 min |
-| 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 06, `03_blast/` | 3 min |
+| 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 06, 07, `03_blast/` | 4 min |
 
 Not run here, because they need data or machines outside this repository: the BLAST
 annotation (`03_blast/`, HPC), the Iso-Seq transcriptome check (`04_iso-seq-transcriptome/`,

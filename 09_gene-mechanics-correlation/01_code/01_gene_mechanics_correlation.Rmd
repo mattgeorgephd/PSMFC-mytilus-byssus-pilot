@@ -23,9 +23,8 @@ individual animal and asks: **among animals in the same arm with the same measur
 baseline, does foot (or gill) gene expression at the end of the exposure covary with the
 animal's day-3 plaque attachment?**
 
-The estimand is one slope pooled over the arms: the change in the day-3 level (log scale for
-force, area and adhesion, so exp(slope) is a fold change per VST unit; mm for extension) per
-unit of VST expression, holding arm and the animal's measured baseline constant. The common
+The estimand is one slope pooled over the arms: the change in the day-3 level (log scale, so
+exp(slope) is a fold change per VST unit) per unit of VST expression, holding arm and the animal's measured baseline constant. The common
 slope is an assumption: with no expression x arm term it is the variance-weighted average of
 the within-arm slopes. With 10 to 12 animals per arm the design cannot tell a stress-specific
 association from a general one. It does not estimate whether expression explains the arm
@@ -62,12 +61,13 @@ It produces:
 > animals, so no family is confirmatory in the strict sense; `tier = primary` names the
 > family whose q is the decision column.
 
-> **Which metric to read first.** **Peak force and plaque area** are tested separately as
-> well as through their ratio, since adhesion mixes the two
+> **Which metric to read first.** **Mean peak force and plaque area** are tested separately
+> as well as through their ratio, since adhesion mixes the two
 > (`02_thread-strength/01_code/05_decompose_adhesion.Rmd` decomposes it the same way) and a gene
-> associated with plaque size can be invisible against the ratio. `max_force` and
-> `pad_area` are the primary targets here; `adhesion_kpa` is retained as the
-> material-strength readout. Every metric is tested as the animal's day-3 level with its
+> associated with plaque size can be invisible against the ratio. `mean_force` and
+> `pad_area` are the primary targets here; `max_force` (the animal's strongest thread) and
+> `adhesion_kpa` (the material-strength readout) are exploratory. Extension is not analysed:
+> the length of distal thread under test differed between pulls. Every metric is tested as the animal's day-3 level with its
 > own measured baseline level as a covariate. The baseline is measured with error, so the
 > adjustment for where the animal started is only partial.
 
@@ -109,18 +109,23 @@ INCLUDE_CONTROL_ARM <- TRUE   # TRUE = the day-3 treatment control animals (T126
 ## its expression, with the arm and the animal's OWN pre-exposure
 ## level as covariates:
 ##     level_day3 ~ expression + treatment + level_baseline
-## Force, area and adhesion are modelled on the LOG scale (per-animal geometric means of
-## the plaques; multiplicative, right-skewed quantities), extension on its raw scale. Animals
-## without baseline threads are not in the fits.
-## `tier`: force and area are the pre-declared confirmatory family (candidate genes x
-## primary metrics); adhesion (their ratio) and extension are exploratory. Every output
-## table carries the tier, and `q_family` corrects within each gene set x tier.
+## Every metric is modelled on the LOG scale (multiplicative, right-skewed quantities).
+## `column` is the thread-level column of the thread summary and `agg` its per-animal summary,
+## as in 02_thread-strength/01_code/_ancova.R (THREAD_METRICS): `mean` is the geometric mean
+## of the threads, `max` the largest thread. `mean_force` and `max_force` both summarise each
+## thread's peak force (`max_force` of the trace). Animals without baseline threads are not in
+## the fits.
+## `tier`: mean force and area are the pre-declared confirmatory family (candidate genes x
+## primary metrics); max force and adhesion (the ratio of force and area) are exploratory.
+## Every output table carries the tier, and `q_family` corrects within each gene set x tier.
 ## Order here is the reporting order. Force and area first, deliberately (see above).
 METRICS <- data.frame(
-  metric = c("max_force",      "pad_area",           "adhesion_kpa",   "max_displacement"),
-  scale  = c("log",            "log",                "log",            "raw"),
-  tier   = c("primary",        "primary",            "exploratory",    "exploratory"),
-  label  = c("Peak force (N)", "Plaque area (mm^2)", "Adhesion (kPa)", "Extension at break (mm)"),
+  metric = c("mean_force",          "pad_area",           "max_force",              "adhesion_kpa"),
+  column = c("max_force",           "pad_area",           "max_force",              "adhesion_kpa"),
+  agg    = c("mean",                "mean",               "max",                    "mean"),
+  scale  = c("log",                 "log",                "log",                    "log"),
+  tier   = c("primary",             "primary",            "exploratory",            "exploratory"),
+  label  = c("Mean peak force (N)", "Plaque area (mm^2)", "Maximum peak force (N)", "Adhesion (kPa)"),
   stringsAsFactors = FALSE)
 metrics         <- METRICS$metric
 PRIMARY_METRICS <- METRICS$metric[METRICS$tier == "primary"]
@@ -194,6 +199,8 @@ find_repo_root <- function(start = here::here()) {
 }
 repo_root   <- find_repo_root()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance
+source(file.path(repo_root, "tools", "plot_style.R"))        # shared colours, short_name()
+source(file.path(repo_root, "tools", "gene_ids.R"))          # gene_key()
 DE_DIR      <- file.path(repo_root, "06_differential-expression")          # expression-side inputs
 COUNT_FILE  <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_matrix_clean.csv")
 TI_FILE     <- file.path(DE_DIR, "03_analyses", "count_matrix", "treatmentinfo_clean.csv")
@@ -261,7 +268,6 @@ read_thread_summary <- function(path) {
     d$phase <- dplyr::case_when(d$thread_trt == "lab_control" ~ "lab",
                                 d$thread_trt == "baseline"    ~ "pre",
                                 TRUE                          ~ "post")
-  if (!"max_displacement" %in% names(d)) d$max_displacement <- NA_real_
   d %>%
     mutate(mussel       = norm_id(mussel),
            adhesion_kpa = max_force / pad_area * 1000) %>%   # recomputed, never trusted from the sheet
@@ -274,8 +280,9 @@ read_thread_summary <- function(path) {
 # 1. Build the paired-sample table
 
 Each animal gets one value per metric and timepoint: the **geometric mean** of its plaques
-for force, area and adhesion (the mean on the log scale the model uses) and the arithmetic
-mean for extension; the same summary of its pre-exposure threads is its baseline. The
+for mean force, area and adhesion (the mean on the log scale the model uses) and its largest
+thread peak force for max force; the same summary of its pre-exposure threads is its
+baseline. The
 Tag-seq treatment assignment (the authoritative one) comes from the sample table written by
 `06_differential-expression` (`03_analyses/count_matrix/treatmentinfo_clean.csv`). With `INCLUDE_CONTROL_ARM = TRUE` the day-3 control animals enter as their own
 treatment level; the day-0 lab-reference animals never do (they have no day-3 threads).
@@ -284,14 +291,17 @@ treatment level; the day-0 lab-reference animals never do (they have no day-3 th
 ## ---- thread mechanics: one value per animal at day 3 and at baseline ------------------
 thr_raw <- read_thread_summary(THREAD_FILE)
 
-## per-animal summary on each metric's model scale: geometric mean for the log metrics
-## (max_force N, pad_area mm^2, adhesion_kpa kPa), arithmetic mean for extension (mm)
+## per-animal summary of each metric's thread column: the geometric mean (agg = "mean"; the
+## mean on the log scale the model uses) or the largest thread (agg = "max")
+column_of <- function(m) METRICS$column[match(m, METRICS$metric)]
+agg_of    <- function(m) METRICS$agg[match(m, METRICS$metric)]
 summarise_animal <- function(d, prefix = "") {
   out <- d %>% group_by(mussel) %>% summarise(n = n(), .groups = "drop")
   for (m in metrics) {
+    col <- column_of(m)
     v <- d %>% group_by(mussel) %>%
-      summarise(val = if (scale_of(m) == "log") exp(mean(log(.data[[m]]), na.rm = TRUE))
-                      else mean(.data[[m]], na.rm = TRUE), .groups = "drop")
+      summarise(val = if (agg_of(m) == "max") max(.data[[col]], na.rm = TRUE)
+                      else exp(mean(log(.data[[col]]), na.rm = TRUE)), .groups = "drop")
     out[[paste0(prefix, m)]] <- v$val[match(out$mussel, v$mussel)]
   }
   names(out)[names(out) == "n"] <- paste0("n_plaques", if (nzchar(prefix)) "_base" else "")
@@ -373,8 +383,8 @@ COVARIATES <- "treatment"
 cat("Paired animals:", nrow(paired), "\n")
 print(table(paired$treatment))
 cat("With baseline threads (the animals in every ANCOVA fit):",
-    sum(!is.na(paired$base_max_force)), "\n")
-print(table(paired$treatment[!is.na(paired$base_max_force)]))
+    sum(!is.na(paired$base_mean_force)), "\n")
+print(table(paired$treatment[!is.na(paired$base_mean_force)]))
 if ("response_class" %in% names(paired)) print(table(paired$treatment, paired$response_class))
 write_csv(paired, file.path(OUT_DIR, sprintf("paired_sample_manifest_%s.csv", TISSUE)))
 
@@ -385,7 +395,7 @@ write_csv(paired, file.path(OUT_DIR, sprintf("paired_sample_manifest_%s.csv", TI
 ##     difference here instead of silently changing n.
 EXPECTED_FILE <- file.path(repo_root, "09_gene-mechanics-correlation", "02_data", "expected_animals.csv")
 tissue_col <- ifelse(TISSUE == "F", "foot", "gill")
-in_fit <- paired$mussel[!is.na(paired$base_max_force)]
+in_fit <- paired$mussel[!is.na(paired$base_mean_force)]
 if (file.exists(EXPECTED_FILE)) {
   expected <- read_csv(EXPECTED_FILE, show_col_types = FALSE)
   exp_fit  <- expected$mussel[expected[[paste0(tissue_col, "_in_fit")]]]
@@ -434,7 +444,8 @@ if (all(file.exists(TS_ANIMALS))) {
 
 Variance-stabilising transformation is estimated across **all** samples of the chosen
 tissue (more stable dispersion estimates), then we subset to the paired animals. Gene IDs
-in the matrix look like `gene-LOC134696364|LOC134696364`; we key on the `LOC######` id.
+in the matrix look like `gene-LOC134696364|LOC134696364`; we key on the `LOC######` id
+(`gene_key()`, `tools/gene_ids.R`, shared with 06 and 07).
 
 ```{r counts}
 cm <- read.csv(COUNT_FILE, row.names = 1, check.names = FALSE)
@@ -462,15 +473,23 @@ dds <- DESeqDataSetFromMatrix(round(as.matrix(cm_tissue)), coldata, design = ~ 1
 dds <- dds[rowSums(counts(dds)) > 0, ]
 vsd  <- vst(dds, blind = TRUE)
 vmat <- assay(vsd)                        # rownames = full gene IDs, same order as counts(dds)
-rownames(vmat) <- sub(".*\\|", "", sub("^gene-", "", rownames(vmat)))  # -> LOC key
+rownames(vmat) <- gene_key(rownames(vmat))   # -> LOC key (unique across the matrix)
 
 stopifnot(all(paired$sample %in% colnames(vmat)))
 vp       <- vmat[,        paired$sample, drop = FALSE]
 counts_p <- counts(dds)[, paired$sample, drop = FALSE]   # identical row order to vp
 keep <- rowSums(counts_p > MIN_COUNT) >= ceiling(nrow(paired) / 3)
 vp <- vp[keep, , drop = FALSE]
+## the mitochondrial genome's genes and their copies on unplaced scaffolds are analysed on their
+## own (06_differential-expression step 13; script 05 here tests their summed signal), so they
+## enter neither gene universe
+MT_FILE <- file.path(DE_DIR, "03_analyses", "count_matrix", "mitochondrial_loci.csv")
+mt_loci <- read.csv(MT_FILE, stringsAsFactors = FALSE)$LOC_ID
+cat("Mitochondrial loci passing the expression filter, left out:", sum(rownames(vp) %in% mt_loci), "\n")
+vp <- vp[!rownames(vp) %in% mt_loci, , drop = FALSE]
 cat("Genes tested (after expression filter):", nrow(vp), "\n")
-cat("Duplicate LOC keys among tested genes:", sum(duplicated(rownames(vp))), "\n")  # should be ~0
+if (anyDuplicated(rownames(vp))) stop("duplicate gene keys among tested genes: ",
+                                      paste(head(rownames(vp)[duplicated(rownames(vp))]), collapse = ", "))
 
 ## detection floor per gene: fraction of paired animals at the VST minimum (zero counts)
 floor_val   <- min(vp)
@@ -517,8 +536,7 @@ master <- read_delim(MASTER_ANNOT_FILE, delim = "\t", show_col_types = FALSE,
                      col_select = c("gene", "pident", "evalue", "bitscore", "Protein.names")) %>%
   ## key: the LOC id, or the gene symbol for the 13 mitochondrial genes (ND1, COX1, ...),
   ## which is how the count matrix names them too
-  transmute(LOC_ID = dplyr::coalesce(str_extract(as.character(gene), "LOC\\d+"),
-                                     na_if(trimws(as.character(gene)), "")),
+  transmute(LOC_ID = na_if(gene_key(trimws(as.character(gene))), ""),
             protein_name = as.character(Protein.names),
             blast_pident = suppressWarnings(as.numeric(pident)),
             blast_evalue = suppressWarnings(as.numeric(evalue)),
@@ -600,7 +618,7 @@ deg_union <- map(deg_files, ~ {
   warn_unless(!is.null(d), "Could not read ", basename(.x), "; its genes are missing from the DEG union.")
   if (is.null(d)) return(character(0))
   g <- d[[grep("gene", names(d), ignore.case = TRUE)[1]]]
-  sub(".*\\|", "", sub("^gene-", "", g))
+  gene_key(g)
 }) %>% unlist() %>% unique()
 deg_union <- intersect(deg_union, rownames(vp))
 deg_union_tbl <- floor_flag_of(deg_union)
@@ -627,8 +645,8 @@ One reported test per gene x metric, an analysis of covariance on the animal's d
 
     level_day3 ~ expression + treatment + level_baseline
 
-Force, area and adhesion enter as log(per-animal geometric mean) on both sides of the
-model, extension on its raw scale (`scale` column). `slope` is the coefficient on VST
+Every metric enters on the log scale on both sides of the model: the log of the per-animal
+geometric mean, or of the largest thread for `max_force` (`scale` column). `slope` is the coefficient on VST
 expression with the arm and the animal's own baseline held constant and `p_lm` its t-test;
 `baseline_slope` is the coefficient on the baseline. `partial_r` is the same test expressed
 as a partial correlation, t / sqrt(t^2 + residual df): the correlation of expression and
@@ -740,24 +758,24 @@ hm_keep <- res_cand %>% group_by(LOC_ID) %>% summarise(best_p = min(p_lm), .grou
   slice_min(best_p, n = HEATMAP_MAX_GENES, with_ties = FALSE) %>% pull(LOC_ID)
 hm <- res_cand %>%
   filter(LOC_ID %in% hm_keep) %>%
-  mutate(label = paste0(substr(protein_name, 1, 34), " (", LOC_ID, ")")) %>%
+  mutate(label = paste0(short_name(protein_name, 34), " (", LOC_ID, ")")) %>%
   select(label, metric, partial_r) %>%
   pivot_wider(names_from = metric, values_from = partial_r) %>%
-  arrange(desc(abs(max_force)))
+  arrange(desc(abs(mean_force)))
 
 hm_long <- hm %>% pivot_longer(-label, names_to = "metric", values_to = "r") %>%
   mutate(metric = factor(metric, levels = metrics))
-short_label <- function(m) sub(" \\(.*\\)$", "", label_of(m))    # "Peak force (N)" -> "Peak force"
+short_label <- function(m) sub(" \\(.*\\)$", "", label_of(m))    # "Plaque area (mm^2)" -> "Plaque area"
 ggplot(hm_long, aes(metric, factor(label, levels = rev(hm$label)), fill = r)) +
   geom_tile(color = "white") +
   geom_text(aes(label = sprintf("%.2f", r)), size = 3) +
-  scale_fill_gradient2(low = "#2166AC", mid = "white", high = "#B2182B",
-                       midpoint = 0, limits = c(-1, 1)) +
+  scale_fill_gradient2(low = DIRECTION_COLORS[["down"]], mid = "white", high = DIRECTION_COLORS[["up"]],
+                       midpoint = 0, limits = c(-1, 1)) +   # the repository's direction colours
   scale_x_discrete(labels = short_label, position = "top") +
   labs(x = NULL, y = NULL, fill = "partial r\n(ANCOVA)",
        title = "Candidate gene expression vs plaque mechanics",
        subtitle = sprintf("%s, n = %d animals with baseline; top %d of %d candidate genes selected by smallest p (effects biased away from zero)",
-                          ifelse(TISSUE == "F", "foot", "gill"), sum(!is.na(paired$base_max_force)),
+                          ifelse(TISSUE == "F", "foot", "gill"), sum(!is.na(paired$base_mean_force)),
                           nrow(hm), nrow(candidates))) +
   theme_minimal(base_size = 11) +
   theme(axis.text.y = element_text(size = 8),
@@ -767,7 +785,7 @@ ggsave(file.path(OUT_DIR, sprintf("candidate_heatmap_%s.png", TISSUE)),
        width = 7.5, height = 8.5, dpi = 150, bg = "white")   # theme_minimal has no background: force one
 ```
 
-## 6.2 Added-variable plots for the strongest candidate hits (vs peak force)
+## 6.2 Added-variable plots for the strongest candidate hits (vs mean peak force)
 
 Each panel shows exactly what the ANCOVA tests. The day-3 level (y) and expression (x) are
 each residualised on arm and baseline, and the line through the origin has the tested slope
@@ -787,17 +805,16 @@ av_data <- function(loc, metric) {
 av_label <- function(metric)
   sprintf("%s%s | arm, baseline", if (scale_of(metric) == "log") "log " else "", label_of(metric))
 
-top_hits <- res_cand %>% filter(metric == "max_force") %>%
+top_hits <- res_cand %>% filter(metric == "mean_force") %>%
   slice_min(p_lm, n = 6, with_ties = FALSE)
 
 plot_df <- pmap_dfr(top_hits %>% select(LOC_ID, slope, p_lm), function(LOC_ID, slope, p_lm) {
-  av_data(LOC_ID, "max_force") %>%
-    mutate(facet = sprintf("%s\n%s, p = %s", substr(annot$protein_name[match(LOC_ID, annot$LOC_ID)], 1, 30),
+  av_data(LOC_ID, "mean_force") %>%
+    mutate(facet = sprintf("%s\n%s, p = %s", short_name(annot$protein_name[match(LOC_ID, annot$LOC_ID)], 34),
                            LOC_ID, signif(p_lm, 2)),
            slope = slope)
 }) %>% mutate(facet = factor(facet, levels = unique(facet)))
 
-source(file.path(repo_root, "tools", "plot_style.R"))
 arm_cols <- TREATMENT_COLORS      # the repository's treatment colours; shared by 6.2 and 6.3
 ggplot(plot_df, aes(x_res, y_res)) +
   geom_hline(yintercept = 0, color = "grey85") + geom_vline(xintercept = 0, color = "grey85") +
@@ -805,8 +822,8 @@ ggplot(plot_df, aes(x_res, y_res)) +
   geom_point(aes(fill = treatment), shape = 21, size = 2.4, stroke = 0.5, color = "black") +
   facet_wrap(~ facet, scales = "free") +
   scale_fill_manual(values = arm_cols, name = "Arm") +
-  labs(x = "VST expression | arm, baseline", y = av_label("max_force"),
-       title = "Top candidate genes vs peak force: added-variable plots",
+  labs(x = "VST expression | arm, baseline", y = av_label("mean_force"),
+       title = "Top candidate genes vs mean peak force: added-variable plots",
        subtitle = "Selected by smallest p (effects biased away from zero); line = tested ANCOVA slope") +
   theme_bw(base_size = 11)
 ggsave(file.path(OUT_DIR, sprintf("top_candidate_scatter_%s.png", TISSUE)),
@@ -830,7 +847,7 @@ best_df <- pmap_dfr(best_per_metric %>% select(LOC_ID, metric, slope, p_lm, q_lm
   m <- as.character(metric)
   av_data(LOC_ID, m) %>%
     mutate(panel = sprintf("%s (%s)\n%s\np = %s, q = %s, q_family = %s", av_label(m), tier_of(m),
-                           substr(annot$protein_name[match(LOC_ID, annot$LOC_ID)], 1, 34),
+                           short_name(annot$protein_name[match(LOC_ID, annot$LOC_ID)], 34),
                            signif(p_lm, 2), signif(q_lm, 2), signif(q_family, 2)),
            slope = slope)
 }) %>% mutate(panel = factor(panel, levels = unique(panel)))
@@ -843,7 +860,7 @@ ggplot(best_df, aes(x_res, y_res)) +
   scale_fill_manual(values = arm_cols, name = "Arm") +
   labs(x = "VST expression | arm, baseline", y = "Day-3 level | arm, baseline (model scale)",
        title = sprintf("Best candidate gene per metric (%s, n = %d with baseline): added-variable plots",
-                       ifelse(TISSUE == "F", "foot", "gill"), sum(!is.na(paired$base_max_force))),
+                       ifelse(TISSUE == "F", "foot", "gill"), sum(!is.na(paired$base_mean_force))),
        subtitle = "Selected by smallest p (effects biased away from zero); line = tested ANCOVA slope") +
   theme_bw(base_size = 10) + theme(strip.text = element_text(size = 7.5))
 ggsave(file.path(OUT_DIR, sprintf("best_hit_per_metric_scatter_%s.png", TISSUE)),
@@ -861,8 +878,8 @@ cat("
 - `assoc_candidate_*.csv` / `assoc_DEGunion_*.csv`: one row per gene x metric from the
   ANCOVA `level_day3 ~ expression + treatment + level_baseline`.
   `slope` (with `se`) is the change in the day-3 level per unit VST expression with the arm
-  and the animal's own baseline held constant: log units for force, area and adhesion, so
-  exp(slope) is the multiplicative change per VST unit; mm for extension. `p_lm` is its
+  and the animal's own baseline held constant, in log units, so exp(slope) is the
+  multiplicative change per VST unit. `p_lm` is its
   t-test; `q_lm` is BH within the gene set x metric and `q_family` BH within the gene set x
   tier (candidate x primary is the declared confirmatory family); `baseline_slope` is the
   coefficient on the baseline level; `partial_r` is the same test as a partial correlation,
@@ -890,9 +907,10 @@ cat("
 4. Timing: tissue was sampled at the end of the exposure, after the tested day-3 threads
    were secreted. The association is not predictive or causal; it may reflect a persistent
    individual state, a lag, reverse direction or a common cause.
-5. `max_force` and `pad_area` are the declared primary metrics; `adhesion_kpa` is their
+5. `mean_force` and `pad_area` are the declared primary metrics; `adhesion_kpa` is their
    ratio, and a response in plaque area alone can be invisible in it. Read force and area
-   first.
+   first. `max_force`, the animal's strongest thread, rises with the number of threads
+   pulled; at baseline some animals have only one or two.
 6. With `INCLUDE_CONTROL_ARM = TRUE` the control animals are a fourth stratum of the same
    pooled slope, not a null that a stress signal must beat. With 10 to 12 animals per arm
    the design cannot tell a stress-specific association from a general one.
@@ -916,14 +934,14 @@ settings <- c(
   paste0("tissue               : ", TISSUE),
   paste0("INCLUDE_CONTROL_ARM  : ", INCLUDE_CONTROL_ARM),
   paste0("reported test        : ANCOVA level_day3 ~ expression + ", paste(COVARIATES, collapse = " + "),
-         " + level_baseline (per-animal geometric mean, log scale; extension raw)"),
+         " + level_baseline (log scale; per-animal geometric mean, largest thread for max_force)"),
   paste0("metrics [scale, tier]: ", paste(sprintf("%s [%s, %s]", METRICS$metric, METRICS$scale, METRICS$tier),
                                           collapse = ", ")),
   paste0("PRIMARY_METRICS      : ", paste(PRIMARY_METRICS, collapse = ", ")),
   paste0("MIN_COUNT / FDR_ALPHA: ", MIN_COUNT, " / ", FDR_ALPHA),
   paste0("paired animals       : ", nrow(paired), " (", fmt_tab(paired$treatment), ")"),
-  paste0("in the fits          : ", sum(!is.na(paired$base_max_force)), " (",
-         fmt_tab(paired$treatment[!is.na(paired$base_max_force)]), ")"),
+  paste0("in the fits          : ", sum(!is.na(paired$base_mean_force)), " (",
+         fmt_tab(paired$treatment[!is.na(paired$base_mean_force)]), ")"),
   paste0("genes passing expression filter: ", nrow(vp)),
   paste0("CANDIDATE_ANNOTATION : ", CANDIDATE_ANNOTATION, " (evalue <= ", CANDIDATE_MAX_EVALUE,
          ", pident >= ", CANDIDATE_MIN_PIDENT, ")"),
@@ -936,10 +954,10 @@ settings <- c(
          ", candidate x exploratory ", sum(res_cand$tier == "exploratory"),
          ", DEG union ", nrow(res_deg)))
 inputs <- c(THREAD_FILE, RESPONSE_FILE, EXPECTED_FILE, TS_ANIMALS,
-            COUNT_FILE, TI_FILE,
+            COUNT_FILE, TI_FILE, MT_FILE,
             MASTER_ANNOT_FILE, sig_files, deg_files,
             file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "01_gene_mechanics_correlation.Rmd"),
-            file.path(repo_root, "tools", "pipeline_checks.R"))
+            file.path(repo_root, "tools", c("pipeline_checks.R", "gene_ids.R")))
 writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "dplyr", "readr")), prov)
 cat(readLines(prov), sep = "\n")
 ```

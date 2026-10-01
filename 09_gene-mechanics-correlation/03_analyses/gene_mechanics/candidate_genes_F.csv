@@ -173,7 +173,7 @@ LOC134687071,Glutathione S-transferase P (EC 2.5.1.18) (GST P1-1) (GST class-pi)
 LOC134711163,Endothelial PAS domain-containing protein 1 (EPAS-1) (Basic-helix-loop-helix-PAS protein MOP2) (Class E basic helix-loop-helix protein 73) (bHLHe73) (HIF-1-alpha-like factor) (HLF) (Hypoxia-inducible factor 2-alpha) (HIF-2-alpha) (HIF2-alpha) (Member of PAS protein 2) (PAS domain-containing protein 2),31.496,5.17e-50,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134694436,Heat shock 70 kDa protein 12B,28.732,8.41e-52,genome_blast,FALSE,TRUE,FALSE,0.152,ok,TRUE
 LOC134727535,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),28.838,2.33e-50,genome_blast,FALSE,TRUE,FALSE,0.391,caution,TRUE
-LOC134694060,Collagen alpha-4(VI) chain,22.619,1.8699999999999998e-48,genome_blast,FALSE,TRUE,FALSE,0.087,ok,TRUE
+LOC134694060,Collagen alpha-4(VI) chain,22.619,1.8699999999999998e-48,genome_blast,TRUE,TRUE,FALSE,0.087,ok,TRUE
 LOC134721338,Tyrosinase 2,28.932,5.969999999999999e-52,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134722782,Collagen alpha-3(VI) chain,31.563,1.1999999999999999e-46,genome_blast,FALSE,TRUE,FALSE,0.435,exclude,FALSE
 LOC134718464,LRP chaperone MESD (LDLR chaperone MESD) (Mesoderm development candidate 2) (Mesoderm development protein),63.014,1.44e-58,genome_blast,FALSE,TRUE,FALSE,0.087,ok,TRUE

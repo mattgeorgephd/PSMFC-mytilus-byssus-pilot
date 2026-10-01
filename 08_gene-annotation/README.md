@@ -42,9 +42,12 @@ up through only the first GO ID of each slim term. Its tables are kept in
 `03_analyses/_superseded/goslims_genome/`; they listed 36-65% of the gene-to-slim links implied
 even by their own GO-ID column.
 
-Gill OA's "generation of precursor metabolites and energy" cell (100 up-regulated genes) is
-mostly LOCs annotated as mitochondrially encoded proteins (89 of the 103 genes in that term;
-see `tools/mt_encoded.R`): one mitochondrial signal counted many times.
+Each gene takes the GO IDs of its best BLAST hit (highest bitscore), as in `07_enrichment`;
+until 2026-10-01 it took its first-listed hit, which gave 33 TC DEGs a different set of GO IDs
+from the one 07 tested. The mitochondrial genes and their nuclear copies are no longer in the
+DEG lists (they are analysed on their own in `06_differential-expression` step 13); before
+they were removed they made up 89 of the 103 genes in Gill OA's "generation of precursor
+metabolites and energy" cell, one mitochondrial signal counted many times.
 
 ## Layout
 

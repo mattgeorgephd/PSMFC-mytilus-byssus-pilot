@@ -285,7 +285,7 @@ byssal_collagen,LOC134681037,Ficolin-2 (37 kDa elastin-binding protein) (Collage
 byssal_collagen,LOC134697037,Ficolin-2 (37 kDa elastin-binding protein) (Collagen/fibrinogen domain-containing protein 2) (EBP-37) (Ficolin-B) (Ficolin-beta) (Hucolin) (L-ficolin) (Serum lectin p35),46.009,2.6000000000000003e-60,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134680972,Collagen alpha-6(VI) chain,28.454,2.71e-51,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134719669,Ficolin-2 (Collagen/fibrinogen domain-containing protein 2) (Ficolin-B) (Ficolin-beta) (L-ficolin),52.486,1.94e-60,genome_blast,FALSE,TRUE
-byssal_collagen,LOC134694060,Collagen alpha-4(VI) chain,22.619,1.8699999999999998e-48,genome_blast,FALSE,TRUE
+byssal_collagen,LOC134694060,Collagen alpha-4(VI) chain,22.619,1.8699999999999998e-48,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134722782,Collagen alpha-3(VI) chain,31.563,1.1999999999999999e-46,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134680827,Mussel byssus cycteine-rich protein,80,3.8e-61,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134707834,Collagen alpha-2(I) chain (Alpha-2 type I collagen),36.596,5.68e-41,genome_blast,FALSE,TRUE

@@ -1,0 +1,231 @@
+---
+title: "13 - Mitochondrial gene expression, analysed on its own"
+output: html_document
+params:
+  padj_cutoff: 0.05
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+The genome analysis (scripts 03-12) leaves out the mitochondrial loci listed by script 01.
+This script tests them on their own, for the six treatment-control (TC) contrasts of record.
+
+**What is counted.** The reference holds the female-type mitochondrial genome (NC_007687.1)
+with its 12 protein genes, and about 126 LOCs on unplaced scaffolds that are copies of those
+genes: same best UniProt hit, same identity and alignment length, about 23 identical copies
+each of CYTB, COX2, COX3, ND2 and ND6. Reads from one mitochondrial transcript are split
+between the mitogenome gene and its copies, in proportions that vary from sample to sample
+(figure `MT_nuclear_copy_share.png`): the copies hold most of the reads of ATP6, CYTB, COX2,
+ND2 and ND6. So each protein is counted once, as the sum of its mitogenome gene and its copies
+(`mt_protein_counts.csv`), and `all_12` is the sum over the 12 proteins. The five mitochondrial
+tRNA rows hold almost no reads (3' Tag-seq captures polyadenylated transcripts) and are not
+tested.
+
+The share of a sample's reads held by the copies varies continuously, with no split into two
+groups of animals, which argues against the copies being the divergent male-type
+mitochondrial genome that *Mytilus* males carry (doubly uniparental inheritance), whose
+presence would follow the animal's sex.
+
+**The test.** For each TC contrast, the contrast's samples (script 02) are fitted with DESeq2
+exactly as the genome contrasts are (`~ treatment`, control as reference), on the nuclear
+genes plus the 13 mitochondrial rows. The size factors come from the nuclear genes only, so
+the mitochondrial rows cannot shift each other's normalisation, and their dispersions are
+shrunk toward the transcriptome-wide trend. Adjusted p-values (`padj_mt`) are
+Benjamini-Hochberg over the 12 proteins within each contrast; `all_12` is one pre-specified
+summary endpoint and is read from its own p.
+
+**Which fold change is drawn.** DESeq2's p-value is a Wald test of the unshrunk
+(maximum-likelihood) log2 fold change; apeglm's shrunk estimate and its posterior standard
+deviation are a different quantity (Zhu, Ibrahim and Love 2019, Bioinformatics 35:2084).
+Drawing the apeglm estimate and interval beside the Wald p made five Foot OA proteins look
+significant with intervals that crossed zero. The figure therefore shows the Wald estimate
+with its 95% interval, which excludes zero whenever the unadjusted p is below 0.05 (and so
+whenever `padj_mt` is); the table keeps the apeglm estimate as well (`lfc_apeglm`). The
+genome DEG tables report apeglm fold changes with Wald p, the DESeq2 convention, but draw no
+intervals.
+
+The two estimates also differ where DESeq2 replaced an outlier count. With 7 or more samples
+per group, `DESeq()` replaces a count whose Cook's distance is extreme and refits that gene;
+the Wald estimate and p come from the refit, while `lfcShrink()` uses the original counts.
+In Gill OA one library (T025G) holds about ten times the ND1 and ATP6 reads of the other OA
+libraries, so the apeglm estimates of those two proteins (1.40 and 0.89) exceed the refit
+Wald estimates (0.56 and 0.49). `outlier_replaced` marks these rows; the figure shows the
+refit estimate, which matches its p-value.
+
+Writes, in `03_analyses/mitochondrial/`:
+
+- `mt_protein_counts.csv`: per sample, the summed count of each protein and of all 12;
+- `mt_de_TC.csv`: per TC contrast and protein, the base mean, the Wald log2 fold change with
+  its standard error and 95% interval, the apeglm log2 fold change and its posterior SD, Wald
+  p, `padj_mt` and the reads' share in the nuclear copies;
+- `mt_share_by_sample.csv`: per sample, mitochondrial protein reads as a percentage of its
+  nuclear reads, and the share held by the copies;
+
+and, in `03_analyses/figures/`, `MT_mitochondrial_expression.png` (the figure for the
+manuscript) and `MT_nuclear_copy_share.png` (why the copies are summed).
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))
+suppressPackageStartupMessages({
+  library(DESeq2); library(apeglm); library(dplyr); library(tidyr); library(ggplot2); library(patchwork)
+})
+gcm <- as.matrix(read.csv(file.path(cnt, "gene_count_matrix_clean.csv"), row.names = 1, check.names = FALSE))
+ti  <- read.csv(file.path(cnt, "treatmentinfo_clean.csv"), row.names = 1, colClasses = "character")
+mtl <- read.csv(file.path(cnt, "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
+contrasts <- read.csv(file.path(deg, "contrasts.csv"), colClasses = "character")
+cs        <- read.csv(file.path(deg, "contrast_samples.csv"), colClasses = "character")
+tc <- contrasts[contrasts$family == "TC", ]
+stopifnot(nrow(tc) == 6)
+
+## mitochondrial proteins in respiratory-complex order
+PROTEINS <- c("ND1", "ND2", "ND3", "ND4", "ND4L", "ND5", "ND6", "CYTB", "COX1", "COX2", "COX3", "ATP6")
+COMPLEX  <- c(ND1 = "Complex I", ND2 = "Complex I", ND3 = "Complex I", ND4 = "Complex I",
+              ND4L = "Complex I", ND5 = "Complex I", ND6 = "Complex I", CYTB = "III",
+              COX1 = "Complex IV", COX2 = "Complex IV", COX3 = "Complex IV", ATP6 = "V",
+              all_12 = "All")
+stopifnot(setequal(PROTEINS, unique(mtl$mt_protein[mtl$mt_protein != "tRNA/rRNA"])))
+```
+
+# Summed counts per protein
+
+```{r sums}
+nuclear <- gcm[!rownames(gcm) %in% mtl$gene, ]
+mt_sum <- t(sapply(PROTEINS, function(p) colSums(gcm[mtl$gene[mtl$mt_protein == p], , drop = FALSE])))
+mt_sum <- rbind(mt_sum, all_12 = colSums(mt_sum))
+copy_sum <- t(sapply(PROTEINS, function(p)
+  colSums(gcm[mtl$gene[mtl$mt_protein == p & mtl$source == "nuclear copy"], , drop = FALSE])))
+copy_sum <- rbind(copy_sum, all_12 = colSums(copy_sum))
+write.csv(mt_sum, file.path(mito, "mt_protein_counts.csv"))
+
+share <- data.frame(sample.1 = colnames(gcm), ti[colnames(gcm), c("tissue", "treatment", "day", "region")],
+                    mt_reads_pct_of_nuclear = 100 * mt_sum["all_12", ] / colSums(nuclear),
+                    copy_share = copy_sum["all_12", ] / mt_sum["all_12", ], row.names = NULL)
+write.csv(share, file.path(mito, "mt_share_by_sample.csv"), row.names = FALSE)
+knitr::kable(share %>% group_by(region, day) %>%
+               summarise(samples = n(), median_mt_pct = median(mt_reads_pct_of_nuclear),
+                         median_copy_share = median(copy_share), .groups = "drop"), digits = 3)
+```
+
+# DESeq2 per TC contrast
+
+```{r fit}
+fit_mt <- function(row) {
+  smp <- cs$sample.1[cs$code == row$code]
+  cd  <- ti[smp, c("tissue", "treatment", "day")]
+  cd$treatment <- factor(cd$treatment, levels = c(row$ref_level, row$test_level))
+  m   <- rbind(nuclear[, smp], mt_sum[, smp])
+  dds <- DESeqDataSetFromMatrix(m, cd, ~ treatment)
+  sizeFactors(dds) <- estimateSizeFactorsForMatrix(nuclear[, smp])   # nuclear genes only
+  dds <- DESeq(dds, quiet = TRUE)
+  stopifnot(resultsNames(dds)[2] == sprintf("treatment_%s_vs_%s", row$test_level, row$ref_level))
+  keep <- rowSums(counts(dds) >= 10) >= ncol(dds) / 3                 # the genome filter (script 03)
+  keep[rownames(mt_sum)] <- TRUE                                      # every protein is reported
+  dds <- dds[keep, ]
+  wald <- results(dds, name = resultsNames(dds)[2])
+  shr  <- lfcShrink(dds, coef = 2, type = "apeglm", quiet = TRUE)
+  rows <- rownames(mt_sum)
+  passes <- rowSums(counts(dds)[rows, ] >= 10) >= ncol(dds) / 3
+  data.frame(code = row$code, tissue = row$dir, stressor = row$test_level, protein = rows,
+             complex = unname(COMPLEX[rows]), baseMean = wald[rows, "baseMean"],
+             log2FoldChange = wald[rows, "log2FoldChange"], lfcSE = wald[rows, "lfcSE"],   # Wald (MLE)
+             ci_low = wald[rows, "log2FoldChange"] - qnorm(0.975) * wald[rows, "lfcSE"],
+             ci_high = wald[rows, "log2FoldChange"] + qnorm(0.975) * wald[rows, "lfcSE"],
+             lfc_apeglm = shr[rows, "log2FoldChange"], lfc_apeglm_sd = shr[rows, "lfcSE"],
+             pvalue = wald[rows, "pvalue"], passes_count_filter = passes,
+             outlier_replaced = if ("replace" %in% names(mcols(dds))) mcols(dds)[rows, "replace"] %in% TRUE else FALSE,
+             copy_share = rowSums(copy_sum[rows, smp]) / rowSums(mt_sum[rows, smp]),
+             row.names = NULL)
+}
+de <- bind_rows(lapply(seq_len(nrow(tc)), function(i) fit_mt(tc[i, ]))) %>%
+  group_by(code) %>%
+  mutate(padj_mt = ifelse(protein == "all_12", NA_real_,
+                          p.adjust(ifelse(protein == "all_12", NA, pvalue), "BH"))) %>%
+  ungroup() %>%
+  mutate(significant = ifelse(protein == "all_12", pvalue < params$padj_cutoff, padj_mt < params$padj_cutoff))
+## a point drawn as significant never has an interval that crosses zero
+stopifnot(with(de, all(!significant | is.na(significant) | sign(ci_low) == sign(ci_high))))
+write.csv(de, file.path(mito, "mt_de_TC.csv"), row.names = FALSE)
+knitr::kable(de %>% select(code, protein, baseMean, log2FoldChange, lfcSE, lfc_apeglm, pvalue, padj_mt, copy_share) %>%
+               mutate(across(c(baseMean, log2FoldChange, lfcSE, lfc_apeglm, copy_share), ~ round(.x, 2)),
+                      across(c(pvalue, padj_mt), ~ signif(.x, 2))))
+cat("Proteins with padj_mt <", params$padj_cutoff, "per contrast:\n")
+print(de %>% filter(protein != "all_12") %>% group_by(code) %>%
+        summarise(up = sum(significant & log2FoldChange > 0), down = sum(significant & log2FoldChange < 0),
+                  .groups = "drop"))
+```
+
+# Figure for the manuscript
+
+```{r figure, fig.width = 11, fig.height = 8.5}
+d <- de %>%
+  mutate(protein = factor(ifelse(protein == "all_12", "All 12", protein), levels = c(PROTEINS, "All 12")),
+         complex = factor(complex, levels = c("Complex I", "III", "Complex IV", "V", "All")),
+         tissue = factor(tissue, levels = c("Foot", "Gill")),
+         stressor = factor(stressor, levels = c("OA", "OW", "DO")),
+         fill_key = ifelse(significant, as.character(stressor), "ns"))   # open point = not significant
+dodge <- position_dodge(width = 0.6)
+pa <- ggplot(d, aes(protein, log2FoldChange, colour = stressor, group = stressor)) +   # group: dodge points and bars together
+  geom_hline(yintercept = 0, colour = "grey50", linewidth = 0.4) +
+  geom_errorbar(aes(ymin = ci_low, ymax = ci_high), width = 0, linewidth = 0.6, position = dodge) +
+  geom_point(aes(fill = fill_key), shape = 21, size = 2.6, stroke = 0.9, position = dodge) +
+  facet_grid(tissue ~ complex, scales = "free_x", space = "free_x") +
+  scale_colour_manual(values = TREATMENT_COLORS, labels = TREATMENT_LABELS, name = NULL,
+                      guide = guide_legend(override.aes = list(fill = TREATMENT_COLORS[c("OA", "OW", "DO")]))) +
+  scale_fill_manual(values = c(TREATMENT_COLORS[c("OA", "OW", "DO")], ns = "white"), guide = "none") +
+  labs(x = NULL, y = "log2 fold change vs day-3 control",
+       title = "A. Mitochondrial protein genes, each stressor against the day-3 control") +
+  theme_psmfc(10) + theme(legend.position = "top", panel.grid.major.x = element_blank())
+
+pb <- ggplot(share %>% filter(day == "3") %>%
+               mutate(treatment = factor(treatment, levels = names(TREATMENT_COLORS)),
+                      tissue = factor(TISSUE_LABELS[tissue], levels = TISSUE_LABELS)),
+             aes(treatment, mt_reads_pct_of_nuclear)) +
+  geom_boxplot(aes(fill = treatment), alpha = 0.35, outlier.shape = NA, width = 0.6, colour = "grey30") +
+  geom_point(aes(colour = treatment, shape = treatment), position = position_jitter(width = 0.12, seed = 1),
+             size = 1.8) +
+  facet_wrap(~ tissue, scales = "free_y") +
+  scale_fill_manual(values = TREATMENT_COLORS, guide = "none") +
+  scale_colour_manual(values = TREATMENT_COLORS, guide = "none") +
+  scale_shape_manual(values = TREATMENT_SHAPES, guide = "none") +
+  scale_x_discrete(labels = c(control = "Control", OA = "OA", OW = "OW", DO = "DO")) +
+  labs(x = NULL, y = "mitochondrial protein reads\n(% of nuclear reads)",
+       title = "B. Mitochondrial share of each library, day 3") +
+  theme_psmfc(10)
+
+p <- pa / pb + plot_layout(heights = c(1.6, 1)) +
+  plot_annotation(caption = paste(strwrap(paste(
+    "Each protein is the sum of its mitochondrial-genome gene and its nuclear-scaffold copies; All 12 sums the",
+    "proteins. A: DESeq2 log2 fold change (Wald, unshrunk) with 95% interval, from separate fits per contrast",
+    "(nuclear-gene size factors); filled points: BH-adjusted Wald p < 0.05 over the 12 proteins (All 12: p < 0.05),",
+    "open points: not significant. B: one point per library."), width = 130), collapse = "\n"),
+    theme = theme(plot.caption = element_text(hjust = 0)))
+ggsave(file.path(figs, "MT_mitochondrial_expression.png"), p, width = 11, height = 8.5, dpi = 300)
+p
+```
+
+# Why the copies are summed
+
+```{r copies, fig.width = 9, fig.height = 4.5}
+cs_long <- as.data.frame(t(copy_sum[PROTEINS, ] / mt_sum[PROTEINS, ])) %>%
+  mutate(tissue = TISSUE_LABELS[ti[colnames(gcm), "tissue"]]) %>%
+  pivot_longer(-tissue, names_to = "protein", values_to = "copy_share") %>%
+  mutate(protein = factor(protein, levels = PROTEINS), tissue = factor(tissue, levels = TISSUE_LABELS))
+p2 <- ggplot(cs_long, aes(protein, 100 * copy_share)) +
+  geom_boxplot(aes(fill = tissue), outlier.size = 0.6, width = 0.7, alpha = 0.6,
+               position = position_dodge(width = 0.8)) +
+  scale_fill_manual(values = setNames(TISSUE_COLORS, TISSUE_LABELS), name = NULL) +
+  scale_y_continuous(limits = c(0, 100)) +
+  labs(x = NULL, y = "reads on nuclear-scaffold copies (%)",
+       title = "Share of each mitochondrial protein's reads that align to its nuclear-scaffold copies",
+       caption = paste(strwrap(paste("One value per library (all samples). COX1, ND3, ND4 and ND4L have few or",
+                                     "no copies; ATP6, CYTB, COX2, ND2 and ND6 lose most of their reads to them,",
+                                     "in proportions that vary between libraries."), width = 110), collapse = "\n")) +
+  theme_psmfc(10) + theme(legend.position = "top", plot.caption = element_text(hjust = 0))
+ggsave(file.path(figs, "MT_nuclear_copy_share.png"), p2, width = 9, height = 4.5, dpi = 300)
+p2
+```

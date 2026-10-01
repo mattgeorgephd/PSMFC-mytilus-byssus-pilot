@@ -1,4 +1,4 @@
-generated       : 2026-10-01 06:02:02
+generated       : 2026-10-01 18:15:06
 input           : 03_analyses/03_assemble-thread-summary/thread-summary.xlsx
 INCLUDE_LAB_REFERENCE : FALSE
 SHOW_LAB_REFERENCE_IN_PANELS : TRUE
@@ -11,11 +11,11 @@ model           : per-animal ANCOVA, log(day-3 adhesion) ~ arm + log(baseline ad
 ANCOVA animals  : 48 (control 12, OA 12, OW 12, DO 12)
 multiplicity    : unadjusted and Dunnett (emmeans mvt, seed 20260930)
 R / emmeans     : R version 4.4.3 (2025-02-28) / 2.0.4
-code commit          : 9f714a3098d4
-uncommitted changes  : no
+code commit          : 5ba5614718ef
+uncommitted changes  : YES, 23 tracked file(s) differ from the commit: M 02_thread-strength/01_code/02_extract_tensometer_data.Rmd; M 02_thread-strength/01_code/03_assemble_thread_summary.Rmd; M 02_thread-strength/01_code/04_analyze_thread_strength.Rmd; M 02_thread-strength/01_code/05_decompose_adhesion.Rmd; M 02_thread-strength/01_code/_ancova.R; M 06_differential-expression/01_code/00_run_differential_expression.Rmd; M 06_differential-expression/01_code/01_clean_count_matrix.Rmd; M 06_differential-expression/01_code/02_define_contrasts.Rmd; M 06_differential-expression/01_code/03_deseq_contrasts.Rmd; M 06_differential-expression/01_code/04_shrinkage_filtration.Rmd ...
 R                    : R version 4.4.3 (2025-02-28)
 packages             : emmeans 2.0.4
 inputs (md5, repo-relative path):
-  9a6ef22fe1325b8051811738007bbff2  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
-  df1e341130f3b75f99dc49bb0f24fc8f  02_thread-strength/01_code/04_analyze_thread_strength.Rmd
-  a67c347cad811fcd8b44480f107451d6  02_thread-strength/01_code/_ancova.R
+  55d4810b1ebd0116b634a47cfc30dd79  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
+  4f7c2258badf1ec0e4c7c21266dcd521  02_thread-strength/01_code/04_analyze_thread_strength.Rmd
+  95ad5e8b9d6029d12d4c8d407b79bc6e  02_thread-strength/01_code/_ancova.R

@@ -22,17 +22,20 @@ table (`03_blast/03_analyses/genome-foot/LOC_GO_list.txt`) and write three files
 
 It also writes `03_analyses/DEG_lists/DEG_join_summary.csv` with, per contrast, the number
 of DEGs (genes), merged rows, annotated and unannotated genes, and how many of the DEGs are
-mitochondrial. Quote `n_DEG_genes` from that file, not the merged-row count.
+mitochondrial (a check: script 03 leaves the mitochondrial loci out of the genome fits, so it
+must be 0; their results are in `03_analyses/mitochondrial/`, script 13). Quote `n_DEG_genes`
+from that file, not the merged-row count.
 
 ## Join key and the mitochondrial genes
 
-Nuclear genes are named `gene-LOC134721619|LOC134721619` in the count matrix and the master
-table keys them by the `LOC` identifier. The 13 mitochondrial protein-coding genes are named
-`gene-ND2|ND2`, `gene-CYTB|CYTB`, and so on; they carry no `LOC` identifier, and the master
-table keys them by that symbol (`ND2`, `CYTB`, ...) because the BLAST step took the gene
-symbol from the CDS FASTA header. The key is the `LOC` identifier and falls back to the
-symbol, so the mitochondrial genes join to their annotation like any other, in every
-contrast.
+Nuclear genes are named `gene-LOC134721619|LOC134721619` in the count matrix (or
+`gene-LOC...` without the part after `|`, or `STRG.10|LOC...` for a StringTie gene over a
+reference gene) and the master table keys them by the `LOC` identifier. The 12 mitochondrial
+protein-coding genes are named `gene-ND2|ND2`, `gene-CYTB|CYTB`, and so on and are keyed by
+that symbol. `gene_key()` (`tools/gene_ids.R`, shared with 07 and 09) returns the `LOC`
+identifier when the name holds one and otherwise the gene ID without `gene-`. The
+mitochondrial genes and their nuclear copies are no longer in the genome contrasts (script
+03); the check below confirms that none reaches a DEG table.
 
 The join is `left_join(..., na_matches = "never")`: the master table has about 16,800 rows
 with an empty key (isoform hits already represented under another transcript of the same
@@ -43,30 +46,41 @@ suppressPackageStartupMessages({ library(tidyverse); library(stringr) })
 ```
 
 ```{r masterID}
-# Output of blastx + UniProt + GO, one row per (transcript, hit)
+# Output of blastx + UniProt + GO, one row per (transcript, hit). Columns are selected and
+# renamed by their names in the file, so a reordered or extended table cannot shift them.
 masterID <- read.delim(file.path(blast_go, "LOC_GO_list.txt"), sep = "\t", header = TRUE)
-# Drop the three trailing helper columns (V11, V2.x, uniprot_accession.y)
-masterID <- masterID[, -((ncol(masterID) - 2):ncol(masterID))]
-colnames(masterID) <- c("transcript", "database", "uniprot_accession", "geneID", "species",
-                        "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart",
-                        "send", "evalue", "bitscore", "reviewed", "entryname", "protein_name",
-                        "gene_name", "organism", "prot_length", "GO_ID", "GO_BP", "GO_MF",
-                        "GO_CC", "Genename_orderedlocus", "Induction", "Pathwaycommons",
-                        "Reactome", "Unipathway", "Interacts_with", "LOC_ID")
+master_cols <- c(transcript = "transcript", database = "sp", uniprot_accession = "uniprot_accession.x",
+                 geneID = "geneID", species = "species", pident = "pident", length = "length",
+                 mismatch = "mismatch", gapopen = "gapopen", qstart = "qstart", qend = "qend",
+                 sstart = "sstart", send = "send", evalue = "evalue", bitscore = "bitscore",
+                 reviewed = "Reviewed", entryname = "Entry.Name", protein_name = "Protein.names",
+                 gene_name = "Gene.Names", organism = "Organism", prot_length = "Length",
+                 GO_ID = "Gene.Ontology.IDs", GO_BP = "Gene.Ontology..biological.process.",
+                 GO_MF = "Gene.Ontology..molecular.function.",
+                 GO_CC = "Gene.Ontology..cellular.component.",
+                 Genename_orderedlocus = "Gene.Names..ordered.locus.", Induction = "Induction",
+                 Pathwaycommons = "PathwayCommons", Reactome = "Reactome", Unipathway = "UniPathway",
+                 Interacts_with = "Interacts.with", LOC_ID = "gene")
+missing_cols <- setdiff(master_cols, names(masterID))
+if (length(missing_cols)) stop("LOC_GO_list.txt lacks column(s): ", paste(missing_cols, collapse = ", "))
+# the three helper columns left by the BLAST step (V11, V2.x, uniprot_accession.y) are dropped
+masterID <- setNames(masterID[, master_cols], names(master_cols))
+stopifnot(identical(sub("_.*$", "", masterID$entryname[!is.na(masterID$entryname)]),
+                    masterID$geneID[!is.na(masterID$entryname)]))   # entry name = geneID_species
 masterID$LOC_ID[masterID$LOC_ID == ""] <- NA
 cat("Master table:", nrow(masterID), "rows;", sum(is.na(masterID$LOC_ID)), "with no key;",
     dplyr::n_distinct(na.omit(masterID$LOC_ID)), "distinct keys\n")
 ```
 
+`geneID` is the first half of the UniProt entry name (`TYRO` in `TYRO_HUMAN`), a mnemonic
+that often differs from the gene symbol (`CO6A3` for COL6A3); `gene_name` holds the gene
+symbols UniProt lists.
+
 ```{r key}
-# Join key for a count-matrix gene name: the LOC identifier when there is one, otherwise the
-# gene symbol between "gene-" and "|" (mitochondrial genes). NA only if neither parses.
-deg_key <- function(gene) {
-  loc <- str_extract(gene, "LOC\\d+")
-  sym <- str_match(gene, "^gene-([^|]+)\\|")[, 2]
-  dplyr::coalesce(loc, sym)
-}
-is_mito <- function(key) !grepl("^LOC\\d+$", key)
+# Join key for a count-matrix gene name (tools/gene_ids.R): the LOC identifier when there is
+# one, otherwise the gene_id without "gene-" (the 12 mitochondrial genes: ND2, CYTB, ...).
+source(file.path(repo_root, "tools", "gene_ids.R"))
+mt_loci <- read.csv(file.path(cnt, "mitochondrial_loci.csv"), stringsAsFactors = FALSE)  # step 01
 ```
 
 # Contrasts
@@ -90,10 +104,7 @@ dir.create(out_dir, showWarnings = FALSE)
 ```{r join}
 join_contrast <- function(code, dir, siggene) {
   sig <- read.csv(file.path(deg, dir, siggene), header = TRUE) %>%
-    mutate(LOC_ID = deg_key(gene))
-  if (anyNA(sig$LOC_ID))
-    stop(code, ": ", sum(is.na(sig$LOC_ID)), " DEG(s) with an unparseable gene name: ",
-         paste(head(sig$gene[is.na(sig$LOC_ID)]), collapse = ", "))
+    mutate(LOC_ID = gene_key(gene))
   if (anyDuplicated(sig$gene) > 0)
     stop(code, ": duplicated gene names in ", siggene)
 
@@ -113,12 +124,13 @@ join_contrast <- function(code, dir, siggene) {
          n_unID_rows         = nrow(unID),
          n_genes_annotated   = dplyr::n_distinct(ID$gene),
          n_genes_unannotated = dplyr::n_distinct(unID$gene),
-         n_mito_DEGs         = sum(is_mito(sig$LOC_ID)),
-         mito_DEGs           = paste(sig$LOC_ID[is_mito(sig$LOC_ID)], collapse = ";"))
+         n_mito_DEGs         = sum(sig$gene %in% mt_loci$gene),
+         mito_DEGs           = paste(sig$LOC_ID[sig$gene %in% mt_loci$gene], collapse = ";"))
 }
 
 summary_tbl <- pmap_dfr(contrasts, join_contrast)
-stopifnot(all(summary_tbl$n_genes_annotated + summary_tbl$n_genes_unannotated == summary_tbl$n_DEG_genes))
+stopifnot(all(summary_tbl$n_genes_annotated + summary_tbl$n_genes_unannotated == summary_tbl$n_DEG_genes),
+          all(summary_tbl$n_mito_DEGs == 0))   # mitochondrial loci are analysed in script 13
 write_csv(summary_tbl, file.path(deg, "DEG_join_summary.csv"))
 knitr::kable(summary_tbl)
 ```

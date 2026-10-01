@@ -1,31 +1,28 @@
 "code","direction","GO.ID","Term","Annotated","Significant","p_weight01","methods","n_methods"
-"FOA_TC","up","GO:0006418","tRNA aminoacylation for protein translation",18,9,3.15737865206542e-13,"weight01;classic;goseq;clusterProfiler",4
-"FOA_TC","up","GO:0015804","neutral amino acid transport",17,4,6.28167448763253e-05,"weight01;classic;goseq;clusterProfiler",4
-"FOA_TC","up","GO:0042149","cellular response to glucose starvation",13,3,0.000613005189849758,"weight01;classic;clusterProfiler",3
-"FOA_TC","up","GO:0009066","aspartate family amino acid metabolic process",14,3,0.000772763652218204,"weight01;classic;clusterProfiler",3
-"FOA_TC","up","GO:0043066","negative regulation of apoptotic process",125,7,0.00192031201928288,"weight01;clusterProfiler",2
-"FOA_TC","up","GO:0002183","cytoplasmic translational initiation",22,4,0.00445212951391434,"weight01;classic;goseq;clusterProfiler",4
-"FOA_TC","up","GO:0006417","regulation of translation",112,7,0.00738313898651941,"weight01;classic;clusterProfiler",3
-"FDO_TC","down","GO:0070286","axonemal dynein complex assembly",30,10,6.46528838903423e-11,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0060294","cilium movement involved in cell motility",76,17,3.51819549936139e-09,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0035082","axoneme assembly",70,22,3.02403717194565e-08,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0007288","sperm axoneme assembly",20,5,2.8321855425081e-05,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0003341","cilium movement",108,25,7.38110164299115e-05,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0060336","negative regulation of type II interferon-mediated signaling pathway",10,3,0.000736993125560098,"weight01;classic;clusterProfiler",3
-"FDO_TC","down","GO:1902216","positive regulation of interleukin-4-mediated signaling pathway",10,3,0.000736993125560098,"weight01;classic;clusterProfiler",3
-"FDO_TC","down","GO:0018200","peptidyl-glutamic acid modification",11,3,0.000999376885818873,"weight01;clusterProfiler",2
-"FDO_TC","down","GO:0042531","positive regulation of tyrosine phosphorylation of STAT protein",11,3,0.000999376885818873,"weight01;clusterProfiler",2
-"FDO_TC","down","GO:0034453","microtubule anchoring",12,3,0.00131412316603099,"weight01;clusterProfiler",2
-"FDO_TC","down","GO:0042532","negative regulation of tyrosine phosphorylation of STAT protein",12,3,0.00131412316603099,"weight01;clusterProfiler",2
-"FDO_TC","down","GO:0003351","epithelial cilium movement involved in extracellular fluid movement",31,6,0.00154583336653131,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0000226","microtubule cytoskeleton organization",281,36,0.0035776770995138,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0060285","cilium-dependent cell motility",83,19,0.00491664206800949,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0007368","determination of left/right symmetry",47,5,0.00494512033893875,"weight01;clusterProfiler",2
-"FDO_TC","down","GO:0007018","microtubule-based movement",201,29,0.00839315738682336,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0120316","sperm flagellum assembly",28,7,0.00849350052912788,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0042773","ATP synthesis coupled electron transport",133,88,1.02119063643552e-35,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0006122","mitochondrial electron transport, ubiquinol to cytochrome c",28,23,7.29020660967455e-30,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0006123","mitochondrial electron transport, cytochrome c to oxygen",32,24,2.2237318888223e-29,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0006120","mitochondrial electron transport, NADH to ubiquinone",41,17,6.11249412208158e-15,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0006749","glutathione metabolic process",25,8,1.2134741179663e-06,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0006119","oxidative phosphorylation",145,91,0.00177320841231249,"weight01;classic;goseq;clusterProfiler",4
+"FOA_TC","up","GO:0006418","tRNA aminoacylation for protein translation",17,9,7.62663708063444e-13,"weight01;classic;goseq;clusterProfiler",4
+"FOA_TC","up","GO:0015804","neutral amino acid transport",17,4,0.00012127945685645,"weight01;classic;goseq;clusterProfiler",4
+"FOA_TC","up","GO:0009066","aspartate family amino acid metabolic process",13,3,0.00100185072549899,"weight01;clusterProfiler",2
+"FOA_TC","up","GO:0042149","cellular response to glucose starvation",13,3,0.00100185072549899,"weight01;clusterProfiler",2
+"FOA_TC","up","GO:0002183","cytoplasmic translational initiation",22,4,0.00623030729126941,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0070286","axonemal dynein complex assembly",30,11,1.15983997803359e-10,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0060294","cilium movement involved in cell motility",74,18,1.26756794454649e-10,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0035082","axoneme assembly",68,22,3.84681376928064e-08,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0003351","epithelial cilium movement involved in extracellular fluid movement",30,7,9.69926570188166e-05,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0003341","cilium movement",105,26,9.94513103666433e-05,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0007288","sperm axoneme assembly",19,4,0.000535306996779511,"weight01;classic;clusterProfiler",3
+"FDO_TC","down","GO:0060336","negative regulation of type II interferon-mediated signaling pathway",10,3,0.000940615279170934,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:1902216","positive regulation of interleukin-4-mediated signaling pathway",10,3,0.000940615279170934,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:0018200","peptidyl-glutamic acid modification",11,3,0.00127392414349515,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:0042531","positive regulation of tyrosine phosphorylation of STAT protein",11,3,0.00127392414349515,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:0034453","microtubule anchoring",12,3,0.00167308102212157,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:0042532","negative regulation of tyrosine phosphorylation of STAT protein",12,3,0.00167308102212157,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:0030317","flagellated sperm motility",58,10,0.00324051389361026,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0060285","cilium-dependent cell motility",81,20,0.00570399183938145,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0007368","determination of left/right symmetry",46,5,0.00602519283440847,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:0120316","sperm flagellum assembly",26,6,0.00777456700336217,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0000226","microtubule cytoskeleton organization",276,36,0.00803959584319534,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0006749","glutathione metabolic process",25,8,2.08838369505218e-08,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0051341","regulation of oxidoreductase activity",12,4,7.46712149976003e-05,"weight01;goseq;clusterProfiler",3
+"GOA_TC","up","GO:0015986","proton motive force-driven ATP synthesis",13,4,0.0001061441967059,"weight01;goseq;clusterProfiler",3
+"GOA_TC","up","GO:1990748","cellular detoxification",13,4,0.0001061441967059,"weight01;goseq;clusterProfiler",3
+"GOA_TC","up","GO:0006457","protein folding",103,9,0.00275415265494438,"weight01;clusterProfiler",2

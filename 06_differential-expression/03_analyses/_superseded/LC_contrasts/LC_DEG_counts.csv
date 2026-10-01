@@ -1,0 +1,10 @@
+"code","family","tissue_dir","description","genes_tested","n_DEG","n_up","n_down"
+"FOA_LC","LC","Foot","Foot: OA vs day-0 lab control",7293,1451,649,802
+"FOW_LC","LC","Foot","Foot: OW vs day-0 lab control",7667,2624,1629,995
+"FDO_LC","LC","Foot","Foot: DO vs day-0 lab control",7240,1563,733,830
+"FTC_LC","LC","Foot","Foot: day-3 treatment control vs day-0 lab control",7598,1996,1266,730
+"GOA_LC","LC","Gill","Gill: OA vs day-0 lab control",10990,3039,1525,1514
+"GOW_LC","LC","Gill","Gill: OW vs day-0 lab control",10960,2811,1518,1293
+"GDO_LC","LC","Gill","Gill: DO vs day-0 lab control",10904,2458,1231,1227
+"GTC_LC","LC","Gill","Gill: day-3 treatment control vs day-0 lab control",11253,3597,1824,1773
+"FG_LC","FG","Foot_vs_Gill","Gill vs foot, day-0 lab controls",9877,6889,4774,2115

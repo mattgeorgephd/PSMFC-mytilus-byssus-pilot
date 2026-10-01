@@ -54,6 +54,7 @@ find_repo_root <- function(start = here::here()) {
   stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
 }
 repo_root    <- find_repo_root()
+source(file.path(repo_root, "tools", "gene_ids.R"))   # gene_key(): count-matrix name -> LOC key
 DE_DIR       <- file.path(repo_root, "06_differential-expression")
 COUNT_FILE   <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_matrix_clean.csv")
 THREAD_FILE  <- file.path(repo_root, "02_thread-strength", "03_analyses", "03_assemble-thread-summary",
@@ -107,7 +108,7 @@ add_lfc <- function(tcode) {
   if (!file.exists(f)) return(tibble(LOC_ID = character(), lfc = numeric()))
   d <- read.csv(f)
   gcol <- grep("gene", names(d), ignore.case = TRUE, value = TRUE)[1]
-  tibble(LOC_ID = sub("^gene-", "", sub(".*\\|", "", sub("^gene-", "", d[[gcol]]))),
+  tibble(LOC_ID = gene_key(d[[gcol]]),
          lfc = d$log2FoldChange)
 }
 for (tc in c("OA","OW","DO")) {
@@ -152,7 +153,6 @@ read_thread_summary <- function(path) {
     d$phase <- dplyr::case_when(d$thread_trt == "lab_control" ~ "lab",
                                 d$thread_trt == "baseline"    ~ "pre",
                                 TRUE                          ~ "post")
-  if (!"max_displacement" %in% names(d)) d$max_displacement <- NA_real_
   d %>% mutate(mussel = norm_id(mussel), adhesion_kpa = max_force / pad_area * 1000) %>%
     filter(!is.na(adhesion_kpa))
 }
@@ -166,7 +166,7 @@ dds <- DESeqDataSetFromMatrix(round(as.matrix(cm[, tissue_cols])),
                               DataFrame(row.names = tissue_cols), design = ~ 1)
 dds <- dds[rowSums(counts(dds)) > 0, ]
 vmat <- assay(vst(dds, blind = TRUE))
-rownames(vmat) <- sub("^gene-", "", sub(".*\\|", "", sub("^gene-", "", rownames(vmat))))
+rownames(vmat) <- gene_key(rownames(vmat))
 
 samples_have <- intersect(samples_wanted, colnames(vmat))
 counts_named <- counts(dds); rownames(counts_named) <- rownames(vmat)
@@ -204,10 +204,10 @@ write_csv(table_out, file.path(OUT_DIR, sprintf("byssus_gene_expression_%s.csv",
 ## companion: per-mussel treatment + thread mechanics
 mech <- thr_raw %>% filter(phase == "post") %>%
   group_by(mussel) %>% summarise(treatment = dplyr::first(mussel_trt), n_plaques = n(),
-            max_force = round(mean(max_force, na.rm=TRUE),3),
+            mean_force = round(mean(max_force, na.rm=TRUE),3),   # each thread's peak force, averaged
+            max_force = round(max(max_force, na.rm=TRUE),3),     # the strongest thread
             pad_area = round(mean(pad_area, na.rm=TRUE),2),
-            adhesion_kpa = round(mean(adhesion_kpa, na.rm=TRUE),1),
-            max_displacement = round(mean(max_displacement, na.rm=TRUE),3), .groups="drop")
+            adhesion_kpa = round(mean(adhesion_kpa, na.rm=TRUE),1), .groups="drop")
 sample_meta <- tibble(sample = samples_have, mussel = sub(paste0(TISSUE,"$"),"",samples_have)) %>%
   left_join(mech, by = "mussel")
 write_csv(sample_meta, file.path(OUT_DIR, sprintf("sample_metadata_%s.csv", TISSUE)))

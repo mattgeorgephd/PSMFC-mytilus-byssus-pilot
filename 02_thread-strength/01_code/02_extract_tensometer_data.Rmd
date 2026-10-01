@@ -327,7 +327,9 @@ for (folder in folders) {
       note             = ids$note,
       max_force        = max(tr$force),                  # N
       integral         = trapz(tr$force, tr$time),       # N*s, area under force/time
-      max_displacement = max(tr$displacement),           # mm at peak extension
+      ## no extension: the thread was cut near the plaque-distal junction, so the length of
+      ## distal thread under test differed between pulls and displacement at break does not
+      ## measure the thread's extension
       n_points         = length(tr$time),
       duration_s       = max(tr$time) - min(tr$time),
       n_na_force       = unname(tr$n_na["force"]),       # missing force samples, zero-filled
@@ -396,7 +398,7 @@ thread_raw <- thread_raw %>%
   select(any_of(c("source_folder", "thread_trt", "phase", "day",
                   "mussel", "thread", "note",
                   "species", "mussel_trt", "rna_sequenced",
-                  "max_force", "integral", "max_displacement",
+                  "max_force", "integral",
                   "n_points", "duration_s", "n_na_force", "file")))
 ```
 

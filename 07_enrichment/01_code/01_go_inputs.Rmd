@@ -2,7 +2,7 @@
 title: "01 - GO enrichment inputs: annotation, gene lengths and gene sets"
 output: html_document
 params:
-  families: ["TC", "LC", "FG"]   # contrast families to summarise (see 06 contrasts.csv)
+  families: ["TC", "FG"]   # contrast families to summarise (see 06 contrasts.csv)
 ---
 
 ```{r setup, include=FALSE}
@@ -21,10 +21,11 @@ summarises the gene sets each contrast contributes.
    separates them with "; "), kept only if this `GO.db` knows them, and split by ontology.
 2. **Length**, for goseq's length-bias correction: the median length of the gene's reference
    transcripts in `05_sequence-alignment/03_analyses/hisat/t_data.ctab`.
-3. **Mitochondrially encoded proteins.** LOCs whose best hit is one of the 13 mtDNA-encoded
-   proteins (`tools/mt_encoded.R`) are flagged so later scripts can show how much of a term
-   they carry. About 140 such LOCs exist, most on unplaced scaffolds; in Gill OA 116 of the
-   711 DEGs are among them.
+3. **No mitochondrial loci.** The mitochondrial genome's genes and their copies on unplaced
+   scaffolds (`06 .../count_matrix/mitochondrial_loci.csv`) are left out of the genome DE in
+   `06_differential-expression` and analysed there on their own (step 13). This script stops if
+   any of them reaches a universe, which would mean 06 was not rerun: one mitochondrial signal
+   counted many times dominated the GO results before (in Gill OA, 116 of 711 DEGs).
 4. **Gene sets.** For each contrast the universe is every gene with an adjusted p in its
    apeglm table from `06_differential-expression` (independent filtering leaves the rest at
    NA, so they could never be DEGs); up- and down-regulated DEGs (padj < 0.05) are tested
@@ -33,16 +34,16 @@ summarises the gene sets each contrast contributes.
 Writes, in `03_analyses/01_go-inputs/`:
 
 - `gene_annotation.tsv`: one row per gene in any contrast's table: LOC ID, best-hit protein,
-  median transcript length, the mitochondrial flag and the GO IDs by ontology (";"-separated);
-- `gene_sets_summary.csv`: per contrast and direction, the universe and DEG counts, how many
-  carry GO annotation, and how many DEGs are mitochondrially encoded protein LOCs;
+  median transcript length and the GO IDs by ontology (";"-separated);
+- `gene_sets_summary.csv`: per contrast and direction, the universe and DEG counts and how many
+  carry GO annotation;
 - `RUN_provenance.txt`: the GO release in `GO.db`, the thresholds, the code commit, R and
   package versions for every method in this folder, and an MD5 checksum of each input.
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
 source(here::here("01_code", "_go_helpers.R"))
-source(file.path(repo_root, "tools", "mt_encoded.R"))
+source(file.path(repo_root, "tools", "gene_ids.R"))   # gene_key(): count-matrix name -> LOC key
 suppressPackageStartupMessages({ library(GO.db); library(dplyr); library(tidyr) })
 ```
 
@@ -65,27 +66,34 @@ go_wide <- go_long %>% filter(!is.na(ont)) %>% arrange(GO) %>%
   group_by(LOC_ID, ont) %>% summarise(ids = paste(GO, collapse = ";"), .groups = "drop") %>%
   pivot_wider(names_from = ont, values_from = ids, names_prefix = "GO_")
 
-## median reference-transcript length per gene
+## median reference-transcript length per gene. Reference genes without a transcript record
+## (gene_id ".") appear under their gene record's name (t_name "gene-LOC..."); they are the
+## genes the count matrix names "gene-LOC..." or "STRG.n|LOC...". StringTie-only genes
+## (STRG.n) have no reference length and stay out of goseq.
 td  <- read.delim(t_data, stringsAsFactors = FALSE)
-len <- td %>% filter(gene_id != ".") %>% mutate(LOC_ID = sub("^gene-", "", gene_id)) %>%
+len <- td %>% mutate(LOC_ID = gene_key(ifelse(gene_id != ".", gene_id, t_name))) %>%
   group_by(LOC_ID) %>% summarise(length = median(length), .groups = "drop")
 
 ## every gene that appears in any contrast's table
 genes <- unique(unlist(lapply(contrasts$code, function(cd) gene_sets(cd)$universe)))
-annot <- data.frame(gene = genes, LOC_ID = sub(".*[|]", "", genes)) %>%
+mt_loci <- read.csv(file.path(repo_root, "06_differential-expression", "03_analyses", "count_matrix",
+                               "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
+if (any(genes %in% mt_loci$gene))
+  stop(sum(genes %in% mt_loci$gene), " mitochondrial loci are in the 06 apeglm tables; rerun ",
+       "06_differential-expression (its step 03 leaves them out) before this folder.")
+annot <- data.frame(gene = genes, LOC_ID = gene_key(genes)) %>%
   left_join(best %>% select(LOC_ID, protein_name), by = "LOC_ID") %>%
   left_join(len, by = "LOC_ID") %>%
   left_join(go_wide, by = "LOC_ID") %>%
-  mutate(mt_encoded = is_mt_encoded(protein_name),
-         across(starts_with("GO_"), ~ coalesce(.x, ""))) %>%
-  select(gene, LOC_ID, protein_name, length, mt_encoded, GO_BP, GO_MF, GO_CC) %>%
+  mutate(across(starts_with("GO_"), ~ coalesce(.x, ""))) %>%
+  select(gene, LOC_ID, protein_name, length, GO_BP, GO_MF, GO_CC) %>%
   arrange(gene)
 write.table(annot, file.path(out_inputs, "gene_annotation.tsv"), sep = "\t", quote = FALSE,
             row.names = FALSE, na = "")
 knitr::kable(data.frame(genes = nrow(annot), with_BLAST_hit = sum(!is.na(annot$protein_name)),
                         with_BP = sum(nzchar(annot$GO_BP)), with_MF = sum(nzchar(annot$GO_MF)),
-                        with_CC = sum(nzchar(annot$GO_CC)), with_length = sum(!is.na(annot$length)),
-                        mt_encoded = sum(annot$mt_encoded)), caption = "genes in any contrast")
+                        with_CC = sum(nzchar(annot$GO_CC)), with_length = sum(!is.na(annot$length))),
+             caption = "genes in any contrast")
 ```
 
 # Gene sets
@@ -97,8 +105,7 @@ summ <- bind_rows(lapply(seq_len(nrow(runs)), function(i) {
   a <- annot[match(s$universe, annot$gene), ]
   data.frame(runs[i, ], universe = length(s$universe), universe_with_BP = sum(nzchar(a$GO_BP)),
              universe_with_length = sum(!is.na(a$length)), DEGs = length(d),
-             DEGs_with_BP = sum(nzchar(annot$GO_BP[match(d, annot$gene)])),
-             DEGs_mt_encoded = sum(annot$mt_encoded[match(d, annot$gene)]))
+             DEGs_with_BP = sum(nzchar(annot$GO_BP[match(d, annot$gene)])))
 }))
 write.csv(summ, file.path(out_inputs, "gene_sets_summary.csv"), row.names = FALSE)
 knitr::kable(summ)
@@ -125,8 +132,9 @@ settings <- c(
          sum(nzchar(annot$GO_BP)), ", MF ", sum(nzchar(annot$GO_MF)), ", CC ", sum(nzchar(annot$GO_CC))))
 inputs <- c(file.path(blast_go, "LOC_GO_list.txt"), t_data, file.path(deg, "contrasts.csv"),
             file.path(deg, contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
+            file.path(repo_root, "06_differential-expression", "03_analyses", "count_matrix", "mitochondrial_loci.csv"),
             here::here("01_code", c("01_go_inputs.Rmd", "_paths.R", "_go_helpers.R")),
-            file.path(repo_root, "tools", c("mt_encoded.R", "pipeline_checks.R")))
+            file.path(repo_root, "tools", c("pipeline_checks.R", "gene_ids.R")))
 prov <- file.path(out_inputs, "RUN_provenance.txt")
 writeLines(provenance_lines(settings, inputs, repo_root,
                             packages = c("topGO", "goseq", "clusterProfiler", "enrichplot", "rrvgo",

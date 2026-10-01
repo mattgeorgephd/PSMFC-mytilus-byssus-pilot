@@ -20,7 +20,7 @@ One fact, one source. Nothing is copied into two files where the copies could dr
 
 | fact | grain | source |
 |---|---|---|
-| `max_force`, `integral`, `max_displacement` | thread | the trace, via script 02 |
+| `max_force` (the thread's peak force), `integral` | thread | the trace, via script 02 |
 | `thread_trt`, `phase`, `day` | thread | the tensometer subfolder, via script 02 |
 | `species`, `mussel_trt`, `rna_sequenced` | mussel | `mussel-treatment-key.csv`, via script 02 |
 | `pad_area`, `failure` | thread | `02_data/pad_area_measurements.xlsx` |
@@ -57,9 +57,12 @@ Written to `03_analyses/03_assemble-thread-summary/`.
 ### `thread-summary.xlsx`, sheet `data`
 
 One row per trace: `species`, `sort_ID`, `mussel_ID`, `thread_num`, `note`, `phase`, `day`,
-`mussel_trt`, `thread_trt`, `max_force`, `integral`, `max_displacement`, `pad_area`,
-`adhesion_kpa`, `failure`, `rna_sequenced`, plus `pad_notes`, `source_folder` and `file` for
-provenance. Scripts 04 and 05 ignore the extra columns.
+`mussel_trt`, `thread_trt`, `max_force`, `integral`, `pad_area`, `adhesion_kpa`, `failure`,
+`rna_sequenced`, plus `pad_notes`, `source_folder` and `file` for provenance. Scripts 04 and
+05 ignore the extra columns. `max_force` is per thread here; the per-animal `mean_force` and
+`max_force` are made from it in scripts 04 and 05 (see the folder README). Extension
+(`max_displacement`) is no longer carried: the length of distal thread under test was not
+controlled.
 
 Re-running the script overwrites this file, so any hand edit made to it is lost on the next
 run. The committed copy is identical, cell for cell, to what the script writes from the

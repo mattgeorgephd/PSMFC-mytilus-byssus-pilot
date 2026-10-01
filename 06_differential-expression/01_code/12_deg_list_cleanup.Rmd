@@ -22,7 +22,18 @@ GOA_sigs <- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
 GOW_sigs <- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
 
 ```
+One row per gene. The merged tables hold one row per gene and BLAST hit (a gene with several
+transcripts can carry several hits, sometimes to different proteins), so the earlier files
+listed some DEGs two or three times; `protein_name` is now the best hit (highest bitscore,
+ties in table order, the rule 07 and 09 use), and a gene with no hit keeps one row with an
+empty name.
+
 ```{r}
+best_hit <- function(d) d %>% mutate(.row = row_number()) %>% arrange(desc(bitscore)) %>%
+  distinct(gene, .keep_all = TRUE) %>% arrange(.row) %>% select(-.row)   # keeps the table order
+FDO_sigs <- best_hit(FDO_sigs); FOA_sigs <- best_hit(FOA_sigs); FOW_sigs <- best_hit(FOW_sigs)
+GDO_sigs <- best_hit(GDO_sigs); GOA_sigs <- best_hit(GOA_sigs); GOW_sigs <- best_hit(GOW_sigs)
+
 FDO_sigs_clean <- FDO_sigs %>%
   subset(select = c(gene, baseMean, log2FoldChange, lfcSE, padj, protein_name))
 

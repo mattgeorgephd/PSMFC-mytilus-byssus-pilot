@@ -1,14 +1,16 @@
-# Gene-mechanics correlation pipeline, scripts 01 to 04
+# Gene-mechanics correlation pipeline, scripts 01 to 05
 
 Links foot or gill gene expression at day 3 to the same animal's byssal thread mechanics.
-Four chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
-session, parameterised by tissue. Run in order **01 → 02 → 03 → 04**, after the
-`02_thread-strength` and `06_differential-expression` runners, or knit
-**00_run_gene_mechanics_by_tissue.Rmd**, which renders all four for foot and gill.
+Five chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
+session, parameterised by tissue. Run in order **01 → 02 → 03 → 04 → 05**, after the
+`02_thread-strength`, `06_differential-expression` and `07_enrichment` runners, or knit
+**00_run_gene_mechanics_by_tissue.Rmd**, which renders all five for foot and gill. Script 05
+(DEG sets, enriched GO terms and mitochondrial expression against mechanics) is described in
+its own header and in the folder README.
 
 ## Running for a tissue
 
-Each of 01 to 04 has a knit parameter in its YAML header:
+Each of 01 to 05 has a knit parameter in its YAML header:
 
 ```yaml
 params:
@@ -81,20 +83,21 @@ per-animal values:
 
 | metric | scale | tier | per-animal value |
 |---|---|---|---|
-| `max_force` | log | primary | geometric mean of the animal's day-3 plaques, N |
+| `mean_force` | log | primary | geometric mean of the peak forces of the animal's day-3 threads, N |
 | `pad_area` | log | primary | geometric mean, mm² |
+| `max_force` | log | exploratory | the largest thread peak force, N (one thread per animal, so noisier; a maximum also grows with the number of threads) |
 | `adhesion_kpa` | log | exploratory | geometric mean of force / area × 1000 (recomputed per plaque) |
-| `max_displacement` | raw | exploratory | arithmetic mean of extension at break, mm |
 
-Force, area and adhesion enter as log(geometric mean) on both sides of the model, so
-`slope` is a log-unit change per VST unit and exp(slope) a multiplicative one; extension is
-raw. `level_baseline` is the same summary of the animal's own pre-exposure threads, on the
+Every metric enters on the log scale on both sides of the model, so `slope` is a log-unit
+change per VST unit and exp(slope) a multiplicative one. Extension is not analysed: threads
+were cut near the junction of the plaque and the distal region, so the length of distal
+thread under test differed between pulls (`02_thread-strength/README.md`). `level_baseline` is the same summary of the animal's own pre-exposure threads, on the
 same scale. Animals without baseline threads are not in the fits. `baseline_slope` is
 reported beside `slope`; it is the same quantity as the baseline coefficient of the
 02_thread-strength ANCOVA (`STATS_ancova_coefficients.csv` in 02_thread-strength scripts 3 and 4),
 fitted here with expression added.
 
-`METRICS` in script 01 fixes the scale and the tier; `tier = primary` (force, area) is the
+`METRICS` in script 01 fixes the scale and the tier; `tier = primary` (mean force, area) is the
 declared confirmatory family and every output carries the column. Multiplicity: `q_lm` is BH
 within a gene set x metric, `q_family` BH within a gene set x tier, so the candidate x
 primary family (tested candidates x two primary metrics) has its own search-corrected q.
@@ -120,6 +123,16 @@ oxidative-stress terms) and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-1
 to genes named in the treatment-vs-control DEG tables plus the byssal structural genes; it
 made "already a DEG in some contrast" a hidden entry condition and is kept only for comparison. `in_TC_DEG_annotation` marks the
 overlap in every table.
+
+### Gene keys and the mitochondrial loci
+
+Count-matrix gene names (`gene-LOC134696364|LOC134696364`, `STRG.10|LOC...`) become LOC keys
+through `gene_key()` in `tools/gene_ids.R`, the same function 06 and 07 use; script 01 stops
+if two tested genes share a key. The 143 mitochondrial loci of
+`06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` (the
+mitochondrial genome's genes and their copies on unplaced scaffolds) are removed after the
+expression filter, so they enter neither the candidate set nor the DEG union; script 05
+tests their summed share of the library as one score.
 
 ### Detection floor
 
@@ -193,7 +206,7 @@ score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 
 | file | contents |
 |---|---|
-| `paired_sample_manifest_<T>.csv` | the paired animals: arm, plaque counts, day-3 and baseline per-animal values (geometric means for force, area, adhesion), response class and score |
+| `paired_sample_manifest_<T>.csv` | the paired animals: arm, plaque counts, day-3 and baseline per-animal values (geometric means for `mean_force`, area and adhesion; the largest thread for `max_force`), response class and score |
 | `metrics_config_<T>.csv` | metric list with `scale` (log / raw), `tier` (primary / exploratory) and label, arm levels, covariates, the `EXCLUDE_FLOOR_GENES` setting |
 | `vst_paired_<T>.csv` | handoff: VST expression of the paired samples |
 | `annotation_map.csv` | genome-wide best UniProt hit per LOC with `blast_pident`, `blast_evalue`, `blast_ok`, `in_TC_DEG_annotation` |
@@ -210,7 +223,9 @@ score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 ### `03_analyses/expr_tables/` (script 03) and `03_analyses/byssus_genes/` (script 04)
 
 `rna_thread_manifest_<T>.csv` is tissue-suffixed. The companion `sample_metadata_<T>.csv`
-files carry all four arms and `max_displacement`.
+files carry all four arms and the per-animal thread values (arithmetic mean of the thread
+peak forces as `mean_force`, the largest as `max_force`, mean area and adhesion), a
+description rather than a model input.
 
 ---
 
@@ -259,7 +274,7 @@ after writing `run_log.csv`, if any step failed.
 | script | option | default | effect |
 |---|---|---|---|
 | 01 | `INCLUDE_CONTROL_ARM` | TRUE | day-3 control animals as a fourth arm |
-| 01 | `METRICS` | force, area (log, primary); adhesion (log), extension (raw), exploratory | metric, model scale and tier; reporting order = priority; `PRIMARY_METRICS` is derived from it |
+| 01 | `METRICS` | mean force, area (primary); maximum force, adhesion (exploratory); all log | metric, thread-level column, per-animal summary (`agg`: geometric mean or largest thread), model scale and tier; reporting order = priority; `PRIMARY_METRICS` is derived from it |
 | 01 | `CANDIDATE_ANNOTATION` | "genome" | best genome-wide BLAST hit per LOC ("TC_DEG": DEG-table names only) |
 | 01 | `CANDIDATE_MAX_EVALUE`, `CANDIDATE_MIN_PIDENT` | 1e-10, 0 | BLAST-quality floor for candidates and module members |
 | 01 | `EXCLUDE_FLOOR_GENES`, `FLOOR_EXCLUDE`, `FLOOR_CAUTION` | TRUE, 0.40, 0.20 | detection-floor filter applied before testing |

@@ -45,3 +45,19 @@ theme_psmfc <- function(base_size = 11) {
                    strip.background = ggplot2::element_rect(fill = "grey95", colour = "grey70"),
                    legend.key = ggplot2::element_blank())
 }
+
+## A protein name short enough for a strip or axis label. UniProt's "Protein names" field
+## lists alternative names in parentheses after the recommended one, and cleavage products or
+## domains in "[Cleaved into: ...]" / "[Includes: ...]"; those are dropped (other brackets, as in
+## "Amine oxidase [flavin-containing] A", are part of the name) before truncating at a word
+## boundary; "..." marks a cut.
+short_name <- function(x, width = 34) {
+  x <- ifelse(is.na(x), "", x)
+  x <- trimws(sub(" \\[(Cleaved into|Includes|Contains):.*$", "", sub(" \\(.*$", "", x)))
+  vapply(x, function(s) {
+    if (nchar(s) <= width) return(s)
+    cut <- substr(s, 1, width - 3)
+    sp  <- regexpr(" [^ ]*$", cut)
+    paste0(if (sp > width / 2) substr(cut, 1, sp - 1) else cut, "...")
+  }, character(1), USE.NAMES = FALSE)
+}

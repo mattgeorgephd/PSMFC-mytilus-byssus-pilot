@@ -20,7 +20,9 @@ Starts the differential-expression analysis from the prepDE gene count matrix wr
 2. builds the sample table (`sample.1`, `tissue`, `treatment`, `day`, `region`) from the
    sample sheet; treatment and day come from `trt` (`T_OA_d3` -> OA, 3);
 3. checks every library against the RNA isolation log and writes the crosswalk between the
-   two naming schemes (below).
+   two naming schemes (below);
+4. lists the mitochondrial loci (below), which the genome analysis leaves out and step 13
+   analyses on their own.
 
 **Foot regions.** Two pieces of the foot were sequenced, and the sheets name them
 inconsistently:
@@ -32,13 +34,24 @@ inconsistently:
 | `T001G` | G | gill | every animal | `T01-G` ("gill") |
 
 Both are foot tissue. The sample sheet's free-text columns call the FX libraries "gill" and
-"foot_control"; both are wrong and are not used. Every contrast uses the phenol-gland-to-tip
-libraries, the region sampled in every animal; the FX libraries stay in the count matrix and
+"foot_control"; both are wrong and are not used. The FX libraries stay in the count matrix and
 the sample table but enter no contrast (`02_define_contrasts.Rmd`), because the two regions
 differ strongly in expression, byssal genes included.
 
-Writes `03_analyses/count_matrix/gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv` and
-`library_crosswalk.csv`, which later steps read. Replaces `01_5-gene_count_matrix.Rmd`, which
+**Day-0 lab controls.** The day-0 feet were cut into two pieces (`F_PG` and `F` in the
+isolation log); the day-3 feet were sampled as one (`F_PG` only). The part of the foot behind a
+day-0 library is therefore not the part behind a day-3 library, and the experimenter confirms
+the day-0 animals are not true lab controls. No contrast uses the day-0 libraries; they stay in
+the count matrix and appear only in the all-sample PCA (step 03).
+
+**Mitochondrial loci.** The reference holds the female-type mitochondrial genome
+(NC_007687.1: 12 protein genes and their tRNAs), and about 126 LOCs on unplaced scaffolds are
+copies of its protein genes, which take a large and variable share of the mitochondrial reads
+(`tools/mt_encoded.R`). `mitochondrial_loci.csv` lists all of them; steps 03 and 05 fit the
+genome without them, and step 13 analyses one summed count per mitochondrial protein.
+
+Writes `03_analyses/count_matrix/gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`,
+`library_crosswalk.csv` and `mitochondrial_loci.csv`, which later steps read. Replaces `01_5-gene_count_matrix.Rmd`, which
 could not run (it read a matrix that was not in the repository and its sample-table step was
 never finished).
 
@@ -118,4 +131,27 @@ if (nrow(bad)) { print(bad); stop(nrow(bad), " library(ies) do not match the iso
 xw <- xw[order(xw$sample.1, method = "radix"), ]
 write.csv(xw, file.path(cnt, "library_crosswalk.csv"), row.names = FALSE)
 knitr::kable(table(region = xw$region, isolation_log_tissue = xw$isolation_log_tissue))
+```
+
+# Mitochondrial loci
+
+One row per matrix row that is mitochondrial: on the mitogenome (`source = mitogenome`,
+from the StringTie table of `05_sequence-alignment`), or a LOC whose best BLAST hit (highest
+bitscore, `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`) is a mitochondrially encoded
+protein (`source = nuclear copy`). `mt_protein` is the protein the row counts towards in
+step 13; the share of each sample's reads the two sources hold is printed.
+
+```{r mitochondrial}
+source(file.path(repo_root, "tools", "gene_ids.R"))     # gene_key()
+source(file.path(repo_root, "tools", "mt_encoded.R"))
+mtl <- mitochondrial_loci(rownames(gcm), file.path(blast_go, "LOC_GO_list.txt"), t_data)
+stopifnot(!anyDuplicated(mtl$gene), all(mtl$gene %in% rownames(gcm)),
+          sum(mtl$source == "mitogenome" & mtl$mt_protein != "tRNA/rRNA") == 12)
+write.csv(mtl, file.path(cnt, "mitochondrial_loci.csv"), row.names = FALSE)
+knitr::kable(table(mt_protein = mtl$mt_protein, source = mtl$source), caption = "mitochondrial rows")
+nuclear_total <- colSums(gcm[!rownames(gcm) %in% mtl$gene, ])
+share <- sapply(c("mitogenome", "nuclear copy"), function(s)
+  100 * colSums(gcm[mtl$gene[mtl$source == s], , drop = FALSE]) / nuclear_total)
+knitr::kable(apply(share, 2, function(x) round(quantile(x, c(0, 0.25, 0.5, 0.75, 1)), 3)),
+             caption = "mitochondrial reads as % of each sample's other reads")
 ```

@@ -2,7 +2,7 @@
 title: "03 - GO enrichment with goseq (comparison method)"
 output: html_document
 params:
-  families: ["TC", "LC", "FG"]
+  families: ["TC", "FG"]
   ontologies: ["BP", "MF", "CC"]
   padj_cutoff: 0.05
   cores: 4                          # set to 1 on Windows (no forking)
@@ -32,8 +32,9 @@ goseq (Young et al. 2010, Genome Biology 11:R14), the method of the oyster Tag-s
   ontology. The template called terms at an unadjusted p < 0.05, which, over thousands of
   terms, admits many false positives; the unadjusted p is reported too.
 
-Writes, in `03_analyses/03_goseq/`: `goseq_enriched.csv`, `goseq_all_terms_TC_BP.csv`,
-`goseq_run_summary.csv`, `goseq_pwf_TC_BP.png` and `goseq_<family>_BP_dotplot.png`.
+Writes, in `03_analyses/03_goseq/`: `goseq_enriched.csv`, `goseq_all_terms_TC_<ontology>.csv`
+(one per ontology, read by script 06), `goseq_run_summary.csv`, `goseq_pwf_TC_BP.png` and
+`goseq_<family>_<ontology>_dotplot.png` for every family and ontology.
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
@@ -41,7 +42,6 @@ source(here::here("01_code", "_go_helpers.R"))
 source(file.path(repo_root, "tools", "plot_style.R"))
 suppressPackageStartupMessages({ library(goseq); library(GO.db); library(dplyr); library(ggplot2) })
 annot <- read_annotation()
-mt    <- mt_genes(annot)
 len   <- setNames(annot$length, annot$gene)
 cores <- if (.Platform$OS.type == "windows") 1L else as.integer(params$cores)
 runs  <- runs_for(unlist(params$families))
@@ -78,9 +78,8 @@ run_goseq <- function(code, direction, ontology) {
   enr <- terms$GO.ID[terms$padj < params$padj_cutoff]
   hits <- g2c[g2c$GO %in% enr & g2c$gene %in% names(de)[de == 1], ]
   by_term <- split(hits$gene, hits$GO)
-  terms$genes <- ""; terms$n_mt_encoded <- NA_integer_
+  terms$genes <- ""
   terms$genes[match(enr, terms$GO.ID)] <- vapply(by_term[enr], function(g) paste(sort(g), collapse = ";"), "")
-  terms$n_mt_encoded[match(enr, terms$GO.ID)] <- vapply(by_term[enr], function(g) sum(g %in% mt), 0L)
   list(summary = cbind(summ, terms_tested = nrow(terms), enriched = length(enr)), terms = terms,
        pwf = if (ontology == "BP") data.frame(code, direction, DE = pwf$DEgenes, length = pwf$bias.data, pwf = pwf$pwf))
 }
@@ -98,12 +97,13 @@ terms <- bind_rows(lapply(res, `[[`, "terms")) %>% left_join(distinct(runs, code
 run_summary <- bind_rows(lapply(res, `[[`, "summary")) %>% left_join(distinct(runs, code, family), by = "code")
 write.csv(run_summary, file.path(out_goseq, "goseq_run_summary.csv"), row.names = FALSE)
 enriched <- terms %>% filter(padj < params$padj_cutoff) %>%
-  select(code, family, direction, ontology, GO.ID, Term, numDEInCat, numInCat, p_over, padj, n_mt_encoded, genes) %>%
+  select(code, family, direction, ontology, GO.ID, Term, numDEInCat, numInCat, p_over, padj, genes) %>%
   arrange(match(code, contrasts$code), desc(direction == "up"), ontology, padj)
 write.csv(enriched, file.path(out_goseq, "goseq_enriched.csv"), row.names = FALSE)
-write.csv(terms %>% filter(family == "TC", ontology == "BP") %>%
-            select(code, direction, GO.ID, numInCat, numDEInCat, p_over, padj),
-          file.path(out_goseq, "goseq_all_terms_TC_BP.csv"), row.names = FALSE)
+for (o in onts)
+  write.csv(terms %>% filter(family == "TC", ontology == o) %>%
+              select(code, direction, GO.ID, numInCat, numDEInCat, p_over, padj),
+            file.path(out_goseq, sprintf("goseq_all_terms_TC_%s.csv", o)), row.names = FALSE)
 knitr::kable(run_summary %>% filter(ontology == "BP"), caption = "BP runs")
 ```
 
@@ -133,18 +133,18 @@ p
 # Figures
 
 ```{r dotplots, fig.width = 10, fig.height = 9}
-for (fam in unique(runs$family)) {
-  e <- enriched %>% filter(family == fam, ontology == "BP")
+for (fam in unique(runs$family)) for (ont in onts) {
+  e <- enriched %>% filter(family == fam, ontology == ont)
   if (!nrow(e)) next
   top <- e %>% group_by(code, direction) %>% slice_min(padj, n = 5, with_ties = FALSE) %>% ungroup()
-  d <- e %>% filter(GO.ID %in% top$GO.ID) %>% transmute(code, direction, Term, p = padj, n = numDEInCat, mt = n_mt_encoded)
+  d <- e %>% filter(GO.ID %in% top$GO.ID) %>% transmute(code, direction, Term, p = padj, n = numDEInCat)
   print(go_dotplot(d, contrasts$code[contrasts$family == fam],
-                   title = sprintf("goseq, biological process: %s", FAMILY_TITLE[[fam]]),
+                   title = sprintf("goseq, %s: %s", ONT_NAME[[ont]], FAMILY_TITLE[[fam]]),
                    caption = sprintf(paste("The 5 most significant terms of each contrast and direction (BH-adjusted",
                                            "Wallenius p < %s; a point only where the term is enriched). Terms of 10 to 500",
                                            "annotated genes; length-bias weighting by transcript length. Colour capped at 1e-%d."),
                                      params$padj_cutoff, P_CAP),
-                   file = file.path(out_goseq, sprintf("goseq_%s_BP_dotplot.png", fam)),
+                   file = file.path(out_goseq, sprintf("goseq_%s_%s_dotplot.png", fam, ont)),
                    p_label = "-log10 adjusted p"))
 }
 ```

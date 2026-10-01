@@ -22,8 +22,8 @@ metric on the per-animal values:
 
     level_day3 ~ expression + treatment + level_baseline
 
-with force, area and adhesion on the log scale (per-animal geometric means of the plaques)
-and extension on its raw scale. The animal is the unit, so there is no pseudoreplication,
+with every metric on the log scale (per-animal geometric means of the plaques, or the largest
+thread for `max_force`). The animal is the unit, so there is no pseudoreplication,
 but every animal counts the same whether it built one plaque or five. This script keeps
 that test as the reported one and adds what a reader needs to trust or discount a hit:
 
@@ -135,7 +135,7 @@ fit_ancova <- function(x, metric) {
        slope = co["x", "Estimate"], se = co["x", "Std. Error"], p = co["x", "Pr(>|t|)"])
 }
 
-cat("Paired animals:", nrow(paired), "| in the fits (with baseline):", sum(!is.na(paired$base_max_force)),
+cat("Paired animals:", nrow(paired), "| in the fits (with baseline):", sum(!is.na(paired$base_mean_force)),
     "| arms:", paste(arms_kept, collapse = ", "),
     "\nMetrics [scale, tier]:", paste(sprintf("%s [%s, %s]", mcfg$metric, mcfg$scale, mcfg$tier), collapse = ", "),
     "\nNuisance covariates:", paste(COVARIATES, collapse = " + "),
