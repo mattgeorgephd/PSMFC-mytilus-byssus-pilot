@@ -1,0 +1,16 @@
+[03_ortholog_lists.Rmd]
+generated            : 2026-10-01 23:33:15
+OrthoDB              : v12 API (search at level 33208, Metazoa; first group), odb12v2 species table
+code commit          : ce7949c082c9
+uncommitted changes  : YES, 5 tracked file(s) differ from the commit: M 06_differential-expression/01_code/01_clean_count_matrix.Rmd; M 06_differential-expression/01_code/13_mitochondrial_expression.Rmd; M 06_differential-expression/01_code/_paths.R; M 08_gene-annotation/01_code/01_go_slims.Rmd; M tools/mt_encoded.R
+R                    : R version 4.4.3 (2025-02-28)
+packages             : httr 1.4.9, jsonlite 2.0.0
+inputs (md5, repo-relative path):
+  3e4496b2d0618fa19698bed59a2f5f2f  08_gene-annotation/03_analyses/Top_gene_summaries/FOA_topgene_summs.csv
+  6bc56a8efed78d81b02745751762b7c5  08_gene-annotation/03_analyses/Top_gene_summaries/FOW_topgene_summs.csv
+  5610d63cdcee4b2fc1fda8a4fab61949  08_gene-annotation/03_analyses/Top_gene_summaries/FDO_topgene_summs.csv
+  5c610c347ad3f1f96cc5c9f8341cde56  08_gene-annotation/03_analyses/Top_gene_summaries/GOA_topgene_summs.csv
+  c83240f3d04015f684cfa492154379bc  08_gene-annotation/03_analyses/Top_gene_summaries/GOW_topgene_summs.csv
+  771f0849e4e37ec9a15c464a4055b395  08_gene-annotation/03_analyses/Top_gene_summaries/GDO_topgene_summs.csv
+  05f75664f4e1ed9af3ac7aa19ca68d8f  08_gene-annotation/03_analyses/Top_gene_summaries/ortho_species.tab.gz
+  5b58431095c999a1f494360d29bbe9ed  08_gene-annotation/01_code/03_ortholog_lists.Rmd

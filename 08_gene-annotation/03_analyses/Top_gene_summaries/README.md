@@ -28,4 +28,12 @@ current top-50 lists (`06_differential-expression/03_analyses/top_DEGs/Top_50_ge
   earlier top-50 list; all six now match their lists.
 - **Orthologs.** Step 03 could not run as written (it joined OrthoDB's headerless species
   table on a column it does not have), so the earlier `_ortho` tables came from an older
-  version of the script and OrthoDB release. They are being regenerated with OrthoDB 12.2.
+  version of the script and OrthoDB release. With OrthoDB 12.2, 175 of the 223 accessions have
+  a Metazoa-level group with at least one bivalve member, 14 have a group without one, and 34
+  are in no OrthoDB 12.2 group (proteins of species OrthoDB does not hold, such as
+  *Lymnaea stagnalis* CYP10, P48416); the earlier tables listed bivalves for nearly every
+  accession, which this release does not support. Each species is listed once (some have two
+  assemblies in OrthoDB).
+- **Provenance note.** `RUN_provenance_orthologs.txt` records uncommitted changes in five files
+  at run time; they were edits to the mitochondrial-locus code made while the step ran, which
+  step 03 does not read (its inputs and their MD5s are listed in the file).
