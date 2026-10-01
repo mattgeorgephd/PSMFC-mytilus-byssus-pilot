@@ -122,7 +122,7 @@ draw_comparison <- function(ont) {
   pa <- ggplot(cnt, aes(enriched, run)) +
     geom_col(fill = "grey45", width = 0.7) +
     geom_text(aes(label = ifelse(enriched > 0, enriched, "")), hjust = -0.25, size = 2.6) +
-    facet_wrap(~ method, nrow = 1, labeller = label_wrap_gen(width = 16)) +
+    facet_wrap(~ method, nrow = 1, labeller = as_labeller(function(m) sub(" \\(", "\n(", m))) +   # method, then its cut-off
     scale_x_continuous(expand = expansion(mult = c(0, 0.25))) +
     labs(x = sprintf("enriched %s terms", ont), y = NULL, title = "A. Enriched terms per method") +
     theme_psmfc(9) + theme(panel.grid.major.y = element_blank())
