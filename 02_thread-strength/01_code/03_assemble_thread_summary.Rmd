@@ -28,7 +28,7 @@ One fact, one source. Nothing is copied into two files where the copies could dr
 
 | fact | grain | source |
 |---|---|---|
-| `max_force`, `integral` | thread | the trace itself, via script 02 (no extension: see script 02) |
+| `max_force` | thread | the trace itself, via script 02 (no extension or area under the curve: see script 02) |
 | `thread_trt`, `phase`, `day` | thread | the tensometer subfolder, via script 02 |
 | `species`, `mussel_trt`, `rna_sequenced` | mussel | `03_analyses/01_build-mussel-key/mussel-treatment-key.csv`, via script 02 |
 | `pad_area`, `failure` | thread | `02_data/pad_area_measurements.xlsx` |
@@ -181,7 +181,7 @@ summary_tbl <- traces %>%
             note, phase, day,
             mussel_trt,                                # the arm the ANIMAL was assigned to
             thread_trt,                                # what the THREAD was built in
-            max_force, integral,
+            max_force,
             pad_area, adhesion_kpa, failure,
             rna_sequenced,
             pad_notes,

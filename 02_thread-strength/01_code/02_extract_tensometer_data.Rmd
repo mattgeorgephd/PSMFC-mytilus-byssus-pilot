@@ -241,7 +241,7 @@ read_trace <- function(path) {
     stop(basename(path), ": channel rows have unequal lengths (",
          n, "/", length(disp), "/", length(force), ").")
   if (n < 3L)
-    stop(basename(path), ": only ", n, " sample(s); too short to integrate.")
+    stop(basename(path), ": only ", n, " sample(s); too short to use.")
 
   # Count missing values before filling, so the QC record survives into the output.
   n_na <- c(time = sum(is.na(time)), disp = sum(is.na(disp)), force = sum(is.na(force)))
@@ -263,9 +263,9 @@ read_trace <- function(path) {
   disp  <- zero_fill(disp,  "displacement")
   force <- zero_fill(force, "force")
 
-  # Integration assumes increasing time. Sort rather than trust, and say so if it was not.
+  # The QC plot and the duration assume increasing time. Sort rather than trust, and say so.
   if (is.unsorted(time, strictly = FALSE)) {
-    warning(basename(path), ": time was not monotonic; samples reordered before integration.",
+    warning(basename(path), ": time was not monotonic; samples reordered.",
             call. = FALSE)
     o <- order(time); time <- time[o]; disp <- disp[o]; force <- force[o]
   }
@@ -273,13 +273,10 @@ read_trace <- function(path) {
   list(time = time, displacement = disp, force = force, n_na = n_na)
 }
 
-# Area under the force/time curve, by trapezoid, on the raw trace.
-#
-# The previous version called loess() then integrated `loess()$y`, which is the response, not
-# `$fitted` - so it was already integrating the raw trace, but on a grid from
-# approx(n = length(x)) that did not line up with the diff(x) it was multiplied by. This is the
-# same quantity, computed correctly. loess() is still fitted below, for the QC plot only.
-trapz <- function(y, x) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+# Peak force is the only quantity taken from a trace. The area under the force/time curve
+# (`integral`, N*s) was extracted until 2026-10-01 and removed with extension: both depend on
+# the length of distal thread under test, which was not standardized (threads were cut near
+# the plaque-distal junction). loess() is fitted below for the QC plot only.
 ```
 
 ## Extract every trace
@@ -326,10 +323,8 @@ for (folder in folders) {
       thread           = ids$thread,
       note             = ids$note,
       max_force        = max(tr$force),                  # N
-      integral         = trapz(tr$force, tr$time),       # N*s, area under force/time
-      ## no extension: the thread was cut near the plaque-distal junction, so the length of
-      ## distal thread under test differed between pulls and displacement at break does not
-      ## measure the thread's extension
+      ## no extension and no area under the curve: the thread was cut near the plaque-distal
+      ## junction, so the length of distal thread under test differed between pulls
       n_points         = length(tr$time),
       duration_s       = max(tr$time) - min(tr$time),
       n_na_force       = unname(tr$n_na["force"]),       # missing force samples, zero-filled
@@ -398,7 +393,7 @@ thread_raw <- thread_raw %>%
   select(any_of(c("source_folder", "thread_trt", "phase", "day",
                   "mussel", "thread", "note",
                   "species", "mussel_trt", "rna_sequenced",
-                  "max_force", "integral",
+                  "max_force",
                   "n_points", "duration_s", "n_na_force", "file")))
 ```
 

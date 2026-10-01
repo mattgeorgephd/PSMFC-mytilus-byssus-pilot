@@ -77,8 +77,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     `06_differential-expression/03_analyses/_superseded/LC_contrasts/`. The foot-vs-gill
     contrast in the day-3 controls (`FG_TC`) is computed and drawn, but nothing of record
     rests on it.
-  - DEGs: apeglm-shrunk DESeq2, padj < 0.05, after keeping genes with at least 10 counts in a
-    third of the contrast's samples; one model per contrast, defined in
+  - DEGs: apeglm-shrunk DESeq2 (Wald p from DESeq2's outlier-replaced refit, the standard
+    workflow), padj < 0.05, after keeping genes with at least 10 counts in a third of the
+    contrast's samples; one model per contrast, defined in
     `06_differential-expression/01_code/02_define_contrasts.Rmd`. The 143 mitochondrial loci
     (`count_matrix/mitochondrial_loci.csv`) are left out of these fits and of 07 to 09's gene
     universes, and tested per protein (gene plus nuclear copies summed) in `06` step 13.
@@ -89,8 +90,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     each arm against control, on the log scale. `max_force` in the thread table is one
     thread's peak force; per animal, `mean_force` is the mean of its threads' peak forces
     (geometric mean in the model; primary) and `max_force` its strongest thread
-    (exploratory). Extension is not analysed: threads were cut near the plaque, so the
-    length of distal thread under test was not controlled.
+    (exploratory). Extension and the area under the force-time curve are not analysed:
+    threads were cut near the plaque, so the length of distal thread under test was not
+    standardized. Peak force is the only quantity taken from a trace.
 - **Samples.** `F` libraries are the phenol gland to the tip of the foot (every animal); `FX`
   are the rest of the foot (day-0 animals only); `G` are gill. No contrast uses a day-0
   library. T051F and T051G

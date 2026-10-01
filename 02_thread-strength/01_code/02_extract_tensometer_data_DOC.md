@@ -103,7 +103,6 @@ with `mussel_trt == "control"` (the control tank arm) and `thread_trt == "treatm
 | `note` | | technician note, `""` if none |
 | `species`, `mussel_trt`, `rna_sequenced` | | joined from the mussel key |
 | `max_force` | N | peak of the force channel: the thread's peak force |
-| `integral` | N·s | area under the force/time curve; not analysed (see below) |
 | `n_points` | | samples in the trace |
 | `duration_s` | s | |
 | `n_na_force` | | missing force samples that were zero-filled |
@@ -126,28 +125,27 @@ every later plot.
 
 ---
 
-## 4. How the derived quantities are computed
+## 4. What is taken from a trace
 
 Peak force is the maximum of the force channel. Displacement is read (it is in every trace)
 but no longer summarised: each thread was cut near the junction of the plaque and the
 distal region, so the length of distal thread under test varied between pulls and
-displacement at break does not measure the plaque. An earlier version wrote it as
-`max_displacement`; it was removed rather than left in the tables unanalysed. The integral
-depends on the same uncontrolled length and is kept only as a record.
+displacement at break does not measure the plaque. Earlier versions wrote it as
+`max_displacement`, and the area under the force/time curve as `integral`; both depend on
+that uncontrolled length and were removed rather than left in the tables unanalysed.
 
-### The integral is a trapezoid on the raw trace
+### The QC smoother
 
-`sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)` on the raw force/time trace. `loess()` is
-fitted for the QC plot only, wrapped in `tryCatch` so a fit failure degrades to a plot
-without a smoother rather than killing the run.
+`loess()` is fitted for the QC plot only, wrapped in `tryCatch` so a fit failure degrades to
+a plot without a smoother rather than killing the run.
 
 ### Missing samples are handled by position, not blanket-zeroed
 
 A literal `NaN` as the **first** Force sample is normal instrument behaviour at the start of
 a pull and is set to zero. A missing sample away from index 1 is also
 zeroed, but **warns with the filename and index**, and the per-trace count survives into the
-output as `n_na_force`. Time is checked for monotonicity before integration and sorted, with
-a warning, if it is not.
+output as `n_na_force`. Time is checked for monotonicity and sorted, with a warning, if it is
+not.
 
 ---
 

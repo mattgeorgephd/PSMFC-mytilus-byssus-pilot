@@ -24,7 +24,10 @@ repository-level `00_run_pipeline.Rmd` do it, after 06).
 By default the runner runs step 01 only (`online: false`); steps 02 and 03 need network access,
 and their committed tables are kept. Two of those tables (FOA, GOA) were fetched from an earlier
 top-50 list; see `03_analyses/Top_gene_summaries/README.md`. Step 02 now records a failed NCBI
-request as `Error: <message>` instead of dropping the accession. An NCBI API key, if you use one, goes in the
+request as `Error: <message>` instead of dropping the accession, and step 03 records a failed
+OrthoDB request the same way (a `next` inside its error handler used to stop the whole step at
+the first failure). Since the mitochondrial loci were separated, every committed summary table
+predates the current top-50 lists. An NCBI API key, if you use one, goes in the
 `ENTREZ_KEY` environment variable (for example in `~/.Renviron`), never in a script.
 
 Packages: GSEABase, GO.db, tidyverse (step 01); rentrez (02); httr, jsonlite, dplyr, stringr,

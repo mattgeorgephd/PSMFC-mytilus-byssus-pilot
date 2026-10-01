@@ -131,10 +131,10 @@ and carries the largest-of-n bias of a maximum: an animal with more threads tend
 larger maximum. Baselines had one to three threads (16 of 48 animals had one or two), so
 `max_force` is exploratory in `09_gene-mechanics-correlation`; `mean_force` is primary.
 
-**Extension is not analysed.** The pulls ran at a constant rate, so displacement could be
-turned into extension, but each thread was cut near the junction of the plaque and the
-distal region, so the length of distal thread under test varied from pull to pull. Extension
-therefore cannot be compared between threads, and scripts 02 to 05 no longer extract or test
-it (the raw traces still hold the displacement channel). The `integral` column (area under
-the force-time curve, N·s) is kept in the extraction for completeness but depends on the
-same uncontrolled length and is not analysed.
+**Extension and the area under the curve are not analysed.** The pulls ran at a constant
+rate, so displacement could be turned into extension, but each thread was cut near the
+junction of the plaque and the distal region, so the length of distal thread under test
+varied from pull to pull. Extension therefore cannot be compared between threads, nor can the
+area under the force-time curve (`integral`, N·s), which depends on the same length. Scripts
+02 to 05 extract and test neither (the raw traces still hold the displacement channel);
+peak force is the only quantity taken from a trace.

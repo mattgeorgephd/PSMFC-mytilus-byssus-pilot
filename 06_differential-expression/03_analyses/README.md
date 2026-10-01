@@ -16,7 +16,7 @@ Everything here is written by the scripts in `../01_code/` and rebuilt by
 | `mitochondrial/` | `13_mitochondrial_expression` | the 12 mitochondrial proteins on their own: summed counts, DESeq2 per TC contrast, mitochondrial share per library (README inside) |
 | `dds/` | `03_deseq_contrasts` | the fitted, filtered `DESeqDataSet` of each contrast (git-ignored) |
 | `figures/` | `03`, `08`-`11`, `13` | PCA, DEG counts, volcano, Venn and mitochondrial figures |
-| `top_DEGs/Top_50_genes/` | `07_top_degs` | per TC contrast, the 25 most up- and 25 most down-regulated annotated DEGs |
+| `top_DEGs/Top_50_genes/` | `07_top_degs` | per TC contrast, the 25 most up- and 25 most down-regulated annotated DEGs, as a table and a bar plot labelled by gene symbol |
 | `_superseded/` | the previous scripts | per-contrast count and sample tables; the retired LC contrasts (`LC_contrasts/`); kept as a record |
 | `knit_html/` | the runner | HTML reports and logs (git-ignored) |
 

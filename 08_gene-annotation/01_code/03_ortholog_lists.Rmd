@@ -86,8 +86,11 @@ get_orthologs_for_uniprot <- function(topgene_summs, bivalve_taxids){
       mollusc_listicle <- as.list(mollusc_list$species_name)
       topgene_summs$bivalve_validation[i] <- paste(mollusc_listicle, collapse = ", ")
     }, error = function(e) {
+      ## record the failure and go on to the next ID: the tryCatch is the loop's last statement,
+      ## so returning from the handler continues the loop (a `next` here stopped the whole step,
+      ## because a handler is a function, not part of the loop)
       message(sprintf("Error on UniProt ID '%s': %s", uniprot_ids[i], e$message))
-      next  # Continue to next ID
+      topgene_summs$bivalve_validation[i] <<- paste0("Error: ", conditionMessage(e))
     })
   }
 

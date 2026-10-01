@@ -62,6 +62,15 @@ Conventions and how to run are in `AGENTS.md`.
   row, and every gene listed under an enriched topGO term is annotated to it.
 - **Figure fixes.** Failure-mode colours (greys), clipped titles, DEG-count panel spacing, the
   mitochondrial figure's estimates and intervals now from the same Wald model as its p-values.
+- **Integral removed.** The area under the force-time curve is no longer extracted (it depends
+  on the same unstandardized thread length as extension).
+- **Top-50 labels.** Bars are labelled with the gene symbol of the best UniProt hit (locus tags
+  skipped, protein name as fallback) instead of the entry-name mnemonic; the six bar plots are
+  saved (`06/03_analyses/top_DEGs/Top_50_genes/<code>_top50.png`).
+- **08 step 03.** A failed OrthoDB request stopped the whole step (`next` in an error handler);
+  it now records the error and continues (tested offline).
+- **Decisions recorded.** Outlier-replaced genes: the standard DESeq2 convention is kept. The
+  manuscript GO figure is chosen later; every option stays drawn.
 
 ## In progress
 
@@ -73,15 +82,35 @@ Conventions and how to run are in `AGENTS.md`.
 | item | why it is blocked | who |
 |---|---|---|
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
-| Iso-Seq branch | the trimmed reads (lab server) and the trimming command are not in the repository; owl, gannet and NCBI are not reachable from the cloud environment used here; no isoform-to-gene table exists yet. Design in `04_iso-seq-transcriptome/README.md` | Matt (inputs), anyone with access |
-| Download large inputs from gannet in the scripts (curl) | needs the list of gannet file paths each script should fetch; planned as a follow-up pull request | Matt |
+| Merge the pull request | branch `claude/jolly-clarke-7afl1v`; merging deletes untracked `.Rhistory` copies from local checkouts (see the PR) | Matt |
+| Iso-Seq branch | the trimmed reads (lab server) and the trimming command are not in the repository; owl, gannet, NCBI and sr320.github.io (Steven Roberts' notebooks) are not reachable from the cloud environment used here; no isoform-to-gene table exists yet. Design in `04_iso-seq-transcriptome/README.md` | Matt (inputs, network access), Steven (notebook details) |
+| Trimming step and gannet downloads | the read-trimming command the HISAT2 run used is not recorded, and the scripts cannot fetch large inputs from gannet; both needed for a rerun from raw reads | Matt |
+| Manuscript text | numbers and wording predate this pull request: Gill OA DEGs (711 to 543), the GO results, LC contrasts, the mitochondrial result, thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
+| Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (91 of 122 genes refit in Foot OW), T025G (48 of 76 in Gill OA; also the lowest alignment rate, 60.8% against a median of 67.7%) and T035G (42 of 81 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,174 of 7,393 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
-| Outlier-replaced genes | DESeq2 replaces extreme counts and refits (Wald p) while apeglm fold changes use the original counts; 13 TC DEGs are affected, 1 by more than 25% (06 README). Kept as the DESeq2 convention; refit apeglm on the replaced counts if preferred | Matt |
-| `08` steps 02-03 (NCBI summaries, OrthoDB orthologs) | need network access; not rerun since the restructure, and the FOA and GOA tables predate the current top-50 lists | anyone with network |
-| `03_blast/` and `05` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used | HPC user |
+| `08` steps 02-03 (NCBI summaries, OrthoDB orthologs) | need network access; the committed summaries predate the current top-50 lists (and the mitochondrial separation) | anyone with network |
+| `03_blast/` and `05` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` would not run as written (`mytfoot_uniprot_info` read but `mytilus_foot_uniprot_info` used; `masterID` never defined) | HPC user |
+
+## Known limitations (documented, not blocking)
+
+- **No locked software environment.** The pipeline was tested with R 4.4.3 and Bioconductor
+  3.20 (versions recorded in each `RUN_provenance*.txt`), but the repository has no `renv.lock`
+  or conda environment file, so a new machine has to assemble the packages by hand.
+- **Annotation provenance.** `LOC_GO_list.txt` joins two BLAST runs (its second e-value column
+  comes from a run against a larger database) and dropped second transcripts of a gene that hit
+  the same protein (40% of rows carry no LOC key); the UniProt release behind its GO terms is
+  not recorded, and 42 of its 14,863 GO IDs are unknown to the pinned GO release and dropped.
+- **GO of record.** topGO `weight01` p < 0.01 is unadjusted; only three TC runs have terms
+  under FDR control. Headline GO claims are safest from `consensus_terms_TC_<ont>.csv`.
+- **Repository size.** `.git` is about 765 MB, mostly committed superseded tables and BLAST
+  outputs; `vst_paired_<T>.csv` (7 to 11 MB each) is rewritten on every 09 run.
+- **No continuous integration.** Nothing runs the pipeline on a push; the checks are the
+  runners, the provenance files and the `09` checks.
 
 ## Up next
 
-- Choose the manuscript GO figure.
-- Gannet download follow-up pull request; then the Iso-Seq branch once its inputs are reachable.
+- Merge this pull request, then update the manuscript text.
+- Library QC sensitivity run (T025G, T035G, T040F).
+- Gannet download and trimming record; then the Iso-Seq branch once its inputs are reachable.
+- Add an environment lockfile (renv or conda) for the R 4.4.3 / Bioconductor 3.20 set.
