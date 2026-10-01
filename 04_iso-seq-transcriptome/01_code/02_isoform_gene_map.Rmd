@@ -87,7 +87,7 @@ stopifnot(all(unname(tools::md5sum(c(genome_fa, gff_gz))) == ncbi_md5[match(base
 mt <- fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))
 mt_genes <- unique(mt$LOC_ID)
 mt_seqids <- unique(mt[source == "mitogenome", seqid])
-stopifnot(length(mt_genes) == 143, length(mt_seqids) == 1)
+stopifnot(length(mt_genes) == nrow(mt), length(mt_seqids) == 1)
 ```
 
 # Genes: exons of every annotated gene

@@ -80,12 +80,14 @@ For anyone rerunning from raw reads:
 │   ├── 03_read_trimming.Rmd            how the trimmed reads were made (retention, recipe check)
 │   ├── _prepde.R                       R port of prepDE.py3 (sourced by 02)
 │   ├── _derive_strg_gene_ids.R         one-off: recovers the StringTie gene IDs
+│   ├── _derive_mt_like_loci.R          one-off: loci the annotation names after a mitochondrial protein
 │   └── _superseded/                    records (README inside)
 │       ├── 1_1_process-tagseq-data-mytilus.Rmd   2022 cutadapt trimming + HISAT2 to other genomes
 │       ├── 07-HiSat_GL.Rmd             earlier HISAT2 attempt (different assembly + augustus)
 │       └── 07-kallisto.Rmd(.md)        kallisto pseudo-alignment, superseded by HISAT2
 ├── 02_data/
 │   ├── sample-submission/              Tag-seq sequencing submission paperwork
+│   ├── annotation_mt_like_loci.csv     mitochondrial copies in the annotation (read by 06 step 01)
 │   └── strg_gene_ids.csv               StringTie gene IDs of 284 reference transcripts
 └── 03_analyses/
     ├── hisat/                          reference StringTie tables + MultiQC alignment reports

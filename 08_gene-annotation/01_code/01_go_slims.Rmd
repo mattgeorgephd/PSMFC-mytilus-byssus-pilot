@@ -37,8 +37,8 @@ it takes the GO IDs of its best hit (highest bitscore, ties in table order), as 
 `07_enrichment`. The earlier version of this script took the first-listed hit, which gave 33
 of the TC DEGs a different set of GO IDs from the one 07 tested.
 
-**Mitochondrial genes.** The mitochondrial genome's genes and the ~126 nuclear LOCs annotated
-as mitochondrially encoded proteins are no longer in the genome DEG lists (06 step 03); they
+**Mitochondrial genes.** The mitochondrial genome's genes and their 293 nuclear copies (126
+protein-coding LOCs, 167 pseudogenes) are no longer in the genome DEG lists (06 step 03); they
 are analysed on their own in 06 step 13. The check below stops if any reaches a DEG table.
 
 **Correction to the earlier version.** `06-get_GOSlims.Rmd`, whose tables are kept in

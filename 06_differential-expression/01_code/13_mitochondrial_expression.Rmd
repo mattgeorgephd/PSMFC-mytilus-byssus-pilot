@@ -15,9 +15,10 @@ The genome analysis (scripts 03-12) leaves out the mitochondrial loci listed by 
 This script tests them on their own, for the six treatment-control (TC) contrasts of record.
 
 **What is counted.** The reference holds the female-type mitochondrial genome (NC_007687.1)
-with its 12 protein genes, and about 126 LOCs on unplaced scaffolds that are copies of those
-genes: same best UniProt hit, same identity and alignment length, about 23 identical copies
-each of CYTB, COX2, COX3, ND2 and ND6. Reads from one mitochondrial transcript are split
+with its 12 protein genes, and 293 loci on unplaced scaffolds that are copies of those genes:
+126 protein-coding LOCs (same best UniProt hit, same identity and alignment length, about 23
+identical copies each of CYTB, COX2, COX3, ND2 and ND6) and 167 pseudogenes named after them
+(mostly ATP6, COX1, ND1, ND4 and CYTB). Reads from one mitochondrial transcript are split
 between the mitogenome gene and its copies, in proportions that vary from sample to sample
 (figure `MT_nuclear_copy_share.png`): the copies hold most of the reads of ATP6, CYTB, COX2,
 ND2 and ND6. So each protein is counted once, as the sum of its mitogenome gene and its copies

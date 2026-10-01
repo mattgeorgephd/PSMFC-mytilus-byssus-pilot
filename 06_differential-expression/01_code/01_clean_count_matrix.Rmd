@@ -45,9 +45,9 @@ the day-0 animals are not true lab controls. No contrast uses the day-0 librarie
 the count matrix and appear only in the all-sample PCA (step 03).
 
 **Mitochondrial loci.** The reference holds the female-type mitochondrial genome
-(NC_007687.1: 12 protein genes and their tRNAs), and about 126 LOCs on unplaced scaffolds are
-copies of its protein genes, which take a large and variable share of the mitochondrial reads
-(`tools/mt_encoded.R`). `mitochondrial_loci.csv` lists all of them; steps 03 and 05 fit the
+(NC_007687.1: 12 protein genes and their tRNAs), and 293 loci on unplaced scaffolds are copies
+of its protein genes (126 protein-coding LOCs and 167 pseudogenes), which take a large and
+variable share of the mitochondrial reads (`tools/mt_encoded.R`). `mitochondrial_loci.csv` lists all of them; steps 03 and 05 fit the
 genome without them, and step 13 analyses one summed count per mitochondrial protein.
 
 Writes `03_analyses/count_matrix/gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`,
@@ -136,15 +136,18 @@ knitr::kable(table(region = xw$region, isolation_log_tissue = xw$isolation_log_t
 # Mitochondrial loci
 
 One row per matrix row that is mitochondrial: on the mitogenome (`source = mitogenome`,
-from the StringTie table of `05_sequence-alignment`), or a LOC whose best BLAST hit (highest
-bitscore, `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`) is a mitochondrially encoded
-protein (`source = nuclear copy`). `mt_protein` is the protein the row counts towards in
+from the StringTie table of `05_sequence-alignment`), or a copy (`source = nuclear copy`): a
+LOC whose best BLAST hit (highest bitscore, `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`)
+is a mitochondrially encoded protein, or a locus NCBI names after one
+(`05_sequence-alignment/02_data/annotation_mt_like_loci.csv`; this catches the pseudogene
+copies, which have no CDS to BLAST). The two routes agree on every coding copy, protein
+included; `evidence` says which found each row. `mt_protein` is the protein the row counts towards in
 step 13; the share of each sample's reads the two sources hold is printed.
 
 ```{r mitochondrial}
 source(file.path(repo_root, "tools", "gene_ids.R"))     # gene_key()
 source(file.path(repo_root, "tools", "mt_encoded.R"))
-mtl <- mitochondrial_loci(rownames(gcm), file.path(blast_go, "LOC_GO_list.txt"), t_data)
+mtl <- mitochondrial_loci(rownames(gcm), file.path(blast_go, "LOC_GO_list.txt"), t_data, mt_annot)
 stopifnot(!anyDuplicated(mtl$gene), all(mtl$gene %in% rownames(gcm)),
           sum(mtl$source == "mitogenome" & mtl$mt_protein != "tRNA/rRNA") == 12)
 write.csv(mtl, file.path(cnt, "mitochondrial_loci.csv"), row.names = FALSE)

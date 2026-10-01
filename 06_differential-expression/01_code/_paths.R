@@ -25,3 +25,4 @@ dir.create(mito, recursive = TRUE, showWarnings = FALSE)
 # Cross-folder reads
 blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot")   # LOC_GO_list.txt
 t_data   <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "t_data.ctab")  # gene -> sequence
+mt_annot <- file.path(repo_root, "05_sequence-alignment", "02_data", "annotation_mt_like_loci.csv")  # loci named after a mitochondrial protein
