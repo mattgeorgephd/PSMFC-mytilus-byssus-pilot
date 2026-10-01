@@ -4,7 +4,7 @@ output: html_document
 params:
   minimap2: "minimap2"     # path to the minimap2 binary (2.31 used here)
   threads: 4
-  min_identity: 0.90       # matching bases / alignment block length
+  min_identity: 0.90       # gap-compressed identity, 1 - minimap2's de (each gap counts once)
   min_overlap: 50          # exonic bases shared with a gene, same strand
   ambiguous_ratio: 0.98    # a second gene sharing at least this share of the best overlap flags the isoform
 ---
@@ -27,7 +27,10 @@ the gene whose exons it overlaps, so the two branches can be compared gene by ge
 2. **Overlap.** The aligned blocks (exons) of the isoform against the exons of each annotated
    gene (all its transcripts merged), on the same strand. Every gene type counts (coding,
    lncRNA, tRNA, pseudogene), as in the genome branch.
-3. **Assign.** An isoform aligned at `min_identity` or better takes the gene with which it
+3. **Assign.** An isoform aligned at `min_identity` or better (gap-compressed identity, one
+   minus minimap2's `de`: each insertion or deletion counts once whatever its length, so a
+   long unspliced gap does not swamp an otherwise exact alignment as it does in matching
+   bases over block length) takes the gene with which it
    shares the most exonic bases, if at least `min_overlap`. It is `ambiguous` (it keeps the
    gene, flagged) when a second gene shares at least `ambiguous_ratio` of that overlap, or when
    minimap2 gives the alignment mapping quality 0 (an equally good placement elsewhere).
@@ -49,7 +52,8 @@ Writes, in `03_analyses/02_isoform-gene-map/`:
 
 - `isoform_gene_map.csv.gz`: one row per isoform: `isoform`, `gene` (a gene key via
   `gene_key()`, `novel:...` or `isoseq:<isoform>`), `status` (`assigned`, `ambiguous`,
-  `novel_locus`, `unassigned`), the alignment (`seqid`, `strand`, `start`, `end`, `identity`,
+  `novel_locus`, `unassigned`), the alignment (`seqid`, `strand`, `start`, `end`, `identity`
+  (gap-compressed),
   `mapq`, `n_alignments`), `exonic_overlap` with the gene, the runner-up gene and its overlap,
   `mt_hit` and `isoform_len`;
 - `isoform_gene_map_summary.csv`: isoforms and features by status, and the genome-branch genes
@@ -125,16 +129,16 @@ if (!file.exists(paf)) {
 }
 ## PAF columns and the CIGAR (cg:Z) of every alignment
 awk_prog <- tempfile(fileext = ".awk")
-writeLines('BEGIN{FS=OFS="\\t"} {cg=""; for (i=13; i<=NF; i++) if ($i ~ /^cg:Z:/) cg=substr($i,6); print $1,$2,$5,$6,$8,$9,$10,$11,$12,cg}',
+writeLines('BEGIN{FS=OFS="\\t"} {cg=""; de=""; for (i=13; i<=NF; i++) { if ($i ~ /^cg:Z:/) cg=substr($i,6); if ($i ~ /^de:f:/) de=substr($i,6) }; print $1,$2,$5,$6,$8,$9,$10,$11,$12,de,cg}',
            awk_prog)
 aln <- fread(cmd = sprintf("zcat %s | awk -f %s", shQuote(paf), shQuote(awk_prog)), sep = "\t", header = FALSE,
-             col.names = c("isoform", "isoform_len", "strand", "seqid", "tstart", "tend", "matches", "block", "mapq", "cigar"))
-stopifnot(all(nzchar(aln$cigar)))
+             col.names = c("isoform", "isoform_len", "strand", "seqid", "tstart", "tend", "matches", "block", "mapq", "de", "cigar"))
+stopifnot(all(nzchar(aln$cigar)), !anyNA(aln$de))
 aln[, n_alignments := .N, by = isoform]
 ## chimeric isoforms can give more than one alignment: keep the one with most matching bases
 setorder(aln, isoform, -matches)
 aln <- aln[!duplicated(isoform)]
-aln[, identity := matches / block]
+aln[, identity := 1 - de]                                                      # gap-compressed identity
 cat(nrow(aln), "isoforms aligned;", aln[n_alignments > 1, .N], "with more than one alignment\n")
 ```
 
@@ -232,7 +236,7 @@ settings <- c("[02_isoform_gene_map.Rmd]",
               paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
               paste0("minimap2             : ", mm2_version, " (", mm2_args, ")"),
               paste0("genome / annotation  : ", ASSEMBLY, " (RefSeq annotation RS_2024_02), MD5s checked against NCBI"),
-              paste0("assignment           : identity >= ", params$min_identity, "; most exonic bases shared with a gene, same strand, >= ",
+              paste0("assignment           : gap-compressed identity (1 - de) >= ", params$min_identity, "; most exonic bases shared with a gene, same strand, >= ",
                      params$min_overlap, "; ambiguous when mapq 0 or a second gene shares >= ", params$ambiguous_ratio, " of that"),
               paste0("isoforms             : ", nrow(map)))
 writeLines(provenance_lines(settings, c(isoseq_fa, genome_fa, gff_gz, file.path(de06, "count_matrix", "mitochondrial_loci.csv"),
