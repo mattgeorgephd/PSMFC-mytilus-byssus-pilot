@@ -1,0 +1,47 @@
+---
+title: "00 - Run the Iso-Seq branch"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  online: false         # steps 02-03 download inputs and run minimap2 and salmon; false runs step 04 only
+  minimap2: "minimap2"  # binary paths for steps 02 and 03
+  salmon: "salmon"
+  threads: 4
+  steps: "all"          # "all", or step numbers, e.g. [4]
+  stop_on_fail: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Runs the Iso-Seq branch: the same differential expression as `06_differential-expression`,
+but with the Tag-seq reads quantified against the Iso-Seq transcriptome instead of the genome,
+and a comparison of the two. Each step runs in its own R process with an HTML report and a
+log in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
+
+| step | script | writes to `03_analyses/` | needs |
+|---|---|---|---|
+| 01 | `01_isoseq_transcriptome_check.Rmd` | nothing (a length QC; chunks not evaluated) | owl |
+| 02 | `02_isoform_gene_map.Rmd` | `02_isoform-gene-map/`: each isoform's genome gene | owl, gannet, minimap2 |
+| 03 | `03_salmon_quant.Rmd` | `03_salmon/`: mapping summary and gene counts | gannet, salmon; about 1 hour plus a few minutes per library |
+| 04 | `04_isoseq_de_comparison.Rmd` | `04_isoseq-de/`: TC contrasts on the Iso-Seq counts and the comparison with the genome | committed files only |
+
+With `online: false` (the default) only step 04 runs, from the committed map and gene
+counts. Set `online: true`, with `minimap2` and `salmon` pointing at the binaries (minimap2
+2.31 and salmon 1.10.3 were used, from bioconda), to rebuild steps 02 and 03.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+source(file.path(here::here(), "..", "tools", "run_steps.R"))
+html_dir <- here::here("03_analyses", "knit_html")
+steps <- if (!identical(params$steps, "all")) params$steps else if (isTRUE(params$online)) 2:4 else 4
+tool_params <- list("02" = list(minimap2 = params$minimap2, threads = params$threads),
+                    "03" = list(salmon = params$salmon, threads = params$threads))
+run_log <- run_steps(here::here("01_code"), html_dir, steps = steps, step_params = tool_params,
+                     stop_on_fail = isTRUE(params$stop_on_fail))
+finish_run(run_log, html_dir, "Iso-Seq")
+```

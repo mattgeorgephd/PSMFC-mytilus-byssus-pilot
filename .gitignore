@@ -30,3 +30,9 @@ Thumbs.db
 
 # Inputs downloaded by scripts; too large for GitHub
 04_iso-seq-transcriptome/02_data/Mtros-hq_transcripts.fasta
+04_iso-seq-transcriptome/02_data/cds_from_genomic.fasta
+04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/minimap2_isoforms_vs_cds.paf.gz
+04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/minimap2.log
+04_iso-seq-transcriptome/03_analyses/03_salmon/index/
+04_iso-seq-transcriptome/03_analyses/03_salmon/index.log
+04_iso-seq-transcriptome/03_analyses/03_salmon/quant/

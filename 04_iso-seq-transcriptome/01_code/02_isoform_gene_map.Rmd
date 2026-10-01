@@ -1,0 +1,141 @@
+---
+title: "02 - Iso-Seq isoforms to genome genes"
+output: html_document
+params:
+  minimap2: "minimap2"     # path to the minimap2 binary (2.31 used here)
+  threads: 4
+  min_identity: 0.90       # matching bases / alignment block length
+  min_aln: 100             # aligned bases
+  ambiguous_ratio: 0.98    # a second gene scoring at least this share of the best flags the isoform
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+The Iso-Seq transcriptome (`Mtros-hq_transcripts.fasta`, 411,251 high-quality isoforms named
+`MT_Pool_HQ_transcript/N`) was clustered but never collapsed to genes, so its isoforms carry
+no gene. This step assigns each isoform to a gene of the genome annotation
+(GCF_036588685.1), the genes the genome branch (`05`, `06`) counts, so the two branches can
+be compared gene by gene.
+
+**Why the CDS and not the genome.** The usual route aligns isoforms to the genome with a
+spliced aligner (minimap2 `-ax splice:hq`; Li 2018, *Bioinformatics* 34:3094) and assigns
+each to the gene it overlaps. The genome FASTA is not reachable from the environment this was
+built in (NCBI and ENA are blocked), but the annotation's CDS sequences are (gannet copy of
+`cds_from_genomic.fasta`, 53,269 CDS of 34,235 genes, each header naming its gene). Each
+isoform is therefore aligned to the CDS set (minimap2 `-cx asm20`, which tolerates the few
+percent of allelic divergence between the Iso-Seq animals and the genome animal) and takes the
+gene of its best alignment:
+
+- on the same strand (Iso-Seq isoforms and CDS are both sense);
+- at least `min_identity` identity over at least `min_aln` aligned bases;
+- `ambiguous` when a different gene scores at least `ambiguous_ratio` of the best (paralogs);
+  such isoforms keep the best gene and are flagged.
+
+Isoforms without such a hit (non-coding transcripts, and 3' fragments that end before the
+CDS starts) stay unassigned and are kept as their own features, named `isoseq:<isoform>`.
+Genes without a CDS (non-coding genes) cannot receive isoforms this way, which limits the
+comparison to coding genes. A genome-based map would remove both limits; it needs the genome
+FASTA (`GCF_036588685.1`) and the StringTie coordinates already in
+`05_sequence-alignment/03_analyses/hisat/t_data.ctab`.
+
+Writes, in `03_analyses/02_isoform-gene-map/`:
+
+- `isoform_gene_map.csv.gz`: one row per isoform: `isoform`, `gene` (LOC key via
+  `gene_key()`, or `isoseq:<isoform>`), `status` (`assigned`, `ambiguous`, `unassigned`), the
+  best CDS, identity, aligned bases, isoform and CDS lengths, and the runner-up gene;
+- `isoform_gene_map_summary.csv`: isoforms and genes by status;
+- `RUN_provenance.txt`: settings, minimap2 version and input MD5s.
+
+The minimap2 alignments (`minimap2_isoforms_vs_cds.paf.gz`) are kept beside them but are
+git-ignored (large, rebuilt by this script).
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "gene_ids.R"))         # gene_key()
+source(file.path(repo_root, "tools", "pipeline_checks.R"))  # provenance_lines()
+suppressPackageStartupMessages({ library(data.table) })
+```
+
+# Inputs
+
+```{r inputs}
+if (!file.exists(isoseq_fa)) download.file(ISOSEQ_URL, isoseq_fa, mode = "wb")
+if (!file.exists(cds_fa))    download.file(CDS_URL, cds_fa, mode = "wb")
+cds_hdr <- system2("grep", c("'^>'", shQuote(cds_fa)), stdout = TRUE)
+cds <- data.table(cds  = sub("^>(\\S+).*$", "\\1", cds_hdr),
+                  gene = gene_key(sub("^.*\\[gene=([^]]+)\\].*$", "\\1", cds_hdr)))
+stopifnot(!anyDuplicated(cds$cds), !anyNA(cds$gene))
+cat(nrow(cds), "CDS of", uniqueN(cds$gene), "genes\n")
+```
+
+# Align
+
+```{r align}
+paf <- file.path(map_dir, "minimap2_isoforms_vs_cds.paf.gz")
+mm2_version <- system2(params$minimap2, "--version", stdout = TRUE)
+if (!file.exists(paf)) {
+  cmd <- sprintf("%s -c -x asm20 -N 5 -t %d %s %s 2> %s | gzip > %s", params$minimap2, params$threads,
+                 shQuote(cds_fa), shQuote(isoseq_fa), shQuote(file.path(map_dir, "minimap2.log")), shQuote(paf))
+  stopifnot(system(cmd) == 0)
+}
+## PAF columns 1-11 and the alignment score (AS:i) of every alignment
+aln <- fread(cmd = sprintf("zcat %s | awk -F'\\t' '{as=\"\"; for (i=13; i<=NF; i++) if ($i ~ /^AS:i:/) as=substr($i,6); print $1\"\\t\"$2\"\\t\"$5\"\\t\"$6\"\\t\"$7\"\\t\"$10\"\\t\"$11\"\\t\"as}'",
+                             shQuote(paf)),
+             col.names = c("isoform", "isoform_len", "strand", "cds", "cds_len", "matches", "block", "AS"),
+             sep = "\t", header = FALSE)
+aln[, identity := matches / block]
+aln <- merge(aln, cds, by = "cds", all.x = TRUE)
+stopifnot(!anyNA(aln$gene))
+cat(nrow(aln), "alignments of", uniqueN(aln$isoform), "isoforms\n")
+```
+
+# Assign
+
+```{r assign}
+ok <- aln[strand == "+" & identity >= params$min_identity & matches >= params$min_aln]
+setorder(ok, isoform, -AS)
+ok[, best_gene := gene[1], by = isoform]
+best   <- ok[, .SD[1], by = isoform]
+## best alignment of a different gene, for the ambiguity flag
+second <- ok[gene != best_gene, .(runner_up_gene = gene[1], runner_up_AS = as.numeric(AS[1])), by = isoform]
+best <- merge(best, second, by = "isoform", all.x = TRUE)
+best[, status := ifelse(!is.na(runner_up_AS) & runner_up_AS >= params$ambiguous_ratio * AS, "ambiguous", "assigned")]
+
+all_iso <- data.table(isoform = sub("^>(\\S+).*$", "\\1",
+                                    system2("grep", c("'^>'", shQuote(isoseq_fa)), stdout = TRUE)))
+stopifnot(!anyDuplicated(all_iso$isoform))
+map <- merge(all_iso, best[, .(isoform, gene, status, cds, identity = round(identity, 4), aligned = matches,
+                               isoform_len, cds_len, AS, runner_up_gene, runner_up_AS)],
+             by = "isoform", all.x = TRUE, sort = FALSE)
+map[is.na(gene), `:=`(gene = paste0("isoseq:", isoform), status = "unassigned")]
+## antisense-only isoforms, as a check on the strand rule
+anti <- setdiff(unique(aln[strand == "-" & identity >= params$min_identity & matches >= params$min_aln, isoform]),
+                best$isoform)
+fwrite(map, file.path(map_dir, "isoform_gene_map.csv.gz"))
+
+summ <- rbind(map[, .(isoforms = .N, genes = uniqueN(gene)), by = status],
+              data.table(status = "all", isoforms = nrow(map), genes = uniqueN(map$gene)))
+summ <- rbind(summ, data.table(status = "unassigned with only an antisense hit", isoforms = length(anti), genes = NA))
+summ <- rbind(summ, data.table(status = "genes with a CDS that received an isoform", isoforms = NA,
+                               genes = uniqueN(map[status != "unassigned", gene])))
+fwrite(summ, file.path(map_dir, "isoform_gene_map_summary.csv"))
+knitr::kable(summ)
+```
+
+# Provenance
+
+```{r provenance}
+settings <- c("[02_isoform_gene_map.Rmd]",
+              paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+              paste0("minimap2             : ", mm2_version, " (-c -x asm20 -N 5)"),
+              paste0("assignment           : same strand, identity >= ", params$min_identity, ", aligned >= ",
+                     params$min_aln, " bp; ambiguous when another gene scores >= ", params$ambiguous_ratio, " of the best"),
+              paste0("isoforms / CDS       : ", nrow(map), " / ", nrow(cds)))
+writeLines(provenance_lines(settings, c(isoseq_fa, cds_fa, here::here("01_code", "02_isoform_gene_map.Rmd")),
+                            repo_root, packages = c("data.table")),
+           file.path(map_dir, "RUN_provenance.txt"))
+```
