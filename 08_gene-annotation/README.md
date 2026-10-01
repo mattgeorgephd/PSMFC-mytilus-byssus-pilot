@@ -22,16 +22,17 @@ repository-level `00_run_pipeline.Rmd` do it, after 06).
 | 03 | `03_ortholog_lists.Rmd` | `Top_gene_summaries/<code>_topgene_summs_ortho.csv`, `ortho_species.tab.gz`: bivalve orthologs | OrthoDB |
 
 By default the runner runs step 01 only (`online: false`); steps 02 and 03 need network access,
-and their committed tables are kept. Two of those tables (FOA, GOA) were fetched from an earlier
-top-50 list; see `03_analyses/Top_gene_summaries/README.md`. Step 02 now records a failed NCBI
-request as `Error: <message>` instead of dropping the accession, and step 03 records a failed
-OrthoDB request the same way (a `next` inside its error handler used to stop the whole step at
-the first failure). Since the mitochondrial loci were separated, every committed summary table
-predates the current top-50 lists. An NCBI API key, if you use one, goes in the
-`ENTREZ_KEY` environment variable (for example in `~/.Renviron`), never in a script.
+and their committed tables are kept. They were last run on 2026-10-01, from the current top-50
+lists (`03_analyses/Top_gene_summaries/README.md`). Step 02 finds each UniProt accession's NCBI
+Gene record through NCBI Protein and the protein-to-gene link (it used to take the first
+free-text hit in NCBI Gene, which can be another gene), and spaces and retries its requests;
+step 03 uses OrthoDB release 12.2. Both record a failed request as `Error: <message>` and write
+a provenance file. An NCBI API key, if you use one, goes in the `ENTREZ_KEY` environment
+variable (for example in `~/.Renviron`), never in a script; without one, NCBI's per-address
+limit is shared with other users of the same address.
 
-Packages: GSEABase, GO.db, tidyverse (step 01); rentrez (02); httr, jsonlite, dplyr, stringr,
-purrr (03); here, rmarkdown.
+Packages: GSEABase, GO.db, tidyverse (step 01); rentrez (02); httr, jsonlite (03); here,
+rmarkdown.
 
 ## GO slims (step 01)
 

@@ -79,6 +79,11 @@ Conventions and how to run are in `AGENTS.md`.
   kept as a record (`05/01_code/_superseded/`); it and the August 2022 MultiQC report describe
   a different trimming, not the reads analysed. The raw reads of all 131 libraries are on owl
   (`nightingales/M_trossulus/`); gannet's `20220405-tagseq/` is a partial copy (73 libraries).
+- **08 NCBI and OrthoDB tables refreshed.** With NCBI and OrthoDB reachable, steps 02-03 ran
+  on the current top-50 lists. Step 02 now finds each accession's gene through NCBI Protein and
+  the protein-to-gene link (free-text search had returned the wrong gene for SPDEF); step 03
+  could not run as written (it joined OrthoDB's headerless species table on a missing column)
+  and now uses OrthoDB 12.2.
 
 ## In progress
 
@@ -96,7 +101,6 @@ Conventions and how to run are in `AGENTS.md`.
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (91 of 122 genes refit in Foot OW), T025G (48 of 76 in Gill OA; also the lowest alignment rate, 60.8% against a median of 67.7%) and T035G (42 of 81 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,174 of 7,393 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
-| `08` steps 02-03 (NCBI summaries, OrthoDB orthologs) | need network access; the committed summaries predate the current top-50 lists (and the mitochondrial separation) | anyone with network |
 | `03_blast/` and `05` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` would not run as written (`mytfoot_uniprot_info` read but `mytilus_foot_uniprot_info` used; `masterID` never defined) | HPC user |
 
 ## Known limitations (documented, not blocking)
