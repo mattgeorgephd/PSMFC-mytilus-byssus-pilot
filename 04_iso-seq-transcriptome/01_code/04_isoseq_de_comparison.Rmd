@@ -53,6 +53,7 @@ contrasts <- fread(file.path(de06, "DEG_lists", "contrasts.csv"))[family == "TC"
 cs   <- fread(file.path(de06, "DEG_lists", "contrast_samples.csv"))
 ti   <- fread(file.path(de06, "count_matrix", "treatmentinfo_clean.csv"))
 mt   <- fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))
+hisat_qc <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "multiqc_data", "multiqc_bowtie2.txt")
 stopifnot(nrow(contrasts) == 6, all(cs[code %in% contrasts$code, sample.1] %in% colnames(counts)))
 mt_keys <- unique(mt$LOC_ID)
 iso_map <- fread(file.path(map_dir, "isoform_gene_map.csv.gz"), select = c("gene", "status", "mt_hit"))
@@ -134,18 +135,22 @@ lab <- setNames(sprintf("%s %s", ifelse(substr(contrasts$code, 1, 1) == "F", "Fo
                         substr(contrasts$code, 2, 3)), contrasts$code)
 pd <- rbindlist(lapply(contrasts$code, function(cd)
   merge(genome[code == cd], iso[code == cd], by = c("code", "feature"), suffixes = c("_genome", "_isoseq"))))
-pd[, class := factor(fifelse(deg_genome & deg_isoseq, "DEG on both",
-                     fifelse(deg_genome | deg_isoseq, "DEG on one", "DEG on neither")),
-                     levels = c("DEG on neither", "DEG on one", "DEG on both"))]
+classes <- c("DEG on neither", "DEG on the genome only", "DEG on Iso-Seq only", "DEG on both")
+pd[, class := factor(fifelse(deg_genome & deg_isoseq, classes[4], fifelse(deg_genome, classes[2],
+                     fifelse(deg_isoseq, classes[3], classes[1]))), levels = classes)]
 pd[, panel := factor(lab[code], levels = lab)]
 setorder(pd, class)
-p <- ggplot(pd, aes(log2FoldChange_genome, log2FoldChange_isoseq, colour = class)) +
+## neutral greys for set categories (tools/plot_style.R), with shape so the two one-sided
+## classes do not rest on grey level alone
+p <- ggplot(pd, aes(log2FoldChange_genome, log2FoldChange_isoseq, colour = class, shape = class)) +
   geom_hline(yintercept = 0, colour = "grey80") + geom_vline(xintercept = 0, colour = "grey80") +
   geom_abline(slope = 1, intercept = 0, colour = "grey60", linetype = 2) +
-  geom_point(size = 0.7, alpha = 0.8) +
+  geom_point(size = 0.8, alpha = 0.85, show.legend = TRUE) +
   facet_wrap(~ panel, nrow = 2) +
-  scale_colour_manual(values = c("DEG on neither" = "#d9d9d9", "DEG on one" = "#8c8c8c", "DEG on both" = "#1a1a1a"),
-                      name = NULL) +
+  scale_colour_manual(values = setNames(c("#d9d9d9", "#7f7f7f", "#7f7f7f", "#1a1a1a"), classes),
+                      name = NULL, drop = FALSE) +
+  scale_shape_manual(values = setNames(c(16, 17, 15, 16), classes), name = NULL, drop = FALSE) +
+  guides(colour = guide_legend(override.aes = list(size = 2.5, alpha = 1))) +
   labs(x = "log2 fold change, genome reference (06)", y = "log2 fold change, Iso-Seq reference",
        title = "Stressor vs day-3 control on the two references (genes tested on both)",
        caption = "apeglm log2 fold changes; DEG: padj < 0.05. Dashed line: equal fold change.") +
@@ -156,12 +161,11 @@ p
 
 ```{r fig-mapping, fig.width = 6, fig.height = 4.5}
 sal <- fread(file.path(salmon_dir, "salmon_mapping_summary.csv"))
-hs  <- jsonlite::fromJSON(file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "multiqc_data",
-                                    "multiqc_data.json"))$report_general_stats_data
-hs  <- rbindlist(lapply(hs, function(b) rbindlist(lapply(names(b), function(s)
-  data.table(name = s, hisat2 = b[[s]]$overall_alignment_rate))), fill = TRUE))
-hs[, library := sub("^[A-H][0-9]+-", "", sub("_S[0-9]+.*$", "", name))]
-mr <- merge(sal, unique(hs[!is.na(hisat2), .(library, hisat2)]), by = "library")
+hs  <- fread(hisat_qc)                                          # HISAT2 summaries, as MultiQC tabulated them
+hs[, library := sub("^[A-H][0-9]+-", "", sub("_S[0-9]+.*$", "", Sample))]
+stopifnot(!anyDuplicated(hs$library))
+mr <- merge(sal, hs[, .(library, hisat2 = overall_alignment_rate)], by = "library")
+stopifnot(nrow(mr) == nrow(sal))
 mr[, tissue := TISSUE_LABELS[ifelse(grepl("G$", library), "G", "F")]]
 p2 <- ggplot(mr, aes(hisat2, percent_mapped, colour = tissue)) +
   geom_abline(slope = 1, intercept = 0, colour = "grey60", linetype = 2) +
@@ -187,7 +191,7 @@ inputs <- c(file.path(salmon_dir, c("gene_counts.csv.gz", "salmon_mapping_summar
             file.path(map_dir, "isoform_gene_map.csv.gz"),
             file.path(de06, "DEG_lists", c("contrasts.csv", "contrast_samples.csv")),
             file.path(de06, "DEG_lists", contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
-            file.path(de06, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv")),
+            file.path(de06, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv")), hisat_qc,
             here::here("01_code", "04_isoseq_de_comparison.Rmd"))
 writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "apeglm", "data.table")),
            file.path(de_dir, "RUN_provenance.txt"))
