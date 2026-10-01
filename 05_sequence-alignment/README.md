@@ -48,16 +48,20 @@ bases and the template-switching G run) and drops PCR duplicates (reads sharing 
 the first 20 bases), then FASTX-Toolkit 0.0.14 `fastx_clipper` for the poly-A tail and the
 Illumina adapter, keeping reads of 20 bases or more, with no quality filter. The other recipes
 tried match far fewer reads (`03_analyses/read_trimming/recipe_check.csv`). As a result the
-analysed reads are deduplicated: in the 72 libraries whose raw reads are on gannet with both
-lanes, a median of 43% of raw reads remain (35 to 58%), and the 131 trimmed libraries hold 0.78
-to 3.86 million reads (median 2.72 million) of 20 to 95 bases (mean about 63).
+analysed reads are deduplicated: in the 72 libraries with both raw lanes in the FastQC tables
+(`03_analyses/fastqc/untrimmed/`), a median of 43% of raw reads remain (35 to 58%), and the 131
+trimmed libraries hold 0.78 to 3.86 million reads (median 2.72 million) of 20 to 95 bases (mean
+about 63).
 
-Two consequences for anyone rerunning from raw reads:
+For anyone rerunning from raw reads:
 
-- **Raw reads exist on gannet for 73 of the 131 libraries only** (`20220405-tagseq/`: T001 to
-  T030, T131G and T132 to T137, and T030G has lane 1 only). The raw reads of the other 58
-  (T031 to T058 and T110 to T131F) have not been located; their trimmed files are the earliest
-  copy known.
+- **Where the raw reads are.** All 131 libraries, both lanes (262 files, the April 2022
+  delivery), are on owl at https://owl.fish.washington.edu/nightingales/M_trossulus/
+  (`T*_S*_L00[12]_R1_001.fastq.gz`; the paired `69M_1.fastq.gz`-style files there are not
+  from this Tag-seq run). gannet `20220405-tagseq/` holds a partial copy: 145 files of 73 libraries (T001 to
+  T030, T131G and T132 to T137; T030G lane 1 only), the set the FastQC tables cover. The one
+  file compared (T030G lane 1) is byte-identical on both servers; owl keeps no checksums for
+  this set.
 - **The August 2022 trimming is a different one.** Matt George's 2022 script
   (`01_code/_superseded/1_1_process-tagseq-data-mytilus.Rmd`) trimmed the first 73 libraries with
   cutadapt (a fixed 15-base 5' cut, no deduplication) and aligned them to other *Mytilus*
@@ -96,7 +100,7 @@ Two consequences for anyone rerunning from raw reads:
 
 | Input | Location |
 |-------|----------|
-| Raw (untrimmed) Tag-seq reads, 73 of the 131 libraries | gannet: https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/ |
+| Raw (untrimmed) Tag-seq reads, all 131 libraries, two lanes each | owl: https://owl.fish.washington.edu/nightingales/M_trossulus/ (gannet `20220405-tagseq/` has 73 of them) |
 | Trimmed reads (`*_L099_R1_cmb.trim.fastq.gz`), all 131 libraries, read by `01_hisat_stringtie.Rmd` and by `04_iso-seq-transcriptome` | gannet: https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/ (recipe above) |
 | Genome assembly + annotation | NCBI `GCF_036588685.1` (downloaded by the script into `02_data/ncbi_dataset/`, git-ignored) |
 

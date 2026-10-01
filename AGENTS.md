@@ -103,8 +103,8 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   the mitochondrial protein genes and split their reads with them (`tools/mt_encoded.R`;
   handled as above); byssal plaque genes are expressed in the day-0 libraries and mostly
   absent at day 3, which the different day-0 dissection may explain; the analysed reads are
-  leader-clipped and PCR-deduplicated Tag-seq reads (`05` README, "The reads"), and raw reads
-  exist on gannet for 73 of the 131 libraries only; the Iso-Seq branch (`04`) is designed but
+  leader-clipped and PCR-deduplicated Tag-seq reads (`05` README, "The reads"), whose raw
+  reads are on owl (`nightingales/M_trossulus/`); the Iso-Seq branch (`04`) is designed but
   blocked on inputs not in the repository.
 - **Secrets.** API keys go in environment variables (`ENTREZ_KEY` in `~/.Renviron`), never in
   a file in the repository.
