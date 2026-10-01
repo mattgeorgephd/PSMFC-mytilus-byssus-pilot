@@ -1,5 +1,5 @@
 [01_gene_mechanics_correlation.Rmd]
-generated            : 2026-10-01 19:29:54
+generated            : 2026-10-01 20:34:05
 tissue               : G
 INCLUDE_CONTROL_ARM  : TRUE
 reported test        : ANCOVA level_day3 ~ expression + treatment + level_baseline (log scale; per-animal geometric mean, largest thread for max_force)
@@ -16,12 +16,12 @@ candidates tested    : 253 (33 at the detection floor)
 DEG union tested     : 833 of 844
 family sizes (tests) : candidate x primary 506, candidate x exploratory 506, DEG union 3332
 checks               : 16 run, 0 failed
-code commit          : dccc6e7ef753
+code commit          : 706dba618c20
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : DESeq2 1.46.0, dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):
-  85bb484be643daa0ea3167dd821ed035  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
+  939e06213ee7c5ba0f8304c7779b8e1a  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
   9dc6cedf60aa2565ccd3c63bdd433ad7  02_thread-strength/03_analyses/05_decompose-adhesion/mussel_response_classification.csv
   0c0cadcf31b73ecf9cb145e225645896  09_gene-mechanics-correlation/02_data/expected_animals.csv
   0ac2bb152a5f381221a2707ba2f59ee1  02_thread-strength/03_analyses/04_analyze-thread-strength/DATA_ancova_animals.csv
@@ -44,7 +44,7 @@ inputs (md5, repo-relative path):
   d3006bd11c0342334f36413177a80d8d  tools/gene_ids.R
 
 [02_gene_mechanics_expanded.Rmd]
-generated            : 2026-10-01 19:29:58
+generated            : 2026-10-01 20:34:09
 reported test        : script 01's ANCOVA (assoc_candidate_G.csv, assoc_DEGunion_G.csv)
 metrics [scale, tier]: mean_force [log, primary], pad_area [log, primary], max_force [log, exploratory], adhesion_kpa [log, exploratory]
 primary metrics      : mean_force, pad_area
@@ -54,7 +54,7 @@ FDR_ALPHA            : 0.1
 candidates tested    : 253 of 286 (floor filter in script 01)
 N_INFLUENCE_HITS     : 3
 checks               : 1 run, 0 failed
-code commit          : dccc6e7ef753
+code commit          : 706dba618c20
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : dplyr 1.2.1, readr 2.2.0
