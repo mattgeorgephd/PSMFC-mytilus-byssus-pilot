@@ -4,7 +4,7 @@ author: "Byssus expression analysis"
 date: "`r Sys.Date()`"
 output: html_document
 params:
-  steps: [2]            # 2: count matrices only. "all" also runs step 01 (HISAT2 + StringTie)
+  steps: [2, 3]         # count matrices and the read-trimming record. "all" also runs step 01 (HISAT2 + StringTie)
   stop_on_fail: true
 ---
 
@@ -21,8 +21,9 @@ report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_l
 |---|---|---|
 | 01 | `01_hisat_stringtie.Rmd` | HISAT2 alignment and StringTie quantification of the trimmed Tag-seq reads; writes `03_analyses/hisat/` and its `sample_list.txt` |
 | 02 | `02_prepDE.Rmd` | gene and transcript count matrices (`03_analyses/prepDE/`), read by `06_differential-expression` |
+| 03 | `03_read_trimming.Rmd` | how the trimmed reads were made: read retention from the committed FastQC tables (`03_analyses/read_trimming/`); the recipe check runs only with its own `online: true` |
 
-By default only step 02 runs. Step 01 needs the trimmed reads, the genome and HISAT2 /
+By default steps 02 and 03 run. Step 01 needs the trimmed reads, the genome and HISAT2 /
 StringTie, none of which are in this repository (see `../README.md`); with its outputs
 present, step 02 counts from the StringTie GTFs, and without them it rebuilds the gene matrix
 from the committed transcript matrix. Set `steps: "all"` on a machine that has the inputs.

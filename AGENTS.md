@@ -36,7 +36,8 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   `GO.db`, so `07` records it with the package versions in
   `03_analyses/01_go-inputs/RUN_provenance.txt`.
 - **Not run by the pipeline:** `03_blast/` and `05_sequence-alignment` step 01 (HPC, inputs
-  not in the repository), `04_iso-seq-transcriptome/` (downloads the transcriptome) and
+  not in the repository), `05` step 03's recipe check (set `online: true`),
+  `04_iso-seq-transcriptome/` (downloads the transcriptome) and
   `08_gene-annotation` steps 02-03 (NCBI and OrthoDB; set `online: true`). Their committed
   outputs are what the pipeline reads.
 - **After a run:** check that every `run_log.csv` row is `TRUE`; that the `RUN_provenance*.txt`
@@ -101,8 +102,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **Known data issues** (see the folder READMEs): 126 LOCs on unplaced scaffolds are copies of
   the mitochondrial protein genes and split their reads with them (`tools/mt_encoded.R`;
   handled as above); byssal plaque genes are expressed in the day-0 libraries and mostly
-  absent at day 3, which the different day-0 dissection may explain; the Iso-Seq branch
-  (`04`) is designed but blocked on inputs not in the repository.
+  absent at day 3, which the different day-0 dissection may explain; the analysed reads are
+  leader-clipped and PCR-deduplicated Tag-seq reads (`05` README, "The reads"), and raw reads
+  exist on gannet for 73 of the 131 libraries only; the Iso-Seq branch (`04`) is designed but
+  blocked on inputs not in the repository.
 - **Secrets.** API keys go in environment variables (`ENTREZ_KEY` in `~/.Renviron`), never in
   a file in the repository.
 - **Writing.** READMEs and comments in plain language, with commas or semicolons rather than

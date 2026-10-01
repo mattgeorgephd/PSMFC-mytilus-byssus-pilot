@@ -4,7 +4,7 @@ output: html_document
 params:
   salmon: "salmon"          # path to the salmon binary (1.10.3 used here)
   threads: 4
-  k: 31                     # index k-mer length (reads are 71-78 bp after trimming)
+  k: 31                     # index k-mer length (trimmed reads are 20-95 bp, mean about 63)
 ---
 
 ```{r setup, include=FALSE}
@@ -18,7 +18,8 @@ alignment; Patro et al. 2017, *Nature Methods* 14:417) and sums the isoforms of 
 (step 02's map) with tximport (Soneson, Love and Robinson 2015, *F1000Research* 4:1521).
 
 - **Reads:** the 131 trimmed, lane-merged files the genome branch aligned with HISAT2
-  (`*_L099_R1_cmb.trim.fastq.gz`, gannet `panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/`).
+  (`*_L099_R1_cmb.trim.fastq.gz`, gannet `panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/`;
+  leader-clipped and deduplicated, see `05_sequence-alignment/README.md`, "The reads").
   Each is downloaded to a temporary file, quantified and deleted.
 - **No length correction.** 3' Tag-seq yields about one read per transcript regardless of its
   length, so `salmon quant --noLengthCorrection`, and tximport with
