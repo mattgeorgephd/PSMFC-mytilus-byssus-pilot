@@ -1,11 +1,78 @@
 # 04_iso-seq-transcriptome
 
-QC of the PacBio Iso-Seq *M. trossulus* transcriptome (`Mtros-hq_transcripts.fasta`), and
-the superseded early attempt that used the isoseq transcriptome (rather than the genome) as
-the DE reference.
+A sensitivity branch: the differential expression of record (`06`, reads aligned to the
+genome) repeated with the Tag-seq reads quantified against the PacBio Iso-Seq *M. trossulus*
+transcriptome instead, and the two compared gene by gene. It asks whether the DEG results
+depend on the reference. Nothing of record rests on it.
 
-The final pipeline uses the genome as reference (see `05_sequence-alignment` and
-`06_differential-expression`). The isoseq-as-reference work is retained under `_superseded/`.
+## How to run
+
+Open `iso-seq-transcriptome.Rproj` and knit `01_code/00_run_isoseq.Rmd`. With `online: false`
+(the default, and what `00_run_pipeline.Rmd` does as its stage 04) only step 04 runs, from the
+committed isoform map and gene counts. `online: true` also rebuilds steps 02 and 03, which
+download the transcriptome, the genome and the reads and need minimap2 and salmon
+(`minimap2`, `salmon` parameters; minimap2 2.31 and salmon 1.10.3 from bioconda were used).
+
+| step | script | writes to `03_analyses/` | needs |
+|---|---|---|---|
+| 01 | `01_isoseq_transcriptome_check.Rmd` | nothing (a length QC; its chunks are not evaluated by default) | owl |
+| 02 | `02_isoform_gene_map.Rmd` | `02_isoform-gene-map/`: each isoform's genome gene | owl, NCBI, minimap2; about 1.5 hours and 9 GB of memory |
+| 03 | `03_salmon_quant.Rmd` | `03_salmon/`: mapping summary and gene counts | gannet, salmon; about 15 minutes for the index plus 3 to 4 minutes per library |
+| 04 | `04_isoseq_de_comparison.Rmd` | `04_isoseq-de/`: the TC contrasts on the Iso-Seq counts and the comparison with the genome | committed files only |
+
+## Design
+
+1. **Isoforms to genes (step 02).** The transcriptome's 411,251 isoforms were clustered but
+   never collapsed to genes. Each is aligned to the genome (RefSeq GCF_036588685.1) with
+   minimap2's spliced preset for accurate full-length transcripts (`-x splice:hq -uf`; Li
+   2018, *Bioinformatics* 34:3094) and takes the annotated gene (annotation release
+   RS_2024_02, the one `05` counts against) whose exons it overlaps most on its strand.
+   Isoforms aligned well but outside every gene form novel loci; unaligned ones stay single
+   features. Isoforms on mitochondrial loci are flagged.
+2. **Quantification (step 03).** The 131 trimmed read files the genome branch aligned are
+   pseudo-aligned to the isoforms with salmon in selective-alignment mode (Patro et al. 2017,
+   *Nature Methods* 14:417) with `--noLengthCorrection`, because 3' Tag-seq yields about one
+   read per transcript whatever its length. tximport sums the isoforms of each gene
+   (`countsFromAbundance = "no"`; Soneson, Love and Robinson 2015, *F1000Research* 4:1521),
+   and the summed read counts go to DESeq2 without a length offset, as the tximport vignette
+   advises for 3' tagged RNA-seq.
+3. **Differential expression and comparison (step 04).** The six TC contrasts of `06`, with
+   its samples, model, filter, order of operations and apeglm shrinkage; the mitochondrial
+   loci left out as in `06`. Genes are matched to the genome results through `gene_key()`.
+   Given the genome counts instead of the Iso-Seq counts, step 04 reproduces `06` exactly
+   (checked 2026-10-01: same genes tested and same DEGs in all six contrasts).
+
+## Limitations
+
+- **No decoys.** salmon's recommended index adds the genome as decoy sequence so that reads
+  from unannotated loci are not forced onto transcripts (Srivastava et al. 2020, *Genome
+  Biology* 21:239). The index here has none: a decoy index of this genome needs more memory
+  than the 15 GB machine this was run on. Reads from loci the Iso-Seq set lacks may be
+  placed on similar isoforms.
+- **Different animals.** The transcriptome comes from pooled tissue (`MT_Pool`) whose animals
+  are not recorded here, and the genome from another animal; allelic differences between them
+  and the experimental animals lower the share of reads each reference can place.
+- **Isoform redundancy.** The isoforms were not collapsed, so many are near-duplicates;
+  salmon's EM shares reads among them, and step 03 sums them per gene, so gene counts are
+  unaffected, but isoform-level estimates are not meaningful and are not used.
+
+## Results
+
+To be filled after the run.
+
+## Inputs
+
+| Input | Source |
+|---|---|
+| Iso-Seq transcriptome, `Mtros-hq_transcripts.fasta` | owl, https://owl.fish.washington.edu/halfshell/genomic-databank/ |
+| Genome and annotation, `GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna.gz`, `..._genomic.gff.gz` | NCBI, https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/036/588/685/GCF_036588685.1_PNRI_Mtr1.1.1.hap1/ (MD5s checked against NCBI's) |
+| Trimmed Tag-seq reads, `*_L099_R1_cmb.trim.fastq.gz` | gannet, `panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/` (how they were made: `05_sequence-alignment/README.md`, "The reads") |
+| Genome-branch results and samples | `06_differential-expression/03_analyses/` |
+
+All downloads go to `02_data/` and are git-ignored (`02_data/README.md`). Steven Roberts'
+notebooks on this transcriptome (https://sr320.github.io/iso/, https://sr320.github.io/Myt-GO/)
+cover the length QC (step 01) and the isoform BLAST annotation (`03_blast/03_analyses/transcriptome-uniprot/`);
+neither maps isoforms to genome genes.
 
 ## Layout
 
@@ -13,61 +80,17 @@ The final pipeline uses the genome as reference (see `05_sequence-alignment` and
 04_iso-seq-transcriptome/
 ├── iso-seq-transcriptome.Rproj
 ├── 01_code/
-│   ├── 01_isoseq_transcriptome_check.Rmd   transcriptome length-distribution QC (runnable)
-│   ├── 01_isoseq_transcriptome_check.md    knitted output
-│   ├── 01_isoseq_transcriptome_check_files/  its figure (knitr)
-│   └── _superseded/isoseq-as-reference/     early kallisto-on-isoseq DE attempt (not final)
-├── 02_data/                                 transcriptome FASTA is downloaded; not committed
+│   ├── 00_run_isoseq.Rmd                     batch runner
+│   ├── 01_isoseq_transcriptome_check.Rmd     length QC (+ .md and figure, knitted)
+│   ├── 02_isoform_gene_map.Rmd               isoforms to genome genes
+│   ├── 03_salmon_quant.Rmd                   salmon + tximport gene counts
+│   ├── 04_isoseq_de_comparison.Rmd           TC contrasts and comparison with 06
+│   ├── _paths.R                              shared paths (sourced by every step)
+│   └── _superseded/                          retired scripts (README inside)
+├── 02_data/                                  downloads, git-ignored (README)
 └── 03_analyses/
-    └── _superseded/14-kallisto-ng/          output placeholder of the superseded attempt
+    ├── 02_isoform-gene-map/                  step 02 (README)
+    ├── 03_salmon/                            step 03 (README)
+    ├── 04_isoseq-de/                         step 04 (README)
+    └── _superseded/                          retired outputs (README)
 ```
-
-## Input and runnability
-
-`01_isoseq_transcriptome_check.Rmd` downloads `Mtros-hq_transcripts.fasta` from owl
-(`https://owl.fish.washington.edu/halfshell/genomic-databank/`) into `02_data/` (git-ignored)
-when it is not already there, then runs locally. It is a single side analysis, so the folder
-has no batch runner and the repository-level runner does not call it. The
-`_superseded/isoseq-as-reference/` scripts are kept as a record and are not maintained.
-
-## Running the expression pipeline on the Iso-Seq transcriptome
-
-The analysis of record maps reads to the genome. Running the same chain against the Iso-Seq
-transcriptome, as a sensitivity branch, is planned but **not implemented**: three inputs are
-not in the repository (checked 2026-10-01). Steven Roberts' Iso-Seq notebooks
-(https://sr320.github.io/iso/, https://sr320.github.io/Myt-GO/) may hold the details; they
-were not reachable from the cloud environment used here.
-
-| needed | where it is | status |
-|---|---|---|
-| trimmed Tag-seq reads | owl, Grace Leuchtenberger's `Github/byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz` (confirmed 2026-10-01; paths in `01_code/_superseded/isoseq-as-reference/01-kallisto-genome.Rmd`) | not in the repository and not reachable from the cloud environment used here; the trimming command is probably in gannet `panopea/PSMFC-mytilus-byssus-pilot/sbatch_scripts/` |
-| `Mtros-hq_transcripts.fasta` | owl (`https://owl.fish.washington.edu/halfshell/genomic-databank/`) | downloadable by `01_isoseq_transcriptome_check.Rmd` where owl is reachable |
-| isoform-to-gene table | none | must be built (step 1 below); no script here maps isoforms to genome LOCs. `03_blast/01_code/03_isoseq_vs_genome_blast.Rmd` blasts the byssal foot-protein sequences against each reference separately, not one reference against the other |
-
-The design, once those exist:
-
-1. **Isoform-to-gene table.** Align the isoforms to the genome (GCF_036588685.1) with a
-   spliced long-read aligner (minimap2 `-ax splice:hq`; Li 2018, Bioinformatics 34:3094) and
-   assign each isoform to the reference gene (LOC) it overlaps in the genome annotation. This
-   gives genes comparable with the genome branch. Isoforms that overlap no LOC form their own
-   genes (clustered, for example, by shared alignment locus).
-2. **Quantification.** Pseudo-align the trimmed reads to the isoforms with salmon
-   (Patro et al. 2017, Nature Methods 14:417) using `--noLengthCorrection`, which is meant for
-   3' tag protocols whose counts do not scale with transcript length, and summarise to genes
-   with tximport. Pass the raw counts (`txi$counts`, `countsFromAbundance = "no"`) to
-   `DESeqDataSetFromMatrix()` without a length offset, as the tximport vignette recommends
-   for 3' tagged RNA-seq (Soneson, Love and Robinson 2015, F1000Research 4:1521).
-3. **Differential expression.** Write the gene matrix to
-   `04_iso-seq-transcriptome/03_analyses/counts/` and point `06_differential-expression` at it
-   through one parameter (the count file of `01_clean_count_matrix.Rmd`), with an output root
-   per reference so the genome results are not overwritten. The mitochondrial transcripts
-   are separated as in the genome branch (`tools/mt_encoded.R`).
-4. **Annotation and GO.** Annotate the genes from the isoform BLAST already here
-   (`03_blast/03_analyses/transcriptome-uniprot/Mtros-hq-uniprot_blastx.tab`, best hit per
-   gene) into the `gene_annotation.tsv` layout `07_enrichment` uses; the enrichment, GO slim
-   and gene-mechanics scripts then run unchanged.
-5. **Comparison.** Report, per contrast, the overlap of DEGs between references (through the
-   isoform-to-LOC table) and whether the enriched terms agree.
-
-The superseded kallisto runs in `01_code/_superseded/isoseq-as-reference/` are a starting
-point for step 2 only; they used the full transcriptome without an isoform-to-gene table.

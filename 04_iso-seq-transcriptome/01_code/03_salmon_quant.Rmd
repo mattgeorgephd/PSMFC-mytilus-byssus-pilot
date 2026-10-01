@@ -38,7 +38,7 @@ Writes, in `03_analyses/03_salmon/`:
 - `RUN_provenance.txt`.
 
 The index (`index/`) and the per-library salmon output (`quant/<library>/`) are git-ignored:
-large, and rebuilt by this script (about one hour for the index and a few minutes per library
+large, and rebuilt by this script (about 15 minutes for the index and 3 to 4 minutes per library
 on four cores).
 
 ```{r paths}

@@ -5,8 +5,8 @@ params:
   minimap2: "minimap2"     # path to the minimap2 binary (2.31 used here)
   threads: 4
   min_identity: 0.90       # matching bases / alignment block length
-  min_aln: 100             # aligned bases
-  ambiguous_ratio: 0.98    # a second gene scoring at least this share of the best flags the isoform
+  min_overlap: 50          # exonic bases shared with a gene, same strand
+  ambiguous_ratio: 0.98    # a second gene sharing at least this share of the best overlap flags the isoform
 ---
 
 ```{r setup, include=FALSE}
@@ -17,124 +17,212 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 The Iso-Seq transcriptome (`Mtros-hq_transcripts.fasta`, 411,251 high-quality isoforms named
 `MT_Pool_HQ_transcript/N`) was clustered but never collapsed to genes, so its isoforms carry
-no gene. This step assigns each isoform to a gene of the genome annotation
-(GCF_036588685.1), the genes the genome branch (`05`, `06`) counts, so the two branches can
-be compared gene by gene.
+no gene. This step places each isoform on the genome (RefSeq GCF_036588685.1, annotation
+release RS_2024_02, the annotation the genome branch `05`/`06` counts against) and gives it
+the gene whose exons it overlaps, so the two branches can be compared gene by gene.
 
-**Why the CDS and not the genome.** The usual route aligns isoforms to the genome with a
-spliced aligner (minimap2 `-ax splice:hq`; Li 2018, *Bioinformatics* 34:3094) and assigns
-each to the gene it overlaps. The genome FASTA is not reachable from the environment this was
-built in (NCBI and ENA are blocked), but the annotation's CDS sequences are (gannet copy of
-`cds_from_genomic.fasta`, 53,269 CDS of 34,235 genes, each header naming its gene). Each
-isoform is therefore aligned to the CDS set (minimap2 `-cx asm20`, which tolerates the few
-percent of allelic divergence between the Iso-Seq animals and the genome animal) and takes the
-gene of its best alignment:
+1. **Align.** minimap2 spliced alignment of each isoform to the genome (`-x splice:hq -uf`:
+   the preset for accurate full-length transcripts, aligned on their own strand; Li 2018,
+   *Bioinformatics* 34:3094), keeping the best alignment of each isoform.
+2. **Overlap.** The aligned blocks (exons) of the isoform against the exons of each annotated
+   gene (all its transcripts merged), on the same strand. Every gene type counts (coding,
+   lncRNA, tRNA, pseudogene), as in the genome branch.
+3. **Assign.** An isoform aligned at `min_identity` or better takes the gene with which it
+   shares the most exonic bases, if at least `min_overlap`. It is `ambiguous` (it keeps the
+   gene, flagged) when a second gene shares at least `ambiguous_ratio` of that overlap, or when
+   minimap2 gives the alignment mapping quality 0 (an equally good placement elsewhere).
+4. **Isoforms outside annotated genes.** A well-aligned isoform that overlaps no gene joins a
+   `novel_locus`: isoforms whose genomic spans overlap on the same strand form one feature,
+   named `novel:<sequence>:<start>-<end>:<strand>`. Unaligned isoforms and those below
+   `min_identity` stay `unassigned`, each its own feature, `isoseq:<isoform>`.
+5. **Mitochondrial transcripts.** `mt_hit` marks isoforms aligned to the mitogenome or
+   overlapping a mitochondrial locus (the genes of `06 .../count_matrix/mitochondrial_loci.csv`)
+   at any identity, so that step 04 can leave them all out, as 06 leaves out the mitochondrial
+   loci.
 
-- on the same strand (Iso-Seq isoforms and CDS are both sense);
-- at least `min_identity` identity over at least `min_aln` aligned bases;
-- `ambiguous` when a different gene scores at least `ambiguous_ratio` of the best (paralogs);
-  such isoforms keep the best gene and are flagged.
-
-Isoforms without such a hit (non-coding transcripts, and 3' fragments that end before the
-CDS starts) stay unassigned and are kept as their own features, named `isoseq:<isoform>`.
-`mt_hit` marks isoforms with a same-strand alignment of at least `min_aln` bases to a
-mitochondrial CDS (the genes of `06 .../count_matrix/mitochondrial_loci.csv`) at any identity:
-mitochondrial transcripts too divergent from the genome's mitogenome to pass `min_identity`
-would otherwise stay unassigned, and step 04 leaves them out with the mitochondrial genes.
-Genes without a CDS (non-coding genes) cannot receive isoforms this way, which limits the
-comparison to coding genes. A genome-based map would remove both limits; it needs the genome
-FASTA (`GCF_036588685.1`) and the StringTie coordinates already in
-`05_sequence-alignment/03_analyses/hisat/t_data.ctab`.
+An earlier version of this step, written while the genome was not reachable, assigned isoforms
+through their alignment to the annotation's CDS (`_superseded/02_isoform_gene_map_cds.Rmd`).
+That route reaches coding genes only and misses isoforms that end before the CDS. Its map is
+kept (`03_analyses/_superseded/02_isoform-gene-map_cds/`) and compared with this one below.
 
 Writes, in `03_analyses/02_isoform-gene-map/`:
 
-- `isoform_gene_map.csv.gz`: one row per isoform: `isoform`, `gene` (LOC key via
-  `gene_key()`, or `isoseq:<isoform>`), `status` (`assigned`, `ambiguous`, `unassigned`), the
-  best CDS, identity, aligned bases, isoform and CDS lengths, the runner-up gene and `mt_hit`;
-- `isoform_gene_map_summary.csv`: isoforms and genes by status;
-- `RUN_provenance.txt`: settings, minimap2 version and input MD5s.
+- `isoform_gene_map.csv.gz`: one row per isoform: `isoform`, `gene` (a gene key via
+  `gene_key()`, `novel:...` or `isoseq:<isoform>`), `status` (`assigned`, `ambiguous`,
+  `novel_locus`, `unassigned`), the alignment (`seqid`, `strand`, `start`, `end`, `identity`,
+  `mapq`, `n_alignments`), `exonic_overlap` with the gene, the runner-up gene and its overlap,
+  `mt_hit` and `isoform_len`;
+- `isoform_gene_map_summary.csv`: isoforms and features by status, and the genome-branch genes
+  reached;
+- `cds_map_agreement.csv`: agreement with the retired CDS-based map;
+- `RUN_provenance.txt`: settings, minimap2 version, input MD5s.
 
-The minimap2 alignments (`minimap2_isoforms_vs_cds.paf.gz`) are kept beside them but are
-git-ignored (large, rebuilt by this script).
+The alignments (`minimap2_isoforms_vs_genome.paf.gz`, `minimap2.log`) are kept beside them,
+git-ignored (rebuilt by this script in about 1.5 hours on four cores, with about 7 GB of
+memory for the genome index).
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
 source(file.path(repo_root, "tools", "gene_ids.R"))         # gene_key()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))  # provenance_lines()
-suppressPackageStartupMessages({ library(data.table) })
+suppressPackageStartupMessages({
+  library(data.table); library(GenomicRanges); library(GenomicAlignments); library(rtracklayer)
+})
 ```
 
 # Inputs
 
 ```{r inputs}
 if (!file.exists(isoseq_fa)) download.file(ISOSEQ_URL, isoseq_fa, mode = "wb")
-if (!file.exists(cds_fa))    download.file(CDS_URL, cds_fa, mode = "wb")
-cds_hdr <- system2("grep", c("'^>'", shQuote(cds_fa)), stdout = TRUE)
-cds <- data.table(cds  = sub("^>(\\S+).*$", "\\1", cds_hdr),
-                  gene = gene_key(sub("^.*\\[gene=([^]]+)\\].*$", "\\1", cds_hdr)))
-stopifnot(!anyDuplicated(cds$cds), !anyNA(cds$gene))
-cat(nrow(cds), "CDS of", uniqueN(cds$gene), "genes\n")
+for (f in c(genome_fa, gff_gz)) if (!file.exists(f)) download.file(paste0(NCBI_DIR, basename(f)), f, mode = "wb")
+## NCBI's checksums for the two files
+ncbi_md5 <- fread(cmd = paste("curl -sS", shQuote(paste0(NCBI_DIR, "md5checksums.txt"))), header = FALSE,
+                  col.names = c("md5", "file"))[, file := basename(file)]
+stopifnot(all(unname(tools::md5sum(c(genome_fa, gff_gz))) == ncbi_md5[match(basename(c(genome_fa, gff_gz)), file), md5]))
+
+mt <- fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))
+mt_genes <- unique(mt$LOC_ID)
+mt_seqids <- unique(mt[source == "mitogenome", seqid])
+stopifnot(length(mt_genes) == 143, length(mt_seqids) == 1)
+```
+
+# Genes: exons of every annotated gene
+
+```{r genes}
+gff <- import(gff_gz)
+parent1 <- sub(",.*$", "", as.character(unstrsplit(gff$Parent, sep = ",")))
+parent1[!nzchar(parent1)] <- NA
+## each feature's top-level gene: follow Parent from exon to transcript to gene
+has_id  <- !is.na(gff$ID) & !duplicated(gff$ID) & !gff$ID %in% gff$ID[duplicated(gff$ID)]
+up      <- setNames(parent1[has_id], gff$ID[has_id])
+ex      <- gff[gff$type == "exon"]
+top     <- parent1[gff$type == "exon"]
+for (i in 1:5) { nxt <- up[top]; move <- !is.na(nxt); if (!any(move)) break; top[move] <- nxt[move] }
+## only the mitogenome's rRNAs and tRNAs have no gene feature above them in RefSeq's GFF
+stopifnot(!anyNA(top), all(startsWith(top, "gene-") | as.character(seqnames(ex)) %in% mt_seqids))
+ex$gene <- gene_key(top)
+gene_exons <- unlist(reduce(split(granges(ex), ex$gene)))            # each gene's exons merged
+gene_exons$gene <- names(gene_exons); names(gene_exons) <- NULL
+
+## the genome branch's genes are all here
+g06 <- gene_key(fread(file.path(de06, "count_matrix", "gene_count_matrix_clean.csv"), select = 1)[[1]])
+stopifnot(!anyDuplicated(g06))
+cat(length(unique(ex$gene)), "annotated genes with exons;", sum(g06 %in% ex$gene), "of the", length(g06),
+    "genome-branch genes among them\n")
+stopifnot(all(mt_genes %in% ex$gene))
 ```
 
 # Align
 
 ```{r align}
-paf <- file.path(map_dir, "minimap2_isoforms_vs_cds.paf.gz")
+paf <- file.path(map_dir, "minimap2_isoforms_vs_genome.paf.gz")
 mm2_version <- system2(params$minimap2, "--version", stdout = TRUE)
+mm2_args <- "-c -x splice:hq -uf --secondary=no"
 if (!file.exists(paf)) {
-  cmd <- sprintf("%s -c -x asm20 -N 5 -t %d %s %s 2> %s | gzip > %s", params$minimap2, params$threads,
-                 shQuote(cds_fa), shQuote(isoseq_fa), shQuote(file.path(map_dir, "minimap2.log")), shQuote(paf))
+  cmd <- sprintf("%s %s -t %d %s %s 2> %s | gzip > %s", params$minimap2, mm2_args, params$threads,
+                 shQuote(genome_fa), shQuote(isoseq_fa), shQuote(file.path(map_dir, "minimap2.log")), shQuote(paf))
   stopifnot(system(cmd) == 0)
 }
-## PAF columns 1-11 and the alignment score (AS:i) of every alignment
-aln <- fread(cmd = sprintf("zcat %s | awk -F'\\t' '{as=\"\"; for (i=13; i<=NF; i++) if ($i ~ /^AS:i:/) as=substr($i,6); print $1\"\\t\"$2\"\\t\"$5\"\\t\"$6\"\\t\"$7\"\\t\"$10\"\\t\"$11\"\\t\"as}'",
-                             shQuote(paf)),
-             col.names = c("isoform", "isoform_len", "strand", "cds", "cds_len", "matches", "block", "AS"),
-             sep = "\t", header = FALSE)
+## PAF columns and the CIGAR (cg:Z) of every alignment
+awk_prog <- tempfile(fileext = ".awk")
+writeLines('BEGIN{FS=OFS="\\t"} {cg=""; for (i=13; i<=NF; i++) if ($i ~ /^cg:Z:/) cg=substr($i,6); print $1,$2,$5,$6,$8,$9,$10,$11,$12,cg}',
+           awk_prog)
+aln <- fread(cmd = sprintf("zcat %s | awk -f %s", shQuote(paf), shQuote(awk_prog)), sep = "\t", header = FALSE,
+             col.names = c("isoform", "isoform_len", "strand", "seqid", "tstart", "tend", "matches", "block", "mapq", "cigar"))
+stopifnot(all(nzchar(aln$cigar)))
+aln[, n_alignments := .N, by = isoform]
+## chimeric isoforms can give more than one alignment: keep the one with most matching bases
+setorder(aln, isoform, -matches)
+aln <- aln[!duplicated(isoform)]
 aln[, identity := matches / block]
-aln <- merge(aln, cds, by = "cds", all.x = TRUE)
-stopifnot(!anyNA(aln$gene))
-cat(nrow(aln), "alignments of", uniqueN(aln$isoform), "isoforms\n")
+cat(nrow(aln), "isoforms aligned;", aln[n_alignments > 1, .N], "with more than one alignment\n")
+```
+
+# Overlap with gene exons
+
+```{r overlap}
+blocks <- extractAlignmentRangesOnReference(aln$cigar, pos = aln$tstart + 1L)   # 1-based, introns (N) split
+blk <- GRanges(rep(aln$seqid, lengths(blocks)), unlist(blocks), strand = rep(aln$strand, lengths(blocks)))
+blk$i <- rep(seq_len(nrow(aln)), lengths(blocks))
+## the blocks start and end where the alignment does
+stopifnot(all(min(splitAsList(start(blk), blk$i)) == aln$tstart + 1L), all(max(splitAsList(end(blk), blk$i)) == aln$tend))
+
+hits <- findOverlaps(blk, gene_exons)                                          # same strand
+ov <- data.table(i = blk$i[queryHits(hits)], gene = gene_exons$gene[subjectHits(hits)],
+                 bp = width(pintersect(blk[queryHits(hits)], gene_exons[subjectHits(hits)])))
+ov <- ov[, .(bp = sum(bp)), by = .(i, gene)]
+setorder(ov, i, -bp)
+best   <- ov[!duplicated(i)]
+second <- ov[duplicated(i)][!duplicated(i), .(i, runner_up_gene = gene, runner_up_overlap = bp)]
+aln[, i := .I]
+aln <- merge(aln, best[, .(i, gene, exonic_overlap = bp)], by = "i", all.x = TRUE)
+aln <- merge(aln, second, by = "i", all.x = TRUE)
+aln[is.na(exonic_overlap), exonic_overlap := 0L]
+
+## mitochondrial: on the mitogenome, or any exonic overlap with a mitochondrial locus, at any identity
+mt_iso <- unique(ov[gene %in% mt_genes, i])
+aln[, mt_hit := seqid %in% mt_seqids | i %in% mt_iso]
 ```
 
 # Assign
 
 ```{r assign}
-ok <- aln[strand == "+" & identity >= params$min_identity & matches >= params$min_aln]
-setorder(ok, isoform, -AS)
-ok[, best_gene := gene[1], by = isoform]
-best   <- ok[, .SD[1], by = isoform]
-## best alignment of a different gene, for the ambiguity flag
-second <- ok[gene != best_gene, .(runner_up_gene = gene[1], runner_up_AS = as.numeric(AS[1])), by = isoform]
-best <- merge(best, second, by = "isoform", all.x = TRUE)
-best[, status := ifelse(!is.na(runner_up_AS) & runner_up_AS >= params$ambiguous_ratio * AS, "ambiguous", "assigned")]
+aln[, status := fifelse(identity < params$min_identity, "unassigned",
+               fifelse(exonic_overlap >= params$min_overlap, "assigned", "novel_locus"))]
+aln[status == "assigned" & (mapq == 0 | (!is.na(runner_up_overlap) & runner_up_overlap >= params$ambiguous_ratio * exonic_overlap)),
+    status := "ambiguous"]
+aln[!status %in% c("assigned", "ambiguous"), `:=`(gene = NA_character_)]
+
+## novel loci: overlapping genomic spans of well-aligned isoforms outside genes, per strand
+nv <- aln[status == "novel_locus"]
+spans <- GRanges(nv$seqid, IRanges(nv$tstart + 1L, nv$tend), strand = nv$strand)
+loci  <- reduce(spans)
+loc_name <- sprintf("novel:%s:%d-%d:%s", seqnames(loci), start(loci), end(loci), strand(loci))
+aln[status == "novel_locus", gene := loc_name[findOverlaps(spans, loci, select = "first")]]
 
 all_iso <- data.table(isoform = sub("^>(\\S+).*$", "\\1",
                                     system2("grep", c("'^>'", shQuote(isoseq_fa)), stdout = TRUE)))
-stopifnot(!anyDuplicated(all_iso$isoform))
-map <- merge(all_iso, best[, .(isoform, gene, status, cds, identity = round(identity, 4), aligned = matches,
-                               isoform_len, cds_len, AS, runner_up_gene, runner_up_AS)],
+stopifnot(!anyDuplicated(all_iso$isoform), all(aln$isoform %in% all_iso$isoform))
+map <- merge(all_iso, aln[, .(isoform, gene, status, seqid, strand, start = tstart + 1L, end = tend,
+                              identity = round(identity, 4), mapq, n_alignments, exonic_overlap,
+                              runner_up_gene, runner_up_overlap, mt_hit, isoform_len)],
              by = "isoform", all.x = TRUE, sort = FALSE)
-map[is.na(gene), `:=`(gene = paste0("isoseq:", isoform), status = "unassigned")]
-## any same-strand hit to a mitochondrial CDS, whatever its identity (see above)
-mt_genes <- unique(fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))$LOC_ID)
-stopifnot(length(mt_genes) == 143)
-map[, mt_hit := isoform %in% aln[strand == "+" & matches >= params$min_aln & gene %in% mt_genes, isoform]]
-stopifnot(map[status != "unassigned" & mt_hit, all(gene %in% mt_genes)])
-## antisense-only isoforms, as a check on the strand rule
-anti <- setdiff(unique(aln[strand == "-" & identity >= params$min_identity & matches >= params$min_aln, isoform]),
-                best$isoform)
+map[is.na(status), `:=`(status = "unassigned", mt_hit = FALSE, n_alignments = 0L)]
+map[is.na(gene), gene := paste0("isoseq:", isoform)]
+map <- map[match(all_iso$isoform, isoform)]                                    # FASTA order
+stopifnot(!anyNA(map$gene), nrow(map) == nrow(all_iso))
 fwrite(map, file.path(map_dir, "isoform_gene_map.csv.gz"))
 
-summ <- rbind(map[, .(isoforms = .N, genes = uniqueN(gene)), by = status],
-              data.table(status = "all", isoforms = nrow(map), genes = uniqueN(map$gene)))
-summ <- rbind(summ, data.table(status = "unassigned with only an antisense hit", isoforms = length(anti), genes = NA))
-summ <- rbind(summ, data.table(status = "genes with a CDS that received an isoform", isoforms = NA,
-                               genes = uniqueN(map[status != "unassigned", gene])))
-summ <- rbind(summ, data.table(status = "unassigned with a mitochondrial CDS hit below the identity cut-off",
-                               isoforms = map[status == "unassigned" & mt_hit, .N], genes = NA))
+summ <- rbind(map[, .(isoforms = .N, features = uniqueN(gene)), by = status],
+              data.table(status = "all", isoforms = nrow(map), features = uniqueN(map$gene)),
+              data.table(status = "unaligned (within unassigned)", isoforms = map[n_alignments == 0, .N], features = NA),
+              data.table(status = "mitochondrial (mt_hit)", isoforms = map[mt_hit == TRUE, .N], features = NA),
+              data.table(status = "genome-branch genes that received an isoform", isoforms = NA,
+                         features = sum(g06 %in% map[status %in% c("assigned", "ambiguous"), gene])))
 fwrite(summ, file.path(map_dir, "isoform_gene_map_summary.csv"))
 knitr::kable(summ)
+```
+
+# Agreement with the CDS-based map
+
+```{r cds-agreement}
+old <- fread(cds_map, select = c("isoform", "gene", "status"))
+both <- merge(map[, .(isoform, gene_genome = gene, status_genome = status)],
+              old[, .(isoform, gene_cds = gene, status_cds = status)], by = "isoform")
+on_gene <- function(s) s %in% c("assigned", "ambiguous")
+agree <- data.table(
+  measure = c("isoforms on a gene in both maps", "  of which the same gene", "  of which the same gene, both unambiguous",
+              "isoforms on a gene in the CDS map only", "isoforms on a gene in the genome map only",
+              "genes reached by the CDS map", "genes reached by the genome map", "genes reached by both"),
+  n = c(both[on_gene(status_genome) & on_gene(status_cds), .N],
+        both[on_gene(status_genome) & on_gene(status_cds) & gene_genome == gene_cds, .N],
+        both[status_genome == "assigned" & status_cds == "assigned" & gene_genome == gene_cds, .N],
+        both[!on_gene(status_genome) & on_gene(status_cds), .N],
+        both[on_gene(status_genome) & !on_gene(status_cds), .N],
+        uniqueN(both[on_gene(status_cds), gene_cds]), uniqueN(both[on_gene(status_genome), gene_genome]),
+        length(intersect(both[on_gene(status_cds), gene_cds], both[on_gene(status_genome), gene_genome]))))
+fwrite(agree, file.path(map_dir, "cds_map_agreement.csv"))
+knitr::kable(agree)
 ```
 
 # Provenance
@@ -142,12 +230,14 @@ knitr::kable(summ)
 ```{r provenance}
 settings <- c("[02_isoform_gene_map.Rmd]",
               paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
-              paste0("minimap2             : ", mm2_version, " (-c -x asm20 -N 5)"),
-              paste0("assignment           : same strand, identity >= ", params$min_identity, ", aligned >= ",
-                     params$min_aln, " bp; ambiguous when another gene scores >= ", params$ambiguous_ratio, " of the best"),
-              paste0("isoforms / CDS       : ", nrow(map), " / ", nrow(cds)))
-writeLines(provenance_lines(settings, c(isoseq_fa, cds_fa, file.path(de06, "count_matrix", "mitochondrial_loci.csv"),
+              paste0("minimap2             : ", mm2_version, " (", mm2_args, ")"),
+              paste0("genome / annotation  : ", ASSEMBLY, " (RefSeq annotation RS_2024_02), MD5s checked against NCBI"),
+              paste0("assignment           : identity >= ", params$min_identity, "; most exonic bases shared with a gene, same strand, >= ",
+                     params$min_overlap, "; ambiguous when mapq 0 or a second gene shares >= ", params$ambiguous_ratio, " of that"),
+              paste0("isoforms             : ", nrow(map)))
+writeLines(provenance_lines(settings, c(isoseq_fa, genome_fa, gff_gz, file.path(de06, "count_matrix", "mitochondrial_loci.csv"),
+                                        file.path(de06, "count_matrix", "gene_count_matrix_clean.csv"), cds_map,
                                         here::here("01_code", "02_isoform_gene_map.Rmd")),
-                            repo_root, packages = c("data.table")),
+                            repo_root, packages = c("data.table", "GenomicRanges", "GenomicAlignments", "rtracklayer")),
            file.path(map_dir, "RUN_provenance.txt"))
 ```

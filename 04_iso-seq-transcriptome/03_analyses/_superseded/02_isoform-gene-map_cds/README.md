@@ -1,6 +1,9 @@
-# 02_isoform-gene-map
+# 02_isoform-gene-map_cds (retired)
 
-Written by `../../01_code/02_isoform_gene_map.Rmd`: each Iso-Seq isoform assigned to a gene of
+Retired on 2026-10-01, when the genome became reachable: replaced by `../../02_isoform-gene-map/`
+(spliced alignment to the genome). Kept as the cross-check that step reports against.
+
+Written by `../../../01_code/_superseded/02_isoform_gene_map_cds.Rmd` (then step 02): each Iso-Seq isoform assigned to a gene of
 the genome annotation through its best same-strand alignment to the annotation's CDS
 (minimap2 2.31, `-c -x asm20`; identity at least 0.90 over at least 100 aligned bases).
 

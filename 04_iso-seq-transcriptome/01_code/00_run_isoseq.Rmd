@@ -26,8 +26,8 @@ log in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
 | step | script | writes to `03_analyses/` | needs |
 |---|---|---|---|
 | 01 | `01_isoseq_transcriptome_check.Rmd` | nothing (a length QC; chunks not evaluated) | owl |
-| 02 | `02_isoform_gene_map.Rmd` | `02_isoform-gene-map/`: each isoform's genome gene | owl, gannet, minimap2 |
-| 03 | `03_salmon_quant.Rmd` | `03_salmon/`: mapping summary and gene counts | gannet, salmon; about 1 hour plus a few minutes per library |
+| 02 | `02_isoform_gene_map.Rmd` | `02_isoform-gene-map/`: each isoform's genome gene | owl, NCBI, minimap2; about 1.5 hours, 9 GB of memory |
+| 03 | `03_salmon_quant.Rmd` | `03_salmon/`: mapping summary and gene counts | gannet, salmon; about 15 minutes for the index plus 3 to 4 minutes per library |
 | 04 | `04_isoseq_de_comparison.Rmd` | `04_isoseq-de/`: TC contrasts on the Iso-Seq counts and the comparison with the genome | committed files only |
 
 With `online: false` (the default) only step 04 runs, from the committed map and gene

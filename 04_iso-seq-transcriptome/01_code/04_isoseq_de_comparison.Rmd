@@ -21,17 +21,19 @@ references gene by gene. It answers whether the DEG results depend on the refere
   samples, apeglm shrinkage (Zhu, Ibrahim and Love 2019, *Bioinformatics* 35:2084), DEG at
   padj < 0.05. Counts are summed read counts (step 03), rounded, with no length offset.
 - **Mitochondrial genes** are left out, as in 06: the genes of
-  `06 .../count_matrix/mitochondrial_loci.csv`, and the unassigned isoforms step 02 flags
-  with a mitochondrial CDS hit below its identity cut-off (`mt_hit`).
-- **Comparison:** genes are matched by their LOC key (`gene_key()`); only coding genes can
-  match (step 02 maps isoforms through the CDS). For each contrast: DEGs in both, in one
+  `06 .../count_matrix/mitochondrial_loci.csv`, and every feature outside annotated genes
+  (novel locus or unassigned isoform) holding an isoform step 02 flags as mitochondrial
+  (`mt_hit`).
+- **Comparison:** genes are matched by their key (`gene_key()`); step 02 placed the isoforms
+  on the same annotation the genome branch counts. For each contrast: DEGs in both, in one
   reference only, and genome DEGs whose gene received no Iso-Seq isoform; the correlation of
-  log2 fold changes over genes tested in both; and the DEGs among isoforms with no gene.
+  log2 fold changes over genes tested in both; and the DEGs among features outside annotated
+  genes (novel loci and unassigned isoforms).
 
 Writes, in `03_analyses/04_isoseq-de/`:
 
 - `<code>_isoseq_apeglm.csv`: every tested feature with its apeglm log2 fold change, Wald p
-  and padj (`feature` is a LOC key or `isoseq:<isoform>`);
+  and padj (`feature` is a gene key, `novel:<locus>` or `isoseq:<isoform>`);
 - `isoseq_DEG_counts.csv`: features tested and DEGs (up, down) per contrast, with the genome
   numbers beside them;
 - `reference_agreement.csv`: per contrast, DEG overlap and fold-change agreement;
@@ -57,9 +59,10 @@ hisat_qc <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat"
 stopifnot(nrow(contrasts) == 6, all(cs[code %in% contrasts$code, sample.1] %in% colnames(counts)))
 mt_keys <- unique(mt$LOC_ID)
 iso_map <- fread(file.path(map_dir, "isoform_gene_map.csv.gz"), select = c("gene", "status", "mt_hit"))
-mt_like <- unique(iso_map[status == "unassigned" & mt_hit == TRUE, gene])
+off_gene <- function(f) grepl("^(novel|isoseq):", f)                    # features outside annotated genes
+mt_like <- unique(iso_map[off_gene(gene) & mt_hit == TRUE, gene])
 cat("Iso-Seq features:", nrow(counts), "| left out: mitochondrial genes", sum(rownames(counts) %in% mt_keys),
-    ", unassigned isoforms with a mitochondrial hit", sum(rownames(counts) %in% mt_like), "\n")
+    ", features outside genes with a mitochondrial isoform", sum(rownames(counts) %in% mt_like), "\n")
 counts <- counts[!rownames(counts) %in% c(mt_keys, mt_like), ]
 ```
 
@@ -107,7 +110,8 @@ agree <- rbindlist(lapply(contrasts$code, function(cd) {
   both <- merge(g, i, by = "feature", suffixes = c("_genome", "_isoseq"))
   data.table(code = cd,
              genome_DEGs = sum(g$deg), isoseq_DEGs = sum(i$deg),
-             isoseq_DEGs_on_genes = sum(i$deg & !startsWith(i$feature, "isoseq:")),
+             isoseq_DEGs_on_genes = sum(i$deg & !off_gene(i$feature)),
+             isoseq_DEGs_novel_loci = sum(i$deg & startsWith(i$feature, "novel:")),
              isoseq_DEGs_unassigned_isoforms = sum(i$deg & startsWith(i$feature, "isoseq:")),
              genes_tested_in_both = nrow(both),
              DEG_in_both = sum(both$deg_genome & both$deg_isoseq),
