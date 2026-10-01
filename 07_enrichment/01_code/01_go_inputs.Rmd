@@ -35,7 +35,9 @@ Writes, in `03_analyses/01_go-inputs/`:
 - `gene_annotation.tsv`: one row per gene in any contrast's table: LOC ID, best-hit protein,
   median transcript length, the mitochondrial flag and the GO IDs by ontology (";"-separated);
 - `gene_sets_summary.csv`: per contrast and direction, the universe and DEG counts, how many
-  carry GO annotation, and how many DEGs are mitochondrially encoded protein LOCs.
+  carry GO annotation, and how many DEGs are mitochondrially encoded protein LOCs;
+- `RUN_provenance.txt`: the GO release in `GO.db`, the thresholds, the code commit, R and
+  package versions for every method in this folder, and an MD5 checksum of each input.
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
@@ -100,4 +102,35 @@ summ <- bind_rows(lapply(seq_len(nrow(runs)), function(i) {
 }))
 write.csv(summ, file.path(out_inputs, "gene_sets_summary.csv"), row.names = FALSE)
 knitr::kable(summ)
+```
+
+# Provenance
+
+GO results depend on the GO release in `GO.db` as much as on the code, so the release, the
+package versions and an MD5 checksum of every input are written next to the inputs.
+
+```{r provenance}
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # provenance_lines()
+go_info <- GO.db::GO_dbInfo()
+settings <- c(
+  paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+  paste0("GO release           : ", go_info$value[go_info$name == "GOSOURCEDATE"],
+         " (GO.db ", as.character(utils::packageVersion("GO.db")), ")"),
+  paste0("DEG                  : padj < ", PADJ, " in the 06 apeglm table; up and down tested separately"),
+  "universe             : genes with a non-missing padj in the contrast's apeglm table",
+  paste0("terms tested         : ", MIN_GS, " or more annotated universe genes (topGO nodeSize); ",
+         MIN_GS, " to ", MAX_GS, " for goseq and clusterProfiler"),
+  paste0("families             : ", paste(unlist(params$families), collapse = ", ")),
+  paste0("genes                : ", nrow(annot), " in any contrast's table; with GO BP ",
+         sum(nzchar(annot$GO_BP)), ", MF ", sum(nzchar(annot$GO_MF)), ", CC ", sum(nzchar(annot$GO_CC))))
+inputs <- c(file.path(blast_go, "LOC_GO_list.txt"), t_data, file.path(deg, "contrasts.csv"),
+            file.path(deg, contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
+            here::here("01_code", c("01_go_inputs.Rmd", "_paths.R", "_go_helpers.R")),
+            file.path(repo_root, "tools", c("mt_encoded.R", "pipeline_checks.R")))
+prov <- file.path(out_inputs, "RUN_provenance.txt")
+writeLines(provenance_lines(settings, inputs, repo_root,
+                            packages = c("topGO", "goseq", "clusterProfiler", "enrichplot", "rrvgo",
+                                         "GOSemSim", "GO.db", "AnnotationDbi", "GSEABase",
+                                         "org.Hs.eg.db")), prov)
+cat(readLines(prov), sep = "\n")
 ```

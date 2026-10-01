@@ -17,7 +17,7 @@ Open `enrichment.Rproj` and knit `01_code/00_run_enrichment.Rmd` (or let the rep
 
 | step | script | writes to `03_analyses/` |
 |---|---|---|
-| 01 | `01_go_inputs.Rmd` | `01_go-inputs/`: one annotation table for every method; gene-set sizes |
+| 01 | `01_go_inputs.Rmd` | `01_go-inputs/`: one annotation table for every method; gene-set sizes; the GO release and package versions (`RUN_provenance.txt`) |
 | 02 | `02_topgo.Rmd` | `02_topgo/`: topGO `weight01` Fisher, **the enrichment of record** |
 | 03 | `03_goseq.Rmd` | `03_goseq/`: goseq Wallenius with transcript-length bias; the bias diagnostic |
 | 04 | `04_clusterprofiler.Rmd` | `04_clusterprofiler/`: `enricher` per run, merged into a compareCluster view |

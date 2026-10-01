@@ -64,7 +64,7 @@ F_list <- list(
 p <- ggvenn(
   G_list, 
   fill_color = unname(TREATMENT_COLORS[c("OW", "OA", "DO")]),   # list order: warming, acidification, hypoxia
-  stroke_size = 0.5, set_name_size =10,text_size = 13,show_percentage = FALSE
+  stroke_size = 0.5, set_name_size = 7, text_size = 13, show_percentage = FALSE   # set names at 7, as in the tissue Venns: at 10 the two top names overlap
   )+
   theme(aspect.ratio = 1,
         element_text(size = 20))
@@ -76,7 +76,7 @@ ggsave(file.path(figs, "TC_venn_gill_stressors.png"), p, width = 7, height = 7, 
 p <- ggvenn(
   F_list, 
   fill_color = unname(TREATMENT_COLORS[c("OW", "OA", "DO")]),   # list order: warming, acidification, hypoxia
-  stroke_size = 0.5, set_name_size = 10,text_size = 13,show_percentage = FALSE
+  stroke_size = 0.5, set_name_size = 7, text_size = 13, show_percentage = FALSE   # set names at 7, as in the tissue Venns: at 10 the two top names overlap
   )+
   theme(aspect.ratio = 1)
 print(p)

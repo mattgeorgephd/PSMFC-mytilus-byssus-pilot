@@ -32,10 +32,10 @@ workbook is invisible there.
 
 `group` in the workbook is a **mussel cohort** label and reads as a timepoint when it is not:
 
-- `group = control`, `days_in_trt = 0` (41 animals) — the twelve lab-reference animals,
+- `group = control`, `days_in_trt = 0` (41 animals): the twelve lab-reference animals,
   T001 to T012; thirteen animals pulled at baseline and never again; and sixteen with no
   tensometer trace
-- `group = treatment`, `days_in_trt = 3` (66 animals) — everyone else, covering **both** their
+- `group = treatment`, `days_in_trt = 3` (66 animals): everyone else, covering **both** their
   pre-exposure and their post-exposure threads
 
 So the pre-exposure folder contains traces from animals in *both* groups. The before/after

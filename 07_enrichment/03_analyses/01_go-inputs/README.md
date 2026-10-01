@@ -6,3 +6,4 @@ Written by `../../01_code/01_go_inputs.Rmd`; read by every later step.
 |---|---|
 | `gene_annotation.tsv` | one row per gene in any contrast's apeglm table (12,905): `gene` (the DESeq2 ID), `LOC_ID`, best BLAST hit (`protein_name`), median reference-transcript `length`, `mt_encoded` (best hit is an mtDNA-encoded protein) and the GO IDs by ontology (`GO_BP`, `GO_MF`, `GO_CC`, ";"-separated, direct annotation only) |
 | `gene_sets_summary.csv` | per contrast and direction: universe size, genes with BP annotation and with a length, DEGs, annotated DEGs, mitochondrially encoded protein DEGs |
+| `RUN_provenance.txt` | the GO release in `GO.db`, the thresholds, the code commit, R and package versions for every method in this folder, and an MD5 checksum of each input |

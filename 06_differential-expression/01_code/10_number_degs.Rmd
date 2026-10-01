@@ -94,7 +94,7 @@ p <- DEG_num %>%
   facet_wrap(~treatment)+
   scale_fill_manual(labels = c(down = "Decreased", up = "Increased"),
                     values = c(down = DIRECTION_COLORS[["down"]], up = DIRECTION_COLORS[["up"]]))+
-  labs(x = "Treatment", y = "Number of DEG")+
+  labs(x = "Tissue", y = "Number of DEG")+   # x is tissue; the panels are the treatments
   theme(panel.spacing = unit(2, "lines"))+
   my_theme
 print(p)
