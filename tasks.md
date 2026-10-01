@@ -83,8 +83,8 @@ Conventions and how to run are in `AGENTS.md`.
 |---|---|---|
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Merge the pull request | branch `claude/jolly-clarke-7afl1v`; merging deletes untracked `.Rhistory` copies from local checkouts (see the PR) | Matt |
-| Iso-Seq branch | the trimmed reads (lab server) and the trimming command are not in the repository; owl, gannet, NCBI and sr320.github.io (Steven Roberts' notebooks) are not reachable from the cloud environment used here; no isoform-to-gene table exists yet. Design in `04_iso-seq-transcriptome/README.md` | Matt (inputs, network access), Steven (notebook details) |
-| Trimming step and gannet downloads | the read-trimming command the HISAT2 run used is not recorded, and the scripts cannot fetch large inputs from gannet; both needed for a rerun from raw reads | Matt |
+| Iso-Seq branch | inputs located (2026-10-01): the trimmed reads HISAT2 used are in Grace's `byssus-exp-analysis/data/raw-trimmed/` on owl, and the transcriptome on owl's genomic-databank; but owl, gannet, NCBI and sr320.github.io (Steven Roberts' notebooks) are not reachable from the cloud environment used here, and no isoform-to-gene table exists yet. Design in `04_iso-seq-transcriptome/README.md` | Matt (network access or copies), Steven (notebook details) |
+| Trimming step and gannet downloads | the read-trimming command is not in the repository; it is most likely in gannet `panopea/PSMFC-mytilus-byssus-pilot/sbatch_scripts/`, and `multiqc_report_trimmed_merged.html` there records the trimmed, lane-merged reads (`*_L099_R1_cmb.trim.fastq.gz`). Copy both into `05_sequence-alignment` as records; the gannet download code then needs the file list | Matt |
 | Manuscript text | numbers and wording predate this pull request: Gill OA DEGs (711 to 543), the GO results, LC contrasts, the mitochondrial result, thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (91 of 122 genes refit in Foot OW), T025G (48 of 76 in Gill OA; also the lowest alignment rate, 60.8% against a median of 67.7%) and T035G (42 of 81 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
@@ -98,9 +98,12 @@ Conventions and how to run are in `AGENTS.md`.
   3.20 (versions recorded in each `RUN_provenance*.txt`), but the repository has no `renv.lock`
   or conda environment file, so a new machine has to assemble the packages by hand.
 - **Annotation provenance.** `LOC_GO_list.txt` joins two BLAST runs (its second e-value column
-  comes from a run against a larger database) and dropped second transcripts of a gene that hit
-  the same protein (40% of rows carry no LOC key); the UniProt release behind its GO terms is
-  not recorded, and 42 of its 14,863 GO IDs are unknown to the pinned GO release and dropped.
+  comes from the run against Swiss-Prot release 2024_01 plus a UniProtKB "mytilus foot" query,
+  `03_blast/01_code/01_genome_blast.Rmd`) and dropped second transcripts of a gene that hit the
+  same protein (40% of rows carry no LOC key; each gene keeps its other transcripts' hits). The
+  CDS table on owl (`data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.tab`) maps every
+  CDS to its LOC and would let those rows be keyed. 42 of the 14,863 GO IDs are unknown to the
+  pinned GO release and dropped.
 - **GO of record.** topGO `weight01` p < 0.01 is unadjusted; only three TC runs have terms
   under FDR control. Headline GO claims are safest from `consensus_terms_TC_<ont>.csv`.
 - **Repository size.** `.git` is about 765 MB, mostly committed superseded tables and BLAST

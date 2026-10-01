@@ -34,11 +34,13 @@ has no batch runner and the repository-level runner does not call it. The
 
 The analysis of record maps reads to the genome. Running the same chain against the Iso-Seq
 transcriptome, as a sensitivity branch, is planned but **not implemented**: three inputs are
-not in the repository (checked 2026-10-01).
+not in the repository (checked 2026-10-01). Steven Roberts' Iso-Seq notebooks
+(https://sr320.github.io/iso/, https://sr320.github.io/Myt-GO/) may hold the details; they
+were not reachable from the cloud environment used here.
 
 | needed | where it is | status |
 |---|---|---|
-| trimmed Tag-seq reads | lab server, `byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz` (paths in `01_code/_superseded/isoseq-as-reference/01-kallisto-genome.Rmd`) | not in the repository; the trimming command that made them (and that the HISAT2 run of `05` also used) is not recorded either |
+| trimmed Tag-seq reads | owl, Grace Leuchtenberger's `Github/byssus-exp-analysis/data/raw-trimmed/*_L099_R1_cmb.trim.fastq.gz` (confirmed 2026-10-01; paths in `01_code/_superseded/isoseq-as-reference/01-kallisto-genome.Rmd`) | not in the repository and not reachable from the cloud environment used here; the trimming command is probably in gannet `panopea/PSMFC-mytilus-byssus-pilot/sbatch_scripts/` |
 | `Mtros-hq_transcripts.fasta` | owl (`https://owl.fish.washington.edu/halfshell/genomic-databank/`) | downloadable by `01_isoseq_transcriptome_check.Rmd` where owl is reachable |
 | isoform-to-gene table | none | must be built (step 1 below); no script here maps isoforms to genome LOCs. `03_blast/01_code/03_isoseq_vs_genome_blast.Rmd` blasts the byssal foot-protein sequences against each reference separately, not one reference against the other |
 
