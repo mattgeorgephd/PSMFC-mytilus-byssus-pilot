@@ -1,13 +1,14 @@
 [02_isoform_gene_map.Rmd]
-generated            : 2026-10-01 21:16:24
+generated            : 2026-10-01 21:44:29
 minimap2             : 2.31-r1302 (-c -x asm20 -N 5)
 assignment           : same strand, identity >= 0.9, aligned >= 100 bp; ambiguous when another gene scores >= 0.98 of the best
 isoforms / CDS       : 411251 / 53269
-code commit          : 194bf2d0f2de
+code commit          : 2f167198fef4
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : data.table 1.18.6.1
 inputs (md5, repo-relative path):
   e71381f7b6970fd20ff6b0e72006c80a  04_iso-seq-transcriptome/02_data/Mtros-hq_transcripts.fasta
   a4df841e16db68b41719d564986f706b  04_iso-seq-transcriptome/02_data/cds_from_genomic.fasta
-  9212c7896cd24e0607f5d8db5ec95745  04_iso-seq-transcriptome/01_code/02_isoform_gene_map.Rmd
+  92a529e89a7b4aad93f15b563ffaf21a  06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
+  b8ec3e119128a5398b4f32dbf40d2bc6  04_iso-seq-transcriptome/01_code/02_isoform_gene_map.Rmd
