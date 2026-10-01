@@ -1,5 +1,5 @@
 [01_gene_mechanics_correlation.Rmd]
-generated            : 2026-10-01 18:56:15
+generated            : 2026-10-01 19:28:27
 tissue               : F
 INCLUDE_CONTROL_ARM  : TRUE
 reported test        : ANCOVA level_day3 ~ expression + treatment + level_baseline (log scale; per-animal geometric mean, largest thread for max_force)
@@ -16,12 +16,12 @@ candidates tested    : 198 (26 at the detection floor)
 DEG union tested     : 545 of 547
 family sizes (tests) : candidate x primary 396, candidate x exploratory 396, DEG union 2180
 checks               : 16 run, 0 failed
-code commit          : 5ba5614718ef
-uncommitted changes  : YES, 43 tracked file(s) differ from the commit: M 00_run_pipeline.Rmd; M 02_thread-strength/01_code/02_extract_tensometer_data.Rmd; M 02_thread-strength/01_code/02_extract_tensometer_data_DOC.md; M 02_thread-strength/01_code/03_assemble_thread_summary.Rmd; M 02_thread-strength/01_code/03_assemble_thread_summary_DOC.md; M 02_thread-strength/01_code/04_analyze_thread_strength.Rmd; M 02_thread-strength/01_code/04_analyze_thread_strength_DOC.md; M 02_thread-strength/01_code/05_decompose_adhesion.Rmd; M 02_thread-strength/01_code/05_decompose_adhesion_DOC.md; M 02_thread-strength/01_code/_ancova.R ...
+code commit          : dccc6e7ef753
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : DESeq2 1.46.0, dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):
-  55d4810b1ebd0116b634a47cfc30dd79  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
+  85bb484be643daa0ea3167dd821ed035  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
   9dc6cedf60aa2565ccd3c63bdd433ad7  02_thread-strength/03_analyses/05_decompose-adhesion/mussel_response_classification.csv
   0c0cadcf31b73ecf9cb145e225645896  09_gene-mechanics-correlation/02_data/expected_animals.csv
   0ac2bb152a5f381221a2707ba2f59ee1  02_thread-strength/03_analyses/04_analyze-thread-strength/DATA_ancova_animals.csv
@@ -39,11 +39,12 @@ inputs (md5, repo-relative path):
   88672813ce65bca5d9068cdd1bc9e6d5  06_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_siggene.csv
   591e4a4e5d9dec1d915477436013a12d  06_differential-expression/03_analyses/DEG_lists/Foot/FOW_TC_siggene.csv
   a897ee2695c1bd895066f5d97cef35dd  06_differential-expression/03_analyses/DEG_lists/Foot/FDO_TC_siggene.csv
-  d2c74f77ff1d5c4f62ef479145b306f1  09_gene-mechanics-correlation/01_code/01_gene_mechanics_correlation.Rmd
+  47d9f1afa5a20210224f8c5413c25b1a  09_gene-mechanics-correlation/01_code/01_gene_mechanics_correlation.Rmd
   0ad3abf4a48b719a22e679d67210a86d  tools/pipeline_checks.R
+  d3006bd11c0342334f36413177a80d8d  tools/gene_ids.R
 
 [02_gene_mechanics_expanded.Rmd]
-generated            : 2026-10-01 18:56:19
+generated            : 2026-10-01 19:28:31
 reported test        : script 01's ANCOVA (assoc_candidate_F.csv, assoc_DEGunion_F.csv)
 metrics [scale, tier]: mean_force [log, primary], pad_area [log, primary], max_force [log, exploratory], adhesion_kpa [log, exploratory]
 primary metrics      : mean_force, pad_area
@@ -53,8 +54,8 @@ FDR_ALPHA            : 0.1
 candidates tested    : 198 of 224 (floor filter in script 01)
 N_INFLUENCE_HITS     : 3
 checks               : 1 run, 0 failed
-code commit          : 5ba5614718ef
-uncommitted changes  : YES, 43 tracked file(s) differ from the commit: M 00_run_pipeline.Rmd; M 02_thread-strength/01_code/02_extract_tensometer_data.Rmd; M 02_thread-strength/01_code/02_extract_tensometer_data_DOC.md; M 02_thread-strength/01_code/03_assemble_thread_summary.Rmd; M 02_thread-strength/01_code/03_assemble_thread_summary_DOC.md; M 02_thread-strength/01_code/04_analyze_thread_strength.Rmd; M 02_thread-strength/01_code/04_analyze_thread_strength_DOC.md; M 02_thread-strength/01_code/05_decompose_adhesion.Rmd; M 02_thread-strength/01_code/05_decompose_adhesion_DOC.md; M 02_thread-strength/01_code/_ancova.R ...
+code commit          : dccc6e7ef753
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):

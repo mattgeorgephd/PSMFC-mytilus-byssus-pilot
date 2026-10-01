@@ -1,5 +1,5 @@
 [05_go_term_mechanics.Rmd]
-generated            : 2026-10-01 19:00:59
+generated            : 2026-10-01 19:29:10
 tissue               : F
 reported test        : ANCOVA level_day3 ~ score + treatment + level_baseline (script 01's metrics, scales and animals)
 metrics [tier]       : mean_force [primary], pad_area [primary], max_force [exploratory], adhesion_kpa [exploratory]
@@ -8,8 +8,8 @@ MIN_GENES / FDR_ALPHA: 3 / 0.1
 sets scored          : DEG set 6, GO term 104, mitochondrial 1 (of 125 sets)
 animals in the fits  : 45
 checks               : 5 run, 0 failed
-code commit          : 5ba5614718ef
-uncommitted changes  : YES, 43 tracked file(s) differ from the commit: M 00_run_pipeline.Rmd; M 02_thread-strength/01_code/02_extract_tensometer_data.Rmd; M 02_thread-strength/01_code/02_extract_tensometer_data_DOC.md; M 02_thread-strength/01_code/03_assemble_thread_summary.Rmd; M 02_thread-strength/01_code/03_assemble_thread_summary_DOC.md; M 02_thread-strength/01_code/04_analyze_thread_strength.Rmd; M 02_thread-strength/01_code/04_analyze_thread_strength_DOC.md; M 02_thread-strength/01_code/05_decompose_adhesion.Rmd; M 02_thread-strength/01_code/05_decompose_adhesion_DOC.md; M 02_thread-strength/01_code/_ancova.R ...
+code commit          : dccc6e7ef753
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):
