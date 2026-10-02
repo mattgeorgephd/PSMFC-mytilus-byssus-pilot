@@ -49,3 +49,4 @@ Thumbs.db
 04_iso-seq-transcriptome/03_analyses/06_genome-recount/hisat2-build.log
 04_iso-seq-transcriptome/03_analyses/06_genome-recount/refseq_splice_sites.txt
 04_iso-seq-transcriptome/03_analyses/06_genome-recount/libraries/
+05_sequence-alignment/03_analyses/mitogenome/libraries/

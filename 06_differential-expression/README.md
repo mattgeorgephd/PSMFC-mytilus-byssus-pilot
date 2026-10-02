@@ -31,7 +31,7 @@ About fifteen minutes, six of them in script 03 and four in script 13.
 | 08-10 | `08_deg_venn.Rmd`, `09_volcano_plots.Rmd`, `10_number_degs.Rmd` | annotated TC DEGs | the manuscript TC figures in `figures/` (`TC_venn_*`, `TC_volcano_*`, `TC_DEG_numbers.png`) |
 | 11 | `11_deg_figures_all_contrasts.Rmd` | every contrast's tables | `figures/DEG_counts_all_contrasts.png`, `volcano_TC.png`, `volcano_FG.png` |
 | 12 | `12_deg_list_cleanup.Rmd` | annotated TC DEGs | `DEG_lists/GOterms_genome/clean_zenodo_files/`: one row per DEG with its best-hit protein |
-| 13 | `13_mitochondrial_expression.Rmd` | counts, `mitochondrial_loci.csv`, contrasts | `mitochondrial/` and `figures/MT_mitochondrial_expression.png` (manuscript figure), `figures/MT_nuclear_copy_share.png` |
+| 13 | `13_mitochondrial_expression.Rmd` | `05_sequence-alignment/03_analyses/mitogenome/` (the mitochondrial genes counted on the mitogenome alone), counts, `mitochondrial_loci.csv`, contrasts, the previous `prepDE` matrix (for comparison) | `mitochondrial/` and `figures/MT_mitochondrial_expression.png` (manuscript figure), `figures/MT_haplotypes.png` |
 
 Packages: DESeq2, apeglm, ashr, tidyverse, gridExtra, ggvenn (installed by step 08 if
 missing), here, rmarkdown.

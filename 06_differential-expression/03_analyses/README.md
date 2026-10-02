@@ -13,7 +13,7 @@ Everything here is written by the scripts in `../01_code/` and rebuilt by
 | `DEG_lists/sensitivity_fourlevel/` | `05_fourlevel_sensitivity` | one four-level model per tissue against the pairwise TC lists |
 | `DEG_lists/GOterms_genome/` | `06_join_annotation` | TC DEG lists joined to the BLAST / UniProt / GO annotation (`_sigs_merged`, `_sigs_ID`, `_sigs_unID`); `clean_zenodo_files/` from `12_deg_list_cleanup` |
 | `DEG_lists/DEG_join_summary.csv` | `06_join_annotation` | per TC contrast: DEGs, annotated and unannotated genes, mitochondrial DEGs (a check, 0). Report `n_DEG_genes`, not merged rows |
-| `mitochondrial/` | `13_mitochondrial_expression` | the 12 mitochondrial proteins on their own: summed counts, DESeq2 per TC contrast, mitochondrial share per library (README inside) |
+| `mitochondrial/` | `13_mitochondrial_expression` | the 12 mitochondrial proteins on their own, counted on the mitochondrial genome alone: counts, DESeq2 per TC contrast and its sensitivity fits, haplotype groups, mitochondrial share per library (README inside) |
 | `dds/` | `03_deseq_contrasts` | the fitted, filtered `DESeqDataSet` of each contrast (git-ignored) |
 | `figures/` | `03`, `08`-`11`, `13` | PCA, DEG counts, volcano, Venn and mitochondrial figures |
 | `top_DEGs/Top_50_genes/` | `07_top_degs` | per TC contrast, the 25 most up- and 25 most down-regulated annotated DEGs, as a table and a bar plot labelled by gene symbol |

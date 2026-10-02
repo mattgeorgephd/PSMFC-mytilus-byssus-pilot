@@ -40,7 +40,8 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   `GO.db`, so `07` records it with the package versions in
   `03_analyses/01_go-inputs/RUN_provenance.txt`.
 - **Not run by the pipeline:** `03_blast/` and `05_sequence-alignment` step 01 (HPC, inputs
-  not in the repository), `05` step 03's recipe check (set `online: true`),
+  not in the repository), `05` step 03's recipe check and step 05's mitochondrial alignment
+  (set `online: true`),
   `04_iso-seq-transcriptome` steps 01-03 and 05-06 (download the transcriptome, genome and
   reads and run minimap2, salmon, HISAT2, StringTie and featureCounts; set `online: true`;
   steps 05-06 make the count matrix of record; steps 04 and 07 run as pipeline stage 04) and
@@ -93,9 +94,14 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   - DEGs: apeglm-shrunk DESeq2 (Wald p from DESeq2's outlier-replaced refit, the standard
     workflow), padj < 0.05, after keeping genes with at least 10 counts in a third of the
     contrast's samples; one model per contrast, defined in
-    `06_differential-expression/01_code/02_define_contrasts.Rmd`. The 310 mitochondrial loci
-    (`count_matrix/mitochondrial_loci.csv`: the mitogenome's genes and their 293 copies) are left out of these fits and of 07 to 09's gene
-    universes, and tested per protein (gene plus nuclear copies summed) in `06` step 13.
+    `06_differential-expression/01_code/02_define_contrasts.Rmd`. The 331 mitochondrial loci
+    (`count_matrix/mitochondrial_loci.csv`: the mitogenome's 12 protein genes, 2 rRNAs and 24
+    tRNAs, and 293 nuclear-scaffold copies of the protein genes) are left out of these fits and
+    of 07 to 09's gene universes.
+  - Mitochondrial proteins: counted on the mitochondrial genome alone (`05_sequence-alignment`
+    step 05: HISAT2 default scoring against NC_007687.1, featureCounts per gene) and tested per
+    protein in `06` step 13 with the nuclear genes' size factors; the haplotype covariate and
+    a permissive alignment score are sensitivity checks there.
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.
@@ -113,7 +119,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   to its RNA isolation record.
 - **Known data issues** (see the folder READMEs): 293 loci on unplaced scaffolds (126
   protein-coding LOCs and 167 pseudogenes) are copies of the mitochondrial protein genes and
-  split their reads with them (`tools/mt_encoded.R`; handled as above); byssal plaque genes are expressed in the day-0 libraries and mostly
+  take their reads in the genome alignment (`tools/mt_encoded.R`); 12 of the 59 animals carry
+  mitochondrial haplotypes that differ from the reference at fixed positions, which the genome
+  alignment undercounts (both handled by counting on the mitogenome alone, as above;
+  `06` step 13); byssal plaque genes are expressed in the day-0 libraries and mostly
   absent at day 3, which the different day-0 dissection may explain; the analysed reads are
   leader-clipped and PCR-deduplicated Tag-seq reads (`05` README, "The reads"), whose raw
   reads are on owl (`nightingales/M_trossulus/`); the Iso-Seq branch (`04`, a sensitivity

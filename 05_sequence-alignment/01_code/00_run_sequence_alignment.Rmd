@@ -4,7 +4,7 @@ author: "Byssus expression analysis"
 date: "`r Sys.Date()`"
 output: html_document
 params:
-  steps: [2, 3, 4]      # count matrices, the read-trimming record and the matrix of record. "all" also runs step 01 (HISAT2 + StringTie)
+  steps: [2, 3, 4, 5]   # count matrices, the read-trimming record, the matrix of record and the mitochondrial counts. "all" also runs step 01 (HISAT2 + StringTie)
   stop_on_fail: true
 ---
 
@@ -23,8 +23,9 @@ report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_l
 | 02 | `02_prepDE.Rmd` | gene and transcript count matrices of the HPC alignment (`03_analyses/prepDE/`): the previous record, read by `04_iso-seq-transcriptome` step 07 for comparison |
 | 03 | `03_read_trimming.Rmd` | how the trimmed reads were made: read retention from the committed FastQC tables (`03_analyses/read_trimming/`); the recipe check runs only with its own `online: true` |
 | 04 | `04_count_matrix_of_record.Rmd` | the count matrix of record (`03_analyses/featurecounts/`): featureCounts on the Iso-Seq-extended annotation, from `04_iso-seq-transcriptome` step 06; read by `06_differential-expression` |
+| 05 | `05_mitogenome_counts.Rmd` | the mitochondrial genes counted on the mitochondrial genome alone (`03_analyses/mitogenome/`), read by `06_differential-expression` step 13; the alignment runs only with its own `online: true`, otherwise the committed counts are summarised |
 
-By default steps 02 to 04 run. Step 01 needs the trimmed reads, the genome and HISAT2 /
+By default steps 02 to 05 run. Step 01 needs the trimmed reads, the genome and HISAT2 /
 StringTie, none of which are in this repository (see `../README.md`); with its outputs
 present, step 02 counts from the StringTie GTFs, and without them it rebuilds the gene matrix
 from the committed transcript matrix. Set `steps: "all"` on a machine that has the inputs.

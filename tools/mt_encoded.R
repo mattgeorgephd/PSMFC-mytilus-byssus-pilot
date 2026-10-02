@@ -12,9 +12,11 @@
 ## (in Gill OA, 116 of the 711 TC DEGs were coding copies before they were separated, and 81 of
 ## the next 543 were pseudogene copies).
 ##
-## These loci are kept out of the genome differential expression (06 steps 03 and 05), the GO
-## enrichment (07) and the gene-mechanics tests (09), and are analysed on their own, one
-## summed count per mitochondrial protein, in 06 step 13.
+## These loci, with the mitogenome's tRNAs and rRNAs (331 rows in the count matrix of record),
+## are kept out of the genome differential expression (06 steps 03 and 05), the GO enrichment
+## (07) and the gene-mechanics tests (09). 06 step 13 tests the 12 mitochondrial proteins on
+## reads counted on the mitochondrial genome alone (05_sequence-alignment step 05), where the
+## copies cannot take them.
 
 MITOGENOME_SEQID <- "NC_007687.1"
 

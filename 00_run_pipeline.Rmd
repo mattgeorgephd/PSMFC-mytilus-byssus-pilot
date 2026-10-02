@@ -43,7 +43,7 @@ Not run here, because they need data or machines outside this repository: the BL
 annotation (`03_blast/`, HPC), the Iso-Seq steps 01-03 and 05-06 (`04_iso-seq-transcriptome/`,
 which download the transcriptome, the genome and the reads and run minimap2, salmon, HISAT2,
 StringTie and featureCounts; set that runner's `online: true`), HISAT2 + StringTie (`05_sequence-alignment` step 01, HPC), 05 step 03's
-recipe check and, unless `online_annotation` is true, 08's NCBI and OrthoDB queries. Their
+recipe check, the mitochondrial alignment of 05 step 05 (its own `online: true`; offline it summarises the committed counts) and, unless `online_annotation` is true, 08's NCBI and OrthoDB queries. Their
 committed outputs are what the stages above read.
 
 Knit this file from the repository root (`PSMFC-mytilus-byssus-pilot.Rproj`). The packages

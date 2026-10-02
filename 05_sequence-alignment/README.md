@@ -24,7 +24,8 @@ anywhere, and its matrix is still written, for `04` step 07's comparison.
 ## How to run
 
 Open `sequence-alignment.Rproj` and knit `01_code/00_run_sequence_alignment.Rmd` (or let the
-repository-level `00_run_pipeline.Rmd` do it). By default it runs steps 02 to 04.
+repository-level `00_run_pipeline.Rmd` do it). By default it runs steps 02 to 05 (step 05
+only summarises its committed counts unless its own `online: true` is set).
 
 | step | script | what it does |
 |---|---|---|
@@ -32,6 +33,7 @@ repository-level `00_run_pipeline.Rmd` do it). By default it runs steps 02 to 04
 | 02 | `02_prepDE.Rmd` | gene and transcript count matrices in `03_analyses/prepDE/` (read length 75) |
 | 03 | `03_read_trimming.Rmd` | how the trimmed reads were made: per-library read retention from the committed FastQC tables, and (with `online: true`) the trimming recipe reproduced on a sample of reads; writes `03_analyses/read_trimming/` |
 | 04 | `04_count_matrix_of_record.Rmd` | the count matrix of record in `03_analyses/featurecounts/`: `04_iso-seq-transcriptome` step 06's featureCounts matrix on the 3'-extended annotation, its rows named as prepDE names them (`gene_id|gene_name` from `03_analyses/hisat/t_data.ctab`) |
+| 05 | `05_mitogenome_counts.Rmd` | the mitochondrial genes counted on the mitochondrial genome alone, in `03_analyses/mitogenome/`: with `online: true` each library's reads are downloaded and aligned to NC_007687.1 with HISAT2 (default scoring, of record, and a permissive score) and counted per gene with featureCounts (`_mitogenome_library.sh`); read by `06_differential-expression` step 13. About 1 hour; offline, the committed counts are summarised |
 
 `02_prepDE.Rmd` counts from the per-sample StringTie GTFs when step 01's outputs are present,
 with `01_code/_prepde.R`, an R port of StringTie's `prepDE.py3` checked to give byte-identical
@@ -91,6 +93,9 @@ For anyone rerunning from raw reads:
 │   ├── 02_prepDE.Rmd                   count matrices
 │   ├── 03_read_trimming.Rmd            how the trimmed reads were made (retention, recipe check)
 │   ├── 04_count_matrix_of_record.Rmd   the count matrix of record (featureCounts, from 04)
+│   ├── 05_mitogenome_counts.Rmd        mitochondrial reads on the mitogenome alone
+│   ├── _mitogenome_library.sh          one library of step 05 (alignment and counts)
+│   ├── _derive_mitogenome.R            one-off: the mitogenome FASTA and its genes
 │   ├── _prepde.R                       R port of prepDE.py3 (sourced by 02)
 │   ├── _derive_strg_gene_ids.R         one-off: recovers the StringTie gene IDs
 │   ├── _derive_mt_like_loci.R          one-off: loci the annotation names after a mitochondrial protein
@@ -101,10 +106,13 @@ For anyone rerunning from raw reads:
 ├── 02_data/
 │   ├── sample-submission/              Tag-seq sequencing submission paperwork
 │   ├── annotation_mt_like_loci.csv     mitochondrial copies in the annotation (read by 06 step 01)
+│   ├── mitogenome_NC_007687.1.fa       the mitochondrial genome (read by step 05)
+│   ├── mitogenome_genes.saf            its 38 genes, rRNAs and tRNAs (read by step 05)
 │   └── strg_gene_ids.csv               StringTie gene IDs of 284 reference transcripts
 └── 03_analyses/
     ├── hisat/                          reference StringTie tables + MultiQC alignment reports
     ├── featurecounts/                  the count matrix of record (the DE input)
+    ├── mitogenome/                     mitochondrial reads on the mitogenome alone (06 step 13's input)
     ├── prepDE/                         transcript and gene count matrices of the HPC alignment (previous record)
     ├── fastqc/{trimmed,untrimmed}/     FastQC per-sample read QC
     ├── read_trimming/                  read retention and the trimming recipe check
@@ -122,5 +130,6 @@ For anyone rerunning from raw reads:
 
 `01_hisat_stringtie.Rmd` and `_superseded/07-HiSat_GL.Rmd` invoke HISAT2 / StringTie at fixed
 `/home/shared/...` paths and read inputs not committed here, so they do not run as they are
-outside that HPC environment. Packages for steps 02 to 04: base R, here, rmarkdown, data.table (04); step 03
+outside that HPC environment. Step 05 with `online: true` needs HISAT2 2.2.1, samtools and
+Subread 2.1.1's featureCounts (its `bin` parameter). Packages for steps 02 to 05: base R, here, rmarkdown, data.table (04, 05); step 03
 with `online: true` also needs curl, perl, FASTX-Toolkit 0.0.14 and cutadapt (5.2 used).
