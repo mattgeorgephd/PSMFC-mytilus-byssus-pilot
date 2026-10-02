@@ -65,10 +65,14 @@ mt_keys <- unique(fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"
 stopifnot(nrow(contrasts) == 6)
 counters <- c(stringtie = "StringTie + prepDE", featurecounts = "featureCounts")
 anns <- c(refseq = "RefSeq (control)", ext3 = "3' extension", full = "full models")
+## one row per gene key. StringTie files a few hundred unnamed RefSeq genes under its own
+## STRG IDs in some libraries and not in others, so step 06 names them two ways
+## (gene-LOC... and gene-LOC...|LOC...); no library has counts under both, so the rows are summed.
+by_key <- function(d) { m <- as.matrix(d[, -1]); rowsum(m, gene_key(d$gene), reorder = FALSE) }
 mats <- list(); mt_share <- list()
 for (cn in names(counters)) for (a in names(anns)) {
   d <- fread(file.path(recount_dir, sprintf("%s_%s_gene_counts.csv.gz", cn, a)), sep = ",")
-  m <- as.matrix(d[, -1]); rownames(m) <- gene_key(d$gene)
+  m <- by_key(d)
   stopifnot(!anyDuplicated(rownames(m)), all(cs[code %in% contrasts$code, sample.1] %in% colnames(m)))
   mt_share[[paste(cn, a)]] <- colSums(m[rownames(m) %in% mt_keys, ]) / colSums(m)
   mats[[paste(cn, a)]] <- m[!rownames(m) %in% mt_keys, ]
@@ -160,8 +164,7 @@ knitr::kable(eff)
 ```{r control}
 g06 <- fread(file.path(de06, "count_matrix", "gene_count_matrix_clean.csv"), sep = ",")
 rec_m <- as.matrix(g06[, -1]); rownames(rec_m) <- gene_key(g06[[1]])
-ctrl <- fread(file.path(recount_dir, "stringtie_refseq_gene_counts.csv.gz"), sep = ",")
-ctrl_m <- as.matrix(ctrl[, -1]); rownames(ctrl_m) <- gene_key(ctrl$gene)
+ctrl_m <- by_key(fread(file.path(recount_dir, "stringtie_refseq_gene_counts.csv.gz"), sep = ","))
 libs <- intersect(colnames(rec_m), colnames(ctrl_m))
 genes <- intersect(rownames(rec_m), rownames(ctrl_m))
 rec_share <- colSums(rec_m[rownames(rec_m) %in% mt_keys, libs]) / colSums(rec_m[, libs])
