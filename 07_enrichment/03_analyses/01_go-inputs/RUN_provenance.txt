@@ -1,28 +1,28 @@
-generated            : 2026-10-02 17:34:32
+generated            : 2026-10-02 20:23:07
 GO release           : 2023-07-27 (GO.db 3.18.0)
 DEG                  : padj < 0.05 in the 06 apeglm table; up and down tested separately
 universe             : genes with a non-missing padj in the contrast's apeglm table
 terms tested         : 10 or more annotated universe genes (topGO nodeSize); 10 to 500 for goseq and clusterProfiler
 families             : TC, FG
-genes                : 11319 in any contrast's table; with GO BP 6332, MF 6117, CC 6789
-code commit          : f078d6d7f41f
-uncommitted changes  : no
+genes                : 11942 in any contrast's table; with GO BP 6872, MF 6634, CC 7371
+code commit          : 5440ba64eaa8
+uncommitted changes  : YES, 1 tracked file(s) differ from the commit: M 04_iso-seq-transcriptome/README.md
 R                    : R version 4.4.3 (2025-02-28)
 packages             : topGO 2.58.0, goseq 1.58.0, clusterProfiler 4.14.0, enrichplot 1.26.1, rrvgo 1.18.0, GOSemSim 2.32.0, GO.db 3.18.0, AnnotationDbi 1.68.0, GSEABase 1.68.0, org.Hs.eg.db 3.18.0
 inputs (md5, repo-relative path):
   6bd66a3af047ceb9a58a09bad9fdabdb  03_blast/03_analyses/genome-foot/LOC_GO_list.txt
   e33b7cf82550972f690405f57033de67  05_sequence-alignment/03_analyses/hisat/t_data.ctab
   bf6987d93a921e9040202a0b8925b56a  06_differential-expression/03_analyses/DEG_lists/contrasts.csv
-  6639ce9f6ec7bf8c2ca649d875340701  06_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_apeglm.csv
-  0e00e4c80b341ee55f4925b9bcbf72f9  06_differential-expression/03_analyses/DEG_lists/Foot/FOW_TC_apeglm.csv
-  dfd6cc33b9f205c7619693f606727fbe  06_differential-expression/03_analyses/DEG_lists/Foot/FDO_TC_apeglm.csv
-  05ea8a004be1594342b3a8853b32abb9  06_differential-expression/03_analyses/DEG_lists/Gill/GOA_TC_apeglm.csv
-  961ed14643b48803502aa541e4a0f77c  06_differential-expression/03_analyses/DEG_lists/Gill/GOW_TC_apeglm.csv
-  cf88dc7e613690c7d2b3a762a837d227  06_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_apeglm.csv
-  9368d2f8a190dcd11579d97cd3686b6b  06_differential-expression/03_analyses/DEG_lists/Foot_vs_Gill/FG_TC_apeglm.csv
-  5396f366c34d95a122fbaf61e74f4060  06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
+  c5d1ae96a478e80c56326c97c8dbc37e  06_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_apeglm.csv
+  d94c71d9b478cfe9fd0fe871f9ec0454  06_differential-expression/03_analyses/DEG_lists/Foot/FOW_TC_apeglm.csv
+  825710d0da9a65af17c0bb951050def1  06_differential-expression/03_analyses/DEG_lists/Foot/FDO_TC_apeglm.csv
+  8ed1f68fa7248c9a4c915cd43bff1e6b  06_differential-expression/03_analyses/DEG_lists/Gill/GOA_TC_apeglm.csv
+  0f8ce4b87505afe4088334a8c2bbe8a9  06_differential-expression/03_analyses/DEG_lists/Gill/GOW_TC_apeglm.csv
+  42e4489818e682f17b6f72c4c648d21d  06_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_apeglm.csv
+  3e88c0972fae287010541c8788e480e9  06_differential-expression/03_analyses/DEG_lists/Foot_vs_Gill/FG_TC_apeglm.csv
+  296679a4a82e85a9cd79f3d6570ed33a  06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
   703547e2bfa5c43c821dd9e45268c7a5  07_enrichment/01_code/01_go_inputs.Rmd
   c9ae818f4a5d9aa40f39275481d01825  07_enrichment/01_code/_paths.R
   e516fd490dfbead4bae96fd3807dac10  07_enrichment/01_code/_go_helpers.R
   0ad3abf4a48b719a22e679d67210a86d  tools/pipeline_checks.R
-  d3006bd11c0342334f36413177a80d8d  tools/gene_ids.R
+  f567ed5420f86d99cce4bcfd7bb4d873  tools/gene_ids.R

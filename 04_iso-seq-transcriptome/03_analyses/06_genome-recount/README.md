@@ -1,8 +1,9 @@
 # 06_genome-recount
 
-Written by `../../01_code/06_genome_recount.Rmd` (option B, a parallel analysis): the 131
-trimmed Tag-seq libraries realigned to the genome and counted on each of step 05's three
-annotations by two counters, six gene count matrices in all.
+Written by `../../01_code/06_genome_recount.Rmd` (option B): the 131 trimmed Tag-seq libraries
+realigned to the genome and counted on each of step 05's three annotations by two counters,
+six gene count matrices in all. `featurecounts_ext3_gene_counts.csv.gz` is the count matrix of
+record since 2026-10-02 (`05_sequence-alignment` step 04 names its rows and passes it to `06`).
 
 - **Alignment:** HISAT2 2.2.1 with the record's settings (defaults and `--dta`). The record's
   index held the RefSeq splice sites and exons (`hisat2-build --ss --exon`), which needs more

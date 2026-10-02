@@ -1,17 +1,17 @@
 [02_uniprot_summaries.Rmd]
-generated            : 2026-10-02 07:25:03
+generated            : 2026-10-02 20:14:20
 route                : UniProt accession -> NCBI Protein [Accession] -> protein_gene link -> Gene summary
 NCBI API key         : yes
-accessions           : 221 (193 with a gene; 0 requests retried)
-code commit          : 9e5683c2d2e1
-uncommitted changes  : no
+accessions           : 238 (201 with a gene; 0 requests retried)
+code commit          : 5440ba64eaa8
+uncommitted changes  : YES, 1 tracked file(s) differ from the commit: M 04_iso-seq-transcriptome/README.md
 R                    : R version 4.4.3 (2025-02-28)
 packages             : rentrez 1.2.4
 inputs (md5, repo-relative path):
-  4d2d323d7981ce7d04d1763927fced42  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FOA_topgenes.csv
-  1bc107a1d2f9a1a0d0e6548a88b5bb62  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FOW_topgenes.csv
-  b67449b795455f533b586fe65f839cef  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FDO_topgenes.csv
-  557b6ce5910adf19f3e904f72f5f6af5  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GOA_topgenes.csv
-  6c4c751be40f305ba9fadd5bf34a863c  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GOW_topgenes.csv
-  7b2b42a8349aa092c2f07217e9d5000f  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GDO_topgenes.csv
+  9a43a5d8cf4ac1f6551a904b712bfed1  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FOA_topgenes.csv
+  b84e843abc358ba672acb4d15de44f77  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FOW_topgenes.csv
+  3339251ea882e9e4519d6f4b94b763ab  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FDO_topgenes.csv
+  e2d3c5422a2f387afb030298326d865b  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GOA_topgenes.csv
+  e89a2e8f59e6a68ba5b3167405384746  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GOW_topgenes.csv
+  82c30670f4fd1eb87047fab84969d2f6  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GDO_topgenes.csv
   c57b0004e902e6aa01e9e593c2e4af1f  08_gene-annotation/01_code/02_uniprot_summaries.Rmd

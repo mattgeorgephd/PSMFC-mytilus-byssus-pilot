@@ -1,7 +1,8 @@
 # 06_differential-expression
 
 DESeq2 differential expression of the Tag-seq counts across treatments (OA, OW, DO) in foot
-and gill, from the HISAT2 + StringTie genome-based count matrix of `05_sequence-alignment`.
+and gill, from the count matrix of record of `05_sequence-alignment` (featureCounts on the
+RefSeq annotation with Iso-Seq-extended 3' ends; since 2026-10-02).
 This is the expression analysis behind the manuscript DEG results, and it feeds GO enrichment
 (`07`), annotation (`08`) and the gene-mechanics associations (`09`).
 
@@ -20,7 +21,7 @@ About fifteen minutes, six of them in script 03 and four in script 13.
 
 | step | script | reads | writes to `03_analyses/` |
 |---|---|---|---|
-| 01 | `01_clean_count_matrix.Rmd` | `05_sequence-alignment/03_analyses/prepDE/gene_count_matrix.csv` and `hisat/t_data.ctab`, `02_data/` sample sheets, the BLAST table | `count_matrix/`, including `mitochondrial_loci.csv` |
+| 01 | `01_clean_count_matrix.Rmd` | `05_sequence-alignment/03_analyses/featurecounts/gene_count_matrix.csv` and `hisat/t_data.ctab`, `02_data/` sample sheets, the BLAST table | `count_matrix/`, including `mitochondrial_loci.csv` |
 | 02 | `02_define_contrasts.Rmd` | the sample table | `DEG_lists/contrasts.csv`, `contrast_samples.csv` |
 | 03 | `03_deseq_contrasts.Rmd` | counts (without the mitochondrial loci), contrasts | `dds/` (fitted objects, git-ignored), `DEG_lists/filter_summary.csv`, PCA plots in `figures/` |
 | 04 | `04_shrinkage_filtration.Rmd` | `dds/` | `DEG_lists/<Foot,Gill,Foot_vs_Gill>/`: apeglm tables, DEG lists, MA plots; `DEG_lists/DEG_counts.csv` |
@@ -50,10 +51,10 @@ mitochondrial loci are not in these fits (see below).
 
 | contrast | DEGs (up / down) | | contrast | DEGs (up / down) |
 |---|---|---|---|---|
-| Foot OA (TC) | 75 (58 / 17) | | Gill OA (TC) | 423 (173 / 250) |
-| Foot OW (TC) | 165 (122 / 43) | | Gill OW (TC) | 180 (99 / 81) |
-| Foot DO (TC) | 363 (190 / 173) | | Gill DO (TC) | 310 (173 / 137) |
-| Gill vs foot, day-3 controls | 5860 (3834 higher in gill / 2026 higher in foot) | | | |
+| Foot OA (TC) | 161 (108 / 53) | | Gill OA (TC) | 584 (229 / 355) |
+| Foot OW (TC) | 211 (126 / 85) | | Gill OW (TC) | 227 (106 / 121) |
+| Foot DO (TC) | 678 (278 / 400) | | Gill DO (TC) | 404 (186 / 218) |
+| Gill vs foot, day-3 controls | 5893 (3415 higher in gill / 2478 higher in foot) | | | |
 
 The full table is `03_analyses/DEG_lists/DEG_counts.csv`. Leaving the mitochondrial loci out
 changed the counts from the earlier run. Gill OA had 711 DEGs, 116 of them mitochondrial
@@ -68,6 +69,20 @@ again: Gill OA 543 to 423 (81 of the 543 were pseudogene copies), Foot OA 87 to 
 to 165, Foot DO 361 to 363, Gill OW 173 to 180, Gill DO 306 to 310. The copies carry a large,
 OA-raised share of the reads, so leaving them out also moves the size factors and the
 dispersion trend of every fit, which is why Foot OA, with no pseudogene DEG, changes too.
+
+**The count matrix changed on 2026-10-02.** Until then the counts were StringTie + prepDE
+estimates from the original HPC alignment; they are now featureCounts counts of uniquely
+aligned reads on the RefSeq annotation with its 3' ends extended by the Iso-Seq isoforms
+(`05_sequence-alignment` step 04, from `04_iso-seq-transcriptome` steps 05 and 06). The DEGs
+went from 75 to 161 (Foot OA), 165 to 211 (Foot OW), 363 to 678 (Foot DO), 423 to 584 (Gill
+OA), 180 to 227 (Gill OW) and 310 to 404 (Gill DO). The new record keeps 70 to 90% of the
+previous DEGs per contrast, all shared ones but two with the same sign, and the genes added
+were mostly near misses before (median previous padj 0.09 to 0.11); the reasons (prepDE
+estimated read bases over 75 while the reads average 63 bases, its dispersions were higher,
+and the RefSeq models end before many Tag-seq 3' ends) and the gene-by-gene comparison are in
+`04_iso-seq-transcriptome/03_analyses/07_augmented-de/` (`record_change.csv`). The change also
+named 21 mitochondrial tRNAs and rRNAs that the previous matrix had filed under StringTie's own
+`STRG` numbers, so script 01 now lists 331 mitochondrial loci (none of the 21 was a TC DEG).
 
 **The day-3 treatment control is the only control.** The treatment controls (T126-T137) spent
 three days in the same system as the stressor arms, so a contrast against them isolates the
@@ -88,7 +103,7 @@ ending `FX`; the isolation log's `T01-F`, "foot"; the Tag-seq sheet's tissue col
 says "gill"). `01_clean_count_matrix.Rmd` records both as foot with a `region` column and writes
 `library_crosswalk.csv`, which matches every library to its isolation record. All contrasts
 use the phenol-gland-to-tip libraries; the FX libraries enter none, because the two regions
-differ strongly (in the same 12 animals 3,174 of 7,393 genes differ, among them byssal
+differ strongly (in the same 12 animals 3,022 of 7,367 genes differ, among them byssal
 tyrosinases and collagens over a thousand-fold), and there is no day-3 FX library to compare.
 
 ## Things to know before interpreting
@@ -107,19 +122,24 @@ tyrosinases and collagens over a thousand-fold), and there is no day-3 FX librar
   change none (`mitochondrial/mt_de_TC.csv`).
 - **Byssal secretory genes and the day-0 dissection.** Plaque genes such as foot protein-4
   variant-1 (LOC134711106) and byssal peroxidase-like 4 (LOC134692428) are expressed in the
-  day-0 foot libraries (median about 165 counts) and absent from most day-3 ones, controls
-  included (zero counts in 35 of 46). Because the day-0 feet were dissected differently, this
+  day-0 foot libraries (median 159 and 215 counts) and absent from most day-3 ones, controls
+  included (zero counts in 28 and 27 of the 46 day-3 foot libraries). Because the day-0 feet were dissected differently, this
   may reflect the region sampled as much as byssal secretion; it is one reason no contrast
   uses the day-0 libraries.
 - **Outlier-replaced genes.** With 7 or more samples per group, `DESeq()` replaces a count
   with an extreme Cook's distance and refits the gene; the Wald p (and so the DEG call) comes
-  from the refit, while `lfcShrink(type = "apeglm")` uses the original counts. 11 TC DEGs had
-  a count replaced, and for one (Foot OW) the reported apeglm fold change is more than 1.25
-  times the refit estimate; in `FG_TC` 24 and 7. This is the standard DESeq2 workflow and is
-  kept. No mitochondrial protein has a replaced count in the current run; script 13 draws the
-  refit (Wald) estimate in any case. Most replacements fall in three libraries: T040F (90 of
-  Foot OW's 122 genes with a replaced count), T025G (48 of Gill OA's 77) and T035G (43 of
-  Gill OW's 84).
+  from the refit, while `lfcShrink(type = "apeglm")` uses the original counts. 23 TC DEGs had
+  a count replaced, and for two (one each in Foot OW and Gill OA) the reported apeglm fold
+  change is more than 1.25 times the refit estimate; in `FG_TC` 23 and 7. This is the standard
+  DESeq2 workflow and is kept. Script 13 draws the refit (Wald) estimate for the mitochondrial
+  proteins in any case. Most replacements fall in three libraries: T040F (117 of Foot OW's 157
+  genes with a replaced count), T025G (55 of Gill OA's 96) and T035G (56 of Gill OW's 98).
+- **Genes expressed in a few animals.** A Wald test can call a DEG whose apeglm fold change is
+  near 0, when a few libraries hold most of the gene's reads. Foot protein 11 (LOC134706002),
+  a DEG in Foot DO (padj 0.031, apeglm log2 fold change -0.05), is one: 3,760 and 1,688 reads
+  in two control libraries and 1,680 in one DO library, under 70 in every other. Such genes are
+  not treatment effects; `04_iso-seq-transcriptome/03_analyses/07_augmented-de/README.md` lists
+  the byssal ones.
 - **Removed libraries.** T051F and T051G were removed at QC; T047 has no foot library.
 
 ## Layout

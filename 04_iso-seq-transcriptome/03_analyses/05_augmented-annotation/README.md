@@ -1,8 +1,9 @@
 # 05_augmented-annotation
 
-Written by `../../01_code/05_augmented_annotation.Rmd` (option B, a parallel analysis): the
-RefSeq annotation of GCF_036588685.1 (release RS_2024_02) augmented with the Iso-Seq isoforms,
-in three versions that step 06 counts the Tag-seq reads on.
+Written by `../../01_code/05_augmented_annotation.Rmd` (option B): the RefSeq annotation of
+GCF_036588685.1 (release RS_2024_02) augmented with the Iso-Seq isoforms, in three versions
+that step 06 counts the Tag-seq reads on. `ext3` is the annotation of record since 2026-10-02
+(counted by featureCounts; `../07_augmented-de/README.md`).
 
 | annotation | what it is |
 |---|---|

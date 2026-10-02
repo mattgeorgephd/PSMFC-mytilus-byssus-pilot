@@ -1,12 +1,15 @@
 # 04_iso-seq-transcriptome
 
-A sensitivity branch: the differential expression of record (`06`, reads aligned to the
-genome) repeated with the Tag-seq reads quantified against the PacBio Iso-Seq *M. trossulus*
-transcriptome instead, and the two compared gene by gene (steps 01 to 04). It asks whether the
-DEG results depend on the reference. Steps 05 to 07 are option B, a parallel analysis: the
-reads recounted on the genome with the RefSeq annotation augmented by the Iso-Seq isoforms,
-built so that it could become the method of record if its results justify it. Nothing of
-record rests on this folder.
+Two things. Steps 01 to 04 are a sensitivity branch: the differential expression of record
+(`06`, reads aligned to the genome) repeated with the Tag-seq reads quantified against the
+PacBio Iso-Seq *M. trossulus* transcriptome instead, and the two compared gene by gene; it asks
+whether the DEG results depend on the reference. Steps 05 to 07 are option B: the reads
+realigned to the genome and recounted on the RefSeq annotation augmented by the Iso-Seq
+isoforms, built as a parallel analysis and adopted on 2026-10-02 in its featureCounts `ext3`
+form. **The count matrix of record comes from here**: step 06's
+`featurecounts_ext3_gene_counts.csv.gz`, which `05_sequence-alignment` step 04 passes to `06`.
+Step 07 keeps the comparison with the previous record (StringTie + prepDE on the HPC
+alignment) that the choice rested on.
 
 ## How to run
 
@@ -26,7 +29,7 @@ were used).
 | 04 | `04_isoseq_de_comparison.Rmd` | `04_isoseq-de/`: the TC contrasts on the Iso-Seq counts and the comparison with the genome | committed files only |
 | 05 | `05_augmented_annotation.Rmd` | `05_augmented-annotation/`: option B's annotations (RefSeq; 3' extension; full models) | step 02's alignment; a few minutes |
 | 06 | `06_genome_recount.Rmd` | `06_genome-recount/`: the reads realigned (HISAT2) and counted on each annotation (StringTie + prepDE, featureCounts) | gannet, NCBI, the tools above; 15 minutes for the index plus about 4 minutes per library |
-| 07 | `07_augmented_de_comparison.Rmd` | `07_augmented-de/`: the TC contrasts on each recount, compared with the record | committed files only |
+| 07 | `07_augmented_de_comparison.Rmd` | `07_augmented-de/`: the TC contrasts on each recount and on the previous record, compared; checks that the record (featureCounts `ext3`) reproduces `06` | committed files only |
 
 ## Design
 
@@ -50,10 +53,12 @@ were used).
    Given the genome counts instead of the Iso-Seq counts, step 04 reproduces `06` exactly
    (checked 2026-10-01: same genes tested and same DEGs in all six contrasts).
 
-**Option B (steps 05 to 07), a parallel analysis.** Steps 02 to 04 showed that the RefSeq gene
+**Option B (steps 05 to 07), adopted 2026-10-02.** Steps 02 to 04 showed that the RefSeq gene
 models often end before the 3' ends that Tag-seq reads. Option B keeps the genome as the
 reference and changes only the annotation the reads are counted on, so its genes keep their
-keys, names and GO annotation and the rest of the pipeline could run on it unchanged.
+keys, names and GO annotation and the rest of the pipeline runs on it unchanged. It was built
+beside the record and compared with it (step 07); featureCounts on the `ext3` annotation then
+became the count matrix of record.
 
 4. **Annotations (step 05).** Three versions of RS_2024_02: `refseq` unchanged (the control);
    `ext3`, each transcript's last exon extended to the 3' end of same-gene isoforms whose last

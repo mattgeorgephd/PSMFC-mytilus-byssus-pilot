@@ -1,8 +1,8 @@
 "code","family","coefficient","n_samples","genes_in_matrix","genes_after_filter"
-"FOA_TC","TC","treatment_OA_vs_control",24,47496,7638
-"FOW_TC","TC","treatment_OW_vs_control",24,47496,7949
-"FDO_TC","TC","treatment_DO_vs_control",22,47496,7614
-"GOA_TC","TC","treatment_OA_vs_control",24,47496,10772
-"GOW_TC","TC","treatment_OW_vs_control",24,47496,10762
-"GDO_TC","TC","treatment_DO_vs_control",23,47496,10727
-"FG_TC","FG","tissue_G_vs_F",24,47496,9955
+"FOA_TC","TC","treatment_OA_vs_control",24,47475,7908
+"FOW_TC","TC","treatment_OW_vs_control",24,47475,8138
+"FDO_TC","TC","treatment_DO_vs_control",22,47475,7797
+"GOA_TC","TC","treatment_OA_vs_control",24,47475,10773
+"GOW_TC","TC","treatment_OW_vs_control",24,47475,10678
+"GDO_TC","TC","treatment_DO_vs_control",23,47475,10673
+"FG_TC","FG","tissue_G_vs_F",24,47475,10049

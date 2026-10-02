@@ -1,4 +1,4 @@
-feature,code,featurecounts ext3,featurecounts full,featurecounts refseq,record,stringtie ext3,stringtie full,stringtie refseq,protein
+feature,code,featurecounts ext3,featurecounts full,featurecounts refseq,previous record,stringtie ext3,stringtie full,stringtie refseq,protein
 LOC134692100,GDO_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,ACDC (Byssal EP-like protein 1) (EP-protein-1)
 LOC134692100,GOA_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,ACDC (Byssal EP-like protein 1) (EP-protein-1)
 LOC134706002,FDO_TC,TRUE,TRUE,TRUE,,,FALSE,,Foot protein 11

@@ -1,77 +1,96 @@
 # 07_augmented-de
 
-Written by `../../01_code/07_augmented_de_comparison.Rmd` (option B, a parallel analysis): the
-six treatment-control contrasts of `06` fitted on each of step 06's six count matrices (two
-counters x three annotations) with `06`'s rules (same samples, `~ treatment`, fit on every
-gene, at least 10 counts in a third of the samples, apeglm, DEG at padj < 0.05, the 310
-mitochondrial loci left out), and compared with the record and with each counter's RefSeq
-control. Given the record's own counts, the step reproduces `06` exactly (same genes tested,
-same DEGs, fold changes equal to 1e-15; checked 2026-10-02).
+Written by `../../01_code/07_augmented_de_comparison.Rmd` (option B). Option B was adopted on
+2026-10-02: the count matrix of record is now featureCounts on the `ext3` annotation (taken
+by `05_sequence-alignment` step 04). This step keeps the evidence for that choice: the six
+treatment-control contrasts of `06` fitted on each of step 06's six count matrices (two
+counters x three annotations) and on the previous record (StringTie + prepDE on the original
+HPC alignment, `05_sequence-alignment/03_analyses/prepDE/`), all with `06`'s rules (same
+samples, `~ treatment`, fit on every gene, at least 10 counts in a third of the samples,
+apeglm, DEG at padj < 0.05, the 331 mitochondrial loci left out).
+
+Two checks run every time: the refit of the previous matrix reproduces the previous record
+(same genes tested and same DEGs in all six contrasts as `06` before the change; fold changes
+within 1e-6, checked 2026-10-02), and the fit of featureCounts `ext3` reproduces `06`'s DEG lists
+(same genes, same DEGs, fold changes within 1e-8; the step stops otherwise).
 
 | File | Contents |
 |---|---|
-| `<stringtie|featurecounts>_<refseq|ext3|full>_apeglm.csv.gz` | every tested gene of every contrast: `code`, `feature` (gene key, or `novel:...` in `full`), `baseMean`, apeglm `log2FoldChange`, `lfcSE`, Wald `pvalue`, `padj` |
-| `deg_summary.csv` | per matrix and contrast: genes tested, DEGs (up, down), the record's DEGs, shared, shared in the same direction, record DEGs lost (and not tested here), new DEGs (and on novel loci), Spearman of fold changes over genes tested in both |
+| `<stringtie|featurecounts>_<refseq|ext3|full>_apeglm.csv.gz`, `previous_record_apeglm.csv.gz` | every tested gene of every contrast: `code`, `feature` (gene key, or `novel:...` in `full`), `baseMean`, apeglm `log2FoldChange`, `lfcSE`, Wald `pvalue`, `padj` |
+| `deg_summary.csv` | per matrix and contrast: genes tested, DEGs (up, down), the previous record's DEGs, shared, shared in the same direction, previous DEGs lost (and not tested here), new DEGs (and on novel loci), Spearman of fold changes over genes tested in both |
 | `annotation_effect.csv` | per counter and contrast: `ext3` and `full` against that counter's RefSeq control (DEGs shared, gained, gained on novel loci, lost, fold-change Spearman) |
-| `control_vs_record.csv` | the StringTie + prepDE RefSeq control against the record: per-library totals, mitochondrial share per library, day-3 gene totals |
-| `mitochondrial_share.csv` | per matrix: median mitochondrial share of the libraries (%), the record's, and the Spearman correlation of the per-library shares with the record's |
-| `counts_per_gene.csv` | per gene, the total count over the day-3 libraries in the record and on each matrix |
-| `new_DEGs.csv` | DEGs of `ext3` and `full` (StringTie + prepDE) that are not DEGs in the record: whether on a novel locus, whether `ext3` extended the gene, whether the record tested it, both mean counts, fold changes and padj |
-| `byssal_genes.csv` | the byssal structural genes (best BLAST hit named as in `09`) that are a DEG in any matrix or in the record, by contrast and source |
-| `FIG_deg_counts.png` | DEGs per contrast: the record and the three annotations, per counter |
-| `FIG_lfc_vs_record.png` | fold change on each annotation (StringTie + prepDE) against the record, genes tested in both |
+| `record_change.csv` | every gene that is a DEG in the previous record or in the record, per contrast: `status` (DEG in both, previous record only, record only), whether `ext3` extended it, and both mean counts, fold changes and padj |
+| `control_vs_previous.csv` | the StringTie + prepDE RefSeq control against the previous record: per-library totals, mitochondrial share per library, day-3 gene totals |
+| `mitochondrial_share.csv` | per matrix: median mitochondrial share of the libraries (%), the previous record's, and the Spearman correlation of the per-library shares with the previous record's |
+| `counts_per_gene.csv` | per gene, the total count over the day-3 libraries in the previous record and on each matrix |
+| `new_DEGs.csv` | per matrix, the DEGs that are not DEGs in the previous record: whether on a novel locus, whether `ext3` extended the gene, whether the previous record tested it, both mean counts, fold changes and padj |
+| `byssal_genes.csv` | the byssal structural genes (best BLAST hit named as in `09`) that are a DEG in any matrix or in the previous record, by contrast and source |
+| `FIG_deg_counts.png` | DEGs per contrast: the previous record and the three annotations, per counter |
+| `FIG_lfc_vs_previous.png` | fold change on each featureCounts annotation against the previous record, genes tested in both (the 3' extension row is the record) |
 | `RUN_provenance.txt` | settings, input MD5s |
 
 ## Result (2026-10-02)
 
-DEGs per contrast (apeglm padj < 0.05):
+DEGs per contrast (apeglm padj < 0.05); the record is featureCounts on `ext3`:
 
-| contrast | record (06) | StringTie + prepDE: RefSeq control / 3' extension / full | featureCounts: RefSeq / 3' extension / full |
+| contrast | previous record | StringTie + prepDE: RefSeq control / 3' extension / full | featureCounts: RefSeq / **3' extension (record)** / full |
 |---|---|---|---|
-| Foot OA | 75 | 83 / 93 / 118 | 163 / 163 / 170 |
-| Foot OW | 165 | 180 / 202 / 208 | 208 / 211 / 208 |
-| Foot DO | 363 | 377 / 416 / 489 | 636 / 676 / 705 |
-| Gill OA | 423 | 410 / 431 / 528 | 588 / 583 / 596 |
-| Gill OW | 180 | 175 / 198 / 228 | 227 / 227 / 222 |
-| Gill DO | 310 | 299 / 306 / 340 | 398 / 404 / 441 |
+| Foot OA | 75 | 83 / 93 / 118 | 163 / **161** / 170 |
+| Foot OW | 165 | 180 / 202 / 208 | 208 / **211** / 208 |
+| Foot DO | 363 | 377 / 417 / 489 | 636 / **678** / 705 |
+| Gill OA | 423 | 410 / 431 / 528 | 588 / **584** / 596 |
+| Gill OW | 180 | 175 / 198 / 228 | 227 / **227** / 222 |
+| Gill DO | 310 | 299 / 306 / 340 | 398 / **404** / 441 |
 
-- **The realignment alone (control against the record).** Per-library totals are 0.992 of
-  the record's (0.988 to 0.996), the mitochondrial share per library ranks identically
-  (Spearman 1.0), and day-3 gene totals correlate at 0.997. The control keeps 91 to 99% of the
-  record's DEGs per contrast (fold-change Spearman 0.993 to 0.996) and adds 6 to 25. About 5%
-  of the DEG calls therefore move with the alignment alone; differences smaller than that say
-  nothing about the annotation.
-- **3' extension (StringTie + prepDE, the record's counter).** Against its control: 12 to 49
-  DEGs gained and 2 to 16 lost per contrast, fold-change Spearman 0.98 to 0.99. Against the
-  record: 91 to 97% of the record's DEGs kept, 21 to 67 new, of which 15 to 56 on extended
-  genes; the new ones were near misses in the record (median record padj 0.06 to 0.09; 76 to
-  95% below 0.2) with similar counts there (median baseMean ratio 1.0 to 1.2). Gene keys, names
-  and GO annotation are unchanged.
-- **Full models (StringTie + prepDE).** Against its control: 50 to 178 gained, 15 to 62 lost
-  (Spearman 0.94 to 0.95). Against the record: 68 to 84% of the record's DEGs kept, 57 to 183
-  new, 7 to 37 of them on novel loci, which have no names or GO terms.
-- **The counter matters more than the annotation.** On the same alignment, featureCounts
-  finds 16 to 96% more DEGs than StringTie + prepDE on the RefSeq annotation (4 to 75% more on
-  `ext3`; -3 to 44% on `full`). Its counts are about 1.16
-  times higher on a typical gene (prepDE estimates read bases over 75, while the reads average
-  about 63 bases) and its gene-wise dispersions about 9% lower (Foot DO: median 0.065 against
-  0.072), so it has more power; it also counts on the sense strand only and leaves out reads
-  aligned to several places. Within featureCounts, the annotation changes little: `ext3` gains
-  9 to 51 and loses 9 to 37 DEGs, `full` gains 31 to 119 and loses 24 to 68.
+- **What the adoption changed** (`record_change.csv`). The record keeps 84, 70, 90, 84, 78 and
+  84% of the previous record's DEGs (Foot OA, OW, DO, Gill OA, OW, DO: 63 of 75, 116 of 165,
+  325 of 363, 356 of 423, 140 of 180, 259 of 310), with the same sign in all but two of the
+  shared ones (both in Gill OA), and adds 98, 95, 353, 228, 87 and 145. The new DEGs were mostly
+  near misses in the previous record (median previous padj 0.09 to 0.11; 73 to 83% below 0.2),
+  and 54 to 61% of them are genes `ext3` extended; the lost ones are near misses
+  in the record (median padj 0.07 to 0.14). Fold changes over the genes tested in both correlate
+  at 0.92 to 0.94 (Spearman). 158 of the 50,149 gene-contrast pairs tested in both move by more
+  than one log2 unit, and in 154 of them one of the two apeglm estimates is near 0 (|log2 fold
+  change| < 0.2): apeglm's shrunk estimate of a gene driven by a few animals flips between near
+  0 and the full estimate when the counts change a little. 20 of them are DEGs in both, 19 in
+  Gill OA and Gill DO, whose previous estimate was shrunk to about -0.1 and is now -1.2 to -3.7
+  (the Wald test, which calls the DEGs, does not shrink).
+- **The realignment alone (StringTie control against the previous record).** Per-library
+  totals are 0.992 of the previous record's (0.988 to 1.000), the mitochondrial share per
+  library ranks almost identically (Spearman 0.992), and day-3 gene totals correlate at 0.997.
+  The control keeps 91 to 99% of the previous DEGs per contrast (fold-change Spearman 0.993 to
+  0.996) and adds 6 to 25. About 5% of the DEG calls therefore move with the alignment alone;
+  differences smaller than that say nothing about the annotation or the counter.
+- **The counter matters more than the annotation.** On the same alignment and the RefSeq
+  annotation, featureCounts finds 16 to 96% more DEGs than StringTie + prepDE. Its counts are
+  about 1.16 times higher on a typical gene (prepDE estimates read bases over 75, while the reads
+  average about 63 bases) and its gene-wise dispersions about 9% lower (Foot DO: median 0.065
+  against 0.072), so it has more power; it also counts on the sense strand only and leaves out
+  reads aligned to several places. Within featureCounts, `ext3` gains 9 to 53 DEGs and loses 11
+  to 39 per contrast (fold-change Spearman 0.986 to 0.991 with RefSeq); `full` gains 31 to 119
+  and loses 24 to 68.
+- **3' extension and full models under StringTie + prepDE.** `ext3` against its control: 12 to
+  49 DEGs gained and 2 to 16 lost; `full`: 50 to 178 gained (7 to 37 on novel loci, which have
+  no names or GO terms), 15 to 62 lost.
+- **Genes whose fold change moves with `ext3`.** Under featureCounts, 6 gene-contrast pairs
+  shift by more than one log2 unit between RefSeq and `ext3`. Four have the same Wald padj and
+  mean count on both (apeglm's shrunk estimate flipping between near 0 and the full estimate
+  for genes driven by a few animals, e.g. LOC134691537 in Gill DO, -2.78 and -0.20); two move
+  with the extension: LOC134722878 in Foot OA (2.7 times the reads on `ext3`, most of them in a
+  108-base extension past the RefSeq end; -1.27 and padj 0.037 on RefSeq, -0.12 and 0.14 on
+  `ext3`) and LOC134717707 in Gill OW. Under StringTie + prepDE more pairs move (30 against the
+  previous record), partly because StringTie redistributes coverage among lengthened
+  transcripts.
 - **Mitochondrial reads.** With StringTie + prepDE the mitochondrial share of each library
-  matches the record (Spearman 1.0 on RefSeq, 0.999 on `ext3`, 0.992 on `full`). featureCounts
-  keeps only about a third of the mitochondrial reads (median share 0.8% against 2.3%;
-  Spearman 0.86 on every annotation), most likely because reads of the mitochondrial genes
-  also align to their nuclear copies and featureCounts leaves out reads aligned to several
-  places; as configured it would not serve the mitochondrial analysis (`06` step 13).
+  matches the previous record (Spearman 0.985 to 0.992). featureCounts keeps about
+  a third of them (median share 1.0% against 2.3%; Spearman 0.85), because reads of the
+  mitochondrial genes also align to their nuclear copies and featureCounts leaves out reads
+  aligned to several places. The genome matrix's mitochondrial rows are therefore not what
+  `06` step 13 tests (`06` README).
 - **Byssal genes** (`09`'s definition): the three ACDC genes are DEGs in Gill OA and Gill DO
-  in the record and in every matrix. featureCounts adds foot proteins 11 and 13 in Foot DO
-  with fold changes near 0 and small padj, the pattern of genes expressed in a few animals
-  (as on the Iso-Seq reference, step 04); they are not treatment effects.
-- **Genes whose fold change moves.** 30 gene-contrast pairs of the 3' extension (StringTie)
-  shift by more than one log2 unit from the record, 24 of them on extended genes (only one
-  where the extension overlaps a gene on the other strand, which the unstranded StringTie
-  count could pick up); some gained many reads (LOC134683242,
-  Foot DO: mean count 147 to 762), others barely changed in count, so StringTie's
-  redistribution of coverage among the lengthened transcripts may be part of it. They should
-  be inspected before `ext3` is adopted.
+  in the previous record and in every matrix. Foot protein 11 (LOC134706002) is a DEG in Foot DO
+  on every featureCounts matrix, the record included, with an apeglm fold change of -0.05: its
+  reads come from three animals (3,760 and 1,688 in two controls, 1,680 in one DO animal; under
+  70 in every other library), the pattern of a gene expressed in a few animals, not a treatment
+  effect (as foot proteins 4, 10 and 11 on the Iso-Seq reference, step 04). Foot protein 13 is a
+  DEG in Foot DO on featureCounts `full` only.

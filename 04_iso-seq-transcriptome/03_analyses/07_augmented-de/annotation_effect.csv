@@ -1,7 +1,7 @@
 counter,annotation,code,DEGs,control_DEGs,shared,gained,gained_novel_loci,lost,lfc_spearman
 stringtie,ext3,FOA_TC,93,83,81,12,0,2,0.986
 stringtie,ext3,FOW_TC,202,180,178,24,0,2,0.983
-stringtie,ext3,FDO_TC,416,377,367,49,0,10,0.987
+stringtie,ext3,FDO_TC,417,377,368,49,0,9,0.987
 stringtie,ext3,GOA_TC,431,410,394,37,0,16,0.984
 stringtie,ext3,GOW_TC,198,175,167,31,0,8,0.979
 stringtie,ext3,GDO_TC,306,299,286,20,0,13,0.982
@@ -11,10 +11,10 @@ stringtie,full,FDO_TC,489,377,315,174,17,62,0.952
 stringtie,full,GOA_TC,528,410,350,178,37,60,0.945
 stringtie,full,GOW_TC,228,175,148,80,11,27,0.935
 stringtie,full,GDO_TC,340,299,245,95,14,54,0.943
-featurecounts,ext3,FOA_TC,163,163,154,9,0,9,0.99
+featurecounts,ext3,FOA_TC,161,163,152,9,0,11,0.99
 featurecounts,ext3,FOW_TC,211,208,189,22,0,19,0.986
-featurecounts,ext3,FDO_TC,676,636,625,51,0,11,0.991
-featurecounts,ext3,GOA_TC,583,588,551,32,0,37,0.988
+featurecounts,ext3,FDO_TC,678,636,625,53,0,11,0.991
+featurecounts,ext3,GOA_TC,584,588,549,35,0,39,0.988
 featurecounts,ext3,GOW_TC,227,227,214,13,0,13,0.986
 featurecounts,ext3,GDO_TC,404,398,375,29,0,23,0.988
 featurecounts,full,FOA_TC,170,163,139,31,8,24,0.977

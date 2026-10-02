@@ -1,7 +1,7 @@
 "method_1","method_2","runs_both_enriched","runs_only_one","median_jaccard_when_both","median_spearman"
-"classic","clusterProfiler",4,1,0.684615384615385,1
-"classic","goseq",4,1,0.717948717948718,0.954261617217868
-"goseq","clusterProfiler",4,0,0.90625,0.990049544383148
-"weight01","classic",5,6,0.296296296296296,0.651298807425505
-"weight01","clusterProfiler",4,7,0.430555555555556,0.480956178725086
-"weight01","goseq",4,7,0.372294372294372,0.654366190872861
+"classic","clusterProfiler",6,1,0.6,1
+"classic","goseq",6,0,0.645833333333333,0.950301080488843
+"goseq","clusterProfiler",6,1,0.804166666666667,0.993096587979974
+"weight01","classic",6,5,0.368131868131868,0.661023693507316
+"weight01","clusterProfiler",7,4,0.5,0.508736491149253
+"weight01","goseq",6,5,0.427272727272727,0.652891045405486
