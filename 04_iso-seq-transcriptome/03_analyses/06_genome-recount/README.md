@@ -27,3 +27,18 @@ more workers running the same script with the same arguments on separate librari
 | `checks.csv` | the per-library counter against the `05` port; the control library (T014F) against the record's StringTie output, transcript by transcript, and the record's count matrix |
 | `RUN_provenance.txt` | tool versions and settings, input MD5s |
 | `hisat2_index/`, `hisat2-build.log`, `refseq_splice_sites.txt`, `libraries/<library>/` | the index (2 GB), the splice sites and the per-library counts and logs (git-ignored) |
+
+## Result (2026-10-02)
+
+- **Alignment.** HISAT2 here aligns a median 0.45 percentage points fewer reads than the
+  record for the same library (range 0.14 to 0.63; foot 69.7 against 70.1%, gill 63.3 against
+  63.7%), most likely because the splice sites are given at alignment time instead of being
+  built into the index (not tested further: the record's index cannot be built here).
+- **The control against the record** (T014F, `checks.csv`): 60,491 of the 68,103 transcripts
+  get exactly the record's coverage, many of them zero in both (Spearman 0.948 over all); the gene total is 0.993 of the
+  record's, and 90% of the genes with at least 10 counts are within 10%. The 21 record genes
+  named only by a StringTie `STRG` number cannot be matched (those numbers change between runs).
+- **Reads counted** (median per library, relative to the same counter's RefSeq count): `ext3`
+  +4.5% (StringTie + prepDE) and +4.4% (featureCounts); `full` +28.1% and +18.4%.
+  featureCounts assigns a median 35.5% of the reads on RefSeq: the rest are unaligned (about
+  30%), aligned to several places (left out) or outside every annotated exon.

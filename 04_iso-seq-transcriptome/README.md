@@ -144,9 +144,43 @@ QC are 64% (T051G) and 49% (T051F) mitochondrial, against at most 10% in the oth
 **Caveats.** No decoy sequence (reads from loci the Iso-Seq set lacks may be placed on similar
 isoforms); salmon shares reads among near-duplicate isoforms by EM, so gene sums can borrow
 from paralogs; novel loci have no names or GO terms; the genome counts are coverage-based
-prepDE estimates rather than read counts. Whether to carry the Iso-Seq gene models into the
-genome analysis (extend the annotation with them and recount) is an open decision in
-`../tasks.md`; this branch stays a sensitivity analysis until then.
+prepDE estimates rather than read counts.
+
+**Option B, the genome recounted on augmented annotations (steps 05 to 07).**
+
+- **Annotations.** `ext3` extends 18,470 transcripts of 9,781 genes by a median 76 bases (4.6%
+  more exonic sequence); `full` adds 303,668 isoforms to 18,908 genes and keeps 12,487 novel
+  loci as genes (54% more exonic sequence; `03_analyses/05_augmented-annotation/README.md`).
+- **Realignment.** HISAT2 here aligns a median 0.45 percentage points fewer reads than the
+  record; counted on the unchanged RefSeq annotation (the control), the per-library totals are
+  0.992 of the record's and the DEG calls keep 91 to 99% of the record's (fold-change Spearman
+  0.993 to 0.996). About 5% of DEG calls move with the realignment alone.
+- **DEGs** (record; StringTie + prepDE control / `ext3` / `full`; featureCounts control /
+  `ext3` / `full`): Foot OA 75; 83 / 93 / 118; 163 / 163 / 170. Foot OW 165; 180 / 202 / 208;
+  208 / 211 / 208. Foot DO 363; 377 / 416 / 489; 636 / 676 / 705. Gill OA 423; 410 / 431 /
+  528; 588 / 583 / 596. Gill OW 180; 175 / 198 / 228; 227 / 227 / 222. Gill DO 310; 299 / 306 /
+  340; 398 / 404 / 441.
+- **The 3' extension is a small change.** With the record's counter it adds 4.5% to the reads,
+  keeps 91 to 97% of the record's DEGs and adds 21 to 67 per contrast, mostly extended genes
+  that were near misses in the record (median record padj 0.06 to 0.09); gene keys, names and
+  GO annotation stay as they are. 30 gene-contrast pairs shift by more than one log2 unit and
+  should be inspected first (`03_analyses/07_augmented-de/README.md`).
+- **The full models change more.** 28% more reads, 68 to 84% of the record's DEGs kept, 57 to
+  183 new per contrast, 7 to 37 of them on novel loci without names or GO terms.
+- **The counter matters more than the annotation.** featureCounts (unique reads, sense strand)
+  finds 16 to 96% more DEGs than StringTie + prepDE on the same alignment and RefSeq
+  annotation: its counts are about 1.16 times higher (prepDE divides read bases by 75; the
+  reads average 63) and its dispersions about 9% lower.
+- **Unchanged by any version:** the byssal DEGs (the three ACDC genes, Gill OA and Gill DO).
+  The mitochondrial share of each library holds with StringTie + prepDE (Spearman with the
+  record 0.99 to 1.0), but featureCounts, which leaves out reads aligned to several places,
+  keeps only about a third of the mitochondrial reads (median share 0.8% against the record's
+  2.3%; Spearman 0.86), most likely because reads of the mitochondrial genes also align to
+  their nuclear copies. As configured, featureCounts would not serve `06` step 13.
+
+Whether to adopt option B, and which annotation and counter, is an open decision in
+`../tasks.md`; until then the genome analysis of record (`05`, `06`) is unchanged and this
+folder stays a sensitivity and parallel analysis.
 
 ## Inputs
 

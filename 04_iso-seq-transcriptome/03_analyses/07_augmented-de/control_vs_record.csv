@@ -1,0 +1,10 @@
+measure,value
+libraries compared,129
+genes in both matrices,47785
+genes only in the record (StringTie IDs),21
+"per-library total count, control / record: median",0.9924
+range,0.9882 to 0.9962
+"per-library mitochondrial share, Spearman control vs record",1
+nuclear genes with >= 10 counts over the day-3 libraries in either,31225
+"of those, day-3 total within 10% of the record",0.817
+Spearman of day-3 totals (those genes),0.9967

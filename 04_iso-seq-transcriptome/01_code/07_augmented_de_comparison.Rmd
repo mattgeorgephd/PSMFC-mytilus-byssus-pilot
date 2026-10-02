@@ -45,6 +45,8 @@ Writes, in `03_analyses/07_augmented-de/`:
   in the record;
 - `control_vs_record.csv`: the control against the record: per-library totals, the
   mitochondrial share of each library, gene counts;
+- `mitochondrial_share.csv`: per matrix, the median mitochondrial share of the libraries and
+  its rank correlation with the record's;
 - `new_DEGs.csv`: DEGs of `ext3` and `full` (StringTie + prepDE) that are not DEGs in the
   record, with the record's padj and both counts, and whether `ext3` extended the gene;
 - `byssal_genes.csv`: the byssal structural genes (best BLAST hit named as in `09`) that are a
@@ -185,6 +187,15 @@ cvr <- data.table(
             round(cor(g10$control, g10$record, method = "spearman"), 4)))
 fwrite(cvr, file.path(aug_de_dir, "control_vs_record.csv"))
 knitr::kable(cvr)
+
+## the mitochondrial share of each library on every matrix, against the record
+mts <- rbindlist(lapply(names(mt_share), function(mx) {
+  s <- mt_share[[mx]][libs]
+  data.table(matrix = mx, median_share_pct = round(100 * median(s), 2), record_median_share_pct = round(100 * median(rec_share), 2),
+             spearman_with_record = round(cor(s, rec_share, method = "spearman"), 3))
+}))
+fwrite(mts, file.path(aug_de_dir, "mitochondrial_share.csv"))
+knitr::kable(mts)
 
 ## counts per gene on every matrix (day-3 libraries), with the record
 cpg <- Reduce(function(x, y) merge(x, y, by = "gene", all = TRUE),

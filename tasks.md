@@ -102,6 +102,11 @@ Conventions and how to run are in `AGENTS.md`.
   (checked in six sessions). Their legend order is now fixed. 06 step 05's provenance now names
   the commit, like the others.
 
+- **Option B as a parallel analysis.** The RefSeq annotation augmented with the Iso-Seq
+  isoforms (3' extension; full models), the 131 libraries realigned (HISAT2) and counted on the
+  RefSeq control and both augmented annotations with StringTie + prepDE and featureCounts, and
+  the six TC contrasts fitted on each and compared with the record (`04` steps 05 to 07).
+
 ## In progress
 
 - Review and merge of the pull request carrying this work (branch `claude/jolly-clarke-7afl1v`).
@@ -113,7 +118,7 @@ Conventions and how to run are in `AGENTS.md`.
 |---|---|---|
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Merge the pull request | branch `claude/jolly-clarke-7afl1v`; merging deletes untracked `.Rhistory` copies from local checkouts (see the PR) | Matt |
-| Iso-Seq gene models in the genome analysis | the Iso-Seq branch shows 18% of assigned reads on isoforms that run past the RefSeq 3' ends and 14.5% on unannotated loci; options: keep it as a sensitivity analysis (A), extend the annotation with the Iso-Seq models and recount the genome analysis, which changes every result of record (B), or salmon with genome decoys (C); evidence in `04_iso-seq-transcriptome/README.md` | Matt (decision) |
+| Adopt option B? (Iso-Seq-augmented annotation for the genome analysis) | built and run as a parallel analysis (`04` steps 05 to 07). Realignment alone moves about 5% of DEG calls. The 3' extension (StringTie + prepDE) keeps 91 to 97% of the record's DEGs, adds 21 to 67 per contrast (mostly near misses) and keeps gene keys, names and GO terms; 30 gene-contrast pairs with large fold-change shifts need a look first. The full models keep 68 to 84% and add 57 to 183, some on unnamed loci. featureCounts finds 16 to 96% more DEGs than StringTie + prepDE but drops most mitochondrial reads (multi-mapped to the nuclear copies). Adopting any version means switching `05`'s counts and rerunning `06` to `09`; evidence in `04_iso-seq-transcriptome/03_analyses/07_augmented-de/README.md` | Matt (decision: keep the record, adopt `ext3`, adopt `full`; and separately the counter) |
 | Manuscript text | numbers and wording predate this pull request: Gill OA DEGs (711 to 423), the GO results, LC contrasts, the mitochondrial result, thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (90 of 122 genes refit in Foot OW), T025G (48 of 77 in Gill OA; also the lowest alignment rate, 60.8% against a median of 67.7%) and T035G (43 of 84 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
