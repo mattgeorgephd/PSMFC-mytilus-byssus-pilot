@@ -13,7 +13,8 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **Analysis.** One reproducible chain, runnable from the committed data: thread mechanics
   (`02`) and the Tag-seq counts (`05`) through differential expression (`06`), GO enrichment
   across treatments (`07`, `08`) and the per-animal associations of thread mechanics with
-  genes, DEG sets, enriched GO terms and mitochondrial expression (`09`).
+  genes, DEG sets, enriched GO terms and mitochondrial expression (`09`). The Iso-Seq branch
+  (`04`) repeats `06`'s contrasts on the Iso-Seq transcriptome as a sensitivity analysis.
 - **Manuscript.** Linked from `README.md`. The contrasts of record are stressor vs day-3
   treatment control (TC). The mitochondrial genes have their own analysis and figure
   (`06` step 13, `figures/MT_mitochondrial_expression.png`).
@@ -21,7 +22,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 ## How to run
 
 - **Everything:** knit `00_run_pipeline.Rmd` at the repository root (open
-  `PSMFC-mytilus-byssus-pilot.Rproj`). About 25 minutes on four cores; on Windows the GO steps
+  `PSMFC-mytilus-byssus-pilot.Rproj`). About 30 minutes on four cores; on Windows the GO steps
   in `07` run on one core (R cannot fork there), so allow longer. It knits each folder's
   runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails.
 - **One folder:** open the folder's own `.Rproj` and knit `01_code/00_run_*.Rmd`. Its

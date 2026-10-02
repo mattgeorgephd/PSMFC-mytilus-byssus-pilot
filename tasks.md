@@ -89,9 +89,11 @@ Conventions and how to run are in `AGENTS.md`.
   proteins (1.17 million reads; 81 of the 543 Gill OA DEGs). They are now found by name
   (`05_sequence-alignment/02_data/annotation_mt_like_loci.csv`, which reproduces the 126
   BLAST-found copies exactly) and handled like the other copies. Gill OA has 423 DEGs, Foot OA
-  75; Gill OA raises 10 of the 12 mitochondrial proteins.
+  75; Gill OA raises 10 of the 12 mitochondrial proteins. Summing every copy also removed the
+  one outlier replacement among the proteins (T025G's ND1 and ATP6, whose excess came from how
+  the reads split between copies).
 - **08 NCBI and OrthoDB tables refreshed.** With NCBI and OrthoDB reachable, steps 02-03 ran
-  on the current top-50 lists. Step 02 now finds each accession's gene through NCBI Protein and
+  on the current top-50 lists (rerun on 2026-10-02 after the pseudogene change altered them). Step 02 now finds each accession's gene through NCBI Protein and
   the protein-to-gene link (free-text search had returned the wrong gene for SPDEF); step 03
   could not run as written (it joined OrthoDB's headerless species table on a missing column)
   and now uses OrthoDB 12.2.
@@ -110,7 +112,7 @@ Conventions and how to run are in `AGENTS.md`.
 | Iso-Seq gene models in the genome analysis | the Iso-Seq branch shows 18% of assigned reads on isoforms that run past the RefSeq 3' ends and 14.5% on unannotated loci; options: keep it as a sensitivity analysis (A), extend the annotation with the Iso-Seq models and recount the genome analysis, which changes every result of record (B), or salmon with genome decoys (C); evidence in `04_iso-seq-transcriptome/README.md` | Matt (decision) |
 | Manuscript text | numbers and wording predate this pull request: Gill OA DEGs (711 to 423), the GO results, LC contrasts, the mitochondrial result, thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
-| Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (91 of 122 genes refit in Foot OW), T025G (48 of 76 in Gill OA; also the lowest alignment rate, 60.8% against a median of 67.7%) and T035G (42 of 81 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
+| Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (90 of 122 genes refit in Foot OW), T025G (48 of 77 in Gill OA; also the lowest alignment rate, 60.8% against a median of 67.7%) and T035G (43 of 84 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,174 of 7,393 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
 | `03_blast/` and `05` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` would not run as written (`mytfoot_uniprot_info` read but `mytilus_foot_uniprot_info` used; `masterID` never defined) | HPC user |
 

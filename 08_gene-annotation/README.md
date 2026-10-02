@@ -22,7 +22,7 @@ repository-level `00_run_pipeline.Rmd` do it, after 06).
 | 03 | `03_ortholog_lists.Rmd` | `Top_gene_summaries/<code>_topgene_summs_ortho.csv`, `ortho_species.tab.gz`: bivalve orthologs | OrthoDB |
 
 By default the runner runs step 01 only (`online: false`); steps 02 and 03 need network access,
-and their committed tables are kept. They were last run on 2026-10-01, from the current top-50
+and their committed tables are kept. They were last run on 2026-10-02, from the current top-50
 lists (`03_analyses/Top_gene_summaries/README.md`). Step 02 finds each UniProt accession's NCBI
 Gene record through NCBI Protein and the protein-to-gene link (it used to take the first
 free-text hit in NCBI Gene, which can be another gene), and spaces and retries its requests;

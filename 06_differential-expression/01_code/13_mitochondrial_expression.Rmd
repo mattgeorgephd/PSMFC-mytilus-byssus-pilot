@@ -52,10 +52,13 @@ intervals.
 The two estimates also differ where DESeq2 replaced an outlier count. With 7 or more samples
 per group, `DESeq()` replaces a count whose Cook's distance is extreme and refits that gene;
 the Wald estimate and p come from the refit, while `lfcShrink()` uses the original counts.
-In Gill OA one library (T025G) holds about ten times the ND1 and ATP6 reads of the other OA
-libraries, so the apeglm estimates of those two proteins (1.40 and 0.89) exceed the refit
-Wald estimates (0.56 and 0.49). `outlier_replaced` marks these rows; the figure shows the
-refit estimate, which matches its p-value.
+`outlier_replaced` marks such rows, and the figure shows the refit estimate, which matches its
+p-value. No protein has a replaced count in the current run. An earlier version, which summed
+the mitogenome gene and its 126 protein-coding copies but not the 167 pseudogene copies, had
+two: in Gill OA, library T025G held 9.3 times the ND1 and 4.3 times the ATP6 reads of the
+median other OA library, because the other libraries' reads for those proteins fell mostly on
+the uncounted pseudogene copies. With every copy summed, T025G holds 1.0 and 1.2 times the
+median.
 
 Writes, in `03_analyses/mitochondrial/`:
 

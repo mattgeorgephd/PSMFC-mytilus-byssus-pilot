@@ -9,8 +9,9 @@ the link between the two.
 Knit `00_run_pipeline.Rmd` at the repository root (inside `PSMFC-mytilus-byssus-pilot.Rproj`).
 It runs, in order and each in a fresh R process, the batch runner of every folder that can run
 from the committed data: thread strength (02), the count matrices (05), differential expression
-(06), GO enrichment (07), GO slims (08) and the gene-mechanics associations (09). About 25
-minutes. Reports and logs go to each folder's `03_analyses/knit_html/` and, one per stage, to
+(06), the Iso-Seq sensitivity analysis (04, from its committed gene counts), GO enrichment (07),
+GO slims (08) and the gene-mechanics associations (09). About 30 minutes. Reports and logs go
+to each folder's `03_analyses/knit_html/` and, one per stage, to
 `knit_html/` at the root (all git-ignored). See `AGENTS.md` for the conventions and `tasks.md`
 for what is done and open.
 
@@ -38,6 +39,7 @@ own folder's `03_analyses/`; later folders read earlier ones.
 | `09_gene-mechanics-correlation/` | per-animal ANCOVA of day-3 thread mechanics on genes, DEG sets, enriched GO terms and mitochondrial expression, foot and gill | `01_code/00_run_gene_mechanics_by_tissue.Rmd` |
 
 Run order: `02_thread-strength` and `05` -> `06` (independent of each other), then
+`04_iso-seq-transcriptome` (it repeats `06`'s contrasts on the Iso-Seq reference),
 `07_enrichment` and `08_gene-annotation` (they read `06`), and
 `09_gene-mechanics-correlation` last (it reads `02`, `03`, `06` and `07`). `00_run_pipeline.Rmd`
 follows this order.

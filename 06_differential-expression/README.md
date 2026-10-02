@@ -113,11 +113,13 @@ tyrosinases and collagens over a thousand-fold), and there is no day-3 FX librar
   uses the day-0 libraries.
 - **Outlier-replaced genes.** With 7 or more samples per group, `DESeq()` replaces a count
   with an extreme Cook's distance and refits the gene; the Wald p (and so the DEG call) comes
-  from the refit, while `lfcShrink(type = "apeglm")` uses the original counts. 13 TC DEGs had
+  from the refit, while `lfcShrink(type = "apeglm")` uses the original counts. 11 TC DEGs had
   a count replaced, and for one (Foot OW) the reported apeglm fold change is more than 1.25
-  times the refit estimate; in `FG_TC` 23 and 7. This is the standard DESeq2 workflow and is
-  kept; script 13 draws the refit estimate for the mitochondrial proteins, where it matters
-  (Gill OA ND1 and ATP6, one outlying library, T025G).
+  times the refit estimate; in `FG_TC` 24 and 7. This is the standard DESeq2 workflow and is
+  kept. No mitochondrial protein has a replaced count in the current run; script 13 draws the
+  refit (Wald) estimate in any case. Most replacements fall in three libraries: T040F (90 of
+  Foot OW's 122 genes with a replaced count), T025G (48 of Gill OA's 77) and T035G (43 of
+  Gill OW's 84).
 - **Removed libraries.** T051F and T051G were removed at QC; T047 has no foot library.
 
 ## Layout
