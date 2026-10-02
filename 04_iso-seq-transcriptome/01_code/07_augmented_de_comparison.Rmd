@@ -1,0 +1,309 @@
+---
+title: "07 - Differential expression on the recounted genome, compared with the record (option B)"
+output: html_document
+params:
+  padj_cutoff: 0.05
+  cores: 4                 # parallel fits (forked processes; one on Windows)
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+Fits the six treatment-control (TC) contrasts of record to each of step 06's six count
+matrices (two counters x three annotations), exactly as `06_differential-expression` fits them
+to the record's counts, and compares the results three ways:
+
+1. **Control against the record.** StringTie + prepDE on the unchanged RefSeq annotation
+   differs from the record only in the alignment (step 06). How close its DEGs come to the
+   record's is the yardstick for every other difference below.
+2. **Annotation effect.** Within each counter, `ext3` and `full` against that counter's RefSeq
+   control: the same alignment and counter, so the differences come from the annotation alone.
+3. **Each matrix against the record**, which is what adopting it would change.
+
+Same samples, model, order and thresholds as `06` (and step 04): the samples of each contrast
+in `06 .../DEG_lists/contrast_samples.csv`, `~ treatment` with the day-3 control as reference,
+fitted on every gene, then genes kept with at least 10 counts in a third of the samples, apeglm
+shrinkage (Zhu, Ibrahim and Love 2019, *Bioinformatics* 35:2084), DEG at padj < 0.05. The 310
+mitochondrial loci (`06 .../count_matrix/mitochondrial_loci.csv`) are left out of every fit;
+step 05 kept them unchanged in every annotation. Genes are matched by `gene_key()`; the novel
+loci of `full` (`novel:...`) exist only there.
+
+Writes, in `03_analyses/07_augmented-de/`:
+
+- `<counter>_<annotation>_apeglm.csv.gz`: every tested gene of every contrast (`code`,
+  `feature`, `baseMean`, apeglm `log2FoldChange`, `lfcSE`, Wald `pvalue`, `padj`);
+- `deg_summary.csv`: per matrix and contrast, genes tested, DEGs (up, down), and the agreement
+  with the record: DEGs shared, in the same direction, record DEGs lost (and of those not
+  tested here), new DEGs (and of those on novel loci), and the Spearman correlation of fold
+  changes over genes tested in both;
+- `annotation_effect.csv`: per counter and contrast, `ext3` and `full` against that counter's
+  RefSeq control (DEGs shared, gained, lost, fold-change correlation);
+- `counts_per_gene.csv`: per gene, the total count over the day-3 libraries on each matrix and
+  in the record;
+- `control_vs_record.csv`: the control against the record: per-library totals, the
+  mitochondrial share of each library, gene counts;
+- `new_DEGs.csv`: DEGs of `ext3` and `full` (StringTie + prepDE) that are not DEGs in the
+  record, with the record's padj and both counts, and whether `ext3` extended the gene;
+- `byssal_genes.csv`: the byssal structural genes (best BLAST hit named as in `09`) that are a
+  DEG in any matrix or in the record;
+- `FIG_deg_counts.png`, `FIG_lfc_vs_record.png`;
+- `RUN_provenance.txt`.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "gene_ids.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))
+source(file.path(repo_root, "tools", "pipeline_checks.R"))
+suppressPackageStartupMessages({ library(DESeq2); library(apeglm); library(data.table); library(ggplot2); library(parallel) })
+contrasts <- fread(file.path(de06, "DEG_lists", "contrasts.csv"))[family == "TC"]
+cs <- fread(file.path(de06, "DEG_lists", "contrast_samples.csv"))
+ti <- fread(file.path(de06, "count_matrix", "treatmentinfo_clean.csv"))
+mt_keys <- unique(fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))$LOC_ID)
+stopifnot(nrow(contrasts) == 6)
+counters <- c(stringtie = "StringTie + prepDE", featurecounts = "featureCounts")
+anns <- c(refseq = "RefSeq (control)", ext3 = "3' extension", full = "full models")
+mats <- list(); mt_share <- list()
+for (cn in names(counters)) for (a in names(anns)) {
+  d <- fread(file.path(recount_dir, sprintf("%s_%s_gene_counts.csv.gz", cn, a)))
+  m <- as.matrix(d[, -1]); rownames(m) <- gene_key(d$gene)
+  stopifnot(!anyDuplicated(rownames(m)), all(cs[code %in% contrasts$code, sample.1] %in% colnames(m)))
+  mt_share[[paste(cn, a)]] <- colSums(m[rownames(m) %in% mt_keys, ]) / colSums(m)
+  mats[[paste(cn, a)]] <- m[!rownames(m) %in% mt_keys, ]
+}
+sapply(mats, nrow)
+```
+
+# Fit each TC contrast on each matrix
+
+```{r fit}
+## as 04 step 04 and 06 steps 03-04: fit every gene of the contrast's samples, keep genes with
+## >= 10 counts in a third of them, apeglm on those (pvalue and padj from results())
+fit_one <- function(counts, row) {
+  smp <- cs[code == row$code, sample.1]
+  cd  <- as.data.frame(ti[match(smp, sample.1), .(sample.1, treatment)]); rownames(cd) <- cd$sample.1
+  cd$treatment <- factor(cd$treatment, levels = c(row$ref_level, row$test_level))
+  stopifnot(!anyNA(cd$treatment))
+  m <- round(counts[, smp]); m <- m[rowSums(m) > 0, ]
+  dds <- DESeq(DESeqDataSetFromMatrix(m, cd, ~ treatment), quiet = TRUE)
+  stopifnot(resultsNames(dds)[2] == sprintf("treatment_%s_vs_%s", row$test_level, row$ref_level))
+  keep <- rowSums(counts(dds) >= 10) >= ncol(dds) / 3
+  shr <- lfcShrink(dds[keep, ], coef = 2, type = "apeglm", quiet = TRUE)
+  data.table(code = row$code, feature = rownames(shr), baseMean = shr$baseMean, log2FoldChange = shr$log2FoldChange,
+             lfcSE = shr$lfcSE, pvalue = shr$pvalue, padj = shr$padj)
+}
+jobs <- CJ(matrix = names(mats), i = seq_len(nrow(contrasts)), sorted = FALSE)
+cores <- if (.Platform$OS.type == "windows") 1L else params$cores
+fits <- mclapply(seq_len(nrow(jobs)), function(j) fit_one(mats[[jobs$matrix[j]]], contrasts[jobs$i[j]]),
+                 mc.cores = cores, mc.preschedule = FALSE)
+stopifnot(!vapply(fits, inherits, NA, "try-error"))
+res <- rbindlist(Map(function(f, mx) f[, matrix := mx], fits, jobs$matrix))
+res[, deg := !is.na(padj) & padj < params$padj_cutoff]
+for (mx in names(mats)) {
+  out <- res[matrix == mx, .(code, feature, baseMean, log2FoldChange, lfcSE, pvalue, padj)]
+  fwrite(out, file.path(aug_de_dir, sprintf("%s_apeglm.csv.gz", sub(" ", "_", mx))))
+}
+```
+
+# Against the record
+
+```{r record}
+record <- rbindlist(lapply(seq_len(nrow(contrasts)), function(i) {
+  r <- contrasts[i]
+  g <- fread(file.path(de06, "DEG_lists", r$dir, sprintf("%s_apeglm.csv", r$code)))
+  g[, .(code = r$code, feature = gene_key(gene), baseMean, log2FoldChange, padj)]
+}))
+record[, deg := !is.na(padj) & padj < params$padj_cutoff]
+stopifnot(!anyDuplicated(record[, .(code, feature)]))
+
+compare <- function(x, y) {                                     # x: a result set, y: the reference set
+  rbindlist(lapply(contrasts$code, function(cd) {
+    a <- x[code == cd]; b <- y[code == cd]
+    both <- merge(a, b, by = "feature", suffixes = c("", "_ref"))
+    data.table(code = cd, tested = nrow(a), DEGs = sum(a$deg), up = sum(a$deg & a$log2FoldChange > 0),
+               down = sum(a$deg & a$log2FoldChange < 0), ref_DEGs = sum(b$deg),
+               shared = sum(both$deg & both$deg_ref),
+               same_direction = sum(both$deg & both$deg_ref & sign(both$log2FoldChange) == sign(both$log2FoldChange_ref)),
+               ref_DEGs_lost = sum(b$deg) - sum(both$deg & both$deg_ref),
+               ref_DEGs_not_tested = sum(b$deg & !b$feature %in% a$feature),
+               new_DEGs = sum(a$deg) - sum(both$deg & both$deg_ref),
+               new_DEGs_novel_loci = sum(a$deg & startsWith(a$feature, "novel:")),
+               lfc_spearman = round(cor(both$log2FoldChange, both$log2FoldChange_ref, method = "spearman"), 3))
+  }))
+}
+summ <- rbindlist(lapply(names(mats), function(mx) {
+  s <- compare(res[matrix == mx], record)
+  s[, `:=`(counter = sub(" .*$", "", mx), annotation = sub("^.* ", "", mx))]
+}))
+setcolorder(summ, c("counter", "annotation"))
+setnames(summ, c("ref_DEGs", "ref_DEGs_lost", "ref_DEGs_not_tested"), c("record_DEGs", "record_DEGs_lost", "record_DEGs_not_tested"))
+fwrite(summ, file.path(aug_de_dir, "deg_summary.csv"))
+knitr::kable(summ)
+```
+
+# Annotation effect within each counter
+
+```{r annotation-effect}
+eff <- rbindlist(lapply(names(counters), function(cn) rbindlist(lapply(c("ext3", "full"), function(a) {
+  s <- compare(res[matrix == paste(cn, a)], res[matrix == paste(cn, "refseq")])
+  s[, .(counter = cn, annotation = a, code, DEGs, control_DEGs = ref_DEGs, shared, gained = new_DEGs,
+        gained_novel_loci = new_DEGs_novel_loci, lost = ref_DEGs_lost, lfc_spearman)]
+}))))
+fwrite(eff, file.path(aug_de_dir, "annotation_effect.csv"))
+knitr::kable(eff)
+```
+
+# The control against the record
+
+```{r control}
+g06 <- fread(file.path(de06, "count_matrix", "gene_count_matrix_clean.csv"))
+rec_m <- as.matrix(g06[, -1]); rownames(rec_m) <- gene_key(g06[[1]])
+ctrl <- fread(file.path(recount_dir, "stringtie_refseq_gene_counts.csv.gz"))
+ctrl_m <- as.matrix(ctrl[, -1]); rownames(ctrl_m) <- gene_key(ctrl$gene)
+libs <- intersect(colnames(rec_m), colnames(ctrl_m))
+genes <- intersect(rownames(rec_m), rownames(ctrl_m))
+rec_share <- colSums(rec_m[rownames(rec_m) %in% mt_keys, libs]) / colSums(rec_m[, libs])
+day3 <- intersect(ti[day == "3", sample.1], libs)
+gt <- data.table(gene = genes, record = rowSums(rec_m[genes, day3]), control = rowSums(ctrl_m[genes, day3]))
+g10 <- gt[(record >= 10 | control >= 10) & !gene %in% mt_keys]
+cvr <- data.table(
+  measure = c("libraries compared", "genes in both matrices", "genes only in the record (StringTie IDs)",
+              "per-library total count, control / record: median", "range",
+              "per-library mitochondrial share, Spearman control vs record",
+              "nuclear genes with >= 10 counts over the day-3 libraries in either",
+              "of those, day-3 total within 10% of the record", "Spearman of day-3 totals (those genes)"),
+  value = c(length(libs), length(genes), sum(!rownames(rec_m) %in% genes),
+            round(median(colSums(ctrl_m[, libs]) / colSums(rec_m[, libs])), 4),
+            paste(round(range(colSums(ctrl_m[, libs]) / colSums(rec_m[, libs])), 4), collapse = " to "),
+            round(cor(mt_share[["stringtie refseq"]][libs], rec_share, method = "spearman"), 3),
+            nrow(g10), round(mean(abs(g10$control - g10$record) <= 0.1 * g10$record), 3),
+            round(cor(g10$control, g10$record, method = "spearman"), 4)))
+fwrite(cvr, file.path(aug_de_dir, "control_vs_record.csv"))
+knitr::kable(cvr)
+
+## counts per gene on every matrix (day-3 libraries), with the record
+cpg <- Reduce(function(x, y) merge(x, y, by = "gene", all = TRUE),
+              c(list(data.table(gene = rownames(rec_m), record = rowSums(rec_m[, day3]))),
+                lapply(names(mats), function(mx) { m <- mats[[mx]]
+                  setnames(data.table(gene = rownames(m), rowSums(m[, day3])), 2, sub(" ", "_", mx)) })))
+cpg <- cpg[!gene %in% mt_keys]
+fwrite(cpg, file.path(aug_de_dir, "counts_per_gene.csv"))
+knitr::kable(cpg[, lapply(.SD, function(v) sum(v, na.rm = TRUE)), .SDcols = -"gene"], caption = "total count, day-3 libraries")
+```
+
+# What the new DEGs are
+
+```{r new-degs}
+ext <- fread(file.path(ann_dir, "ext3_extensions.csv.gz"))
+nd <- rbindlist(lapply(c("ext3", "full"), function(a) {
+  x <- merge(res[matrix == paste("stringtie", a) & deg == TRUE], record, by = c("code", "feature"), all.x = TRUE,
+             suffixes = c("", "_record"))
+  x[is.na(deg_record) | deg_record == FALSE, .(annotation = a, code, feature, novel_locus = startsWith(feature, "novel:"),
+                                                extended_in_ext3 = feature %in% ext$gene,
+                                                tested_in_record = !is.na(padj_record) | !is.na(log2FoldChange_record),
+                                                baseMean = round(baseMean, 1), baseMean_record = round(baseMean_record, 1),
+                                                log2FoldChange = round(log2FoldChange, 3), log2FoldChange_record = round(log2FoldChange_record, 3),
+                                                padj = signif(padj, 3), padj_record = signif(padj_record, 3))]
+}))
+fwrite(nd, file.path(aug_de_dir, "new_DEGs.csv"))
+knitr::kable(nd[, .(new_DEGs = .N, novel_loci = sum(novel_locus), extended_genes = sum(extended_in_ext3 & !novel_locus),
+                    not_tested_in_record = sum(!tested_in_record & !novel_locus),
+                    median_padj_record = median(padj_record, na.rm = TRUE),
+                    record_padj_below_0.2 = round(mean(padj_record < 0.2, na.rm = TRUE), 2)), by = .(annotation, code)])
+```
+
+# Byssal genes
+
+The byssal structural genes are named as in `09` (`BYSSAL_STRUCTURAL_REGEX`): the best BLAST hit
+(highest bitscore) of the genome-wide table names a foot protein, plaque, precollagen, ACDC or
+byssal tyrosinase.
+
+```{r byssal}
+byssal_rx <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-", "preCol", "precollagen",
+                   "byssal EP", "ACDC", "byssal tyrosinase", sep = "|")
+bl <- fread(file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt"),
+            select = c("gene", "bitscore", "Protein.names"))
+bl[, `:=`(gene = gene_key(trimws(gene)), bitscore = suppressWarnings(as.numeric(bitscore)))]
+bl <- bl[!is.na(gene) & nzchar(gene)][order(-bitscore)][!duplicated(gene)]
+byssal <- bl[grepl(byssal_rx, Protein.names, ignore.case = TRUE), .(feature = gene, protein = Protein.names)]
+bd <- rbind(record[feature %in% byssal$feature, .(source = "record", code, feature, log2FoldChange, padj, deg)],
+            res[feature %in% byssal$feature, .(source = matrix, code, feature, log2FoldChange, padj, deg)])
+any_deg <- unique(bd[deg == TRUE, .(code, feature)])
+bw <- dcast(merge(bd, any_deg, by = c("code", "feature")), code + feature ~ source, value.var = "deg", fill = NA)
+bw <- merge(bw, byssal, by = "feature")
+fwrite(bw, file.path(aug_de_dir, "byssal_genes.csv"))
+knitr::kable(bw[, lapply(.SD, function(v) sum(v, na.rm = TRUE)), by = code, .SDcols = setdiff(names(bw), c("code", "feature", "protein"))],
+             caption = "byssal structural DEGs per contrast and source")
+```
+
+# Figures
+
+```{r fig-degs, fig.width = 10, fig.height = 5}
+lab <- setNames(sprintf("%s %s", ifelse(substr(contrasts$code, 1, 1) == "F", "Foot", "Gill"), substr(contrasts$code, 2, 3)),
+                contrasts$code)
+levels_src <- c("record (06)", unname(anns))
+pd <- rbind(summ[, .(counter = counters[counter], source = anns[annotation], code, DEGs)],
+            rbindlist(lapply(counters, function(cl) record[, .(counter = cl, source = "record (06)", DEGs = sum(deg)), by = code])),
+            use.names = TRUE)
+pd[, `:=`(source = factor(source, levels = levels_src), contrast = factor(lab[code], levels = lab),
+          counter = factor(counter, levels = counters))]
+## neutral greys for set categories (tools/plot_style.R), labelled
+p <- ggplot(pd, aes(contrast, DEGs, fill = source)) +
+  geom_col(position = position_dodge(width = 0.82), width = 0.78, colour = "white", linewidth = 0.3) +
+  geom_text(aes(label = DEGs), position = position_dodge(width = 0.82), vjust = -0.3, size = 2.4) +
+  facet_wrap(~ counter, nrow = 1) +
+  scale_fill_manual(values = setNames(c("#1a1a1a", "#7f7f7f", "#a6a6a6", "#d0d0d0"), levels_src), name = NULL) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.08))) +
+  labs(x = NULL, y = "DEGs (apeglm padj < 0.05)", title = "DEGs per contrast: the record and the three recounted annotations",
+       caption = "Same samples, model and thresholds as 06; mitochondrial loci left out. Record: 06's DEGs (prepDE on the original alignment).") +
+  theme_psmfc(10) + theme(legend.position = "top", plot.caption = element_text(hjust = 0),
+                          axis.text.x = element_text(angle = 30, hjust = 1))
+ggsave(file.path(aug_de_dir, "FIG_deg_counts.png"), p, width = 10, height = 5, dpi = 300)
+p
+```
+
+```{r fig-lfc, fig.width = 12, fig.height = 6.5}
+classes <- c("DEG in neither", "DEG in the record only", "DEG in the recount only", "DEG in both")
+pl <- rbindlist(lapply(c("refseq", "ext3", "full"), function(a)
+  merge(res[matrix == paste("stringtie", a)], record, by = c("code", "feature"), suffixes = c("", "_record"))[, annotation := anns[a]]))
+pl[, class := factor(fifelse(deg & deg_record, classes[4], fifelse(deg_record, classes[2], fifelse(deg, classes[3], classes[1]))),
+                     levels = classes)]
+pl[, `:=`(contrast = factor(lab[code], levels = lab), annotation = factor(annotation, levels = anns))]
+setorder(pl, class)
+p2 <- ggplot(pl, aes(log2FoldChange_record, log2FoldChange, colour = class, shape = class)) +
+  geom_hline(yintercept = 0, colour = "grey85") + geom_vline(xintercept = 0, colour = "grey85") +
+  geom_abline(slope = 1, intercept = 0, colour = "grey60", linetype = 2) +
+  geom_point(size = 0.6, alpha = 0.85, show.legend = TRUE) +
+  facet_grid(annotation ~ contrast) +
+  scale_colour_manual(values = setNames(c("#d9d9d9", "#7f7f7f", "#7f7f7f", "#1a1a1a"), classes), name = NULL, drop = FALSE) +
+  scale_shape_manual(values = setNames(c(16, 17, 15, 16), classes), name = NULL, drop = FALSE) +
+  guides(colour = guide_legend(override.aes = list(size = 2.5, alpha = 1)), shape = guide_legend()) +
+  labs(x = "log2 fold change, record (06)", y = "log2 fold change, recount (StringTie + prepDE)",
+       title = "Stressor vs day-3 control: each recounted annotation against the record (genes tested in both)",
+       caption = "apeglm log2 fold changes; DEG: padj < 0.05. Dashed line: equal fold change.") +
+  theme_psmfc(9) + theme(legend.position = "top", plot.caption = element_text(hjust = 0))
+ggsave(file.path(aug_de_dir, "FIG_lfc_vs_record.png"), p2, width = 12, height = 6.5, dpi = 300)
+p2
+```
+
+# Provenance
+
+```{r provenance}
+settings <- c("[07_augmented_de_comparison.Rmd]",
+              paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+              "model                : as 06: ~ treatment (day-3 control reference), >= 10 counts in a third of samples, apeglm, Wald padj",
+              paste0("DEG                  : padj < ", params$padj_cutoff),
+              paste0("matrices             : ", paste(names(mats), collapse = ", ")),
+              paste0("contrasts            : ", paste(contrasts$code, collapse = ", ")))
+inputs <- c(file.path(recount_dir, sprintf("%s_gene_counts.csv.gz", sub(" ", "_", names(mats)))),
+            file.path(ann_dir, "ext3_extensions.csv.gz"),
+            file.path(de06, "DEG_lists", c("contrasts.csv", "contrast_samples.csv")),
+            file.path(de06, "DEG_lists", contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
+            file.path(de06, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv", "gene_count_matrix_clean.csv")),
+            file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt"),
+            here::here("01_code", "07_augmented_de_comparison.Rmd"))
+writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "apeglm", "data.table")),
+           file.path(aug_de_dir, "RUN_provenance.txt"))
+```
