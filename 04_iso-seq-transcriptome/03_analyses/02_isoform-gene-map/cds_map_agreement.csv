@@ -1,0 +1,9 @@
+measure,n
+isoforms on a gene in both maps,185383
+  of which the same gene,179765
+"  of which the same gene, both unambiguous",176292
+isoforms on a gene in the CDS map only,2991
+isoforms on a gene in the genome map only,126014
+genes reached by the CDS map,17733
+genes reached by the genome map,19856
+genes reached by both,17074
