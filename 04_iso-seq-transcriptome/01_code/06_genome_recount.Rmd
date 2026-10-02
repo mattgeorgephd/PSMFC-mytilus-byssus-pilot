@@ -195,7 +195,7 @@ source(file.path(repo_root, "05_sequence-alignment", "01_code", "_prepde.R"))
 fast <- prepde_sample(file.path(tmp, "st.gtf"), stable_strg = FALSE)
 writeLines(paste("S", file.path(tmp, "st.gtf")), file.path(tmp, "list.txt"))
 prepde(file.path(tmp, "list.txt"), gene_out = file.path(tmp, "g.csv"), transcript_out = file.path(tmp, "t.csv"))
-port <- fread(file.path(tmp, "g.csv"))
+port <- fread(file.path(tmp, "g.csv"), sep = ",")
 fp <- merge(as.data.table(fast), port, by.x = "gene", by.y = "gene_id")
 ## the control against the record, transcript by transcript (the record's t_data.ctab is T014F's)
 ctab_rec <- fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "t_data.ctab"))
@@ -204,9 +204,8 @@ st <- fread(cmd = sprintf("grep -v '^#' %s | awk -F'\\t' '$3==\"transcript\"' | 
 st[, `:=`(t_name = sub('.*transcript_id "([^"]+)".*', "\\1", attr), cov = as.numeric(sub('.*cov "([^"]+)".*', "\\1", attr)))]
 tc <- merge(ctab_rec[, .(t_name, cov_record = cov)], st[, .(t_name, cov)], by = "t_name")
 ## and gene by gene against the record's count matrix (both in prepDE's names)
-gm <- fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "prepDE", "gene_count_matrix.csv"),
-            select = c("gene_id", grep("T014F", names(fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "prepDE",
-                                                                           "gene_count_matrix.csv"), nrows = 0)), value = TRUE)))
+rec_csv <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "prepDE", "gene_count_matrix.csv")
+gm <- fread(rec_csv, sep = ",", select = c("gene_id", grep("T014F", names(fread(rec_csv, sep = ",", nrows = 0)), value = TRUE)))
 setnames(gm, c("gene", "record"))
 gg <- merge(gm, as.data.table(fast), by = "gene", all = TRUE)
 gg[is.na(record), record := 0][is.na(count), count := 0]
