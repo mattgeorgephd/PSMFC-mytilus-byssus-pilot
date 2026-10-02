@@ -42,3 +42,10 @@ Thumbs.db
 04_iso-seq-transcriptome/03_analyses/03_salmon/index/
 04_iso-seq-transcriptome/03_analyses/03_salmon/index.log
 04_iso-seq-transcriptome/03_analyses/03_salmon/quant/
+04_iso-seq-transcriptome/02_data/*_genomic.gtf.gz
+04_iso-seq-transcriptome/03_analyses/05_augmented-annotation/annotation_*.gff
+04_iso-seq-transcriptome/03_analyses/05_augmented-annotation/annotation_*.saf
+04_iso-seq-transcriptome/03_analyses/06_genome-recount/hisat2_index/
+04_iso-seq-transcriptome/03_analyses/06_genome-recount/hisat2-build.log
+04_iso-seq-transcriptome/03_analyses/06_genome-recount/refseq_splice_sites.txt
+04_iso-seq-transcriptome/03_analyses/06_genome-recount/libraries/

@@ -26,7 +26,12 @@ map_dir    <- here::here("03_analyses", "02_isoform-gene-map")
 cds_map    <- here::here("03_analyses", "_superseded", "02_isoform-gene-map_cds", "isoform_gene_map.csv.gz")  # retired CDS-based map, the cross-check
 salmon_dir <- here::here("03_analyses", "03_salmon")
 de_dir     <- here::here("03_analyses", "04_isoseq-de")
-for (d in c(map_dir, salmon_dir, de_dir)) dir.create(d, recursive = TRUE, showWarnings = FALSE)
+## option B, the parallel analysis: the genome annotation augmented with the Iso-Seq isoforms
+ann_dir    <- here::here("03_analyses", "05_augmented-annotation")
+recount_dir <- here::here("03_analyses", "06_genome-recount")
+aug_de_dir <- here::here("03_analyses", "07_augmented-de")
+for (d in c(map_dir, salmon_dir, de_dir, ann_dir, recount_dir, aug_de_dir))
+  dir.create(d, recursive = TRUE, showWarnings = FALSE)
 
 # Cross-folder reads
 de06 <- file.path(repo_root, "06_differential-expression", "03_analyses")

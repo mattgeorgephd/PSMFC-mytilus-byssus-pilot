@@ -1,0 +1,248 @@
+---
+title: "06 - Realign the Tag-seq reads and count them on the three annotations (option B)"
+output: html_document
+params:
+  bin: ""                  # folder holding hisat2 (2.2.1), samtools, stringtie (2.2.1) and featureCounts; "" = PATH
+  threads: 4
+  max_libraries: .Inf      # process at most this many new libraries per knit, then stop (for batches)
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+The record's counts (`05_sequence-alignment`) come from HISAT2 alignments made on an HPC
+server and not kept, so option B realigns the reads here and counts them on each of step 05's
+annotations. Only the annotation should differ between the counts compared in step 07, so the
+alignment is shared and the RefSeq annotation is counted again as the control.
+
+- **Reads:** the 131 trimmed, lane-merged files the record aligned
+  (`*_L099_R1_cmb.trim.fastq.gz`, gannet `.../byssus-exp-analysis/data/raw-trimmed/`), each
+  downloaded, processed and deleted.
+- **Alignment:** HISAT2 2.2.1 (Kim et al. 2019, *Nature Biotechnology* 37:907) with the
+  record's settings (defaults and `--dta`). The record's index was built with the RefSeq splice
+  sites and exons (`hisat2-build --ss --exon`), which needs far more memory than the 15 GB
+  machine used here (HISAT2's manual quotes about 160 GB for a human-sized genome), so the
+  index here is the plain genome and the same splice sites are given at alignment time
+  (`--known-splicesite-infile`, from NCBI's GTF of the same annotation with HISAT2's
+  `hisat2_extract_splice_sites.py`, as the record made them). The alignments are close but not
+  identical to the record's; the control count measures how close.
+- **StringTie + prepDE:** StringTie 2.2.1 (Pertea et al. 2015, *Nature Biotechnology* 33:290)
+  `-e -G <annotation>` as in the record, reduced at once to prepDE's gene counts (read length
+  75) by `_prepde_sample.R`, which is checked below against the port of `05` on one library.
+  Reference transcripts StringTie files under its own `STRG.N` gene IDs, which change between
+  libraries, are named by their transcript (see `_prepde_sample.R`).
+- **featureCounts:** Subread's featureCounts (Liao, Smyth and Shi 2014, *Bioinformatics*
+  30:923) on each annotation's exons (`.saf`), sense strand (`-s 1`, as 3' Tag-seq reads are),
+  one count per uniquely aligned read; reads aligned to several places, or overlapping more
+  than one gene, are left out (the defaults). This changes the counting method as well as the
+  annotation, so step 07 compares each counter with its own RefSeq control.
+
+Each library is processed by `_recount_library.sh` (alignment, the six counts, the alignment
+deleted at the end), into `03_analyses/06_genome-recount/libraries/<library>/` (git-ignored).
+`max_libraries` lets the step run in batches; it combines the counts once all 131 are done.
+
+Writes, in `03_analyses/06_genome-recount/`:
+
+- `<stringtie|featurecounts>_<refseq|ext3|full>_gene_counts.csv.gz`: genes x libraries
+  (column names as in `06`'s count matrix, `T001F`);
+- `mapping_summary.csv`: per library, reads, HISAT2's alignment (unique, multiple, overall
+  rate) beside the record's rate, featureCounts's assigned reads and StringTie's total count on
+  each annotation;
+- `checks.csv`: the per-library counter against the `05` port, and the control library against
+  the record's StringTie output for the same library;
+- `RUN_provenance.txt`: tool versions and settings, input MD5s.
+
+and, git-ignored: `hisat2_index/` (about 2 GB, 15 minutes), `refseq_splice_sites.txt`,
+`hisat2-build.log` and `libraries/`.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "pipeline_checks.R"))  # provenance_lines()
+suppressPackageStartupMessages(library(data.table))
+tool <- function(x) if (nzchar(params$bin)) file.path(params$bin, x) else unname(Sys.which(x))
+for (x in c("hisat2", "hisat2-build", "samtools", "stringtie", "featureCounts", "hisat2_extract_splice_sites.py", "python3"))
+  if (!nzchar(tool(x)) || !file.exists(tool(x))) stop(x, " not found; set params$bin")
+rscript <- file.path(R.home("bin"), "Rscript")
+helper  <- here::here("01_code", "_recount_library.sh")
+ann_files <- file.path(ann_dir, paste0("annotation_", rep(c("refseq", "ext3", "full"), each = 2), c(".gff", ".saf")))
+stopifnot(all(file.exists(ann_files)))                      # step 05 first
+idx_prefix <- file.path(recount_dir, "hisat2_index", "PNRI_Mtr1.1.1")
+ss_file    <- file.path(recount_dir, "refseq_splice_sites.txt")
+gtf_gz     <- file.path(dat, paste0(ASSEMBLY, "_genomic.gtf.gz"))
+lib_root   <- file.path(recount_dir, "libraries")
+dir.create(lib_root, showWarnings = FALSE)
+```
+
+# Index and splice sites
+
+```{r index}
+if (!file.exists(paste0(idx_prefix, ".1.ht2"))) {
+  dir.create(dirname(idx_prefix), showWarnings = FALSE)
+  fa <- tempfile(fileext = ".fa")
+  stopifnot(system(paste("gzip -dc", shQuote(genome_fa), ">", shQuote(fa))) == 0)
+  stopifnot(system2(tool("hisat2-build"), c("-p", params$threads, shQuote(fa), shQuote(idx_prefix)),
+                    stdout = file.path(recount_dir, "hisat2-build.log"), stderr = file.path(recount_dir, "hisat2-build.log")) == 0)
+  unlink(fa)
+}
+if (!file.exists(ss_file)) {
+  if (!file.exists(gtf_gz)) download.file(paste0(NCBI_DIR, basename(gtf_gz)), gtf_gz, mode = "wb")
+  ncbi_md5 <- fread(cmd = paste("curl -sS", shQuote(paste0(NCBI_DIR, "md5checksums.txt"))), header = FALSE,
+                    col.names = c("md5", "file"))[, file := basename(file)]
+  stopifnot(unname(tools::md5sum(gtf_gz)) == ncbi_md5[file == basename(gtf_gz), md5])
+  stopifnot(system(paste("gzip -dc", shQuote(gtf_gz), "|", shQuote(tool("python3")),
+                         shQuote(tool("hisat2_extract_splice_sites.py")), "- >", shQuote(ss_file))) == 0)
+}
+cat(length(readLines(ss_file)), "RefSeq splice sites\n")
+```
+
+# Libraries
+
+```{r libraries}
+listing <- readLines(url(READS_URL), warn = FALSE)
+files <- unique(regmatches(listing, regexpr("[A-H][0-9]+-T[0-9]+[A-Z]*_S[0-9]+_L099_R1_cmb\\.trim\\.fastq\\.gz", listing)))
+lib_of <- function(f) sub("^[A-H][0-9]+-", "", sub("_S[0-9]+_L099.*$", "", f))
+stopifnot(length(files) == 131, !anyDuplicated(lib_of(files)))
+done <- function() sum(file.exists(file.path(lib_root, lib_of(files), "done")))
+n_new <- 0
+for (f in files) {
+  out <- file.path(lib_root, lib_of(f))
+  if (file.exists(file.path(out, "done"))) next
+  if (n_new >= params$max_libraries) break
+  unlink(out, recursive = TRUE)                             # a library a stopped run left half done
+  reads <- tempfile(fileext = ".fastq.gz")
+  ok <- FALSE
+  for (i in 1:4) { if (download.file(paste0(READS_URL, f), reads, mode = "wb", quiet = TRUE) == 0) { ok <- TRUE; break }; Sys.sleep(2^i) }
+  if (!ok) stop("download failed: ", f)
+  rc <- system2("bash", c(shQuote(helper), shQuote(reads), shQuote(out), shQuote(idx_prefix), shQuote(ss_file),
+                          shQuote(ann_dir), shQuote(dirname(tool("hisat2"))), shQuote(rscript), params$threads))
+  unlink(reads)
+  if (rc != 0) stop("_recount_library.sh failed for ", f)
+  n_new <- n_new + 1
+}
+cat(n_new, "libraries processed in this run;", done(), "of 131 done\n")
+all_done <- done() == length(files)
+```
+
+# Count matrices
+
+```{r combine, eval = all_done}
+libs <- sort(lib_of(files))
+read_counts <- function(counter, a) {
+  long <- rbindlist(lapply(libs, function(l) {
+    d <- fread(file.path(lib_root, l, paste0(counter, "_", a, ".tsv.gz")), header = FALSE, col.names = c("gene", "count"),
+               colClasses = c("character", "numeric"))
+    d[, library := l]
+  }))
+  stopifnot(!anyDuplicated(long[, .(gene, library)]))
+  w <- dcast(long, gene ~ library, value.var = "count", fill = 0)
+  setcolorder(w, c("gene", libs))
+  w
+}
+mats <- list()
+for (counter in c("stringtie", "featurecounts")) for (a in c("refseq", "ext3", "full")) {
+  m <- read_counts(counter, a)
+  fwrite(m, file.path(recount_dir, paste0(counter, "_", a, "_gene_counts.csv.gz")))
+  mats[[paste(counter, a)]] <- m
+}
+
+## mapping summary
+hs <- rbindlist(lapply(libs, function(l) {
+  x <- readLines(file.path(lib_root, l, "hisat2.log"))
+  num <- function(p) as.numeric(sub("^\\s*([0-9]+).*$", "\\1", grep(p, x, value = TRUE)[1]))
+  data.table(library = l, reads = num("reads; of these"), aligned_once = num("aligned exactly 1 time"),
+             aligned_multi = num("aligned >1 times"),
+             overall_rate = as.numeric(sub("%.*$", "", grep("overall alignment rate", x, value = TRUE))))
+}))
+rec <- fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "multiqc_data", "multiqc_bowtie2.txt"))
+rec[, library := sub("^[A-H][0-9]+-", "", sub("_S[0-9]+_hisat$", "", Sample))]
+hs <- merge(hs, rec[, .(library, record_reads = total_reads, record_rate = overall_alignment_rate)], by = "library", all.x = TRUE)
+for (a in c("refseq", "ext3", "full")) {
+  fc <- rbindlist(lapply(libs, function(l) {
+    s <- fread(file.path(lib_root, l, paste0("featurecounts_", a, ".summary")))
+    data.table(library = l, v = s[Status == "Assigned"][[2]])
+  }))
+  hs[fc, (paste0("featurecounts_assigned_", a)) := i.v, on = "library"]
+  st <- mats[[paste("stringtie", a)]]
+  hs[data.table(library = libs, v = colSums(st[, ..libs])), (paste0("stringtie_total_", a)) := i.v, on = "library"]
+}
+stopifnot(nrow(hs) == 131, all(hs$reads == hs$record_reads))  # the same reads as the record
+fwrite(hs, file.path(recount_dir, "mapping_summary.csv"))
+knitr::kable(hs[, .(median_rate = median(overall_rate), median_record_rate = median(record_rate),
+                    median_rate_minus_record = median(overall_rate - record_rate))])
+```
+
+# Checks
+
+On one library (T014F, whose StringTie table the record kept), the alignment is repeated and
+counted on the RefSeq annotation: the per-library counter against the port of `05` (prepDE's
+exact names), and the control against the record's StringTie output for the same library
+(transcript by transcript) and the record's count matrix.
+
+```{r checks, eval = all_done}
+check_lib <- files[lib_of(files) == "T014F"]
+tmp <- tempfile(); dir.create(tmp)
+download.file(paste0(READS_URL, check_lib), file.path(tmp, "reads.fq.gz"), mode = "wb", quiet = TRUE)
+stopifnot(system(sprintf("%s -p %s --dta --known-splicesite-infile %s -x %s -U %s 2> /dev/null | %s sort -@ 2 -m 1G -o %s - && %s index %s",
+                         tool("hisat2"), params$threads, shQuote(ss_file), shQuote(idx_prefix), shQuote(file.path(tmp, "reads.fq.gz")),
+                         tool("samtools"), shQuote(file.path(tmp, "aln.bam")), tool("samtools"), shQuote(file.path(tmp, "aln.bam")))) == 0)
+stopifnot(system2(tool("stringtie"), c("-e", "-p", params$threads, "-G", shQuote(file.path(ann_dir, "annotation_refseq.gff")),
+                                       "-o", shQuote(file.path(tmp, "st.gtf")), shQuote(file.path(tmp, "aln.bam")))) == 0)
+source(here::here("01_code", "_prepde_sample.R"))
+source(file.path(repo_root, "05_sequence-alignment", "01_code", "_prepde.R"))
+fast <- prepde_sample(file.path(tmp, "st.gtf"), stable_strg = FALSE)
+writeLines(paste("S", file.path(tmp, "st.gtf")), file.path(tmp, "list.txt"))
+prepde(file.path(tmp, "list.txt"), gene_out = file.path(tmp, "g.csv"), transcript_out = file.path(tmp, "t.csv"))
+port <- fread(file.path(tmp, "g.csv"))
+fp <- merge(as.data.table(fast), port, by.x = "gene", by.y = "gene_id")
+## the control against the record, transcript by transcript (the record's t_data.ctab is T014F's)
+ctab_rec <- fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "t_data.ctab"))
+st <- fread(cmd = sprintf("grep -v '^#' %s | awk -F'\\t' '$3==\"transcript\"' | cut -f9", shQuote(file.path(tmp, "st.gtf"))),
+            sep = "\t", header = FALSE, col.names = "attr")
+st[, `:=`(t_name = sub('.*transcript_id "([^"]+)".*', "\\1", attr), cov = as.numeric(sub('.*cov "([^"]+)".*', "\\1", attr)))]
+tc <- merge(ctab_rec[, .(t_name, cov_record = cov)], st[, .(t_name, cov)], by = "t_name")
+## and gene by gene against the record's count matrix (both in prepDE's names)
+gm <- fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "prepDE", "gene_count_matrix.csv"),
+            select = c("gene_id", grep("T014F", names(fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "prepDE",
+                                                                           "gene_count_matrix.csv"), nrows = 0)), value = TRUE)))
+setnames(gm, c("gene", "record"))
+gg <- merge(gm, as.data.table(fast), by = "gene", all = TRUE)
+gg[is.na(record), record := 0][is.na(count), count := 0]
+g10 <- gg[record >= 10 | count >= 10]
+checks <- data.table(
+  check = c("per-library counter = 05 port (genes, all counts equal)",
+            "control vs record, transcripts compared", "control vs record, transcripts with identical coverage",
+            "control vs record, Spearman of transcript coverage",
+            "control vs record, total gene count (control / record)",
+            "control vs record, genes with >= 10 counts in either", "control vs record, of those within 10%",
+            "control vs record, Spearman of gene counts (genes >= 10)",
+            "genes named only by a StringTie STRG ID in the record (not matched)"),
+  value = c(sprintf("%d genes, %s", nrow(fp), nrow(fp) == nrow(port) && all(fp$count == fp$S)),
+            nrow(tc), sum(abs(tc$cov - tc$cov_record) < 1e-6), round(cor(tc$cov, tc$cov_record, method = "spearman"), 4),
+            round(sum(gg$count) / sum(gg$record), 4), nrow(g10),
+            round(mean(abs(g10$count - g10$record) <= 0.1 * pmax(g10$record, 1)), 3),
+            round(cor(g10$count, g10$record, method = "spearman"), 4),
+            sum(grepl("^STRG\\.[0-9]+$", gm$gene))))
+stopifnot(nrow(fp) == nrow(port), all(fp$count == fp$S))
+fwrite(checks, file.path(recount_dir, "checks.csv"))
+unlink(tmp, recursive = TRUE)
+knitr::kable(checks)
+```
+
+```{r provenance, eval = all_done}
+ver <- function(x, args = "--version") { v <- trimws(system2(tool(x), args, stdout = TRUE, stderr = TRUE)); v[nzchar(v)][1] }
+settings <- c("[06_genome_recount.Rmd]",
+              paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+              paste0("hisat2               : ", ver("hisat2"), "; index: plain genome (hisat2-build, no --ss/--exon); align: --dta --known-splicesite-infile (RefSeq, hisat2_extract_splice_sites.py)"),
+              paste0("samtools             : ", ver("samtools")),
+              paste0("stringtie            : ", ver("stringtie"), "; -e -G <annotation>; prepDE gene counts, read length 75 (_prepde_sample.R)"),
+              paste0("featureCounts        : ", ver("featureCounts", "-v"), "; -s 1 -F SAF; unique alignments, reads on one gene only"),
+              paste0("reads                : ", READS_URL, " (131 libraries)"),
+              paste0("libraries            : ", done(), " of 131"))
+writeLines(provenance_lines(settings, c(genome_fa, gtf_gz, ann_files, helper, here::here("01_code", "_prepde_sample.R"),
+                                        here::here("01_code", "06_genome_recount.Rmd")),
+                            repo_root, packages = "data.table"),
+           file.path(recount_dir, "RUN_provenance.txt"))
+```
