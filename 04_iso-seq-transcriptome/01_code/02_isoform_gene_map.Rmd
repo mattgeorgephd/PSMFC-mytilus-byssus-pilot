@@ -65,7 +65,9 @@ Writes, in `03_analyses/02_isoform-gene-map/`:
   `ambiguous`, `novel_locus`, `mitochondrial`, `unassigned`), the alignment (`seqid`, `strand`, `start`, `end`, `identity`
   (gap-compressed),
   `mapq`, `n_alignments`), `exonic_overlap` with the gene, the runner-up gene and its overlap,
-  `mt_hit`, `mito_cov` (share of the isoform aligned to the mitogenome) and `isoform_len`;
+  `mt_hit`, `mito_cov` (share of the isoform aligned to the mitogenome), `isoform_len` and
+  `three_prime_beyond` (bases by which an assigned isoform's 3' end passes the last annotated
+  exon of its gene; 0 when it ends within it);
 - `isoform_gene_map_summary.csv`: isoforms and features by status, and the genome-branch genes
   reached;
 - `cds_map_agreement.csv`: agreement with the retired CDS-based map;
@@ -118,6 +120,10 @@ stopifnot(!anyNA(top), all(startsWith(top, "gene-") | as.character(seqnames(ex))
 ex$gene <- gene_key(top)
 gene_exons <- unlist(reduce(split(granges(ex), ex$gene)))            # each gene's exons merged
 gene_exons$gene <- names(gene_exons); names(gene_exons) <- NULL
+## each gene's annotated extent (first to last exon of any of its transcripts), for the 3' end test below
+gene_span <- unlist(range(split(granges(ex), ex$gene)))
+gene_span <- data.table(gene = names(gene_span), g_start = start(gene_span), g_end = end(gene_span),
+                        g_strand = as.character(strand(gene_span)))[!duplicated(gene)]
 
 ## the genome branch's genes are all here
 g06 <- gene_key(fread(file.path(de06, "count_matrix", "gene_count_matrix_clean.csv"), select = 1)[[1]])
@@ -226,6 +232,11 @@ map <- merge(all_iso, aln[, .(isoform, gene, status, seqid, strand, start = tsta
                               runner_up_gene, runner_up_overlap, mt_hit, mito_cov = round(mito_cov, 3), isoform_len)],
              by = "isoform", all.x = TRUE, sort = FALSE)
 map[is.na(status), `:=`(status = "unassigned", mt_hit = FALSE, n_alignments = 0L, mito_cov = 0)]
+## how far an assigned isoform's 3' end lies beyond its gene's annotated 3' end (bases; 0 if within)
+map <- merge(map, gene_span, by = "gene", all.x = TRUE, sort = FALSE)
+map[status %in% c("assigned", "ambiguous"),
+    three_prime_beyond := pmax(0L, fifelse(strand == "+", end - g_end, g_start - start))]
+map[, c("g_start", "g_end", "g_strand") := NULL]
 ## unaligned isoforms that are mitochondrial by sequence
 um <- map$status == "unassigned" & map$n_alignments == 0 & map$isoform %in% mito_tab[mito_cov >= params$mt_min_cov, isoform]
 map[um, `:=`(status = "mitochondrial", gene = paste0("mito:", isoform), mt_hit = TRUE)]

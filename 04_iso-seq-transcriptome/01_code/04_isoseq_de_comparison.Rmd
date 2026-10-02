@@ -37,6 +37,11 @@ Writes, in `03_analyses/04_isoseq-de/`:
 - `isoseq_DEG_counts.csv`: features tested and DEGs (up, down) per contrast, with the genome
   numbers beside them;
 - `reference_agreement.csv`: per contrast, DEG overlap and fold-change agreement;
+- `counts_per_gene_both_references.csv`: for every nuclear gene counted on both references,
+  its total count over the day-3 libraries on each, and their ratio;
+- `isoseq_only_DEGs.csv`: the DEGs found on the Iso-Seq reference only, with their mean count
+  and fold change on each reference (`tested_on_genome` FALSE when the genome filter dropped
+  the gene);
 - `FIG_isoseq_vs_genome_lfc.png`: log2 fold change on each reference for the genes tested in
   both, per contrast;
 - `FIG_mapping_rates.png`: per library, the share of reads salmon assigned to the Iso-Seq
@@ -132,6 +137,50 @@ deg_counts <- merge(iso[, .(features_tested = .N, isoseq_DEGs = sum(deg), isoseq
 fwrite(deg_counts, file.path(de_dir, "isoseq_DEG_counts.csv"))
 ```
 
+# Why the references differ
+
+Counts per gene: the genome counts are `prepDE` estimates (coverage x transcript length / 75,
+the read length the original run assumed, while the trimmed reads average about 63 bases), so a
+ratio near 0.84 means equal read numbers; what matters is how the ratio spreads. The Iso-Seq-only
+DEGs are compared on their mean count on each reference, which shows whether they are genes the
+genome branch counted thinly.
+
+```{r why-differ}
+g06 <- fread(file.path(de06, "count_matrix", "gene_count_matrix_clean.csv"))
+g06m <- as.matrix(g06[, -1]); rownames(g06m) <- gene_key(g06[[1]])
+day3 <- ti[day == "3", sample.1]
+both_genes <- setdiff(intersect(rownames(g06m), rownames(counts)), mt_keys)
+cpg <- data.table(gene = both_genes,
+                  genome_total = rowSums(g06m[both_genes, intersect(day3, colnames(g06m))]),
+                  isoseq_total = round(rowSums(counts[both_genes, intersect(day3, colnames(counts))]), 1))
+cpg[, ratio := round(isoseq_total / genome_total, 3)]
+fwrite(cpg, file.path(de_dir, "counts_per_gene_both_references.csv"))
+print(cpg[genome_total > 0 & isoseq_total > 0, .(genes = .N, median_ratio = median(ratio),
+                                                 q25 = quantile(ratio, .25), q75 = quantile(ratio, .75),
+                                                 more_than_double = sum(ratio > 2 * median(ratio)),
+                                                 less_than_half = sum(ratio < median(ratio) / 2))])
+
+io <- merge(iso[deg == TRUE], genome, by = c("code", "feature"), all.x = TRUE, suffixes = c("_isoseq", "_genome"))
+io <- io[is.na(deg_genome) | deg_genome == FALSE]
+io[, tested_on_genome := !is.na(log2FoldChange_genome)]
+gbm <- rbindlist(lapply(seq_len(nrow(contrasts)), function(i) {
+  r <- contrasts[i]
+  g <- fread(file.path(de06, "DEG_lists", r$dir, sprintf("%s_apeglm.csv", r$code)))
+  g[, .(code = r$code, feature = gene_key(gene), baseMean_genome = baseMean)]
+}))
+io <- merge(io, gbm, by = c("code", "feature"), all.x = TRUE)
+io <- io[, .(code, feature, on_annotated_gene = !grepl("^(novel|isoseq|mito):", feature), tested_on_genome,
+             baseMean_isoseq = round(baseMean, 1), baseMean_genome = round(baseMean_genome, 1),
+             log2FoldChange_isoseq = round(log2FoldChange_isoseq, 3), log2FoldChange_genome = round(log2FoldChange_genome, 3),
+             padj_isoseq = signif(padj_isoseq, 3), padj_genome = signif(padj_genome, 3))]
+fwrite(io, file.path(de_dir, "isoseq_only_DEGs.csv"))
+knitr::kable(io[, .(isoseq_only_DEGs = .N, on_genes = sum(on_annotated_gene),
+                    not_tested_on_genome = sum(on_annotated_gene & !tested_on_genome),
+                    median_baseMean_isoseq = median(baseMean_isoseq[on_annotated_gene & tested_on_genome]),
+                    median_baseMean_genome = median(baseMean_genome[on_annotated_gene & tested_on_genome], na.rm = TRUE),
+                    median_padj_genome = median(padj_genome[on_annotated_gene & tested_on_genome], na.rm = TRUE)), by = code])
+```
+
 # Figures
 
 ```{r fig-lfc, fig.width = 10, fig.height = 6.5}
@@ -195,7 +244,7 @@ inputs <- c(file.path(salmon_dir, c("gene_counts.csv.gz", "salmon_mapping_summar
             file.path(map_dir, "isoform_gene_map.csv.gz"),
             file.path(de06, "DEG_lists", c("contrasts.csv", "contrast_samples.csv")),
             file.path(de06, "DEG_lists", contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
-            file.path(de06, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv")), hisat_qc,
+            file.path(de06, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv", "gene_count_matrix_clean.csv")), hisat_qc,
             here::here("01_code", "04_isoseq_de_comparison.Rmd"))
 writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "apeglm", "data.table")),
            file.path(de_dir, "RUN_provenance.txt"))
