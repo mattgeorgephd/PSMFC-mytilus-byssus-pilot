@@ -132,8 +132,8 @@ all_done <- done() == length(files)
 libs <- sort(lib_of(files))
 read_counts <- function(counter, a) {
   long <- rbindlist(lapply(libs, function(l) {
-    d <- fread(file.path(lib_root, l, paste0(counter, "_", a, ".tsv.gz")), header = FALSE, col.names = c("gene", "count"),
-               colClasses = c("character", "numeric"))
+    d <- fread(file.path(lib_root, l, paste0(counter, "_", a, ".tsv.gz")), sep = "\t", quote = "", header = FALSE,
+               col.names = c("gene", "count"), colClasses = c("character", "numeric"))   # names hold "|": say the separator
     d[, library := l]
   }))
   stopifnot(!anyDuplicated(long[, .(gene, library)]))
