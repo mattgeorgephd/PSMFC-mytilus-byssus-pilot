@@ -22,7 +22,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 ## How to run
 
 - **Everything:** knit `00_run_pipeline.Rmd` at the repository root (open
-  `PSMFC-mytilus-byssus-pilot.Rproj`). About 30 minutes on four cores; on Windows the GO steps
+  `PSMFC-mytilus-byssus-pilot.Rproj`). About 35 minutes on four cores; on Windows the GO steps
   in `07` run on one core (R cannot fork there), so allow longer. It knits each folder's
   runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails.
 - **One folder:** open the folder's own `.Rproj` and knit `01_code/00_run_*.Rmd`. Its

@@ -1,9 +1,9 @@
 [04_isoseq_de_comparison.Rmd]
-generated            : 2026-10-02 08:29:30
+generated            : 2026-10-02 17:28:30
 model                : as 06: ~ treatment (day-3 control reference), >= 10 counts in a third of samples, apeglm, Wald padj
 DEG                  : padj < 0.05
 contrasts            : FOA_TC, FOW_TC, FDO_TC, GOA_TC, GOW_TC, GDO_TC
-code commit          : 2cac4e74b890
+code commit          : f078d6d7f41f
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : DESeq2 1.46.0, apeglm 1.28.0, data.table 1.18.6.1

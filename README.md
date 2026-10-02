@@ -10,7 +10,7 @@ Knit `00_run_pipeline.Rmd` at the repository root (inside `PSMFC-mytilus-byssus-
 It runs, in order and each in a fresh R process, the batch runner of every folder that can run
 from the committed data: thread strength (02), the count matrices (05), differential expression
 (06), the Iso-Seq sensitivity analysis (04, from its committed gene counts), GO enrichment (07),
-GO slims (08) and the gene-mechanics associations (09). About 30 minutes. Reports and logs go
+GO slims (08) and the gene-mechanics associations (09). About 35 minutes. Reports and logs go
 to each folder's `03_analyses/knit_html/` and, one per stage, to
 `knit_html/` at the root (all git-ignored). See `AGENTS.md` for the conventions and `tasks.md`
 for what is done and open.
