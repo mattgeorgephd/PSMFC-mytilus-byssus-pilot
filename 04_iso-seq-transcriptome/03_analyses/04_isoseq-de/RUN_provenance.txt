@@ -1,9 +1,9 @@
 [04_isoseq_de_comparison.Rmd]
-generated            : 2026-10-02 07:14:27
+generated            : 2026-10-02 07:56:58
 model                : as 06: ~ treatment (day-3 control reference), >= 10 counts in a third of samples, apeglm, Wald padj
 DEG                  : padj < 0.05
 contrasts            : FOA_TC, FOW_TC, FDO_TC, GOA_TC, GOW_TC, GDO_TC
-code commit          : a6ebbc81c553
+code commit          : 43cd5112da78
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : DESeq2 1.46.0, apeglm 1.28.0, data.table 1.18.6.1
@@ -23,4 +23,4 @@ inputs (md5, repo-relative path):
   5396f366c34d95a122fbaf61e74f4060  06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
   6a73c5aca828460ce53ad348ffb4f398  06_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv
   e73cb6dcfa9ea53d13acfa6399a12e58  05_sequence-alignment/03_analyses/hisat/multiqc_data/multiqc_bowtie2.txt
-  2df28fac71af2fe2cfd511c26c22e722  04_iso-seq-transcriptome/01_code/04_isoseq_de_comparison.Rmd
+  791484d600961f02d65f8e3662ab30e2  04_iso-seq-transcriptome/01_code/04_isoseq_de_comparison.Rmd

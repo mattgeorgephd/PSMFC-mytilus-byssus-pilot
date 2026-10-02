@@ -1,4 +1,4 @@
-generated       : 2026-10-01 23:38:11
+generated       : 2026-10-02 07:39:07
 input           : 03_analyses/03_assemble-thread-summary/thread-summary.xlsx
 INCLUDE_LAB_REFERENCE : FALSE
 SHOW_LAB_REFERENCE_IN_PANELS : TRUE
@@ -11,11 +11,11 @@ model           : per-animal ANCOVA, log(day-3 adhesion) ~ arm + log(baseline ad
 ANCOVA animals  : 48 (control 12, OA 12, OW 12, DO 12)
 multiplicity    : unadjusted and Dunnett (emmeans mvt, seed 20260930)
 R / emmeans     : R version 4.4.3 (2025-02-28) / 2.0.4
-code commit          : 3beb73aa476c
+code commit          : 43cd5112da78
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : emmeans 2.0.4
 inputs (md5, repo-relative path):
-  3dc0f3be37e6125182f4c7981d8403b5  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
+  008c4d2f7e5182cde5b3cc9823faed4f  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
   4f7c2258badf1ec0e4c7c21266dcd521  02_thread-strength/01_code/04_analyze_thread_strength.Rmd
   95ad5e8b9d6029d12d4c8d407b79bc6e  02_thread-strength/01_code/_ancova.R
