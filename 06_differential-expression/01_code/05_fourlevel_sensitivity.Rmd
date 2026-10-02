@@ -118,7 +118,11 @@ both numbers). The direction split (`n_up_fourlevel`, `n_down_fourlevel`) shows 
 shared dispersion changes the balance of up- and down-regulated genes.
 
 ```{r provenance}
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # git_state()
+gs <- git_state(repo_root)
 writeLines(c(paste0("generated : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             paste0("code commit          : ", gs[["commit"]]),
+             paste0("uncommitted changes  : ", gs[["dirty"]]),
              "design    : ~ treatment, levels control, OA, OW, DO (one fit per tissue, day-3 samples)",
              "filter    : >= 10 counts in >= 1/3 of the tissue's day-3 samples",
              "shrinkage : apeglm, coef = treatment_<X>_vs_control",

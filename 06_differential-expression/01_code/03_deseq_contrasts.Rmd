@@ -106,6 +106,7 @@ save_fig(ggplot(p$data, aes(PC1, PC2, colour = treatment, shape = tissue)) +
            geom_point(size = 2.6, alpha = 0.9) +
            scale_colour_manual(values = TREATMENT_COLORS, labels = TREATMENT_LABELS, name = NULL) +
            scale_shape_manual(values = c(F = 16, G = 17), labels = TISSUE_LABELS, name = NULL) +
+           guides(colour = guide_legend(order = 1), shape = guide_legend(order = 2)) +  # untitled legends are otherwise ordered at random
            axis_labs(p) + labs(title = "Foot and gill, day 3") + theme_psmfc(),
          "PCA_both_tissues_day3.png")
 
@@ -117,6 +118,7 @@ save_fig(ggplot(p$data, aes(PC1, PC2, colour = region, shape = day)) +
            geom_point(size = 2.4, alpha = 0.85) +
            scale_colour_manual(values = REGION_COLORS, labels = REGION_LABELS, name = NULL) +
            scale_shape_manual(values = c("day 0" = 1, "day 3" = 16), name = NULL) +
+           guides(colour = guide_legend(order = 1), shape = guide_legend(order = 2)) +
            axis_labs(p) + labs(title = "All samples") + theme_psmfc(),
          "PCA_all_samples.png")
 ```

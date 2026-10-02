@@ -97,6 +97,10 @@ Conventions and how to run are in `AGENTS.md`.
   the protein-to-gene link (free-text search had returned the wrong gene for SPDEF); step 03
   could not run as written (it joined OrthoDB's headerless species table on a missing column)
   and now uses OrthoDB 12.2.
+- **Figure reproducibility.** The two PCA figures with two untitled legends (06 step 03) changed
+  on every run: ggplot2 4.0.3 orders untitled legends at random from one R session to the next
+  (checked in six sessions). Their legend order is now fixed. 06 step 05's provenance now names
+  the commit, like the others.
 
 ## In progress
 
