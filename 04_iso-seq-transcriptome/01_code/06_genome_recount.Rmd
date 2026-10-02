@@ -231,7 +231,9 @@ knitr::kable(checks)
 ```
 
 ```{r provenance, eval = all_done}
-ver <- function(x, args = "--version") { v <- trimws(system2(tool(x), args, stdout = TRUE, stderr = TRUE)); v[nzchar(v)][1] }
+ver <- function(x, args = "--version") {                       # first line of the version text, without the binary's path
+  v <- trimws(system2(tool(x), args, stdout = TRUE, stderr = TRUE)); sub("^\\S*/", "", v[nzchar(v)][1])
+}
 settings <- c("[06_genome_recount.Rmd]",
               paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
               paste0("hisat2               : ", ver("hisat2"), "; index: plain genome (hisat2-build, no --ss/--exon); align: --dta --known-splicesite-infile (RefSeq, hisat2_extract_splice_sites.py)"),
