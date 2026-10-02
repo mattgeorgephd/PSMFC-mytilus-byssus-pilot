@@ -56,9 +56,60 @@ download the transcriptome, the genome and the reads and need minimap2 and salmo
   salmon's EM shares reads among them, and step 03 sums them per gene, so gene counts are
   unaffected, but isoform-level estimates are not meaningful and are not used.
 
-## Results
+## Results (2026-10-02)
 
-To be filled after the run.
+**Isoforms to genes (step 02).** 311,399 of the 411,251 isoforms (76%) fall on 19,856 annotated
+genes, 62,811 form 16,685 novel loci outside every gene, 2,456 are mitochondrial and 34,585
+stay unassigned (20,317 of them do not align to the genome). Where this map and the retired
+CDS-based one both put an isoform on a nuclear gene, they agree for 97.0%
+(`03_analyses/02_isoform-gene-map/README.md`).
+
+**Quantification (step 03).** salmon assigns a median 66.2% of each library's reads to the
+isoforms, about what HISAT2 aligns to the genome (foot 70%, gill 63% on both). Of the assigned
+reads, a median 52% fall on isoforms that end within their gene's annotation, 18% on isoforms
+of annotated genes that run more than 100 bases past the last annotated exon, 14.5% on novel
+loci, 7% on unassigned isoforms and 7% on mitochondrial features. The two libraries removed at
+QC are 64% (T051G) and 49% (T051F) mitochondrial, against at most 10% in the others.
+
+**Differential expression on the two references (step 04).**
+
+| contrast | DEGs, Iso-Seq / genome | genome DEGs that are also Iso-Seq DEGs | fold-change Spearman |
+|---|---|---|---|
+| Foot OA | 194 / 75 | 58 (77%) | 0.84 |
+| Foot OW | 262 / 165 | 89 (54%) | 0.82 |
+| Foot DO | 867 / 363 | 291 (80%) | 0.87 |
+| Gill OA | 884 / 423 | 304 (72%) | 0.81 |
+| Gill OW | 366 / 180 | 123 (68%) | 0.81 |
+| Gill DO | 600 / 310 | 227 (73%) | 0.82 |
+
+**What this means for the results of record.**
+
+- **The genome results hold.** Most genome DEGs are DEGs on the Iso-Seq reference too (54 to
+  80% per contrast), all in the same direction but three in Gill OA, and fold changes over the
+  genes tested on both correlate at 0.81 to 0.87. The genome DEGs that are not Iso-Seq DEGs
+  are mostly just short of the threshold there (median Iso-Seq padj 0.09 to 0.14 per
+  contrast; 67 to 84% below 0.2), and 359 of those 368 keep their direction.
+- **The mitochondrial signal does not depend on the reference.** Each library's mitochondrial
+  share of reads correlates between the references at Spearman 0.87 (day-3 foot 0.85, day-3
+  gill 0.81).
+- **Byssal genes.** The byssal-gene DEGs of the genome analysis replicate (Foot OA 1 of 1, Foot
+  OW 1 of 1, Foot DO 7 of 8). The Iso-Seq reference adds a few, but three of them (foot
+  proteins 4, 10 and 11) have shrunk fold changes near 0 with a small padj, the sign of a
+  gene expressed in a few animals only; they should not be read as treatment effects.
+- **The genome analysis is conservative.** The Iso-Seq reference finds about twice as many DEGs.
+  On genes counted by both it places about 1.3 times the reads on a typical gene (2.4 times or
+  more on a quarter of genes), and most Iso-Seq-only DEGs on annotated genes are genes the
+  genome analysis tested with fewer reads and a near-miss padj (median 0.15 to 0.23). The
+  extra reads come largely from 3' ends beyond the RefSeq gene models (18% of assigned reads)
+  and from unannotated loci (14.5%), which the genome analysis, counting annotated exons only,
+  cannot see.
+
+**Caveats.** No decoy sequence (reads from loci the Iso-Seq set lacks may be placed on similar
+isoforms); salmon shares reads among near-duplicate isoforms by EM, so gene sums can borrow
+from paralogs; novel loci have no names or GO terms; the genome counts are coverage-based
+prepDE estimates rather than read counts. Whether to carry the Iso-Seq gene models into the
+genome analysis (extend the annotation with them and recount) is an open decision in
+`../tasks.md`; this branch stays a sensitivity analysis until then.
 
 ## Inputs
 

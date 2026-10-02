@@ -37,7 +37,8 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   `03_analyses/01_go-inputs/RUN_provenance.txt`.
 - **Not run by the pipeline:** `03_blast/` and `05_sequence-alignment` step 01 (HPC, inputs
   not in the repository), `05` step 03's recipe check (set `online: true`),
-  `04_iso-seq-transcriptome/` (downloads the transcriptome) and
+  `04_iso-seq-transcriptome` steps 01-03 (download the transcriptome, genome and reads and run
+  minimap2 and salmon; set `online: true`; step 04 runs as pipeline stage 04) and
   `08_gene-annotation` steps 02-03 (NCBI and OrthoDB; set `online: true`). Their committed
   outputs are what the pipeline reads.
 - **After a run:** check that every `run_log.csv` row is `TRUE`; that the `RUN_provenance*.txt`
@@ -104,8 +105,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   split their reads with them (`tools/mt_encoded.R`; handled as above); byssal plaque genes are expressed in the day-0 libraries and mostly
   absent at day 3, which the different day-0 dissection may explain; the analysed reads are
   leader-clipped and PCR-deduplicated Tag-seq reads (`05` README, "The reads"), whose raw
-  reads are on owl (`nightingales/M_trossulus/`); the Iso-Seq branch (`04`) is designed but
-  blocked on inputs not in the repository.
+  reads are on owl (`nightingales/M_trossulus/`); the Iso-Seq branch (`04`, a sensitivity
+  analysis) replicates most genome DEGs and finds about twice as many, largely because the
+  RefSeq gene models end before many Tag-seq 3' ends (`04` README).
 - **Secrets.** API keys go in environment variables (`ENTREZ_KEY` in `~/.Renviron`), never in
   a file in the repository.
 - **Writing.** READMEs and comments in plain language, with commas or semicolons rather than

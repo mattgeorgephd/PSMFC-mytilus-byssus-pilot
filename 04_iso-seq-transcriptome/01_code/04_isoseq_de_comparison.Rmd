@@ -140,8 +140,9 @@ fwrite(deg_counts, file.path(de_dir, "isoseq_DEG_counts.csv"))
 # Why the references differ
 
 Counts per gene: the genome counts are `prepDE` estimates (coverage x transcript length / 75,
-the read length the original run assumed, while the trimmed reads average about 63 bases), so a
-ratio near 0.84 means equal read numbers; what matters is how the ratio spreads. The Iso-Seq-only
+the read length the original run assumed, so about the aligned read bases / 75), while the
+trimmed reads average about 63 bases; equal read numbers on both references therefore give an
+Iso-Seq / genome ratio of about 75 / 63 = 1.19. What matters beyond that is how the ratio spreads. The Iso-Seq-only
 DEGs are compared on their mean count on each reference, which shows whether they are genes the
 genome branch counted thinly.
 

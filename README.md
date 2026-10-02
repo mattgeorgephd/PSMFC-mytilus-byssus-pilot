@@ -30,7 +30,7 @@ own folder's `03_analyses/`; later folders read earlier ones.
 | `01_mussel-measurements/` | mussel size, condition and thread-production workbooks | input: `mussel-size-measurements.xlsx` feeds `02_thread-strength` script 01 |
 | `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, mean and maximum peak force and plaque area | `01_code/00_run_thread_strength.Rmd` |
 | `03_blast/` | BLAST annotation of the genome CDS and the Iso-Seq transcriptome; the `genome-foot/` GO mapping used downstream | HPC method record; outputs committed |
-| `04_iso-seq-transcriptome/` | QC of the Iso-Seq transcriptome (superseded isoseq-as-reference DE kept); design for an Iso-Seq branch, blocked on inputs not in the repository | knit `01_code/01_isoseq_transcriptome_check.Rmd` |
+| `04_iso-seq-transcriptome/` | sensitivity branch: the TC contrasts repeated with the reads quantified against the Iso-Seq transcriptome (isoforms mapped to genome genes, salmon, tximport) and compared with `06` | runner `01_code/00_run_isoseq.Rmd` (step 04 by default; steps 02-03 with `online: true`) |
 | `05_sequence-alignment/` | read QC, HISAT2 + StringTie alignment (HPC record) and the count matrices | `01_code/00_run_sequence_alignment.Rmd` |
 | `06_differential-expression/` | DESeq2 for 7 contrasts (each stressor vs the day-3 treatment control, and foot vs gill), DEG annotation, figures; the mitochondrial genes on their own | `01_code/00_run_differential_expression.Rmd` |
 | `07_enrichment/` | GO enrichment: topGO (of record), goseq, clusterProfiler, rrvgo, method comparison | `01_code/00_run_enrichment.Rmd` |

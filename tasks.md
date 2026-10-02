@@ -79,6 +79,11 @@ Conventions and how to run are in `AGENTS.md`.
   kept as a record (`05/01_code/_superseded/`); it and the August 2022 MultiQC report describe
   a different trimming, not the reads analysed. The raw reads of all 131 libraries are on owl
   (`nightingales/M_trossulus/`); gannet's `20220405-tagseq/` is a partial copy (73 libraries).
+- **Iso-Seq branch implemented.** Isoforms placed on the genome (minimap2 spliced alignment, exon
+  overlap with RefSeq genes; mitochondrial isoforms set apart), the 131 libraries quantified
+  with salmon (no length correction) and summed per gene with tximport, the six TC contrasts
+  refitted as in `06` and compared: the genome DEGs largely replicate (54 to 80%, same
+  direction), and the Iso-Seq reference finds about twice as many (`04` README).
 - **Mitochondrial pseudogenes left out.** The mitochondrial copies had been found through a BLAST
   of the annotation's CDS, which cannot see the 167 pseudogenes NCBI names after mitochondrial
   proteins (1.17 million reads; 81 of the 543 Gill OA DEGs). They are now found by name
@@ -102,7 +107,7 @@ Conventions and how to run are in `AGENTS.md`.
 |---|---|---|
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Merge the pull request | branch `claude/jolly-clarke-7afl1v`; merging deletes untracked `.Rhistory` copies from local checkouts (see the PR) | Matt |
-| Iso-Seq branch | inputs located (2026-10-01): the trimmed reads HISAT2 used are in Grace's `byssus-exp-analysis/data/raw-trimmed/` on owl, and the transcriptome on owl's genomic-databank; but owl, gannet, NCBI and sr320.github.io (Steven Roberts' notebooks) are not reachable from the cloud environment used here, and no isoform-to-gene table exists yet. Design in `04_iso-seq-transcriptome/README.md` | Matt (network access or copies), Steven (notebook details) |
+| Iso-Seq gene models in the genome analysis | the Iso-Seq branch shows 18% of assigned reads on isoforms that run past the RefSeq 3' ends and 14.5% on unannotated loci; options: keep it as a sensitivity analysis (A), extend the annotation with the Iso-Seq models and recount the genome analysis, which changes every result of record (B), or salmon with genome decoys (C); evidence in `04_iso-seq-transcriptome/README.md` | Matt (decision) |
 | Manuscript text | numbers and wording predate this pull request: Gill OA DEGs (711 to 423), the GO results, LC contrasts, the mitochondrial result, thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (91 of 122 genes refit in Foot OW), T025G (48 of 76 in Gill OA; also the lowest alignment rate, 60.8% against a median of 67.7%) and T035G (42 of 81 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
