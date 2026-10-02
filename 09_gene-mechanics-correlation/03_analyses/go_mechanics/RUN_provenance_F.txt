@@ -1,5 +1,5 @@
 [05_go_term_mechanics.Rmd]
-generated            : 2026-10-02 08:05:14
+generated            : 2026-10-02 08:37:40
 tissue               : F
 reported test        : ANCOVA level_day3 ~ score + treatment + level_baseline (script 01's metrics, scales and animals)
 metrics [tier]       : mean_force [primary], pad_area [primary], max_force [exploratory], adhesion_kpa [exploratory]
@@ -8,7 +8,7 @@ MIN_GENES / FDR_ALPHA: 3 / 0.1
 sets scored          : DEG set 6, GO term 107, mitochondrial 1 (of 137 sets)
 animals in the fits  : 45
 checks               : 5 run, 0 failed
-code commit          : 43cd5112da78
+code commit          : 2cac4e74b890
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : dplyr 1.2.1, readr 2.2.0
