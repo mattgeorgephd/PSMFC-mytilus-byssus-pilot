@@ -1,0 +1,18 @@
+[05_augmented_annotation.Rmd]
+generated            : 2026-10-02 10:01:21
+genome / annotation  : GCF_036588685.1_PNRI_Mtr1.1.1.hap1 (RefSeq annotation RS_2024_02)
+isoforms used        : step 02 'assigned' with no exon overlap with a second gene; novel loci without an mt_hit isoform
+ext3                 : last exon of each transcript extended to the furthest 3' end of a same-gene isoform whose last block overlaps it; stops before any other gene on the same strand
+full                 : RefSeq plus the isoforms as transcripts of their gene, plus novel loci as genes; a locus overlapping one gene's exons (RefSeq or added) on its strand joins it, one overlapping several genes or a mitochondrial locus is left out
+novel loci           : joined one gene 3987; left out (several genes or mitochondrial) 187; kept as novel loci 12487
+transcripts extended : 18470 (9781 genes)
+transcripts added    : 361976 (12487 novel loci)
+code commit          : 23b5c96cfe14
+uncommitted changes  : no
+R                    : R version 4.4.3 (2025-02-28)
+packages             : data.table 1.18.6.1, GenomicRanges 1.58.0, GenomicAlignments 1.42.0
+inputs (md5, repo-relative path):
+  9d2edc71bf94b51a6f42cde8a7a5eb6d  04_iso-seq-transcriptome/02_data/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.gff.gz
+  775bbc4037ddb667dfcc2fec0765f1e8  04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/isoform_gene_map.csv.gz
+  757a5a39aafc7b834eda4fda1dc0aab6  04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/minimap2_isoforms_vs_genome.paf.gz
+  7e84d76d72879c76cfe042fae9b1f9fc  04_iso-seq-transcriptome/01_code/05_augmented_annotation.Rmd
