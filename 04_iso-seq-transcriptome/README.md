@@ -2,16 +2,21 @@
 
 A sensitivity branch: the differential expression of record (`06`, reads aligned to the
 genome) repeated with the Tag-seq reads quantified against the PacBio Iso-Seq *M. trossulus*
-transcriptome instead, and the two compared gene by gene. It asks whether the DEG results
-depend on the reference. Nothing of record rests on it.
+transcriptome instead, and the two compared gene by gene (steps 01 to 04). It asks whether the
+DEG results depend on the reference. Steps 05 to 07 are option B, a parallel analysis: the
+reads recounted on the genome with the RefSeq annotation augmented by the Iso-Seq isoforms,
+built so that it could become the method of record if its results justify it. Nothing of
+record rests on this folder.
 
 ## How to run
 
 Open `iso-seq-transcriptome.Rproj` and knit `01_code/00_run_isoseq.Rmd`. With `online: false`
-(the default, and what `00_run_pipeline.Rmd` does as its stage 04) only step 04 runs, from the
-committed isoform map and gene counts. `online: true` also rebuilds steps 02 and 03, which
-download the transcriptome, the genome and the reads and need minimap2 and salmon
-(`minimap2`, `salmon` parameters; minimap2 2.31 and salmon 1.10.3 from bioconda were used).
+(the default, and what `00_run_pipeline.Rmd` does as its stage 04) steps 04 and 07 run, from
+the committed gene counts. `online: true` also rebuilds steps 02, 03, 05 and 06, which download
+the transcriptome, the genome, its GTF and the reads and need minimap2, salmon, HISAT2,
+StringTie, Subread and samtools (`minimap2`, `salmon` and `bin` parameters; minimap2 2.31,
+salmon 1.10.3, HISAT2 2.2.1, StringTie 2.2.1, Subread 2.1.1 and samtools 1.24 from bioconda
+were used).
 
 | step | script | writes to `03_analyses/` | needs |
 |---|---|---|---|
@@ -19,6 +24,9 @@ download the transcriptome, the genome and the reads and need minimap2 and salmo
 | 02 | `02_isoform_gene_map.Rmd` | `02_isoform-gene-map/`: each isoform's genome gene | owl, NCBI, minimap2; about 1.5 hours and 9 GB of memory |
 | 03 | `03_salmon_quant.Rmd` | `03_salmon/`: mapping summary and gene counts | gannet, salmon; about 15 minutes for the index plus 3 to 4 minutes per library |
 | 04 | `04_isoseq_de_comparison.Rmd` | `04_isoseq-de/`: the TC contrasts on the Iso-Seq counts and the comparison with the genome | committed files only |
+| 05 | `05_augmented_annotation.Rmd` | `05_augmented-annotation/`: option B's annotations (RefSeq; 3' extension; full models) | step 02's alignment; a few minutes |
+| 06 | `06_genome_recount.Rmd` | `06_genome-recount/`: the reads realigned (HISAT2) and counted on each annotation (StringTie + prepDE, featureCounts) | gannet, NCBI, the tools above; 15 minutes for the index plus about 4 minutes per library |
+| 07 | `07_augmented_de_comparison.Rmd` | `07_augmented-de/`: the TC contrasts on each recount, compared with the record | committed files only |
 
 ## Design
 
@@ -41,6 +49,30 @@ download the transcriptome, the genome and the reads and need minimap2 and salmo
    loci left out as in `06`. Genes are matched to the genome results through `gene_key()`.
    Given the genome counts instead of the Iso-Seq counts, step 04 reproduces `06` exactly
    (checked 2026-10-01: same genes tested and same DEGs in all six contrasts).
+
+**Option B (steps 05 to 07), a parallel analysis.** Steps 02 to 04 showed that the RefSeq gene
+models often end before the 3' ends that Tag-seq reads. Option B keeps the genome as the
+reference and changes only the annotation the reads are counted on, so its genes keep their
+keys, names and GO annotation and the rest of the pipeline could run on it unchanged.
+
+4. **Annotations (step 05).** Three versions of RS_2024_02: `refseq` unchanged (the control);
+   `ext3`, each transcript's last exon extended to the 3' end of same-gene isoforms whose last
+   block overlaps it, stopping before the next gene on the strand; and `full`, the isoforms
+   added as transcripts of their genes and the novel loci as new genes (a locus overlapping
+   one gene's exons joins it). Readthrough isoforms (exons on two genes), ambiguous
+   placements and mitochondrial isoforms are not used.
+5. **Realignment and counting (step 06).** The record's alignments were not kept, so the 131
+   libraries are realigned with HISAT2 2.2.1 and the record's settings. The record's index
+   held the RefSeq splice sites and exons, which takes more memory than this machine has; here
+   the same splice sites are given at alignment time. Each alignment is counted on the three
+   annotations with StringTie + prepDE, as the record counted (Pertea et al. 2015, *Nature
+   Biotechnology* 33:290), and with featureCounts (unique alignments, sense strand; Liao,
+   Smyth and Shi 2014, *Bioinformatics* 30:923), the usual counter for 3' Tag-seq.
+6. **Comparison (step 07).** The six TC contrasts with `06`'s rules on each of the six
+   matrices, compared with the record (what adopting a matrix would change) and with the same
+   counter's RefSeq control (the effect of the annotation alone). The RefSeq control against
+   the record measures what the realignment alone changes. Given the record's own counts,
+   step 07 reproduces `06` exactly (checked 2026-10-02).
 
 ## Limitations
 
@@ -116,7 +148,7 @@ genome analysis (extend the annotation with them and recount) is an open decisio
 | Input | Source |
 |---|---|
 | Iso-Seq transcriptome, `Mtros-hq_transcripts.fasta` | owl, https://owl.fish.washington.edu/halfshell/genomic-databank/ |
-| Genome and annotation, `GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna.gz`, `..._genomic.gff.gz` | NCBI, https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/036/588/685/GCF_036588685.1_PNRI_Mtr1.1.1.hap1/ (MD5s checked against NCBI's) |
+| Genome and annotation, `GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna.gz`, `..._genomic.gff.gz`, `..._genomic.gtf.gz` | NCBI, https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/036/588/685/GCF_036588685.1_PNRI_Mtr1.1.1.hap1/ (MD5s checked against NCBI's) |
 | Trimmed Tag-seq reads, `*_L099_R1_cmb.trim.fastq.gz` | gannet, `panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/` (how they were made: `05_sequence-alignment/README.md`, "The reads") |
 | Genome-branch results and samples | `06_differential-expression/03_analyses/` |
 
@@ -136,6 +168,11 @@ neither maps isoforms to genome genes.
 │   ├── 02_isoform_gene_map.Rmd               isoforms to genome genes
 │   ├── 03_salmon_quant.Rmd                   salmon + tximport gene counts
 │   ├── 04_isoseq_de_comparison.Rmd           TC contrasts and comparison with 06
+│   ├── 05_augmented_annotation.Rmd           option B: RefSeq augmented with the isoforms
+│   ├── 06_genome_recount.Rmd                 option B: realign and count on each annotation
+│   ├── 07_augmented_de_comparison.Rmd        option B: TC contrasts on each recount vs the record
+│   ├── _recount_library.sh                   step 06's per-library work (align, count, clean up)
+│   ├── _prepde_sample.R                      prepDE's gene counts for one StringTie sample
 │   ├── _paths.R                              shared paths (sourced by every step)
 │   └── _superseded/                          retired scripts (README inside)
 ├── 02_data/                                  downloads, git-ignored (README)
@@ -143,5 +180,8 @@ neither maps isoforms to genome genes.
     ├── 02_isoform-gene-map/                  step 02 (README)
     ├── 03_salmon/                            step 03 (README)
     ├── 04_isoseq-de/                         step 04 (README)
+    ├── 05_augmented-annotation/              step 05 (README)
+    ├── 06_genome-recount/                    step 06 (README)
+    ├── 07_augmented-de/                      step 07 (README)
     └── _superseded/                          retired outputs (README)
 ```

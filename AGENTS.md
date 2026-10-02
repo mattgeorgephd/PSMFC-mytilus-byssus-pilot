@@ -38,8 +38,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   `03_analyses/01_go-inputs/RUN_provenance.txt`.
 - **Not run by the pipeline:** `03_blast/` and `05_sequence-alignment` step 01 (HPC, inputs
   not in the repository), `05` step 03's recipe check (set `online: true`),
-  `04_iso-seq-transcriptome` steps 01-03 (download the transcriptome, genome and reads and run
-  minimap2 and salmon; set `online: true`; step 04 runs as pipeline stage 04) and
+  `04_iso-seq-transcriptome` steps 01-03 and 05-06 (download the transcriptome, genome and
+  reads and run minimap2, salmon, HISAT2, StringTie and featureCounts; set `online: true`;
+  steps 04 and 07 run as pipeline stage 04) and
   `08_gene-annotation` steps 02-03 (NCBI and OrthoDB; set `online: true`). Their committed
   outputs are what the pipeline reads.
 - **After a run:** check that every `run_log.csv` row is `TRUE`; that the `RUN_provenance*.txt`

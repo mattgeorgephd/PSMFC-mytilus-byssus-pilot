@@ -32,13 +32,14 @@ its folder's `03_analyses/knit_html/`; this file leaves one per stage, and `run_
 | 08 | `08_gene-annotation/01_code/00_run_gene_annotation.Rmd` | 06 | 1 min |
 | 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 06, 07, `03_blast/` | 4 min |
 
-Stage 04 runs after 06 because it repeats 06's contrasts on the Iso-Seq reference and
-compares the two; it reads committed gene counts, so only its last step runs here.
+Stage 04 runs after 06 because it repeats 06's contrasts on the Iso-Seq reference (step 04)
+and on option B's recounts of the genome (step 07) and compares them with 06; both read
+committed gene counts, so only those two steps run here.
 
 Not run here, because they need data or machines outside this repository: the BLAST
-annotation (`03_blast/`, HPC), the Iso-Seq steps 01-03 (`04_iso-seq-transcriptome/`, which
-download the transcriptome and the reads and run minimap2 and salmon; set that runner's
-`online: true`), HISAT2 + StringTie (`05_sequence-alignment` step 01, HPC), 05 step 03's
+annotation (`03_blast/`, HPC), the Iso-Seq steps 01-03 and 05-06 (`04_iso-seq-transcriptome/`,
+which download the transcriptome, the genome and the reads and run minimap2, salmon, HISAT2,
+StringTie and featureCounts; set that runner's `online: true`), HISAT2 + StringTie (`05_sequence-alignment` step 01, HPC), 05 step 03's
 recipe check and, unless `online_annotation` is true, 08's NCBI and OrthoDB queries. Their
 committed outputs are what the stages above read.
 
@@ -90,7 +91,9 @@ finish_run(run_log, html_dir, "Pipeline")
 - Differential expression: `06_differential-expression/03_analyses/DEG_lists/DEG_counts.csv`
   and `figures/`.
 - Iso-Seq reference (sensitivity): `04_iso-seq-transcriptome/03_analyses/04_isoseq-de/`
-  (`reference_agreement.csv`).
+  (`reference_agreement.csv`); option B, the genome recounted on Iso-Seq-augmented
+  annotations (parallel analysis): `04_iso-seq-transcriptome/03_analyses/07_augmented-de/`
+  (`deg_summary.csv`).
 - GO enrichment: `07_enrichment/03_analyses/02_topgo/` (of record) and
   `06_method-comparison/consensus_terms_TC_BP.csv`.
 - GO slims: `08_gene-annotation/03_analyses/goslims/`.
