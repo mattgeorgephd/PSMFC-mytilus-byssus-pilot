@@ -41,10 +41,10 @@ Conventions and how to run are in `AGENTS.md`.
   earlier top-50 list; documented in `Top_gene_summaries/README.md`.
 - **Documentation.** A README in every new folder (and in the folders that were missing one);
   `AGENTS.md` and this file.
-- **Mitochondrial genes on their own.** The 143 mitochondrial loci (12 protein and 5 RNA genes
-  of the mitochondrial genome, 126 nuclear-scaffold copies) are out of the genome DE, GO and
+- **Mitochondrial genes on their own.** The 310 mitochondrial loci (12 protein and 5 RNA genes
+  of the mitochondrial genome, 293 nuclear-scaffold copies) are out of the genome DE, GO and
   gene-mechanics universes and tested per protein in `06` step 13, with a manuscript figure
-  (`figures/MT_mitochondrial_expression.png`): Gill OA raises 8 of 12 proteins, Foot OA 5,
+  (`figures/MT_mitochondrial_expression.png`): Gill OA raises 10 of 12 proteins, Foot OA 3,
   OW and DO none.
 - **Lab controls retired.** The day-0 animals are not used as a control anywhere (different
   foot dissection); LC contrasts and their GO results moved to `_superseded/` in 06 and 07.
@@ -79,6 +79,12 @@ Conventions and how to run are in `AGENTS.md`.
   kept as a record (`05/01_code/_superseded/`); it and the August 2022 MultiQC report describe
   a different trimming, not the reads analysed. The raw reads of all 131 libraries are on owl
   (`nightingales/M_trossulus/`); gannet's `20220405-tagseq/` is a partial copy (73 libraries).
+- **Mitochondrial pseudogenes left out.** The mitochondrial copies had been found through a BLAST
+  of the annotation's CDS, which cannot see the 167 pseudogenes NCBI names after mitochondrial
+  proteins (1.17 million reads; 81 of the 543 Gill OA DEGs). They are now found by name
+  (`05_sequence-alignment/02_data/annotation_mt_like_loci.csv`, which reproduces the 126
+  BLAST-found copies exactly) and handled like the other copies. Gill OA has 423 DEGs, Foot OA
+  75; Gill OA raises 10 of the 12 mitochondrial proteins.
 - **08 NCBI and OrthoDB tables refreshed.** With NCBI and OrthoDB reachable, steps 02-03 ran
   on the current top-50 lists. Step 02 now finds each accession's gene through NCBI Protein and
   the protein-to-gene link (free-text search had returned the wrong gene for SPDEF); step 03
@@ -97,7 +103,7 @@ Conventions and how to run are in `AGENTS.md`.
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Merge the pull request | branch `claude/jolly-clarke-7afl1v`; merging deletes untracked `.Rhistory` copies from local checkouts (see the PR) | Matt |
 | Iso-Seq branch | inputs located (2026-10-01): the trimmed reads HISAT2 used are in Grace's `byssus-exp-analysis/data/raw-trimmed/` on owl, and the transcriptome on owl's genomic-databank; but owl, gannet, NCBI and sr320.github.io (Steven Roberts' notebooks) are not reachable from the cloud environment used here, and no isoform-to-gene table exists yet. Design in `04_iso-seq-transcriptome/README.md` | Matt (network access or copies), Steven (notebook details) |
-| Manuscript text | numbers and wording predate this pull request: Gill OA DEGs (711 to 543), the GO results, LC contrasts, the mitochondrial result, thread metric names (`mean_force`, `max_force`), extension | Matt |
+| Manuscript text | numbers and wording predate this pull request: Gill OA DEGs (711 to 423), the GO results, LC contrasts, the mitochondrial result, thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (91 of 122 genes refit in Foot OW), T025G (48 of 76 in Gill OA; also the lowest alignment rate, 60.8% against a median of 67.7%) and T035G (42 of 81 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,174 of 7,393 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
@@ -107,7 +113,9 @@ Conventions and how to run are in `AGENTS.md`.
 
 - **No locked software environment.** The pipeline was tested with R 4.4.3 and Bioconductor
   3.20 (versions recorded in each `RUN_provenance*.txt`), but the repository has no `renv.lock`
-  or conda environment file, so a new machine has to assemble the packages by hand.
+  or conda environment file, so a new machine has to assemble the packages by hand. System
+  libraries matter too: after the cloud container was rebuilt on 2026-10-01, every figure
+  re-rendered with different fonts (same data, different bytes).
 - **Annotation provenance.** `LOC_GO_list.txt` joins two BLAST runs (its second e-value column
   comes from the run against Swiss-Prot release 2024_01 plus a UniProtKB "mytilus foot" query,
   `03_blast/01_code/01_genome_blast.Rmd`) and dropped second transcripts of a gene that hit the

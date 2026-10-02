@@ -11,7 +11,7 @@ candidate,max_force,exploratory,LOC134724787,Alcohol dehydrogenase class-3 chain
 candidate,adhesion_kpa,exploratory,LOC134718614,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),46,0.0015,0.221,0.221,T030,0.17,0.087,D>4/n,0.7151,0.5705,0.00935,0.202,robust,31.522
 candidate,adhesion_kpa,exploratory,LOC134710470,Tubulin-specific chaperone E (Tubulin-folding cofactor E),46,0.00174,0.221,0.221,T030,0.242,0.087,D>4/n,-0.4781,-0.5359,7.19e-5,0.121,robust,43.103
 candidate,adhesion_kpa,exploratory,LOC134697060,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),46,0.0106,0.893,0.893,T033,0.199,0.087,D>4/n,0.7025,0.4641,0.122,0.339,fragile,31.587
-DEG_union,mean_force,primary,LOC134706590,Actin-related protein 2/3 complex subunit 2 (Arp2/3 complex 34 kDa subunit) (p34-ARC),46,7.98e-4,0.346,0.636,T029,0.145,0.087,D>4/n,0.9709,1.003,2.93e-4,0.033,robust,74.411
-DEG_union,pad_area,primary,LOC134716885,Fibrillin-2 [Cleaved into: Placensin],46,0.00136,0.731,0.636,T030,0.169,0.087,D>4/n,-0.7366,-0.6635,0.00292,0.099,robust,47.074
-DEG_union,max_force,exploratory,LOC134703438,NA,46,1.68e-4,0.14,0.279,T029,0.2,0.087,D>4/n,-1.234,-1.154,1.29e-4,0.064,robust,NA
-DEG_union,adhesion_kpa,exploratory,LOC134683070,Lactadherin (MFGM) (Milk fat globule-EGF factor 8) (MFG-E8) (SED1) (Sperm surface protein SP47) (PP47),46,8.13e-4,0.677,0.654,T030,0.15,0.087,D>4/n,1.374,1.257,8.29e-4,0.085,robust,32.5
+DEG_union,mean_force,primary,LOC134701584,NA,46,0.00198,0.865,0.852,T037,0.1,0.087,D>4/n,-1.054,-0.8611,0.0186,0.183,robust,NA
+DEG_union,pad_area,primary,LOC134716885,Fibrillin-2 [Cleaved into: Placensin],46,0.00136,0.639,0.852,T030,0.169,0.087,D>4/n,-0.7366,-0.6635,0.00292,0.099,robust,47.074
+DEG_union,max_force,exploratory,LOC134710131,Peptidyl-prolyl cis-trans isomerase FKBP2 (PPIase FKBP2) (EC 5.2.1.8) (13 kDa FK506-binding protein) (13 kDa FKBP) (FKBP-13) (FK506-binding protein 2) (FKBP-2) (Immunophilin FKBP13) (Rotamase),46,0.00175,0.617,0.778,T029,0.215,0.087,D>4/n,-0.6345,-0.6329,5.82e-4,0.002,robust,73.759
+DEG_union,adhesion_kpa,exploratory,LOC134683070,Lactadherin (MFGM) (Milk fat globule-EGF factor 8) (MFG-E8) (SED1) (Sperm surface protein SP47) (PP47),46,8.13e-4,0.592,0.778,T030,0.15,0.087,D>4/n,1.374,1.257,8.29e-4,0.085,robust,32.5

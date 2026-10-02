@@ -81,8 +81,8 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   - DEGs: apeglm-shrunk DESeq2 (Wald p from DESeq2's outlier-replaced refit, the standard
     workflow), padj < 0.05, after keeping genes with at least 10 counts in a third of the
     contrast's samples; one model per contrast, defined in
-    `06_differential-expression/01_code/02_define_contrasts.Rmd`. The 143 mitochondrial loci
-    (`count_matrix/mitochondrial_loci.csv`) are left out of these fits and of 07 to 09's gene
+    `06_differential-expression/01_code/02_define_contrasts.Rmd`. The 310 mitochondrial loci
+    (`count_matrix/mitochondrial_loci.csv`: the mitogenome's genes and their 293 copies) are left out of these fits and of 07 to 09's gene
     universes, and tested per protein (gene plus nuclear copies summed) in `06` step 13.
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
@@ -99,9 +99,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   library. T051F and T051G
   were removed at QC; T047 has no foot library. `library_crosswalk.csv` (06) maps every library
   to its RNA isolation record.
-- **Known data issues** (see the folder READMEs): 126 LOCs on unplaced scaffolds are copies of
-  the mitochondrial protein genes and split their reads with them (`tools/mt_encoded.R`;
-  handled as above); byssal plaque genes are expressed in the day-0 libraries and mostly
+- **Known data issues** (see the folder READMEs): 293 loci on unplaced scaffolds (126
+  protein-coding LOCs and 167 pseudogenes) are copies of the mitochondrial protein genes and
+  split their reads with them (`tools/mt_encoded.R`; handled as above); byssal plaque genes are expressed in the day-0 libraries and mostly
   absent at day 3, which the different day-0 dissection may explain; the analysed reads are
   leader-clipped and PCR-deduplicated Tag-seq reads (`05` README, "The reads"), whose raw
   reads are on owl (`nightingales/M_trossulus/`); the Iso-Seq branch (`04`) is designed but

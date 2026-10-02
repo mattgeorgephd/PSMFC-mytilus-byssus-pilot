@@ -1,7 +1,7 @@
 LOC_ID,protein_name,blast_pident,blast_evalue,annotation_source,in_TC_DEG_annotation,blast_ok,byssal_structural,frac_at_floor,floor_flag,tested
 LOC134711783,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)],55.876,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134681253,Transcription elongation factor SPT6 (hSPT6) (Histone chaperone suppressor of Ty6) (Tat-cotransactivator 2 protein) (Tat-CT2 protein),55.072,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
-LOC134692000,"Isoleucine--tRNA ligase, cytoplasmic (EC 6.1.1.5) (Isoleucyl-tRNA synthetase) (IRS) (IleRS)",59.242,0,genome_blast,FALSE,TRUE,FALSE,0.106,ok,TRUE
+LOC134692000,"Isoleucine--tRNA ligase, cytoplasmic (EC 6.1.1.5) (Isoleucyl-tRNA synthetase) (IRS) (IleRS)",59.242,0,genome_blast,TRUE,TRUE,FALSE,0.106,ok,TRUE
 LOC134724501,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter),52.511,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134693874,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide],36.864,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134685659,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)",62.5,0,genome_blast,TRUE,TRUE,FALSE,0.043,ok,TRUE
@@ -70,7 +70,7 @@ LOC134681223,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltra
 LOC134721046,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain],46.296,2.1799999999999997e-164,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134725152,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)",47.124,5.799999999999999e-166,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134697106,"Asparaginyl-tRNA synthetase (AsnRS) (NARS2) (EC 6.1.1.22) (Asparagine--tRNA ligase, mitochondrial)",49.348,2.11e-164,genome_blast,FALSE,TRUE,FALSE,0.574,exclude,FALSE
-LOC134722070,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)",55.087,1.6899999999999997e-163,genome_blast,TRUE,TRUE,FALSE,0.085,ok,TRUE
+LOC134722070,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)",55.087,1.6899999999999997e-163,genome_blast,FALSE,TRUE,FALSE,0.085,ok,TRUE
 LOC134711515,Collagen alpha-2(IV) chain,51.043,2.47e-134,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134712875,S-formylglutathione hydrolase (FGH) (EC 3.1.2.12) (Esterase D),72.857,5.209999999999999e-163,genome_blast,FALSE,TRUE,FALSE,0.489,exclude,FALSE
 LOC134718954,DnaJ homolog subfamily A member 1 (DnaJ protein homolog 2) (HSDJ) (Heat shock 40 kDa protein 4) (Heat shock protein J2) (HSJ-2) (Human DnaJ protein 2) (hDj-2),70.38,1.5999999999999997e-159,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
@@ -98,7 +98,7 @@ LOC134706916,"Hydroxyacylglutathione hydrolase, mitochondrial (EC 3.1.2.6) (Glyo
 LOC134720932,Byssal peroxidase-like protein 2,35.518,8.489999999999998e-107,genome_blast,TRUE,TRUE,FALSE,0.106,ok,TRUE
 LOC134697114,Heat shock 70 kDa protein 12A,36.48,2.4699999999999997e-110,genome_blast,FALSE,TRUE,FALSE,0.17,ok,TRUE
 LOC134706926,"Hydroxyacylglutathione hydrolase, mitochondrial (EC 3.1.2.6) (Glyoxalase II) (Glx II)",63.534,3.8099999999999993e-118,genome_blast,FALSE,TRUE,FALSE,0.255,caution,TRUE
-LOC134697127,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.807,1.6799999999999998e-109,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
+LOC134697127,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.807,1.6799999999999998e-109,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134686782,Peroxiredoxin-4 (EC 1.11.1.24) (Antioxidant enzyme AOE372) (AOE37-2) (Peroxiredoxin IV) (Prx-IV) (Thioredoxin peroxidase AO372) (Thioredoxin-dependent peroxide reductase A0372) (Thioredoxin-dependent peroxiredoxin 4),74.429,3.459999999999999e-119,genome_blast,FALSE,TRUE,FALSE,0.319,caution,TRUE
 LOC134698154,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.905,5.92e-108,genome_blast,FALSE,TRUE,FALSE,0.34,caution,TRUE
 LOC134697060,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.587,3.499999999999999e-107,genome_blast,FALSE,TRUE,FALSE,0.064,ok,TRUE

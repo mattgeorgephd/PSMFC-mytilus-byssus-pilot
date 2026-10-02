@@ -50,10 +50,10 @@ mitochondrial loci are not in these fits (see below).
 
 | contrast | DEGs (up / down) | | contrast | DEGs (up / down) |
 |---|---|---|---|---|
-| Foot OA (TC) | 87 (63 / 24) | | Gill OA (TC) | 543 (255 / 288) |
-| Foot OW (TC) | 164 (119 / 45) | | Gill OW (TC) | 173 (94 / 79) |
-| Foot DO (TC) | 361 (189 / 172) | | Gill DO (TC) | 306 (169 / 137) |
-| Gill vs foot, day-3 controls | 6028 (3935 higher in gill / 2093 higher in foot) | | | |
+| Foot OA (TC) | 75 (58 / 17) | | Gill OA (TC) | 423 (173 / 250) |
+| Foot OW (TC) | 165 (122 / 43) | | Gill OW (TC) | 180 (99 / 81) |
+| Foot DO (TC) | 363 (190 / 173) | | Gill DO (TC) | 310 (173 / 137) |
+| Gill vs foot, day-3 controls | 5860 (3834 higher in gill / 2026 higher in foot) | | | |
 
 The full table is `03_analyses/DEG_lists/DEG_counts.csv`. Leaving the mitochondrial loci out
 changed the counts from the earlier run. Gill OA had 711 DEGs, 116 of them mitochondrial
@@ -62,7 +62,12 @@ very small p-values moves every other gene down the Benjamini-Hochberg ranking, 
 refit gives 543. The other contrasts had no mitochondrial DEGs and moved by 1 to 11 genes
 (Foot OA 80 to 87, Foot OW 153 to 164, Foot DO 351 to 361, Gill OW 175 to 173, Gill DO 307 to
 306), because DESeq2 re-estimates the dispersion trend and its independent-filtering
-threshold on the smaller gene set.
+threshold on the smaller gene set. On 2026-10-01 the 167 mitochondrial pseudogene copies,
+which the BLAST route had missed (see below), were left out as well, and the counts changed
+again: Gill OA 543 to 423 (81 of the 543 were pseudogene copies), Foot OA 87 to 75, Foot OW 164
+to 165, Foot DO 361 to 363, Gill OW 173 to 180, Gill DO 306 to 310. The copies carry a large,
+OA-raised share of the reads, so leaving them out also moves the size factors and the
+dispersion trend of every fit, which is why Foot OA, with no pseudogene DEG, changes too.
 
 **The day-3 treatment control is the only control.** The treatment controls (T126-T137) spent
 three days in the same system as the stressor arms, so a contrast against them isolates the
@@ -89,14 +94,17 @@ tyrosinases and collagens over a thousand-fold), and there is no day-3 FX librar
 ## Things to know before interpreting
 
 - **Mitochondrial genes are analysed on their own.** The reference holds the mitochondrial
-  genome (NC_007687.1, 12 protein genes) and about 126 LOCs on unplaced scaffolds that are
-  copies of those genes. Reads of one mitochondrial transcript are split between the gene and
+  genome (NC_007687.1, 12 protein genes) and 293 loci on unplaced scaffolds that are copies of
+  those genes: 126 protein-coding LOCs and 167 pseudogenes (the pseudogenes, which have no CDS
+  for the BLAST route to see, are found by NCBI's names for them;
+  `05_sequence-alignment/02_data/annotation_mt_like_loci.csv`). Reads of one mitochondrial transcript are split between the gene and
   its copies, so in the genome contrasts one signal was counted many times (116 of Gill OA's
   711 DEGs, all up about 1.4-fold, and most of its top GO terms). Script 01 lists these loci
-  (`count_matrix/mitochondrial_loci.csv`, 143 rows), scripts 03 and 05 leave them out, and
+  (`count_matrix/mitochondrial_loci.csv`, 310 rows), scripts 03 and 05 leave them out, and
   script 13 tests each protein once, as the sum of its gene and copies, against the day-3
-  control. Result: Gill OA raises 8 of the 12 proteins (1.4- to 1.8-fold) and their sum,
-  Foot OA 5 (1.2- to 1.4-fold, their sum not significantly); OW and DO change none (`mitochondrial/mt_de_TC.csv`).
+  control. Result: Gill OA raises 10 of the 12 proteins (1.2- to 1.8-fold) and their sum
+  (1.4-fold), Foot OA 3 (ND1, ND2, ND5; 1.25- to 1.4-fold) and their sum (1.2-fold); OW and DO
+  change none (`mitochondrial/mt_de_TC.csv`).
 - **Byssal secretory genes and the day-0 dissection.** Plaque genes such as foot protein-4
   variant-1 (LOC134711106) and byssal peroxidase-like 4 (LOC134692428) are expressed in the
   day-0 foot libraries (median about 165 counts) and absent from most day-3 ones, controls

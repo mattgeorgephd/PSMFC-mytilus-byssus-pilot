@@ -1,27 +1,27 @@
 "code","direction","GO.ID","Term","Annotated","Significant","p_weight01","methods","n_methods"
-"FDO_TC","down","GO:0005874","microtubule",208,30,6.91339927160396e-15,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0005858","axonemal dynein complex",18,10,1.00681989632244e-12,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0097729","9+2 motile cilium",81,17,2.4909988946386e-08,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0031514","motile cilium",120,26,3.94566166408801e-08,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0005930","axoneme",114,26,1.90593076925925e-07,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0036126","sperm flagellum",64,10,3.3077836144038e-06,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0036064","ciliary basal body",76,10,7.2153595657839e-06,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0005879","axonemal microtubule",36,6,0.000141766731127124,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0005788","endoplasmic reticulum lumen",61,11,4.69066483669982e-08,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0009986","cell surface",156,13,4.68205236907601e-06,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0042470","melanosome",42,7,2.48975931300689e-05,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0140534","endoplasmic reticulum protein-containing complex",69,8,9.75132792962055e-05,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0098800","inner mitochondrial membrane protein complex",61,7,0.00015086687872678,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0043209","myelin sheath",22,4,0.00107327013203095,"weight01;goseq;clusterProfiler",3
-"GOA_TC","up","GO:0005790","smooth endoplasmic reticulum",11,3,0.00137981621801653,"weight01;clusterProfiler",2
-"GOA_TC","up","GO:0005737","cytoplasm",4817,122,0.00253052018925705,"weight01;classic",2
-"GOA_TC","up","GO:0005615","extracellular space",454,21,0.00710451791039628,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","down","GO:0005615","extracellular space",454,25,1.96291949622472e-07,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","down","GO:0005581","collagen trimer",32,6,7.10566757801717e-05,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","down","GO:0062023","collagen-containing extracellular matrix",152,14,0.000108751292483769,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","down","GO:0005901","caveola",19,4,0.000774071794269778,"weight01;clusterProfiler",2
-"GOA_TC","down","GO:0005576","extracellular region",733,37,0.00946560330422143,"weight01;classic",2
-"GDO_TC","up","GO:0042470","melanosome",40,9,3.71594259588365e-07,"weight01;classic;goseq;clusterProfiler",4
-"GDO_TC","up","GO:0140534","endoplasmic reticulum protein-containing complex",57,9,8.57436213388584e-06,"weight01;classic;goseq;clusterProfiler",4
-"GDO_TC","up","GO:0005788","endoplasmic reticulum lumen",52,8,3.37878242965206e-05,"weight01;classic;goseq;clusterProfiler",4
-"GDO_TC","up","GO:0005789","endoplasmic reticulum membrane",305,20,0.000339917216742275,"weight01;classic;goseq;clusterProfiler",4
+"FOW_TC","up","GO:0005634","nucleus",1993,54,0.00288585943803635,"weight01;classic",2
+"FDO_TC","down","GO:0005874","microtubule",209,30,9.9523141675891e-15,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0005858","axonemal dynein complex",18,10,1.09436320145319e-12,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0097729","9+2 motile cilium",81,17,2.65400510249189e-08,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0031514","motile cilium",120,26,4.30340546203617e-08,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0005930","axoneme",114,26,2.09140884987125e-07,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0036126","sperm flagellum",64,10,3.52179235833562e-06,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0036064","ciliary basal body",76,10,7.76410316285571e-06,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0005879","axonemal microtubule",36,6,0.000148277090516564,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0005788","endoplasmic reticulum lumen",60,11,5.71178618459743e-08,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0009986","cell surface",151,13,4.69683254062427e-06,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0042470","melanosome",42,7,3.15911896767725e-05,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0140534","endoplasmic reticulum protein-containing complex",68,8,0.000113613675532601,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0098800","inner mitochondrial membrane protein complex",61,7,0.000184853360456865,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0043209","myelin sheath",22,4,0.00123243326947619,"weight01;goseq;clusterProfiler",3
+"GOA_TC","up","GO:0005790","smooth endoplasmic reticulum",11,3,0.0015363740483712,"weight01;clusterProfiler",2
+"GOA_TC","up","GO:0005737","cytoplasm",4631,122,0.00210377088866539,"weight01;classic",2
+"GOA_TC","up","GO:0005615","extracellular space",441,21,0.00697908231838097,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","down","GO:0005615","extracellular space",441,25,8.28634520503806e-09,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","down","GO:0005581","collagen trimer",30,6,2.23348160446235e-05,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","down","GO:0062023","collagen-containing extracellular matrix",145,13,2.26705136988044e-05,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","up","GO:0042470","melanosome",40,9,3.89602989346542e-07,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","up","GO:0140534","endoplasmic reticulum protein-containing complex",57,9,8.9677638128861e-06,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","up","GO:0005788","endoplasmic reticulum lumen",52,8,3.51283398232035e-05,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","up","GO:0005789","endoplasmic reticulum membrane",314,20,0.000532525739554639,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","up","GO:0016529","sarcoplasmic reticulum",34,5,0.0015383843907462,"weight01;clusterProfiler",2

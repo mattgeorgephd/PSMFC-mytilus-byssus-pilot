@@ -55,16 +55,17 @@ on; step 05 replaces it), tidyverse, patchwork, here, rmarkdown.
 
 | run | topGO `weight01` | goseq | clusterProfiler |
 |---|---|---|---|
-| Foot OA up | 9 (tRNA aminoacylation, neutral amino-acid transport, glucose starvation) | 20 | 26 |
-| Foot DO down | 19 (axonemal dynein assembly, cilium movement) | 26 | 55 |
-| Gill OA up | 19 (glutathione metabolism, cellular detoxification, proton-motive-force-driven ATP synthesis, protein folding) | 9 | 10 |
-| the other nine runs | 0-22 each | 0 | 0 |
+| Foot OA up | 16 (tRNA aminoacylation, neutral amino-acid transport, glucose starvation) | 21 | 26 |
+| Foot DO down | 20 (axonemal dynein assembly, cilium movement) | 26 | 53 |
+| Gill OA up | 19 (glutathione metabolism, regulation of oxidoreductase activity, proton-motive-force-driven ATP synthesis, cellular detoxification) | 8 | 9 |
+| Foot DO up | 7 | 0 | 1 (transmembrane transport) |
+| the other eight runs | 0-12 each | 0 | 0 |
 
 Where an FDR-controlled method also finds terms, topGO's terms agree in part (median Jaccard
-0.17 with goseq, 0.21 with clusterProfiler), as expected from `weight01` preferring specific
+0.17 with goseq, 0.15 with clusterProfiler), as expected from `weight01` preferring specific
 terms over their parents. In the runs where neither goseq nor clusterProfiler finds anything,
 read topGO's list as exploratory. `06_method-comparison/consensus_terms_TC_<ontology>.csv`
-lists the terms topGO and at least one FDR-controlled method call: 27 in BP, 42 in MF and 26
+lists the terms topGO and at least one FDR-controlled method call: 26 in BP, 46 in MF and 26
 in CC.
 
 Before the mitochondrial loci were separated, Gill OA up was dominated by mitochondrial

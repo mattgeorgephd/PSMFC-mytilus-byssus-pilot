@@ -1,12 +1,12 @@
 "code","direction","classic","clusterProfiler","goseq","weight01"
-"FOA_TC","up",32,19,15,10
+"FOA_TC","up",31,19,14,11
 "FOA_TC","down",0,0,0,0
-"FOW_TC","up",7,14,0,9
+"FOW_TC","up",8,14,0,8
 "FOW_TC","down",0,3,0,4
 "FDO_TC","up",5,9,4,10
-"FDO_TC","down",30,18,10,12
-"GOA_TC","up",9,13,14,14
-"GOA_TC","down",6,7,7,5
+"FDO_TC","down",33,20,11,12
+"GOA_TC","up",9,17,17,11
+"GOA_TC","down",6,9,9,4
 "GOW_TC","up",0,0,0,1
 "GOW_TC","down",0,0,0,3
 "GDO_TC","up",0,0,0,2

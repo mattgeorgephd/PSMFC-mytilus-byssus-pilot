@@ -33,7 +33,6 @@ LOC134690634,Probable glutathione S-transferase 8 (EC 2.5.1.18) (GST class-sigma
 LOC134699097,Cytochrome b-245 light chain (Cytochrome b(558) alpha chain) (Cytochrome b558 subunit alpha) (Neutrophil cytochrome b 22 kDa polypeptide) (Superoxide-generating NADPH oxidase light chain subunit) (p22 phagocyte B-cytochrome) (p22-phox) (p22phox),candidate,47,21,0.447,exclude,FALSE
 LOC134708528,"Probable glutathione S-transferase DHAR2, chloroplastic (EC 2.5.1.18) (GSH-dependent dehydroascorbate reductase 2) (OsDHAR2) (EC 1.8.5.1) (Glutathione-dependent dehydroascorbate reductase 2)",candidate,47,21,0.447,exclude,FALSE
 LOC134716638,Ficolin-2 (37 kDa elastin-binding protein) (Collagen/fibrinogen domain-containing protein 2) (EBP-37) (Ficolin-B) (Ficolin-beta) (Hucolin) (L-ficolin) (Serum lectin p35),candidate,47,21,0.447,exclude,FALSE
-LOC134688483,NA,DEG_union,47,20,0.426,exclude,FALSE
 LOC134690913,Polyamine oxidase 3 (OsPAO3) (EC 1.5.3.-),candidate,47,20,0.426,exclude,FALSE
 LOC134693421,NA,DEG_union,47,20,0.426,exclude,FALSE
 LOC134696171,Heat shock 70 kDa protein 12A,candidate,47,20,0.426,exclude,FALSE
@@ -44,10 +43,8 @@ LOC134694154,Byssal peroxidase-like protein 1,candidate,47,19,0.404,exclude,FALS
 LOC134695793,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),candidate,47,19,0.404,exclude,FALSE
 LOC134721788,Tyrosinase 2,candidate,47,19,0.404,exclude,FALSE
 LOC134680972,Collagen alpha-6(VI) chain,candidate,47,18,0.383,caution,TRUE
-LOC134705588,NA,DEG_union,47,18,0.383,caution,TRUE
 LOC134680827,Mussel byssus cycteine-rich protein,candidate,47,17,0.362,caution,TRUE
 LOC134692140,Mannose-binding protein (MBP) (Mannan-binding protein),DEG_union,47,17,0.362,caution,TRUE
-LOC134693655,Eukaryotic translation initiation factor 5A-2 (eIF-5A-2) (eIF-5A2) (Eukaryotic initiation factor 5A isoform 2) (eIF-4D),DEG_union,47,17,0.362,caution,TRUE
 LOC134708209,Protein LZIC (Leucine zipper and CTNNBIP1 domain-containing protein) (Leucine zipper and ICAT homologous domain-containing protein),candidate,47,17,0.362,caution,TRUE
 LOC134715543,Hsp70-Hsp90 organising protein (PfHOP) (Stress-inducible protein 1),candidate,47,17,0.362,caution,TRUE
 LOC134685164,Heat shock 70 kDa protein 12A,candidate,47,16,0.34,caution,TRUE
@@ -67,7 +64,6 @@ LOC134712429,Peptidyl-prolyl cis-trans isomerase B (PPIase B) (EC 5.2.1.8) (Cycl
 LOC134718987,Collagen alpha-4(VI) chain,candidate,47,15,0.319,caution,TRUE
 LOC134721425,NA,DEG_union,47,15,0.319,caution,TRUE
 LOC134695117,Heat shock 70 kDa protein 12B,candidate,47,14,0.298,caution,TRUE
-LOC134701443,NA,DEG_union,47,14,0.298,caution,TRUE
 LOC134707468,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein),candidate,47,14,0.298,caution,TRUE
 LOC134714216,Microsomal glutathione S-transferase 1 (Microsomal GST-1) (EC 2.5.1.18) (Microsomal GST-I),candidate,47,14,0.298,caution,TRUE
 LOC134726949,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,14,0.298,caution,TRUE
@@ -75,6 +71,7 @@ LOC134728119,Collagen alpha-1(XXII) chain,candidate,47,14,0.298,caution,TRUE
 LOC134681855,Byssal protein-3,candidate,47,13,0.277,caution,TRUE
 LOC134691039,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),candidate,47,13,0.277,caution,TRUE
 LOC134692848,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,13,0.277,caution,TRUE
+LOC134701218,NA,DEG_union,47,13,0.277,caution,TRUE
 LOC134705112,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,13,0.277,caution,TRUE
 LOC134712566,NA,DEG_union,47,13,0.277,caution,TRUE
 LOC134723851,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,13,0.277,caution,TRUE
@@ -97,7 +94,6 @@ LOC134715627,Eukaryotic translation initiation factor 2-alpha kinase 3 (EC 2.7.1
 LOC134725003,Aminoacyl tRNA synthase complex-interacting multifunctional protein 2 (Multisynthase complex auxiliary component p38) (Protein JTV-1),candidate,47,11,0.234,caution,TRUE
 LOC134681328,Glutathione peroxidase 7 (GPx-7) (GSHPx-7) (EC 1.11.1.9),candidate,47,10,0.213,caution,TRUE
 LOC134695901,Aminoacyl tRNA synthase complex-interacting multifunctional protein 1 (Multisynthase complex auxiliary component p43) [Cleaved into: Endothelial monocyte-activating polypeptide 2 (EMAP-II) (Small inducible cytokine subfamily E member 1)],candidate,47,10,0.213,caution,TRUE
-LOC134697056,Carbonyl reductase [NADPH] 3 (EC 1.1.1.184) (Monomeric carbonyl reductase 3) (Quinone reductase CBR3) (EC 1.6.5.10),DEG_union,47,10,0.213,caution,TRUE
 LOC134712049,"3'(2'),5'-bisphosphate nucleotidase 1 (EC 3.1.3.7) (3'-phosphoadenosine 5'-phosphate phosphatase) (PAP phosphatase) (Bisphosphate 3'-nucleotidase 1) (BPntase 1) (HsPIP) (Inositol-polyphosphate 1-phosphatase) (EC 3.1.3.57)",candidate,47,10,0.213,caution,TRUE
 LOC134716115,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),candidate,47,10,0.213,caution,TRUE
 LOC134718612,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,10,0.213,caution,TRUE
@@ -119,7 +115,6 @@ LOC134692067,Heat shock 70 kDa protein 12B,candidate,47,8,0.17,ok,TRUE
 LOC134697114,Heat shock 70 kDa protein 12A,candidate,47,8,0.17,ok,TRUE
 LOC134707467,Dual oxidase 1 (EC 1.11.1.-) (EC 1.6.3.1),candidate,47,8,0.17,ok,TRUE
 LOC134707598,"Serine--tRNA ligase, mitochondrial (EC 6.1.1.11) (SerRSmt) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)",candidate,47,8,0.17,ok,TRUE
-LOC134712233,NA,DEG_union,47,8,0.17,ok,TRUE
 LOC134682928,"Cysteine--tRNA ligase, cytoplasmic (EC 6.1.1.16) (Cysteinyl-tRNA synthetase) (CysRS)",candidate,47,7,0.149,ok,TRUE
 LOC134686081,Mussel byssus collagen-like protein 3,candidate,47,7,0.149,ok,TRUE
 LOC134687277,Blastula protease 10 (EC 3.4.24.-),DEG_union,47,7,0.149,ok,TRUE
@@ -130,8 +125,6 @@ LOC134696625,Heat shock 70 kDa protein 12A,candidate,47,7,0.149,ok,TRUE
 LOC134704888,NA,DEG_union,47,7,0.149,ok,TRUE
 LOC134707932,Uricase (EC 1.7.3.3) (Urate oxidase),DEG_union,47,7,0.149,ok,TRUE
 LOC134711730,"Tryptophan--tRNA ligase, cytoplasmic (EC 6.1.1.2) (Tryptophanyl-tRNA synthetase) (TrpRS) [Cleaved into: T1-TrpRS; T2-TrpRS]",candidate,47,7,0.149,ok,TRUE
-LOC134711993,Calmodulin (CaM),DEG_union,47,7,0.149,ok,TRUE
-LOC134714087,NA,DEG_union,47,7,0.149,ok,TRUE
 LOC134728353,Prostaglandin reductase 1 (PRG-1) (15-oxoprostaglandin 13-reductase) (EC 1.3.1.48) (Dithiolethione-inducible gene 1 protein) (D3T-inducible gene 1 protein) (DIG-1) (Leukotriene B4 12-hydroxydehydrogenase) (NAD(P)H-dependent alkenal/one oxidoreductase) (EC 1.3.1.74),DEG_union,47,7,0.149,ok,TRUE
 LOC134683588,NA,DEG_union,47,6,0.128,ok,TRUE
 LOC134686408,NA,DEG_union,47,6,0.128,ok,TRUE
@@ -146,7 +139,6 @@ LOC134706982,Heat shock 70 kDa protein 12A (Heat shock protein family A member 1
 LOC134710470,Tubulin-specific chaperone E (Tubulin-folding cofactor E),candidate,47,6,0.128,ok,TRUE
 LOC134710855,NA,DEG_union,47,6,0.128,ok,TRUE
 LOC134711684,Serine/threonine-protein kinase Nek2 (EC 2.7.11.1) (HSPK 21) (Never in mitosis A-related kinase 2) (NimA-related protein kinase 2) (NimA-like protein kinase 1),candidate,47,6,0.128,ok,TRUE
-LOC134711925,NA,DEG_union,47,6,0.128,ok,TRUE
 LOC134716273,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,6,0.128,ok,TRUE
 LOC134720684,"ATP-dependent DNA helicase Q4 (EC 5.6.2.4) (DNA 3'-5' helicase RecQ4) (DNA helicase, RecQ-like type 4) (RecQ4) (RTS) (RecQ protein-like 4)",DEG_union,47,6,0.128,ok,TRUE
 LOC134720928,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter),candidate,47,6,0.128,ok,TRUE
@@ -171,7 +163,6 @@ LOC134720932,Byssal peroxidase-like protein 2,candidate,47,5,0.106,ok,TRUE
 LOC134721829,Microsomal glutathione S-transferase 1 (Microsomal GST-1) (EC 2.5.1.18) (Microsomal GST-I),candidate,47,5,0.106,ok,TRUE
 LOC134725473,Peroxisomal N(1)-acetyl-spermine/spermidine oxidase (EC 1.5.3.13) (Polyamine oxidase),candidate,47,5,0.106,ok,TRUE
 LOC134684829,NA,DEG_union,47,4,0.085,ok,TRUE
-LOC134685538,Splicing factor 3A subunit 2 (SF3a66) (Spliceosome-associated protein 62) (SAP 62),DEG_union,47,4,0.085,ok,TRUE
 LOC134687646,NA,DEG_union,47,4,0.085,ok,TRUE
 LOC134693972,NA,DEG_union,47,4,0.085,ok,TRUE
 LOC134695502,NA,DEG_union,47,4,0.085,ok,TRUE
@@ -205,7 +196,6 @@ LOC134706848,Heat shock 70 kDa protein 12B (Heat shock protein family A member 1
 LOC134707329,Monocarboxylate transporter 12 (MCT 12) (Creatine transporter 2) (CRT2) (Solute carrier family 16 member 12),DEG_union,47,3,0.064,ok,TRUE
 LOC134707400,HSPB1-associated protein 1 (27 kDa heat shock protein-associated protein 1) (Protein associated with small stress protein 1),candidate,47,3,0.064,ok,TRUE
 LOC134707971,Tyramine beta-hydroxylase (EC 1.14.17.-) (Tyramine beta-monooxygenase) (TbetaM),DEG_union,47,3,0.064,ok,TRUE
-LOC134709535,NA,DEG_union,47,3,0.064,ok,TRUE
 LOC134710209,Putative ABC transporter C family member 15 (ABC transporter ABCC.15) (AtABCC15) (EC 7.6.2.2) (ATP-energized glutathione S-conjugate pump 15) (Glutathione S-conjugate-transporting ATPase 15) (Putative multidrug resistance-associated protein 15),candidate,47,3,0.064,ok,TRUE
 LOC134710979,Caveolin-1,DEG_union,47,3,0.064,ok,TRUE
 LOC134712292,"Glutathione reductase, mitochondrial (GR) (GRase) (EC 1.8.1.7)",candidate,47,3,0.064,ok,TRUE
@@ -277,7 +267,6 @@ LOC134692133,Phenylalanine--tRNA ligase beta subunit (EC 6.1.1.20) (Phenylalanyl
 LOC134692413,Exosome complex component 10 (EC 3.1.13.-),DEG_union,47,1,0.021,ok,TRUE
 LOC134692698,Complement C3 [Cleaved into: Complement C3 beta chain; Complement C3 alpha chain; C3a anaphylatoxin; Complement C3 gamma chain],DEG_union,47,1,0.021,ok,TRUE
 LOC134693664,Intraflagellar transport protein 25 homolog (Heat shock protein beta-11) (Hspb11) (Heat shock protein family B member 11) (Placental protein 25) (PP25),candidate,47,1,0.021,ok,TRUE
-LOC134693742,NA,DEG_union,47,1,0.021,ok,TRUE
 LOC134696058,Heat shock 70 kDa protein 12B,candidate,47,1,0.021,ok,TRUE
 LOC134696108,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,1,0.021,ok,TRUE
 LOC134696458,NA,DEG_union,47,1,0.021,ok,TRUE
@@ -287,6 +276,7 @@ LOC134697133,NA,DEG_union,47,1,0.021,ok,TRUE
 LOC134698135,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,1,0.021,ok,TRUE
 LOC134700975,NA,DEG_union,47,1,0.021,ok,TRUE
 LOC134701726,NA,DEG_union,47,1,0.021,ok,TRUE
+LOC134701793,Thrombospondin-4,DEG_union,47,1,0.021,ok,TRUE
 LOC134706228,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),candidate,47,1,0.021,ok,TRUE
 LOC134706460,NA,DEG_union,47,1,0.021,ok,TRUE
 LOC134706604,Heat shock 70 kDa protein 12B,candidate,47,1,0.021,ok,TRUE
@@ -329,7 +319,6 @@ LOC134720611,Cilia- and flagella-associated protein 68,DEG_union,47,1,0.021,ok,T
 LOC134720694,DDB1- and CUL4-associated factor 11 (WD repeat-containing protein 23),DEG_union,47,1,0.021,ok,TRUE
 LOC134720709,Intraflagellar transport protein 46 homolog,DEG_union,47,1,0.021,ok,TRUE
 LOC134720720,Glutathione S-transferase omega-1 (GSTO-1) (EC 2.5.1.18) (Glutathione S-transferase omega 1-1) (GSTO 1-1) (Glutathione-dependent dehydroascorbate reductase) (EC 1.8.5.1) (Monomethylarsonic acid reductase) (MMA(V) reductase) (EC 1.20.4.2) (S-(Phenacyl)glutathione reductase) (SPG-R) (p28),candidate,47,1,0.021,ok,TRUE
-LOC134720952,Hemocyte protein-glutamine gamma-glutamyltransferase (EC 2.3.2.13) (Hemocyte transglutaminase) (TGase),DEG_union,47,1,0.021,ok,TRUE
 LOC134721118,DNA-directed RNA polymerase II subunit RPB3 (RNA polymerase II subunit 3) (RNA polymerase II subunit B3) (DNA-directed RNA polymerase II subunit C),DEG_union,47,1,0.021,ok,TRUE
 LOC134721377,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)",candidate,47,1,0.021,ok,TRUE
 LOC134721619,Bactericidal permeability-increasing protein (BPI) (Lipopolysaccharide-binding protein) (LBP),DEG_union,47,1,0.021,ok,TRUE
@@ -394,6 +383,7 @@ LOC134685003,"Mitogen-activated protein kinase kinase kinase 19 (EC 2.7.11.1) (R
 LOC134685014,ETS homologous factor (ETS domain-containing transcription factor),DEG_union,47,0,0,ok,TRUE
 LOC134685076,Calcium/manganese antiporter SLC30A10 (Solute carrier family 30 member 10),DEG_union,47,0,0,ok,TRUE
 LOC134685124,Nucleosome assembly protein 1-like 1 (Brain protein DN38) (NAP-1-related protein),DEG_union,47,0,0,ok,TRUE
+LOC134685125,ATP-dependent RNA helicase dhx29 (EC 3.6.4.13) (DEAH box protein 29),DEG_union,47,0,0,ok,TRUE
 LOC134685157,Transcription initiation factor TFIID subunit 8 (TBP-associated factor 8),DEG_union,47,0,0,ok,TRUE
 LOC134685196,NA,DEG_union,47,0,0,ok,TRUE
 LOC134685249,Probable nuclear hormone receptor HR3 (dHR3) (Nuclear receptor subfamily 1 group F member 4),DEG_union,47,0,0,ok,TRUE
@@ -433,7 +423,6 @@ LOC134686831,Cytochrome b-245 heavy chain (EC 1.-.-.-) (CGD91-phox) (Cytochrome 
 LOC134686834,NA,DEG_union,47,0,0,ok,TRUE
 LOC134686847,Synapse-associated protein 1 (BSD domain-containing signal transducer and Akt interactor protein) (BSTA),DEG_union,47,0,0,ok,TRUE
 LOC134686865,Zinc finger C3H1 domain-containing protein (Coiled-coil domain-containing protein 131) (Proline/serine-rich coiled-coil protein 2),DEG_union,47,0,0,ok,TRUE
-LOC134686956,Transcriptional enhancer factor TEF-1 (NTEF-1) (Protein GT-IIC) (TEA domain family member 1) (TEAD-1) (Transcription factor 13) (TCF-13),DEG_union,47,0,0,ok,TRUE
 LOC134686963,Probable assembly chaperone of rpl4,candidate,47,0,0,ok,TRUE
 LOC134686970,Transmembrane prolyl 4-hydroxylase (P4H-TM) (EC 1.14.11.29) (Hypoxia-inducible factor prolyl hydroxylase 4) (HIF-PH4) (HIF-prolyl hydroxylase 4) (HPH-4),candidate,47,0,0,ok,TRUE
 LOC134686981,Ras-related protein Rab-21,DEG_union,47,0,0,ok,TRUE
@@ -446,7 +435,6 @@ LOC134687143,Soma ferritin (EC 1.16.3.1),DEG_union,47,0,0,ok,TRUE
 LOC134687154,Trithorax group protein osa (Protein eyelid),DEG_union,47,0,0,ok,TRUE
 LOC134687173,Unconventional myosin-VI (Protein twist) (Unconventional myosin-6),DEG_union,47,0,0,ok,TRUE
 LOC134687318,Ras-like protein family member 12 (EC 3.6.5.2) (RAS-like protein Ris),DEG_union,47,0,0,ok,TRUE
-LOC134687394,Charged multivesicular body protein 1b (Chromatin-modifying protein 1b) (CHMP1b),DEG_union,47,0,0,ok,TRUE
 LOC134687436,Calreticulin (CRP55) (Calregulin) (Endoplasmic reticulum resident protein 60) (ERp60) (HACBP),DEG_union,47,0,0,ok,TRUE
 LOC134687455,"ATP synthase subunit O, mitochondrial (ATP synthase peripheral stalk subunit OSCP) (Oligomycin sensitivity conferral protein) (OSCP)",DEG_union,47,0,0,ok,TRUE
 LOC134687471,Circularly permutated Ras protein 1 (DdiCPRas1),DEG_union,47,0,0,ok,TRUE
@@ -468,6 +456,7 @@ LOC134688431,NA,DEG_union,47,0,0,ok,TRUE
 LOC134689775,Acylamino-acid-releasing enzyme (AARE) (EC 3.4.19.1) (Acyl-peptide hydrolase) (APH) (Acylaminoacyl-peptidase),candidate,47,0,0,ok,TRUE
 LOC134689809,MAM and LDL-receptor class A domain-containing protein 2 (Skeletal organic matrix MAM and LDL-receptor 2) (SOM MAM and LDL-receptor 2),DEG_union,47,0,0,ok,TRUE
 LOC134689920,Eukaryotic translation initiation factor 2 subunit 1 (Eukaryotic translation initiation factor 2 subunit alpha) (eIF-2-alpha) (eIF-2A) (eIF-2alpha),DEG_union,47,0,0,ok,TRUE
+LOC134690276,Double-stranded RNA-binding protein Staufen homolog,DEG_union,47,0,0,ok,TRUE
 LOC134690485,"Solute carrier family 25 member 3 (Phosphate carrier protein, mitochondrial) (Phosphate transport protein) (PTP)",DEG_union,47,0,0,ok,TRUE
 LOC134690636,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma),candidate,47,0,0,ok,TRUE
 LOC134690687,Polyadenylate-binding protein 1 (PABP-1) (Poly(A)-binding protein 1),DEG_union,47,0,0,ok,TRUE
@@ -478,7 +467,6 @@ LOC134690824,NA,DEG_union,47,0,0,ok,TRUE
 LOC134690825,NA,DEG_union,47,0,0,ok,TRUE
 LOC134690892,"NAD(P) transhydrogenase, mitochondrial (EC 7.1.1.1) (Nicotinamide nucleotide transhydrogenase) (Pyridine nucleotide transhydrogenase)",DEG_union,47,0,0,ok,TRUE
 LOC134690993,Protein SSUH2 homolog (Protein ssu-2 homolog),DEG_union,47,0,0,ok,TRUE
-LOC134691016,Sortilin (Neurotensin receptor 3) (NTR3) (mNTR3),DEG_union,47,0,0,ok,TRUE
 LOC134691023,NA,DEG_union,47,0,0,ok,TRUE
 LOC134691060,Methenyltetrahydrofolate synthase domain-containing protein,DEG_union,47,0,0,ok,TRUE
 LOC134691069,Proteasome inhibitor PI31 subunit,DEG_union,47,0,0,ok,TRUE
@@ -491,7 +479,6 @@ LOC134691331,Aspartyl/asparaginyl beta-hydroxylase (EC 1.14.11.16) (Aspartate be
 LOC134691436,Elongation factor 1-alpha (EF-1-alpha) (EC 3.6.5.-),DEG_union,47,0,0,ok,TRUE
 LOC134691441,NA,DEG_union,47,0,0,ok,TRUE
 LOC134691568,Fibulin-2 (FIBL-2),DEG_union,47,0,0,ok,TRUE
-LOC134691722,ATP-dependent RNA helicase DDX24 (EC 3.6.4.13) (DEAD box protein 24),DEG_union,47,0,0,ok,TRUE
 LOC134691772,NA,DEG_union,47,0,0,ok,TRUE
 LOC134692100,ACDC (Byssal EP-like protein 1) (EP-protein-1),candidate,47,0,0,ok,TRUE
 LOC134692127,"Cytochrome c oxidase subunit 4 isoform 1, mitochondrial (Cytochrome c oxidase polypeptide IV) (Cytochrome c oxidase subunit IV isoform 1) (COX IV-1)",DEG_union,47,0,0,ok,TRUE
@@ -551,7 +538,6 @@ LOC134696190,Thymosin beta (Tetrathymosin beta),DEG_union,47,0,0,ok,TRUE
 LOC134696238,Protein HGV2,DEG_union,47,0,0,ok,TRUE
 LOC134696347,Tubulin beta chain (Beta-tubulin),DEG_union,47,0,0,ok,TRUE
 LOC134696369,Small ribosomal subunit protein eS12 (40S ribosomal protein S12),DEG_union,47,0,0,ok,TRUE
-LOC134696398,Septin-2,DEG_union,47,0,0,ok,TRUE
 LOC134696445,Arfaptin-2 (ADP-ribosylation factor-interacting protein 2) (Partner of RAC1) (POR1),DEG_union,47,0,0,ok,TRUE
 LOC134696497,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT2) (Solute carrier family 6 member 5),DEG_union,47,0,0,ok,TRUE
 LOC134696622,Eukaryotic translation initiation factor 5B (eIF-5B) (EC 3.6.5.3) (Translation initiation factor IF-2),DEG_union,47,0,0,ok,TRUE
@@ -574,7 +560,7 @@ LOC134697395,V-type proton ATPase 16 kDa proteolipid subunit c (V-ATPase 16 kDa 
 LOC134697715,"Protocadherin Fat 1 (Cadherin family member 7) (Cadherin-related tumor suppressor homolog) (Protein fat homolog) [Cleaved into: Protocadherin Fat 1, nuclear form]",DEG_union,47,0,0,ok,TRUE
 LOC134697817,NA,DEG_union,47,0,0,ok,TRUE
 LOC134698389,NA,DEG_union,47,0,0,ok,TRUE
-LOC134699104,Survival of motor neuron-related-splicing factor 30 (Survival motor neuron domain-containing protein 1),DEG_union,47,0,0,ok,TRUE
+LOC134698511,NA,DEG_union,47,0,0,ok,TRUE
 LOC134699412,Large ribosomal subunit protein eL15 (60S ribosomal protein L15),DEG_union,47,0,0,ok,TRUE
 LOC134699739,Neurabin-1 (Neurabin-I) (Neural tissue-specific F-actin-binding protein I) (PP1bp175) (Protein phosphatase 1 regulatory subunit 9A) (p180),DEG_union,47,0,0,ok,TRUE
 LOC134699977,Elongation factor 1-alpha (EF-1-alpha) (EC 3.6.5.-),DEG_union,47,0,0,ok,TRUE
@@ -587,102 +573,18 @@ LOC134701490,Kinesin-like protein KIF28P (Kinesin-like protein 6),DEG_union,47,0
 LOC134701584,NA,DEG_union,47,0,0,ok,TRUE
 LOC134701697,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,0,0,ok,TRUE
 LOC134701699,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),candidate,47,0,0,ok,TRUE
-LOC134701764,NA,DEG_union,47,0,0,ok,TRUE
-LOC134701767,NA,DEG_union,47,0,0,ok,TRUE
 LOC134701947,Sin3 histone deacetylase corepressor complex component SDS3 (Suppressor of defective silencing 3 protein homolog),DEG_union,47,0,0,ok,TRUE
-LOC134702114,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702185,NA,DEG_union,47,0,0,ok,TRUE
 LOC134702190,Heat shock 70 kDa protein 12A,candidate,47,0,0,ok,TRUE
-LOC134702606,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702608,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702631,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702689,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702698,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702702,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702768,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702772,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702857,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702862,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702868,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702869,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702893,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702895,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702906,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702912,NA,DEG_union,47,0,0,ok,TRUE
-LOC134702917,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703075,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703106,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703111,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703149,NA,DEG_union,47,0,0,ok,TRUE
 LOC134703346,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703352,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703357,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703359,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703410,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703414,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703424,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703427,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703432,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703436,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703438,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703440,NA,DEG_union,47,0,0,ok,TRUE
 LOC134703443,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703445,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703449,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703450,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703452,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703453,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703456,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703472,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703485,NA,DEG_union,47,0,0,ok,TRUE
 LOC134703502,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703517,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703532,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703579,NA,DEG_union,47,0,0,ok,TRUE
 LOC134703584,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703629,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703635,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703636,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703650,NA,DEG_union,47,0,0,ok,TRUE
 LOC134703731,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703821,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703827,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703937,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703938,NA,DEG_union,47,0,0,ok,TRUE
-LOC134703958,NA,DEG_union,47,0,0,ok,TRUE
 LOC134703969,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704067,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704068,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704073,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704076,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704079,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704091,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704093,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704113,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704118,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704120,NA,DEG_union,47,0,0,ok,TRUE
 LOC134704170,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704207,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704238,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704248,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704252,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704256,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704266,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704270,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704273,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704278,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704384,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704388,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704393,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704428,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704439,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704443,NA,DEG_union,47,0,0,ok,TRUE
-LOC134704446,NA,DEG_union,47,0,0,ok,TRUE
 LOC134704809,Telomere-associated protein RIF1 (Rap1-interacting factor 1 homolog),DEG_union,47,0,0,ok,TRUE
 LOC134704886,Tenascin-X (TN-X) (Hexabrachion-like protein),DEG_union,47,0,0,ok,TRUE
-LOC134705160,NA,DEG_union,47,0,0,ok,TRUE
 LOC134705575,Prefoldin subunit 5,DEG_union,47,0,0,ok,TRUE
-LOC134705579,"Pikachurin (EGF-like, fibronectin type-III and laminin G-like domain-containing protein)",DEG_union,47,0,0,ok,TRUE
 LOC134705627,Coiled-coil domain-containing protein AGAP005037,DEG_union,47,0,0,ok,TRUE
 LOC134705706,Collagen alpha-1(V) chain,candidate,47,0,0,ok,TRUE
 LOC134706117,Mucin-like protein,DEG_union,47,0,0,ok,TRUE
@@ -701,9 +603,6 @@ LOC134706572,Elongation factor 1-beta (EF-1-beta),DEG_union,47,0,0,ok,TRUE
 LOC134706576,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)",candidate,47,0,0,ok,TRUE
 LOC134706577,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)",candidate,47,0,0,ok,TRUE
 LOC134706584,Pericentrin (Kendrin) (Pericentrin-B),DEG_union,47,0,0,ok,TRUE
-LOC134706590,Actin-related protein 2/3 complex subunit 2 (Arp2/3 complex 34 kDa subunit) (p34-ARC),DEG_union,47,0,0,ok,TRUE
-LOC134706612,NA,DEG_union,47,0,0,ok,TRUE
-LOC134706662,Enkurin,DEG_union,47,0,0,ok,TRUE
 LOC134706722,Microtubule-associated protein tau,DEG_union,47,0,0,ok,TRUE
 LOC134706727,Glutathione S-transferase (PfGST) (EC 2.5.1.18),candidate,47,0,0,ok,TRUE
 LOC134706748,Byssal HSP-like protein 1,candidate,47,0,0,ok,TRUE
@@ -730,6 +629,7 @@ LOC134707188,NA,DEG_union,47,0,0,ok,TRUE
 LOC134707277,Serine/threonine-protein phosphatase 1 regulatory subunit 10,DEG_union,47,0,0,ok,TRUE
 LOC134707289,Transcriptional activator cubitus interruptus (Transcriptional activator ci) (ci form of 155 kDa) (ci-155) (ci full-length protein) (ciFL) [Cleaved into: Transcriptional repressor cubitus interruptus (Transcriptional repressor ci) (ci C-terminally truncated form) (ci form of 75 kDa) (ci-75)],DEG_union,47,0,0,ok,TRUE
 LOC134707290,NA,DEG_union,47,0,0,ok,TRUE
+LOC134707319,Caspase-3 (CASP-3) (EC 3.4.22.56) [Cleaved into: Caspase-3 subunit p17; Caspase-3 subunit p12],DEG_union,47,0,0,ok,TRUE
 LOC134707328,NA,DEG_union,47,0,0,ok,TRUE
 LOC134707337,70 kDa neurofilament protein (NF70),DEG_union,47,0,0,ok,TRUE
 LOC134707368,NA,DEG_union,47,0,0,ok,TRUE
@@ -738,7 +638,6 @@ LOC134707405,"ATP synthase F(0) complex subunit C2, mitochondrial (ATP synthase 
 LOC134707413,NA,DEG_union,47,0,0,ok,TRUE
 LOC134707464,NA,DEG_union,47,0,0,ok,TRUE
 LOC134707566,NA,DEG_union,47,0,0,ok,TRUE
-LOC134707567,Casein kinase II subunit beta (CK II beta) (Phosvitin),DEG_union,47,0,0,ok,TRUE
 LOC134707607,NA,DEG_union,47,0,0,ok,TRUE
 LOC134707690,Bromodomain-containing protein 2,DEG_union,47,0,0,ok,TRUE
 LOC134707718,6-phosphogluconolactonase (6PGL) (EC 3.1.1.31),DEG_union,47,0,0,ok,TRUE
@@ -785,7 +684,6 @@ LOC134711163,Endothelial PAS domain-containing protein 1 (EPAS-1) (Basic-helix-l
 LOC134711252,Cathepsin L (EC 3.4.22.15) (SMCL1),DEG_union,47,0,0,ok,TRUE
 LOC134711254,Heterogeneous nuclear ribonucleoprotein U-like protein 1,DEG_union,47,0,0,ok,TRUE
 LOC134711267,NA,DEG_union,47,0,0,ok,TRUE
-LOC134711276,Dynein light chain Tctex-type 5 (Tctex1 domain-containing protein 1),DEG_union,47,0,0,ok,TRUE
 LOC134711361,GRIP and coiled-coil domain-containing protein 1 (Golgi coiled-coil protein 1),DEG_union,47,0,0,ok,TRUE
 LOC134711376,Hypoxia-inducible factor 1-alpha (HIF-1-alpha) (HIF1-alpha),candidate,47,0,0,ok,TRUE
 LOC134711382,RNA-binding protein PNO1,DEG_union,47,0,0,ok,TRUE
@@ -805,11 +703,9 @@ LOC134711783,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl
 LOC134711803,Transmembrane 9 superfamily member 2 (p76),DEG_union,47,0,0,ok,TRUE
 LOC134711825,Phospholipid-transporting ATPase IF (EC 7.6.2.1) (ATPase IR) (ATPase class VI type 11B) (P4-ATPase flippase complex alpha subunit ATP11B),DEG_union,47,0,0,ok,TRUE
 LOC134711840,Putative uncharacterized oxidoreductase YDR541C (EC 1.1.1.-),DEG_union,47,0,0,ok,TRUE
-LOC134711852,Blastula protease 10 (EC 3.4.24.-),DEG_union,47,0,0,ok,TRUE
 LOC134711954,NA,DEG_union,47,0,0,ok,TRUE
 LOC134711956,"Enolase-phosphatase E1 (EC 3.1.3.77) (2,3-diketo-5-methylthio-1-phosphopentane phosphatase) (MASA homolog)",DEG_union,47,0,0,ok,TRUE
 LOC134711966,"1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase beta-4 (EC 3.1.4.11) (Phosphoinositide phospholipase C-beta-4) (Phospholipase C-beta-4) (PLC-beta-4)",DEG_union,47,0,0,ok,TRUE
-LOC134711978,"Voltage-dependent L-type calcium channel subunit alpha-1C (Calcium channel, L type, alpha-1 polypeptide, isoform 1, cardiac muscle) (MELC-CC) (Mouse brain class C) (MBC) (Voltage-gated calcium channel subunit alpha Cav1.2)",DEG_union,47,0,0,ok,TRUE
 LOC134711985,Tubulin-folding cofactor B (Cytoskeleton-associated protein 1) (Cytoskeleton-associated protein CKAPI) (Tubulin-specific chaperone B),candidate,47,0,0,ok,TRUE
 LOC134712091,RNA-binding protein 4 (RNA-binding motif protein 4),DEG_union,47,0,0,ok,TRUE
 LOC134712109,Glutathione peroxidase 2 (GPx-2) (GSHPx-2) (EC 1.11.1.9) (Glutathione peroxidase-gastrointestinal) (GPx-GI) (GSHPx-GI) (Phospholipid hydroperoxide glutathione peroxidase GPX2) (EC 1.11.1.12),candidate,47,0,0,ok,TRUE
@@ -825,6 +721,7 @@ LOC134712332,NA,DEG_union,47,0,0,ok,TRUE
 LOC134712344,Endoribonuclease Dicer (EC 3.1.26.3),DEG_union,47,0,0,ok,TRUE
 LOC134712367,Stress-induced-phosphoprotein 1 (STI1),DEG_union,47,0,0,ok,TRUE
 LOC134712375,NA,DEG_union,47,0,0,ok,TRUE
+LOC134712444,Mitogen-activated protein kinase kinase kinase kinase 3 (EC 2.7.11.1) (Germinal center kinase-related protein kinase) (GLK) (MAPK/ERK kinase kinase kinase 3) (MEK kinase kinase 3) (MEKKK 3),DEG_union,47,0,0,ok,TRUE
 LOC134712475,NA,DEG_union,47,0,0,ok,TRUE
 LOC134712481,Transcription factor Sox-2 (XSox2) (XlSox-2) (SRY (sex determining region Y)-box 2),DEG_union,47,0,0,ok,TRUE
 LOC134712491,Disks large homolog 2 (Postsynaptic density protein 93) (PSD-93),DEG_union,47,0,0,ok,TRUE
@@ -849,11 +746,9 @@ LOC134714392,Phenylalanine--tRNA ligase alpha subunit (EC 6.1.1.20) (Phenylalany
 LOC134714554,Lysyl oxidase homolog 2B (EC 1.4.3.13) (Lysyl oxidase-like protein 2B),candidate,47,0,0,ok,TRUE
 LOC134714594,NA,DEG_union,47,0,0,ok,TRUE
 LOC134714597,NA,DEG_union,47,0,0,ok,TRUE
-LOC134714618,NA,DEG_union,47,0,0,ok,TRUE
 LOC134714625,E3 ubiquitin-protein ligase arih1 (EC 2.3.2.31) (Protein ariadne-1 homolog) (ARI-1),DEG_union,47,0,0,ok,TRUE
 LOC134714663,NA,DEG_union,47,0,0,ok,TRUE
 LOC134714675,Splicing factor 45 (45 kDa-splicing factor) (RNA-binding motif protein 17),DEG_union,47,0,0,ok,TRUE
-LOC134714716,Protein BTG1 (B-cell translocation gene 1 protein),DEG_union,47,0,0,ok,TRUE
 LOC134714744,Structural maintenance of chromosomes protein 3 (SMC protein 3) (SMC-3),DEG_union,47,0,0,ok,TRUE
 LOC134714791,"Asparagine--tRNA ligase, cytoplasmic (EC 6.1.1.22) (Asparaginyl-tRNA synthetase) (AsnRS)",candidate,47,0,0,ok,TRUE
 LOC134714798,"Aryl hydrocarbon receptor nuclear translocator (ARNT protein) (Dioxin receptor, nuclear translocator) (Hypoxia-inducible factor 1-beta) (HIF-1-beta) (HIF1-beta)",candidate,47,0,0,ok,TRUE
@@ -868,6 +763,7 @@ LOC134714949,Perilipin-2 (Adipophilin) (Adipose differentiation-related protein)
 LOC134714978,Nuclear transcription factor Y subunit alpha (CAAT box DNA-binding protein subunit A) (Nuclear transcription factor Y subunit A) (NF-YA),DEG_union,47,0,0,ok,TRUE
 LOC134714998,Drebrin-like protein,DEG_union,47,0,0,ok,TRUE
 LOC134715019,NA,DEG_union,47,0,0,ok,TRUE
+LOC134715039,Junction-mediating and -regulatory protein,DEG_union,47,0,0,ok,TRUE
 LOC134715050,Polyubiquitin-C [Cleaved into: Ubiquitin; Ubiquitin-related],DEG_union,47,0,0,ok,TRUE
 LOC134715079,Myocyte-specific enhancer factor 2A,DEG_union,47,0,0,ok,TRUE
 LOC134715081,Myocyte-specific enhancer factor 2C,DEG_union,47,0,0,ok,TRUE
@@ -885,7 +781,6 @@ LOC134715424,Dual oxidase 2 (EC 1.11.1.-) (EC 1.6.3.1) (NADH/NADPH thyroid oxida
 LOC134715472,"ATP-dependent Clp protease proteolytic subunit, mitochondrial (EC 3.4.21.92) (Endopeptidase Clp)",DEG_union,47,0,0,ok,TRUE
 LOC134715478,Transforming acidic coiled-coil-containing protein 1 (Gastric cancer antigen Ga55) (Taxin-1),DEG_union,47,0,0,ok,TRUE
 LOC134715482,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA),candidate,47,0,0,ok,TRUE
-LOC134715516,Chitin synthase chs-2 (EC 2.4.1.16) (Chitin-UDP acetyl-glucosaminyl transferase chs-2),DEG_union,47,0,0,ok,TRUE
 LOC134715557,ATPase family AAA domain-containing protein 2B,DEG_union,47,0,0,ok,TRUE
 LOC134715563,Protein hu-li tai shao (Adducin-like protein),DEG_union,47,0,0,ok,TRUE
 LOC134715565,"Trifunctional enzyme subunit alpha, mitochondrial (78 kDa gastrin-binding protein) (Monolysocardiolipin acyltransferase) (EC 2.3.1.-) (TP-alpha) [Includes: Long-chain enoyl-CoA hydratase (EC 4.2.1.17); Long chain 3-hydroxyacyl-CoA dehydrogenase (EC 1.1.1.211)]",DEG_union,47,0,0,ok,TRUE
@@ -906,6 +801,7 @@ LOC134715828,Proliferation marker protein Ki-67 (Antigen identified by monoclona
 LOC134715898,NA,DEG_union,47,0,0,ok,TRUE
 LOC134715908,Dye-decolorizing peroxidase YfeX (EC 1.11.1.-),candidate,47,0,0,ok,TRUE
 LOC134716025,NA,DEG_union,47,0,0,ok,TRUE
+LOC134716050,Very low-density lipoprotein receptor (VLDL receptor) (VLDL-R),DEG_union,47,0,0,ok,TRUE
 LOC134716100,C-terminal-binding protein (CtBP protein) (dCtBP),DEG_union,47,0,0,ok,TRUE
 LOC134716101,DDRGK domain-containing protein 1,DEG_union,47,0,0,ok,TRUE
 LOC134716124,NA,DEG_union,47,0,0,ok,TRUE
@@ -981,12 +877,12 @@ LOC134721450,"Large ribosomal subunit protein uL15m (39S ribosomal protein L15, 
 LOC134721468,NA,DEG_union,47,0,0,ok,TRUE
 LOC134721566,Heat shock factor protein (HSF) (Heat shock transcription factor) (HSTF),candidate,47,0,0,ok,TRUE
 LOC134721622,NA,DEG_union,47,0,0,ok,TRUE
+LOC134721732,Protein NDRG3 (N-myc downstream-regulated gene 3 protein),DEG_union,47,0,0,ok,TRUE
 LOC134721793,Phosphatidylinositol-3-phosphatase SAC1 (EC 3.1.3.64) (Phosphatidylinositol-4-phosphate phosphatase) (Suppressor of actin mutations 1-like protein),DEG_union,47,0,0,ok,TRUE
 LOC134721812,Glutathione peroxidase (GPx) (GSHPx) (EC 1.11.1.9),candidate,47,0,0,ok,TRUE
 LOC134721824,RANBP2-like and GRIP domain-containing protein 8 (Ran-binding protein 2-like 3) (RanBP2-like 3) (RanBP2L3),DEG_union,47,0,0,ok,TRUE
 LOC134721881,NA,DEG_union,47,0,0,ok,TRUE
 LOC134721921,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,47,0,0,ok,TRUE
-LOC134721936,NA,DEG_union,47,0,0,ok,TRUE
 LOC134721944,Titin (EC 2.7.11.1) (Connectin),DEG_union,47,0,0,ok,TRUE
 LOC134721971,Chromodomain-helicase-DNA-binding protein 8 (CHD-8) (EC 3.6.4.12) (ATP-dependent helicase CHD8),DEG_union,47,0,0,ok,TRUE
 LOC134721999,Transforming growth factor-beta-induced protein ig-h3 (Beta ig-h3),DEG_union,47,0,0,ok,TRUE

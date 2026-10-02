@@ -128,7 +128,7 @@ overlap in every table.
 
 Count-matrix gene names (`gene-LOC134696364|LOC134696364`, `STRG.10|LOC...`) become LOC keys
 through `gene_key()` in `tools/gene_ids.R`, the same function 06 and 07 use; script 01 stops
-if two tested genes share a key. The 143 mitochondrial loci of
+if two tested genes share a key. The 310 mitochondrial loci of
 `06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` (the
 mitochondrial genome's genes and their copies on unplaced scaffolds) are removed after the
 expression filter, so they enter neither the candidate set nor the DEG union; script 05

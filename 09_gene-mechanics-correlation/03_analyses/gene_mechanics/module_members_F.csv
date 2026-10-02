@@ -91,7 +91,7 @@ HSP_proteostasis,LOC134695612,Heat shock 70 kDa protein 12B (Heat shock protein 
 HSP_proteostasis,LOC134697168,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),34.073,3.8299999999999996e-118,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134701699,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.651,2.7900000000000003e-117,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134695661,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),34.961,3.68e-115,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134697127,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.807,1.68e-109,genome_blast,TRUE,TRUE
+HSP_proteostasis,LOC134697127,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.807,1.68e-109,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134724896,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),32.258,5.5999999999999984e-105,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134701697,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),31.23,6.08e-104,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134697339,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),31.23,9.420000000000001e-104,genome_blast,FALSE,TRUE
@@ -154,7 +154,7 @@ HSP_proteostasis,LOC134720973,Heat shock factor-binding protein 1 (Nasopharyngea
 HSP_proteostasis,LOC134715482,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA),68.493,3.86e-27,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134688272,Novel acetylcholine receptor chaperone (Transmembrane protein 35A),42.063,6.640000000000001e-26,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134711783,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl-tRNA synthetase) [Includes: Glutamate--tRNA ligase (EC 6.1.1.17) (Glutamyl-tRNA synthetase); Proline--tRNA ligase (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS)],55.876,0,genome_blast,TRUE,TRUE
-tRNA_translation,LOC134692000,"Isoleucine--tRNA ligase, cytoplasmic (EC 6.1.1.5) (Isoleucyl-tRNA synthetase) (IRS) (IleRS)",59.242,0,genome_blast,FALSE,TRUE
+tRNA_translation,LOC134692000,"Isoleucine--tRNA ligase, cytoplasmic (EC 6.1.1.5) (Isoleucyl-tRNA synthetase) (IRS) (IleRS)",59.242,0,genome_blast,TRUE,TRUE
 tRNA_translation,LOC134685659,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)",62.5,0,genome_blast,TRUE,TRUE
 tRNA_translation,LOC134706747,Valine--tRNA ligase (EC 6.1.1.9) (Valyl-tRNA synthetase) (ValRS),63.306,0,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134721377,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Renal carcinoma antigen NY-REN-42)",62.668,0,genome_blast,TRUE,TRUE
@@ -178,7 +178,7 @@ tRNA_translation,LOC134716258,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (A
 tRNA_translation,LOC134711730,"Tryptophan--tRNA ligase, cytoplasmic (EC 6.1.1.2) (Tryptophanyl-tRNA synthetase) (TrpRS) [Cleaved into: T1-TrpRS; T2-TrpRS]",72.864,0,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134689775,Acylamino-acid-releasing enzyme (AARE) (EC 3.4.19.1) (Acyl-peptide hydrolase) (APH) (Acylaminoacyl-peptidase),41.655,0,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134712267,"Methionine--tRNA ligase, mitochondrial (EC 6.1.1.10) (Methionyl-tRNA synthetase 2) (Mitochondrial methionyl-tRNA synthetase) (MtMetRS)",49.171,4.449999999999999e-174,genome_blast,FALSE,TRUE
-tRNA_translation,LOC134722070,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)",55.087,1.6899999999999994e-163,genome_blast,TRUE,TRUE
+tRNA_translation,LOC134722070,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)",55.087,1.6899999999999994e-163,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134695901,Aminoacyl tRNA synthase complex-interacting multifunctional protein 1 (Multisynthase complex auxiliary component p43) [Cleaved into: Endothelial monocyte-activating polypeptide 2 (EMAP-II) (Small inducible cytokine subfamily E member 1)],44.136,8.490000000000001e-85,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134725003,Aminoacyl tRNA synthase complex-interacting multifunctional protein 2 (Multisynthase complex auxiliary component p38) (Protein JTV-1),34.161,1.4999999999999999e-33,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134707598,"Serine--tRNA ligase, mitochondrial (EC 6.1.1.11) (SerRSmt) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)",24.928,1.59e-22,genome_blast,FALSE,TRUE

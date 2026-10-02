@@ -1,8 +1,8 @@
 "code","family","tissue_dir","description","genes_tested","n_DEG","n_up","n_down"
-"FOA_TC","TC","Foot","Foot: OA vs day-3 treatment control",7779,87,63,24
-"FOW_TC","TC","Foot","Foot: OW vs day-3 treatment control",8090,164,119,45
-"FDO_TC","TC","Foot","Foot: DO vs day-3 treatment control",7755,361,189,172
-"GOA_TC","TC","Gill","Gill: OA vs day-3 treatment control",10913,543,255,288
-"GOW_TC","TC","Gill","Gill: OW vs day-3 treatment control",10903,173,94,79
-"GDO_TC","TC","Gill","Gill: DO vs day-3 treatment control",10868,306,169,137
-"FG_TC","FG","Foot_vs_Gill","Gill vs foot, day-3 treatment controls",10096,6028,3935,2093
+"FOA_TC","TC","Foot","Foot: OA vs day-3 treatment control",7638,75,58,17
+"FOW_TC","TC","Foot","Foot: OW vs day-3 treatment control",7949,165,122,43
+"FDO_TC","TC","Foot","Foot: DO vs day-3 treatment control",7614,363,190,173
+"GOA_TC","TC","Gill","Gill: OA vs day-3 treatment control",10772,423,173,250
+"GOW_TC","TC","Gill","Gill: OW vs day-3 treatment control",10762,180,99,81
+"GDO_TC","TC","Gill","Gill: DO vs day-3 treatment control",10727,310,173,137
+"FG_TC","FG","Foot_vs_Gill","Gill vs foot, day-3 treatment controls",9955,5860,3834,2026
