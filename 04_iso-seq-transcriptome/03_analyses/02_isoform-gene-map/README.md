@@ -10,7 +10,7 @@ with on its strand.
 | `isoform_gene_map.csv.gz` | one row per isoform (411,251): `gene` (a gene key, `novel:<sequence>:<start>-<end>:<strand>`, `mito:<isoform>` or `isoseq:<isoform>`), `status` (`assigned`, `ambiguous`, `novel_locus`, `mitochondrial`, `unassigned`), the alignment (`seqid`, `strand`, `start`, `end`, `identity` as gap-compressed identity, `mapq`, `n_alignments`), `exonic_overlap` with the gene, the runner-up gene and its overlap, `mt_hit`, `mito_cov` (share of the isoform aligned to the mitogenome), `isoform_len` |
 | `isoform_gene_map_summary.csv` | isoforms and features by status; genome-branch genes reached |
 | `cds_map_agreement.csv` | agreement with the retired CDS-based map (`../_superseded/02_isoform-gene-map_cds/`), nuclear genes only |
-| `RUN_provenance.txt` | settings, minimap2 version, input MD5s |
+| `RUN_provenance.txt` | settings, minimap2 version, input MD5s. The step ran from a6ebbc8, before the count matrix of record changed (2026-10-02), so the MD5s it records for `06`'s `gene_count_matrix_clean.csv` and `mitochondrial_loci.csv` are those of the previous files (in the git history at 303b4b0). The change does not alter the map: with the new files the step reaches the same 19,856 genes, and the 21 loci added to the mitochondrial list are tRNAs and rRNAs of the mitogenome, to which no isoform is assigned (isoforms there are flagged by sequence) |
 | `minimap2_isoforms_vs_genome.paf.gz`, `minimap2.log`, `mitogenome.fa`, `minimap2_isoforms_vs_mitogenome.paf.gz` | the alignments (git-ignored; the genome alignment takes about 45 minutes and 10 GB of memory on four cores) |
 
 ## Result (2026-10-02)
