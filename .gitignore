@@ -35,6 +35,8 @@ Thumbs.db
 04_iso-seq-transcriptome/02_data/*_genomic.gff.gz
 04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/minimap2_isoforms_vs_genome.paf.gz
 04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/minimap2.log
+04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/mitogenome.fa
+04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/minimap2_isoforms_vs_mitogenome.paf.gz
 04_iso-seq-transcriptome/03_analyses/_superseded/02_isoform-gene-map_cds/minimap2_isoforms_vs_cds.paf.gz
 04_iso-seq-transcriptome/03_analyses/_superseded/02_isoform-gene-map_cds/minimap2.log
 04_iso-seq-transcriptome/03_analyses/03_salmon/index/
