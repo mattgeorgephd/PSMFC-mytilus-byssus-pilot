@@ -1,17 +1,17 @@
 [02_uniprot_summaries.Rmd]
-generated            : 2026-10-01 23:08:28
+generated            : 2026-10-02 07:25:03
 route                : UniProt accession -> NCBI Protein [Accession] -> protein_gene link -> Gene summary
-NCBI API key         : no
-accessions           : 223 (195 with a gene; 5 requests retried)
-code commit          : bce9ff393774
+NCBI API key         : yes
+accessions           : 221 (193 with a gene; 0 requests retried)
+code commit          : 9e5683c2d2e1
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : rentrez 1.2.4
 inputs (md5, repo-relative path):
-  3d8e4bbc70da9a37e95f0c50aa46994f  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FOA_topgenes.csv
-  0f3c4268b05a611e7b65f4927ca5a9c5  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FOW_topgenes.csv
-  e95a37c701603b97c741609301271910  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FDO_topgenes.csv
-  d78a534bced313ed9045b790238ea611  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GOA_topgenes.csv
-  f6b57acbf07a4597334dfbe812d35c19  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GOW_topgenes.csv
-  a915e1e97a042b22ddc8d64bd724e317  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GDO_topgenes.csv
+  4d2d323d7981ce7d04d1763927fced42  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FOA_topgenes.csv
+  1bc107a1d2f9a1a0d0e6548a88b5bb62  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FOW_topgenes.csv
+  b67449b795455f533b586fe65f839cef  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/FDO_topgenes.csv
+  557b6ce5910adf19f3e904f72f5f6af5  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GOA_topgenes.csv
+  6c4c751be40f305ba9fadd5bf34a863c  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GOW_topgenes.csv
+  7b2b42a8349aa092c2f07217e9d5000f  06_differential-expression/03_analyses/top_DEGs/Top_50_genes/GDO_topgenes.csv
   c57b0004e902e6aa01e9e593c2e4af1f  08_gene-annotation/01_code/02_uniprot_summaries.Rmd
