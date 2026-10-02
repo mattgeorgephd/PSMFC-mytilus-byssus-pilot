@@ -30,8 +30,8 @@ CDS map reached 17,733 nuclear genes, this map 19,856, 17,074 of them in common.
 Two choices shaped these numbers:
 
 - **Identity is gap-compressed** (one minus minimap2's `de`). Matching bases over block length
-  counted every base of a long unspliced gap as a difference and left 75,199 well-aligned
-  isoforms below 0.90 in a first run.
+  counted every base of a long unspliced gap as a difference and left 75,199 isoforms below
+  0.90 in a first run, 60,907 of which are at 0.90 or better by gap-compressed identity.
 - **Mitochondrial isoforms are set aside first.** Of the 2,456 mitochondrial isoforms, 594 align
   to the mitogenome itself; 1,858 were placed on unplaced scaffolds (mostly unannotated copies
   of mitochondrial sequence, where they would have formed novel loci, or a listed copy) but
