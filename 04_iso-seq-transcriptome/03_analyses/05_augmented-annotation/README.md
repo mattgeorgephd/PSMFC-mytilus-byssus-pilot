@@ -13,7 +13,7 @@ that step 06 counts the Tag-seq reads on. `ext3` is the annotation of record sin
 
 Isoforms used: those step 02 `assigned` to a gene with no exon overlap with a second gene, and
 the isoforms of novel loci without a mitochondrial segment. Mitochondrial isoforms are never
-added; the 310 mitochondrial loci are as RefSeq has them in every version.
+added; the mitochondrial loci (the mitogenome's 38 features and the 293 nuclear copies) are as RefSeq has them in every version.
 
 | File | Contents |
 |---|---|

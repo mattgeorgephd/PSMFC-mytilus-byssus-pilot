@@ -109,17 +109,30 @@ tyrosinases and collagens over a thousand-fold), and there is no day-3 FX librar
 ## Things to know before interpreting
 
 - **Mitochondrial genes are analysed on their own.** The reference holds the mitochondrial
-  genome (NC_007687.1, 12 protein genes) and 293 loci on unplaced scaffolds that are copies of
-  those genes: 126 protein-coding LOCs and 167 pseudogenes (the pseudogenes, which have no CDS
-  for the BLAST route to see, are found by NCBI's names for them;
-  `05_sequence-alignment/02_data/annotation_mt_like_loci.csv`). Reads of one mitochondrial transcript are split between the gene and
-  its copies, so in the genome contrasts one signal was counted many times (116 of Gill OA's
-  711 DEGs, all up about 1.4-fold, and most of its top GO terms). Script 01 lists these loci
-  (`count_matrix/mitochondrial_loci.csv`, 310 rows), scripts 03 and 05 leave them out, and
-  script 13 tests each protein once, as the sum of its gene and copies, against the day-3
-  control. Result: Gill OA raises 10 of the 12 proteins (1.2- to 1.8-fold) and their sum
-  (1.4-fold), Foot OA 3 (ND1, ND2, ND5; 1.25- to 1.4-fold) and their sum (1.2-fold); OW and DO
-  change none (`mitochondrial/mt_de_TC.csv`).
+  genome (NC_007687.1: 12 protein genes, 2 rRNAs, 24 tRNAs) and 293 loci on unplaced scaffolds
+  that are copies of its protein genes: 126 protein-coding LOCs and 167 pseudogenes (the
+  pseudogenes, which have no CDS for the BLAST route to see, are found by NCBI's names for
+  them; `05_sequence-alignment/02_data/annotation_mt_like_loci.csv`). In the genome alignment
+  the copies take the mitochondrial reads, so in the genome contrasts one signal was counted
+  many times (116 of Gill OA's 711 DEGs in the first run, all up about 1.4-fold, and most of
+  its top GO terms). Script 01 lists these loci (`count_matrix/mitochondrial_loci.csv`, 331
+  rows), and scripts 03 and 05 leave them out. Script 13 tests the 12 proteins on reads
+  counted on the mitochondrial genome alone (`05_sequence-alignment` step 05), because the
+  genome alignment loses about half of the mitochondrial reads to the copies and to
+  unannotated mitochondrial-like sequence (HISAT2 reports at most five placements of a read),
+  and more in the 12 of the 59 animals whose mitochondrial haplotype differs from the
+  reference at fixed positions (`mitochondrial/mt_haplotypes.csv`: 8 animals in group A, 4 in
+  group B). Against the previous count (gene and copies summed in the StringTie + prepDE
+  matrix), the mitogenome count is about 2.0 times higher in reference-like animals and 2.4 to
+  2.5 times in the divergent ones; for COX1, 1.5 against 3.3 to 3.7 times
+  (`mitochondrial/mt_counts_vs_previous.csv`). Result: Gill OA raises 10 of the 12 proteins
+  (1.2- to 1.6-fold; all but ND4L and ND5) and their sum (1.41-fold, p 1e-8); Foot OA raises
+  ND2, ND3 and ND5 (1.4- to 1.5-fold), and its sum by 1.19-fold (p 0.061); OW and DO change
+  none (`mitochondrial/mt_de_TC.csv`). With the haplotype group as a covariate the same
+  proteins come out in every contrast; with the permissive alignment, all but ND5 in Foot OA
+  (`mitochondrial/mt_de_TC_sensitivity.csv`). Until 2026-10-02 each protein was the sum of
+  its gene and copies in the StringTie + prepDE matrix: Gill OA then raised ND5 instead of
+  COX1, Foot OA ND1 instead of ND3, and the Foot OA sum had p 0.047.
 - **Byssal secretory genes and the day-0 dissection.** Plaque genes such as foot protein-4
   variant-1 (LOC134711106) and byssal peroxidase-like 4 (LOC134692428) are expressed in the
   day-0 foot libraries (median 159 and 215 counts) and absent from most day-3 ones, controls

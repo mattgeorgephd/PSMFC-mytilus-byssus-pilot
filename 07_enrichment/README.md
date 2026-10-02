@@ -49,30 +49,42 @@ on; step 05 replaces it), tidyverse, patchwork, here, rmarkdown.
 - **Length bias.** goseq weights by median reference-transcript length. In 3' Tag-seq, one
   tag per transcript, there is little to correct: `03_goseq/goseq_pwf_TC_BP.png` shows no
   consistent trend, and goseq and clusterProfiler p-values agree almost perfectly (Spearman
-  0.996).
+  0.94 to 1.00 per run, median 0.99).
 
 ## Results in brief (TC contrasts, biological process)
 
+On the count matrix of record (featureCounts on the Iso-Seq-extended annotation, since
+2026-10-02):
+
 | run | topGO `weight01` | goseq | clusterProfiler |
 |---|---|---|---|
-| Foot OA up | 16 (tRNA aminoacylation, neutral amino-acid transport, glucose starvation) | 21 | 26 |
-| Foot DO down | 20 (axonemal dynein assembly, cilium movement) | 26 | 53 |
-| Gill OA up | 19 (glutathione metabolism, regulation of oxidoreductase activity, proton-motive-force-driven ATP synthesis, cellular detoxification) | 8 | 9 |
-| Foot DO up | 7 | 0 | 1 (transmembrane transport) |
-| the other eight runs | 0-12 each | 0 | 0 |
+| Foot OA up | 5 (tRNA aminoacylation, ER unfolded protein response, regulation of translational initiation) | 26 | 28 (tRNA aminoacylation, amino-acid activation) |
+| Foot DO down | 38 (cilium movement, axoneme and dynein arm assembly) | 46 | 59 (cilium movement, cilium assembly) |
+| Gill OA up | 17 (glutathione metabolism, TCA cycle, protein folding, response to unfolded protein, proton-motive-force-driven ATP synthesis, cellular detoxification) | 2 | 3 (glutathione metabolism, response to ER stress, protein folding) |
+| Gill DO up | 15 (ERAD pathway, glycine transport) | 2 | 3 (response to ER stress, protein N-linked glycosylation, ERAD) |
+| Gill DO down | 11 (neuroblast division, adaptive immune response) | 2 | 2 (adaptive immune response, neuroblast division) |
+| Foot OW down | 8 | 2 | 10 (protein glycosylation) |
+| Gill OA down | 16 | 1 (extracellular structure organization) | 0 |
+| the other five runs | 4-13 each | 0 | 0 |
 
-Where an FDR-controlled method also finds terms, topGO's terms agree in part (median Jaccard
-0.17 with goseq, 0.15 with clusterProfiler), as expected from `weight01` preferring specific
-terms over their parents. In the runs where neither goseq nor clusterProfiler finds anything,
-read topGO's list as exploratory. `06_method-comparison/consensus_terms_TC_<ontology>.csv`
-lists the terms topGO and at least one FDR-controlled method call: 26 in BP, 46 in MF and 26
-in CC.
+topGO reports terms in all 12 runs. Where an FDR-controlled method also finds terms, topGO's
+terms agree in part (median Jaccard 0.12 with goseq, 0.18 with clusterProfiler), as expected
+from `weight01` preferring specific terms over their parents. In the runs where neither goseq
+nor clusterProfiler finds anything, read topGO's list as exploratory.
+`06_method-comparison/consensus_terms_TC_<ontology>.csv` lists the terms topGO and at least one
+FDR-controlled method call: 34 in BP, 27 in MF and 46 in CC.
+
+**What the count matrix of record changed** (2026-10-02, against StringTie + prepDE): the three
+FDR-supported runs of before remain (Foot OA up, Foot DO down, Gill OA up), Foot DO down with
+more terms (46 and 59 against 26 and 53), and Foot OW down and both Gill DO runs gain a few.
+Gill OA up keeps glutathione metabolism and adds the ER stress response under FDR control, but
+its nuclear ATP synthase and detoxification terms are now topGO only (FDR-supported before with
+8 and 9 terms, now 2 and 3); 11 of its 19 previous topGO terms remain.
 
 Before the mitochondrial loci were separated, Gill OA up was dominated by mitochondrial
 electron transport (87 of the 88 DEGs in "ATP synthesis coupled electron transport" were
-copies of mitochondrial genes). Without them its terms are glutathione metabolism,
-detoxification and nuclear-encoded ATP synthase subunits; the mitochondrial genes themselves
-are tested in `06_differential-expression` step 13.
+copies of mitochondrial genes); the mitochondrial genes themselves are tested in
+`06_differential-expression` step 13.
 
 The manuscript GO figure is not chosen yet; every option is drawn for every family and
 ontology: the topGO, goseq and clusterProfiler dot plots, the rrvgo parent-term view and the

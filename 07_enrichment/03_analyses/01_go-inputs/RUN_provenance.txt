@@ -1,12 +1,12 @@
-generated            : 2026-10-02 20:23:07
+generated            : 2026-10-02 22:19:38
 GO release           : 2023-07-27 (GO.db 3.18.0)
 DEG                  : padj < 0.05 in the 06 apeglm table; up and down tested separately
 universe             : genes with a non-missing padj in the contrast's apeglm table
 terms tested         : 10 or more annotated universe genes (topGO nodeSize); 10 to 500 for goseq and clusterProfiler
 families             : TC, FG
 genes                : 11942 in any contrast's table; with GO BP 6872, MF 6634, CC 7371
-code commit          : 5440ba64eaa8
-uncommitted changes  : YES, 1 tracked file(s) differ from the commit: M 04_iso-seq-transcriptome/README.md
+code commit          : 697021c83a2e
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : topGO 2.58.0, goseq 1.58.0, clusterProfiler 4.14.0, enrichplot 1.26.1, rrvgo 1.18.0, GOSemSim 2.32.0, GO.db 3.18.0, AnnotationDbi 1.68.0, GSEABase 1.68.0, org.Hs.eg.db 3.18.0
 inputs (md5, repo-relative path):

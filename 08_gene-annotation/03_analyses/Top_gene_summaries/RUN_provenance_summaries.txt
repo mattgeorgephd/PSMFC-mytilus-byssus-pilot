@@ -1,10 +1,10 @@
 [02_uniprot_summaries.Rmd]
-generated            : 2026-10-02 20:14:20
+generated            : 2026-10-02 21:22:01
 route                : UniProt accession -> NCBI Protein [Accession] -> protein_gene link -> Gene summary
 NCBI API key         : yes
 accessions           : 238 (201 with a gene; 0 requests retried)
-code commit          : 5440ba64eaa8
-uncommitted changes  : YES, 1 tracked file(s) differ from the commit: M 04_iso-seq-transcriptome/README.md
+code commit          : 697021c83a2e
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : rentrez 1.2.4
 inputs (md5, repo-relative path):

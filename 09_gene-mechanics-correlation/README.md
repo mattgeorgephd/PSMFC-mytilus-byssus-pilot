@@ -88,11 +88,13 @@ component of its genes, as for script 02's modules. BH runs in two families, the
 response-level scores (DEG sets and mitochondrial share) and the GO terms. The sets were
 chosen because they differ between arms and the model removes the arm differences, so a
 slope is an association among animals of the same arm; with 10 to 12 animals per arm it is
-exploratory. In the current run no set passes q < 0.1 (the lowest q is 0.31). The strongest
-signals are in gill: animals with a higher mitochondrial share of reads make weaker threads
-(mean peak force, partial r -0.35, p 0.022, q 0.31; strongest thread, r -0.33, p 0.032), and
-animals scoring higher on Gill OA up-regulated respiratory-chain terms (inner mitochondrial
-membrane protein complex, oxidative phosphorylation, proton-motive-force-driven ATP synthesis)
-have smaller plaques (pad area, partial r -0.37 to -0.42, p 0.005 to 0.016, q 0.51).
+exploratory. In the current run no set passes q < 0.1 (the lowest q is 0.16). The strongest
+signals are in gill: animals scoring higher on the Gill OA up-regulated term "inner
+mitochondrial membrane protein complex" have smaller plaques (pad area, partial r -0.48, p
+0.001, q 0.16; "proton motive force-driven ATP synthesis" r -0.37, p 0.015), and animals with a
+higher mitochondrial share of reads make weaker threads (strongest thread, partial r -0.34, p
+0.028, q 0.19; mean peak force, r -0.33, p 0.034, q 0.24). The mitochondrial share is counted on
+the mitochondrial genome alone since 2026-10-02 (`06` step 13); with the previous genome count
+the same two associations were r -0.33 and -0.35. Nothing in foot comes near (lowest q 0.59).
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

@@ -22,28 +22,38 @@ then reproduces 06 exactly (same genes tested, same DEGs in all six contrasts).
 
 ## Result (2026-10-02)
 
+Against the genome analysis of record (featureCounts on the Iso-Seq-extended RefSeq
+annotation, since 2026-10-02):
+
 | contrast | features tested (Iso-Seq / genome) | DEGs (Iso-Seq / genome) | genome DEGs also DEG on Iso-Seq | same direction | fold-change Spearman |
 |---|---|---|---|---|---|
-| Foot OA | 13,057 / 7,638 | 194 / 75 | 58 (77%) | 58 | 0.84 |
-| Foot OW | 13,604 / 7,949 | 262 / 165 | 89 (54%) | 89 | 0.82 |
-| Foot DO | 12,938 / 7,614 | 867 / 363 | 291 (80%) | 291 | 0.87 |
-| Gill OA | 18,421 / 10,772 | 884 / 423 | 304 (72%) | 301 | 0.81 |
-| Gill OW | 18,199 / 10,762 | 366 / 180 | 123 (68%) | 123 | 0.81 |
-| Gill DO | 18,283 / 10,727 | 600 / 310 | 227 (73%) | 227 | 0.82 |
+| Foot OA | 13,057 / 7,908 | 194 / 161 | 93 (58%) | 93 | 0.87 |
+| Foot OW | 13,604 / 8,138 | 262 / 211 | 124 (59%) | 124 | 0.85 |
+| Foot DO | 12,938 / 7,797 | 867 / 678 | 483 (71%) | 483 | 0.89 |
+| Gill OA | 18,421 / 10,773 | 884 / 584 | 381 (65%) | 380 | 0.84 |
+| Gill OW | 18,199 / 10,678 | 366 / 227 | 157 (69%) | 157 | 0.84 |
+| Gill DO | 18,283 / 10,673 | 600 / 404 | 284 (70%) | 284 | 0.85 |
 
-- **Agreement.** Over genes tested on both references, fold changes correlate at 0.81 to 0.87,
-  and every genome DEG that is also an Iso-Seq DEG has the same sign but three (all in Gill OA).
-  1 to 22 genome DEGs per contrast could not be tested on the Iso-Seq reference.
-- **More DEGs on the Iso-Seq reference, mostly from more reads per gene.** On genes counted by
-  both, the Iso-Seq count is a median 1.59 times the genome count (interquartile 1.17 to
-  2.81); the genome counts are prepDE estimates, about the aligned read bases divided by 75,
-  while the reads average about 63 bases, so equal read numbers would give a ratio of about
-  1.19, and the Iso-Seq reference places about 1.3 times the reads on a typical gene (2.4 times or
-  more on a quarter of genes). Of the Iso-Seq-only DEGs, 69 to 81% are on annotated
-  genes; most of those were tested on the genome too, with lower counts there (median mean
-  count 23 to 44 against 37 to 73 on Iso-Seq) and a near-miss padj (median 0.15 to 0.23); the
+- **Agreement.** Over genes tested on both references, fold changes correlate at 0.84 to 0.89,
+  and every genome DEG that is also an Iso-Seq DEG has the same sign but one (Gill OA). 2 to 35
+  genome DEGs per contrast could not be tested on the Iso-Seq reference. The genome DEGs that
+  are not Iso-Seq DEGs are mostly near misses there (median Iso-Seq padj 0.10 to 0.13; 65 to
+  77% below 0.2), and 658 of those 665 keep their direction.
+- **More DEGs on the Iso-Seq reference, 1.2 to 1.6 times as many.** Both references now count
+  reads, and on genes counted by both the Iso-Seq count is a median 1.25 times the genome count
+  (interquartile 0.97 to 2.02). Of the Iso-Seq-only DEGs, 61 to 75% are on annotated genes;
+  most of those (63 to 88%) were tested on the genome too, with lower counts there (median mean
+  count 26 to 66 against 36 to 93 on Iso-Seq) and a near-miss padj (median 0.11 to 0.17); the
   rest the genome filter had dropped. Novel loci contribute 26 to 128 DEGs per contrast and
   unassigned isoforms 4 to 39.
+- **Against the previous genome counts** (StringTie + prepDE, until 2026-10-02) the Iso-Seq
+  reference had found about twice as many DEGs (194 to 884 against 75 to 423) and a median 1.59
+  times the counts, of which a factor of about 1.19 was prepDE's estimate of read bases over 75
+  for reads averaging 63 bases. Option B (steps 05 to 07) showed that the counter accounted for
+  more of that gap than the 3' ends did (`../07_augmented-de/README.md`).
 - **Where the extra reads come from.** In `../03_salmon/read_classes_by_library.csv`, 18% of
   assigned reads are on isoforms that run past their gene's annotated 3' end and 14.5% on novel
-  loci, which suggests the RefSeq gene models often end before the 3' ends that Tag-seq reads.
+  loci. The genome counts of record already include the 3' extensions (`ext3`); the rest of the
+  difference lies in the reads on novel loci and on the isoforms' other exons, which only the
+  `full` annotation of step 05 counts, and in reads with several placements, which salmon
+  shares among isoforms and featureCounts leaves out.

@@ -126,8 +126,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   absent at day 3, which the different day-0 dissection may explain; the analysed reads are
   leader-clipped and PCR-deduplicated Tag-seq reads (`05` README, "The reads"), whose raw
   reads are on owl (`nightingales/M_trossulus/`); the Iso-Seq branch (`04`, a sensitivity
-  analysis) replicates most genome DEGs and finds about twice as many, largely because the
-  RefSeq gene models end before many Tag-seq 3' ends (`04` README).
+  analysis) replicates most genome DEGs (58 to 71%) and finds 1.2 to 1.6 times as many; against
+  the previous StringTie + prepDE counts it had found about twice as many, mostly because of
+  the counter (prepDE's read-base estimates), less because the RefSeq gene models end before
+  many Tag-seq 3' ends (`04` README, option B).
 - **Secrets.** API keys go in environment variables (`ENTREZ_KEY` in `~/.Renviron`), never in
   a file in the repository.
 - **Writing.** READMEs and comments in plain language, with commas or semicolons rather than

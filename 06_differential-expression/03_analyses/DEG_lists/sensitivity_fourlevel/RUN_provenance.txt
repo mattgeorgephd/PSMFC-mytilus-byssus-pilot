@@ -1,6 +1,6 @@
-generated : 2026-10-02 19:31:38
-code commit          : 303b4b0858ca
-uncommitted changes  : YES, 8 tracked file(s) differ from the commit: M 00_run_pipeline.Rmd; M 04_iso-seq-transcriptome/01_code/04_isoseq_de_comparison.Rmd; M 04_iso-seq-transcriptome/01_code/07_augmented_de_comparison.Rmd; M 05_sequence-alignment/01_code/00_run_sequence_alignment.Rmd; M 05_sequence-alignment/README.md; M 06_differential-expression/01_code/01_clean_count_matrix.Rmd; M AGENTS.md; M tools/gene_ids.R
+generated : 2026-10-02 21:58:42
+code commit          : 697021c83a2e
+uncommitted changes  : no
 design    : ~ treatment, levels control, OA, OW, DO (one fit per tissue, day-3 samples)
 filter    : >= 10 counts in >= 1/3 of the tissue's day-3 samples
 shrinkage : apeglm, coef = treatment_<X>_vs_control

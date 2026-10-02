@@ -13,4 +13,4 @@ ontology (`BP`, `MF`, `CC`).
 | `method_comparison_TC_<ont>.png` | A, enriched terms per run, one small panel per method; B, the overlap of each method pair |
 
 `classic` and clusterProfiler run the same test on the same propagated annotation (Spearman
-1.00 in BP); goseq differs from them only by the length weighting (0.95 to 0.996).
+1.00 in BP); goseq differs from them only by the length weighting (0.92 to 1.00).

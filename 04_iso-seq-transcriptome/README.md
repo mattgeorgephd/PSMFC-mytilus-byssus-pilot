@@ -108,84 +108,80 @@ of annotated genes that run more than 100 bases past the last annotated exon, 14
 loci, 7% on unassigned isoforms and 7% on mitochondrial features. The two libraries removed at
 QC are 64% (T051G) and 49% (T051F) mitochondrial, against at most 10% in the others.
 
-**Differential expression on the two references (step 04).**
+**Differential expression on the two references (step 04),** against the genome analysis of
+record (featureCounts on the 3'-extended RefSeq annotation, since 2026-10-02):
 
 | contrast | DEGs, Iso-Seq / genome | genome DEGs that are also Iso-Seq DEGs | fold-change Spearman |
 |---|---|---|---|
-| Foot OA | 194 / 75 | 58 (77%) | 0.84 |
-| Foot OW | 262 / 165 | 89 (54%) | 0.82 |
-| Foot DO | 867 / 363 | 291 (80%) | 0.87 |
-| Gill OA | 884 / 423 | 304 (72%) | 0.81 |
-| Gill OW | 366 / 180 | 123 (68%) | 0.81 |
-| Gill DO | 600 / 310 | 227 (73%) | 0.82 |
+| Foot OA | 194 / 161 | 93 (58%) | 0.87 |
+| Foot OW | 262 / 211 | 124 (59%) | 0.85 |
+| Foot DO | 867 / 678 | 483 (71%) | 0.89 |
+| Gill OA | 884 / 584 | 381 (65%) | 0.84 |
+| Gill OW | 366 / 227 | 157 (69%) | 0.84 |
+| Gill DO | 600 / 404 | 284 (70%) | 0.85 |
 
 **What this means for the results of record.**
 
-- **The genome results hold.** Most genome DEGs are DEGs on the Iso-Seq reference too (54 to
-  80% per contrast), all in the same direction but three in Gill OA, and fold changes over the
-  genes tested on both correlate at 0.81 to 0.87. The genome DEGs that are not Iso-Seq DEGs
-  are mostly just short of the threshold there (median Iso-Seq padj 0.09 to 0.14 per
-  contrast; 67 to 84% below 0.2), and 359 of those 368 keep their direction.
+- **The genome results hold.** Most genome DEGs are DEGs on the Iso-Seq reference too (58 to
+  71% per contrast), all in the same direction but one in Gill OA, and fold changes over the
+  genes tested on both correlate at 0.84 to 0.89. The genome DEGs that are not Iso-Seq DEGs
+  are mostly just short of the threshold there (median Iso-Seq padj 0.10 to 0.13 per
+  contrast; 65 to 77% below 0.2), and 658 of those 665 keep their direction.
 - **The mitochondrial signal does not depend on the reference.** Each library's mitochondrial
-  share of reads correlates between the references at Spearman 0.87 (day-3 foot 0.85, day-3
-  gill 0.81).
+  share of reads (`06` step 13, counted on the mitochondrial genome alone) correlates with the
+  Iso-Seq reference's at Spearman 0.91 (day-3 foot 0.90, day-3 gill 0.84; 0.87 with the
+  previous genome count).
 - **Byssal genes.** Named as `09` names the byssal structural genes (best BLAST hit a foot
   protein, plaque protein, precollagen, ACDC or byssal tyrosinase; 72 genes), the genome
-  analysis has six byssal DEGs: the three ACDC genes, down about two- to four-fold in both
-  Gill OA and Gill DO. All six are DEGs on the Iso-Seq reference too, with the same fold
-  changes. The Iso-Seq reference adds foot proteins 4, 10 and 11 in Foot OA and Foot DO, with
-  shrunk fold changes near 0 and a small padj, the sign of a gene expressed in a few animals
-  only; they should not be read as treatment effects. (An earlier version of this README gave
-  "Foot OA 1 of 1, Foot OW 1 of 1, Foot DO 7 of 8" from a broader, unrecorded definition; it is
-  replaced by this count, which step 07 reproduces for option B.)
-- **The genome analysis is conservative.** The Iso-Seq reference finds about twice as many DEGs.
-  On genes counted by both it places about 1.3 times the reads on a typical gene (2.4 times or
-  more on a quarter of genes), and most Iso-Seq-only DEGs on annotated genes are genes the
-  genome analysis tested with fewer reads and a near-miss padj (median 0.15 to 0.23). The
-  extra reads come largely from 3' ends beyond the RefSeq gene models (18% of assigned reads)
-  and from unannotated loci (14.5%), which the genome analysis, counting annotated exons only,
-  cannot see.
+  analysis has the three ACDC genes down about two- to four-fold in both Gill OA and Gill DO,
+  DEGs on the Iso-Seq reference too with the same fold changes, and foot protein 11 in Foot DO,
+  whose reads come from three animals and whose shrunk fold change is near 0. The Iso-Seq
+  reference adds foot proteins 4, 10 and 11 in Foot OA and Foot DO with the same few-animal
+  pattern. None of these foot proteins should be read as a treatment effect. (An earlier version
+  of this README gave "Foot OA 1 of 1, Foot OW 1 of 1, Foot DO 7 of 8" from a broader,
+  unrecorded definition; it is replaced by this count, which step 07 reproduces.)
+- **The Iso-Seq reference still finds more DEGs,** 1.2 to 1.6 times as many, and a median 1.25
+  times the reads on genes counted by both; most Iso-Seq-only DEGs on annotated genes are genes
+  the genome analysis tested with fewer reads and a near-miss padj (median 0.11 to 0.17). Before
+  2026-10-02 the gap was about twofold, and most of it was the counter, not the 3' ends: prepDE
+  estimated read bases over 75 for reads averaging 63 bases, and its dispersions were higher
+  (option B, below).
 
 **Caveats.** No decoy sequence (reads from loci the Iso-Seq set lacks may be placed on similar
 isoforms); salmon shares reads among near-duplicate isoforms by EM, so gene sums can borrow
-from paralogs; novel loci have no names or GO terms; the genome counts are coverage-based
-prepDE estimates rather than read counts.
+from paralogs; novel loci have no names or GO terms; featureCounts leaves out reads with several
+placements, which salmon shares.
 
-**Option B, the genome recounted on augmented annotations (steps 05 to 07).**
+**Option B, adopted on 2026-10-02 (steps 05 to 07).**
 
 - **Annotations.** `ext3` extends 18,470 transcripts of 9,781 genes by a median 76 bases (4.6%
   more exonic sequence); `full` adds 303,668 isoforms to 18,908 genes and keeps 12,487 novel
   loci as genes (54% more exonic sequence; `03_analyses/05_augmented-annotation/README.md`).
 - **Realignment.** HISAT2 here aligns a median 0.45 percentage points fewer reads than the
-  record; counted on the unchanged RefSeq annotation (the control), the per-library totals are
-  0.992 of the record's and the DEG calls keep 91 to 99% of the record's (fold-change Spearman
-  0.993 to 0.996). About 5% of DEG calls move with the realignment alone.
-- **DEGs** (record; StringTie + prepDE control / `ext3` / `full`; featureCounts control /
-  `ext3` / `full`): Foot OA 75; 83 / 93 / 118; 163 / 163 / 170. Foot OW 165; 180 / 202 / 208;
-  208 / 211 / 208. Foot DO 363; 377 / 416 / 489; 636 / 676 / 705. Gill OA 423; 410 / 431 /
-  528; 588 / 583 / 596. Gill OW 180; 175 / 198 / 228; 227 / 227 / 222. Gill DO 310; 299 / 306 /
-  340; 398 / 404 / 441.
-- **The 3' extension is a small change.** With the record's counter it adds 4.5% to the reads,
-  keeps 91 to 97% of the record's DEGs and adds 21 to 67 per contrast, mostly extended genes
-  that were near misses in the record (median record padj 0.06 to 0.09); gene keys, names and
-  GO annotation stay as they are. 30 gene-contrast pairs shift by more than one log2 unit and
-  should be inspected first (`03_analyses/07_augmented-de/README.md`).
-- **The full models change more.** 28% more reads, 68 to 84% of the record's DEGs kept, 57 to
-  183 new per contrast, 7 to 37 of them on novel loci without names or GO terms.
+  HPC alignment; counted on the unchanged RefSeq annotation with StringTie + prepDE (the
+  control), the per-library totals are 0.992 of the previous record's and the DEG calls keep 91
+  to 99% of its DEGs (fold-change Spearman 0.993 to 0.996). About 5% of DEG calls move with the
+  realignment alone.
+- **DEGs** (previous record; StringTie + prepDE control / `ext3` / `full`; featureCounts control /
+  **`ext3`, the record** / `full`): Foot OA 75; 83 / 93 / 118; 163 / **161** / 170. Foot OW 165;
+  180 / 202 / 208; 208 / **211** / 208. Foot DO 363; 377 / 417 / 489; 636 / **678** / 705. Gill OA
+  423; 410 / 431 / 528; 588 / **584** / 596. Gill OW 180; 175 / 198 / 228; 227 / **227** / 222.
+  Gill DO 310; 299 / 306 / 340; 398 / **404** / 441.
 - **The counter matters more than the annotation.** featureCounts (unique reads, sense strand)
   finds 16 to 96% more DEGs than StringTie + prepDE on the same alignment and RefSeq
-  annotation: its counts are about 1.16 times higher (prepDE divides read bases by 75; the
-  reads average 63) and its dispersions about 9% lower.
+  annotation: its counts are about 1.16 times higher (prepDE divides read bases by 75; the reads
+  average 63) and its dispersions about 9% lower. Within featureCounts, `ext3` gains 9 to 53 DEGs
+  and loses 11 to 39 per contrast (fold-change Spearman 0.986 to 0.991 with RefSeq), and only 6
+  gene-contrast pairs move by more than one log2 unit, 2 of them because of the extension; `full`
+  changes more (31 to 119 gained, 24 to 68 lost, some on unnamed novel loci).
+- **What the adoption changed.** The record keeps 70 to 90% of the previous record's DEGs per
+  contrast, all shared ones but two in the same direction, and adds 87 to 353, mostly near
+  misses before (`03_analyses/07_augmented-de/record_change.csv`).
+- **Mitochondrial genes.** featureCounts keeps only about a third of the mitochondrial reads in
+  the genome alignment (reads with several placements are left out, and most mitochondrial
+  reads also align to the nuclear copies), so `06` step 13 counts the mitochondrial genes on the
+  mitochondrial genome alone (`05_sequence-alignment` step 05).
 - **Unchanged by any version:** the byssal DEGs (the three ACDC genes, Gill OA and Gill DO).
-  The mitochondrial share of each library holds with StringTie + prepDE (Spearman with the
-  record 0.99 to 1.0), but featureCounts, which leaves out reads aligned to several places,
-  keeps only about a third of the mitochondrial reads (median share 0.8% against the record's
-  2.3%; Spearman 0.86), most likely because reads of the mitochondrial genes also align to
-  their nuclear copies. As configured, featureCounts would not serve `06` step 13.
-
-Whether to adopt option B, and which annotation and counter, is an open decision in
-`../tasks.md`; until then the genome analysis of record (`05`, `06`) is unchanged and this
-folder stays a sensitivity and parallel analysis.
 
 ## Inputs
 

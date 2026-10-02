@@ -126,9 +126,9 @@ overlap in every table.
 
 ### Gene keys and the mitochondrial loci
 
-Count-matrix gene names (`gene-LOC134696364|LOC134696364`, `STRG.10|LOC...`) become LOC keys
+Count-matrix gene names (`gene-LOC134696364|LOC134696364`; `STRG.10|LOC...` in the previous matrix) become LOC keys
 through `gene_key()` in `tools/gene_ids.R`, the same function 06 and 07 use; script 01 stops
-if two tested genes share a key. The 310 mitochondrial loci of
+if two tested genes share a key. The 331 mitochondrial loci of
 `06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` (the
 mitochondrial genome's genes and their copies on unplaced scaffolds) are removed after the
 expression filter, so they enter neither the candidate set nor the DEG union; script 05
@@ -257,11 +257,11 @@ after writing `run_log.csv`, if any step failed.
 - **Foot region.** Every foot library used here is the phenol gland to the tip of the foot.
   In day-3 animals several byssal plaque genes are at or near the VST floor (for example
   LOC134711106, foot protein-4 variant-1, and LOC134692428, byssal peroxidase-like 4: zero
-  counts in 35 of the 46 day-3 foot libraries, against medians of 164 and 167 counts in the 12
-  day-0 ones), so the detection-floor filter removes part of the byssal structural family: in
-  the foot run 6 of the 16 `byssal_structural` candidates are excluded and 5 more are flagged
-  `caution` (`candidate_genes_F.csv`). A null result for those genes is not evidence of no
-  association.
+  counts in 28 and 27 of the 46 day-3 foot libraries, against medians of 159 and 215 counts in
+  the 12 day-0 ones), so the detection-floor filter removes part of the byssal structural
+  family: in the foot run 2 of the 18 `byssal_structural` candidates are excluded and 5 more
+  are flagged `caution` (`candidate_genes_F.csv`; with the previous StringTie + prepDE counts,
+  6 of 16 and 5). A null result for those genes is not evidence of no association.
 - The candidate keywords are regexes on UniProt names; `Hsp` and `chaperone` in particular
   pull in co-chaperones and assembly factors, so the `HSP_proteostasis` module is broad.
   Tighten `CANDIDATE_KEYWORDS` or raise `CANDIDATE_MIN_PIDENT` if a narrower family is
