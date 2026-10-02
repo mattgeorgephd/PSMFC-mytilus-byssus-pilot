@@ -21,9 +21,9 @@ references gene by gene. It answers whether the DEG results depend on the refere
   samples, apeglm shrinkage (Zhu, Ibrahim and Love 2019, *Bioinformatics* 35:2084), DEG at
   padj < 0.05. Counts are summed read counts (step 03), rounded, with no length offset.
 - **Mitochondrial genes** are left out, as in 06: the genes of
-  `06 .../count_matrix/mitochondrial_loci.csv`, and every feature outside annotated genes
-  (novel locus or unassigned isoform) holding an isoform step 02 flags as mitochondrial
-  (`mt_hit`).
+  `06 .../count_matrix/mitochondrial_loci.csv`, the mitochondrial isoforms of step 02 (features
+  `mito:<isoform>`), and every feature outside annotated genes (novel locus or unassigned
+  isoform) holding an isoform with a mitochondrial segment (`mt_hit`).
 - **Comparison:** genes are matched by their key (`gene_key()`); step 02 placed the isoforms
   on the same annotation the genome branch counts. For each contrast: DEGs in both, in one
   reference only, and genome DEGs whose gene received no Iso-Seq isoform; the correlation of
@@ -59,10 +59,10 @@ hisat_qc <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat"
 stopifnot(nrow(contrasts) == 6, all(cs[code %in% contrasts$code, sample.1] %in% colnames(counts)))
 mt_keys <- unique(mt$LOC_ID)
 iso_map <- fread(file.path(map_dir, "isoform_gene_map.csv.gz"), select = c("gene", "status", "mt_hit"))
-off_gene <- function(f) grepl("^(novel|isoseq):", f)                    # features outside annotated genes
-mt_like <- unique(iso_map[off_gene(gene) & mt_hit == TRUE, gene])
+off_gene <- function(f) grepl("^(novel|isoseq|mito):", f)               # features outside annotated genes
+mt_like <- unique(c(iso_map[status == "mitochondrial", gene], iso_map[off_gene(gene) & mt_hit == TRUE, gene]))
 cat("Iso-Seq features:", nrow(counts), "| left out: mitochondrial genes", sum(rownames(counts) %in% mt_keys),
-    ", features outside genes with a mitochondrial isoform", sum(rownames(counts) %in% mt_like), "\n")
+    ", mitochondrial isoforms and features outside genes holding one", sum(rownames(counts) %in% mt_like), "\n")
 counts <- counts[!rownames(counts) %in% c(mt_keys, mt_like), ]
 ```
 

@@ -7,7 +7,8 @@ params:
   min_identity: 0.90       # gap-compressed identity, 1 - minimap2's de (each gap counts once)
   min_overlap: 50          # exonic bases shared with a gene, same strand
   ambiguous_ratio: 0.98    # a second gene sharing at least this share of the best overlap flags the isoform
-  mt_min_aln: 100          # aligned bases to the mitogenome that mark an isoform as mitochondrial
+  mt_min_aln: 100          # aligned bases to the mitogenome that flag an isoform (mt_hit)
+  mt_min_cov: 0.5          # share of an isoform aligned to the mitogenome that makes it mitochondrial
 ---
 
 ```{r setup, include=FALSE}
@@ -39,15 +40,18 @@ the gene whose exons it overlaps, so the two branches can be compared gene by ge
    `novel_locus`: isoforms whose genomic spans overlap on the same strand form one feature,
    named `novel:<sequence>:<start>-<end>:<strand>`. Unaligned isoforms and those below
    `min_identity` stay `unassigned`, each its own feature, `isoseq:<isoform>`.
-5. **Mitochondrial transcripts.** `mt_hit` marks isoforms whose genome alignment lies on the
-   mitogenome or overlaps a mitochondrial locus (the genes of
-   `06 .../count_matrix/mitochondrial_loci.csv`), and isoforms with at least `mt_min_aln` bases
-   aligned to the mitogenome sequence itself (minimap2 `-x asm20`, any identity, either
-   strand). The second test catches mitochondrial transcripts that the genome alignment
-   placed on unannotated copies of mitochondrial sequence on unplaced scaffolds, where they
-   form novel loci. Step 04 leaves out every feature outside annotated genes that holds such
-   an isoform, as 06 leaves out the mitochondrial loci; an isoform on an annotated nuclear
-   gene keeps its gene.
+5. **Mitochondrial transcripts.** An isoform is `mitochondrial` (its own feature,
+   `mito:<isoform>`, which step 04 leaves out as 06 leaves out the mitochondrial loci) when its
+   genome alignment lies on the mitogenome or shares most exonic bases with a mitochondrial
+   locus (the genes of `06 .../count_matrix/mitochondrial_loci.csv`), or when at least
+   `mt_min_cov` of it aligns to the mitogenome sequence itself (minimap2 `-x asm20`, any
+   identity, either strand). The last test catches mitochondrial transcripts that the genome
+   alignment placed on unannotated copies of mitochondrial sequence on unplaced scaffolds, or
+   on a nuclear gene. This is decided before novel loci are formed, so those loci hold no
+   mitochondrial isoforms. `mt_hit` also marks isoforms with a smaller mitochondrial segment
+   (at least `mt_min_aln` bases aligned to the mitogenome, or any exonic overlap with a
+   mitochondrial locus); they keep their gene, and step 04 leaves out any feature outside
+   annotated genes that holds one.
 
 An earlier version of this step, written while the genome was not reachable, assigned isoforms
 through their alignment to the annotation's CDS (`_superseded/02_isoform_gene_map_cds.Rmd`).
@@ -57,11 +61,11 @@ kept (`03_analyses/_superseded/02_isoform-gene-map_cds/`) and compared with this
 Writes, in `03_analyses/02_isoform-gene-map/`:
 
 - `isoform_gene_map.csv.gz`: one row per isoform: `isoform`, `gene` (a gene key via
-  `gene_key()`, `novel:...` or `isoseq:<isoform>`), `status` (`assigned`, `ambiguous`,
-  `novel_locus`, `unassigned`), the alignment (`seqid`, `strand`, `start`, `end`, `identity`
+  `gene_key()`, `novel:...`, `mito:<isoform>` or `isoseq:<isoform>`), `status` (`assigned`,
+  `ambiguous`, `novel_locus`, `mitochondrial`, `unassigned`), the alignment (`seqid`, `strand`, `start`, `end`, `identity`
   (gap-compressed),
   `mapq`, `n_alignments`), `exonic_overlap` with the gene, the runner-up gene and its overlap,
-  `mt_hit` and `isoform_len`;
+  `mt_hit`, `mito_cov` (share of the isoform aligned to the mitogenome) and `isoform_len`;
 - `isoform_gene_map_summary.csv`: isoforms and features by status, and the genome-branch genes
   reached;
 - `cds_map_agreement.csv`: agreement with the retired CDS-based map;
@@ -184,8 +188,9 @@ if (!file.exists(mito_paf)) {
   stopifnot(system(sprintf("%s -c -x asm20 -t %d %s %s 2>/dev/null | gzip > %s", params$minimap2, params$threads,
                            shQuote(mito_fa), shQuote(isoseq_fa), shQuote(mito_paf))) == 0)
 }
-mito_aln <- fread(cmd = sprintf("zcat %s | cut -f1,10", shQuote(mito_paf)), header = FALSE, col.names = c("isoform", "matches"))
-mt_seq_iso <- unique(mito_aln[matches >= params$mt_min_aln, isoform])
+mito_aln <- fread(cmd = sprintf("zcat %s | cut -f1,2,10", shQuote(mito_paf)), header = FALSE, col.names = c("isoform", "qlen", "matches"))
+mito_tab <- mito_aln[, .(mito_bp = max(matches), mito_cov = max(matches) / qlen[1]), by = isoform]
+mt_seq_iso <- mito_tab[mito_bp >= params$mt_min_aln, isoform]
 cat(length(mt_seq_iso), "isoforms with >=", params$mt_min_aln, "bases aligned to the mitogenome;",
     sum(!mt_seq_iso %in% aln[mt_hit == TRUE, isoform]), "of them not caught by the genome alignment\n")
 ```
@@ -199,6 +204,13 @@ aln[status == "assigned" & (mapq == 0 | (!is.na(runner_up_overlap) & runner_up_o
     status := "ambiguous"]
 aln[!status %in% c("assigned", "ambiguous"), `:=`(gene = NA_character_)]
 
+## mitochondrial isoforms become their own features before novel loci are formed
+aln <- merge(aln, mito_tab[, .(isoform, mito_cov)], by = "isoform", all.x = TRUE)
+aln[is.na(mito_cov), mito_cov := 0]
+aln[, mt_hit := mt_hit | isoform %in% mt_seq_iso]
+aln[seqid %in% mt_seqids | (status %in% c("assigned", "ambiguous") & gene %in% mt_genes) | mito_cov >= params$mt_min_cov,
+    `:=`(status = "mitochondrial", gene = paste0("mito:", isoform), mt_hit = TRUE)]
+
 ## novel loci: overlapping genomic spans of well-aligned isoforms outside genes, per strand
 nv <- aln[status == "novel_locus"]
 spans <- GRanges(nv$seqid, IRanges(nv$tstart + 1L, nv$tend), strand = nv$strand)
@@ -211,10 +223,14 @@ all_iso <- data.table(isoform = sub("^>(\\S+).*$", "\\1",
 stopifnot(!anyDuplicated(all_iso$isoform), all(aln$isoform %in% all_iso$isoform))
 map <- merge(all_iso, aln[, .(isoform, gene, status, seqid, strand, start = tstart + 1L, end = tend,
                               identity = round(identity, 4), mapq, n_alignments, exonic_overlap,
-                              runner_up_gene, runner_up_overlap, mt_hit, isoform_len)],
+                              runner_up_gene, runner_up_overlap, mt_hit, mito_cov = round(mito_cov, 3), isoform_len)],
              by = "isoform", all.x = TRUE, sort = FALSE)
-map[is.na(status), `:=`(status = "unassigned", mt_hit = FALSE, n_alignments = 0L)]
-map[isoform %in% mt_seq_iso, mt_hit := TRUE]
+map[is.na(status), `:=`(status = "unassigned", mt_hit = FALSE, n_alignments = 0L, mito_cov = 0)]
+## unaligned isoforms that are mitochondrial by sequence
+um <- map$status == "unassigned" & map$n_alignments == 0 & map$isoform %in% mito_tab[mito_cov >= params$mt_min_cov, isoform]
+map[um, `:=`(status = "mitochondrial", gene = paste0("mito:", isoform), mt_hit = TRUE)]
+map[um, mito_cov := round(mito_tab$mito_cov[match(map$isoform[um], mito_tab$isoform)], 3)]
+map[status != "mitochondrial" & isoform %in% mt_seq_iso, mt_hit := TRUE]
 map[is.na(gene), gene := paste0("isoseq:", isoform)]
 map <- map[match(all_iso$isoform, isoform)]                                    # FASTA order
 stopifnot(!anyNA(map$gene), nrow(map) == nrow(all_iso))
@@ -223,7 +239,7 @@ fwrite(map, file.path(map_dir, "isoform_gene_map.csv.gz"))
 summ <- rbind(map[, .(isoforms = .N, features = uniqueN(gene)), by = status],
               data.table(status = "all", isoforms = nrow(map), features = uniqueN(map$gene)),
               data.table(status = "unaligned (within unassigned)", isoforms = map[n_alignments == 0, .N], features = NA),
-              data.table(status = "mitochondrial (mt_hit)", isoforms = map[mt_hit == TRUE, .N], features = NA),
+              data.table(status = "flagged mt_hit (mitochondrial, or with a mitochondrial segment)", isoforms = map[mt_hit == TRUE, .N], features = NA),
               data.table(status = "genome-branch genes that received an isoform", isoforms = NA,
                          features = sum(g06 %in% map[status %in% c("assigned", "ambiguous"), gene])))
 fwrite(summ, file.path(map_dir, "isoform_gene_map_summary.csv"))
@@ -236,6 +252,8 @@ knitr::kable(summ)
 old <- fread(cds_map, select = c("isoform", "gene", "status"))
 both <- merge(map[, .(isoform, gene_genome = gene, status_genome = status)],
               old[, .(isoform, gene_cds = gene, status_cds = status)], by = "isoform")
+## nuclear genes only: leave out isoforms either map calls mitochondrial
+both <- both[status_genome != "mitochondrial" & !(status_cds %in% c("assigned", "ambiguous") & gene_cds %in% mt_genes)]
 on_gene <- function(s) s %in% c("assigned", "ambiguous")
 agree <- data.table(
   measure = c("isoforms on a gene in both maps", "  of which the same gene", "  of which the same gene, both unambiguous",
