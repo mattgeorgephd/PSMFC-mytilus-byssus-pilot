@@ -57,93 +57,37 @@ my_theme <- theme_classic()+
 ```
 
 ```{r}
-FDO_volcano <- ggplot(FDO_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
-    geom_point(aes(color= log2FoldChange > 0 )) +
+# One row per gene: the merged tables repeat a DEG for each annotation row it matched
+sigs <- list(GOA = GOA_sigs, GOW = GOW_sigs, GDO = GDO_sigs, FOA = FOA_sigs, FOW = FOW_sigs, FDO = FDO_sigs)
+sigs <- lapply(sigs, function(x) distinct(x, gene, log2FoldChange, padj))
+stopifnot(all(vapply(sigs, function(x) !anyDuplicated(x$gene), TRUE)))
+
+# Shared axes, set from the data so that no DEG falls outside them (ggplot drops such points)
+y_max <- ceiling(max(vapply(sigs, function(x) max(-log10(x$padj)), 0)))
+x_max <- max(6, ceiling(max(vapply(sigs, function(x) max(abs(x$log2FoldChange)), 0))))
+
+panel_title <- c(GOA = "Gill: OA vs control", GOW = "Gill: OW vs control", GDO = "Gill: DO vs control",
+                 FOA = "Foot: OA vs control", FOW = "Foot: OW vs control", FDO = "Foot: DO vs control")
+
+volcano <- function(code, y_label = NULL) {
+  ggplot(sigs[[code]], aes(x = log2FoldChange, y = -log10(padj))) +
+    geom_point(aes(color = log2FoldChange > 0)) +
     scale_color_manual(values = c("FALSE" = DIRECTION_COLORS[["down"]], "TRUE" = DIRECTION_COLORS[["up"]])) +
-    labs(x=expression(Log["2"]*" fold change") , 
-         y=NULL) +
-    theme(plot.title = element_text(hjust = 0.5))+
-  my_theme +
-  xlim(-6,6)+
-  ylim(1,20)
-    
+    labs(title = sprintf("%s\n%d up, %d down", panel_title[[code]],
+                         sum(sigs[[code]]$log2FoldChange > 0), sum(sigs[[code]]$log2FoldChange < 0)),
+         x = expression(Log["2"]*" fold change"), y = y_label) +
+    my_theme +
+    theme(plot.title = element_text(hjust = 0.5, size = 18)) +
+    coord_cartesian(xlim = c(-x_max, x_max), ylim = c(1, y_max))
+}
+y_lab <- expression(-log["10"]*" adjusted p")
+```
 
-FDO_volcano
+```{r}
+g <- grid.arrange(volcano("GOA", y_lab), volcano("GOW"), volcano("GDO"), nrow = 1)
+ggsave(file.path(figs, "TC_volcano_gill.png"), g, width = 15, height = 5, dpi = 300, bg = "white")
 ```
 ```{r}
-GDO_volcano <- ggplot(GDO_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
-    geom_point(aes(color= log2FoldChange > 0 )) +
-    scale_color_manual(values = c("FALSE" = DIRECTION_COLORS[["down"]], "TRUE" = DIRECTION_COLORS[["up"]])) +
-    labs(x=expression(Log["2"]*" fold change") , 
-         y=NULL) +
-    theme(plot.title = element_text(hjust = 0.5))+
-  my_theme +
-  xlim(-6,6)+
-  ylim(1,20)
-  
-GDO_volcano
-
+g <- grid.arrange(volcano("FOA", y_lab), volcano("FOW"), volcano("FDO"), nrow = 1)
+ggsave(file.path(figs, "TC_volcano_foot.png"), g, width = 15, height = 5, dpi = 300, bg = "white")
 ```
-```{r}
-FOW_volcano <- ggplot(FOW_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
-    geom_point(aes(color= log2FoldChange > 0 )) +
-    scale_color_manual(values = c("FALSE" = DIRECTION_COLORS[["down"]], "TRUE" = DIRECTION_COLORS[["up"]])) +
-    labs(x=expression(Log["2"]*" fold change") , 
-         y=NULL) +
-    theme(plot.title = element_text(hjust = 0.5))+
-  my_theme +
-  xlim(-6,6)+
-  ylim(1,20)  
-
-FOW_volcano
-```
-```{r}
-GOW_volcano <- ggplot(GOW_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
-    geom_point(aes(color= log2FoldChange > 0 )) +
-    scale_color_manual(values = c("FALSE" = DIRECTION_COLORS[["down"]], "TRUE" = DIRECTION_COLORS[["up"]])) +
-    labs(x=expression(Log["2"]*" fold change"), 
-         y=NULL) +
-    theme(plot.title = element_text(hjust = 0.5))+
-  my_theme+
-  xlim(-6,6)+
-  ylim(1,20)  
-
-GOW_volcano 
-```
-```{r}
-
-FOA_volcano <- ggplot(FOA_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
-    geom_point(aes(color= log2FoldChange > 0 )) +
-    scale_color_manual(values = c("FALSE" = DIRECTION_COLORS[["down"]], "TRUE" = DIRECTION_COLORS[["up"]])) +
-    labs(x=expression(Log["2"]*" fold change") , 
-         y=NULL) +
-    theme(plot.title = element_text(hjust = 0.5))+
-  my_theme +
-  xlim(-6,6)+
-  ylim(1,20) 
-
-FOA_volcano
-
-```
-```{r}
-GOA_volcano <- ggplot(GOA_sigs, aes(x=log2FoldChange, y=-log10(padj))) +
-    geom_point(aes(color= log2FoldChange > 0 )) +
-    scale_color_manual(values = c("FALSE" = DIRECTION_COLORS[["down"]], "TRUE" = DIRECTION_COLORS[["up"]])) +
-    labs(x=expression(Log["2"]*" fold change") , 
-         y=NULL) +
-    theme(plot.title = element_text(hjust = 0.5))+
-    my_theme+ 
-  xlim(-6,6)+
-  ylim(1,20)  
-
-GOA_volcano
-```
-```{r}
-g <- grid.arrange(GOA_volcano, GOW_volcano, GDO_volcano,nrow = 1)
-ggsave(file.path(figs, "TC_volcano_gill.png"), g, width = 15, height = 5, dpi = 300)
-```
-```{r}
-g <- grid.arrange(FOA_volcano, FOW_volcano, FDO_volcano,nrow = 1)
-ggsave(file.path(figs, "TC_volcano_foot.png"), g, width = 15, height = 5, dpi = 300)
-```
-
