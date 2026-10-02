@@ -1,6 +1,9 @@
 # prepDE
 
-The count matrices `06_differential-expression` starts from.
+The count matrices of the original HPC alignment (HISAT2 + StringTie + prepDE): the count
+matrices of record until 2026-10-02, when `../featurecounts/` replaced them. They are still
+written, and `04_iso-seq-transcriptome` step 07 refits them with `06`'s rules as the previous
+record it compares with.
 
 | File | Produced by | Contents |
 |---|---|---|

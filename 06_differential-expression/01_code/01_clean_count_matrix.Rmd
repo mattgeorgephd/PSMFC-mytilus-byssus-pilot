@@ -9,14 +9,15 @@ knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
 
 # What this does
 
-Starts the differential-expression analysis from the prepDE gene count matrix written by
-`05_sequence-alignment/01_code/02_prepDE.Rmd`, and the raw sample sheet in `02_data/`:
+Starts the differential-expression analysis from the gene count matrix of record written by
+`05_sequence-alignment/01_code/04_count_matrix_of_record.Rmd` (featureCounts on the RefSeq
+annotation with Iso-Seq-extended 3' ends; unique reads, sense strand), and the raw sample sheet
+in `02_data/`:
 
-1. renames the count-matrix columns from the read-file base name to the sample ID
-   (`A10-T015F_S172` -> `T015F`), orders them, removes T051F and T051G (QC), and sorts the
-   genes by ID. The original matrix came from `prepDE.py` under Python 2, whose dictionaries
-   have no defined order, so its row order was arbitrary; sorting makes every later table
-   reproducible. The counts are unchanged;
+1. orders the libraries, removes T051F and T051G (QC), and sorts the genes by ID. The counts
+   are unchanged. (The previous matrix, StringTie + prepDE in
+   `05_sequence-alignment/03_analyses/prepDE/`, named its columns by read file, as
+   `A10-T015F_S172`; the renaming below still handles that form.);
 2. builds the sample table (`sample.1`, `tissue`, `treatment`, `day`, `region`) from the
    sample sheet; treatment and day come from `trt` (`T_OA_d3` -> OA, 3);
 3. checks every library against the RNA isolation log and writes the crosswalk between the
@@ -57,7 +58,7 @@ never finished).
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
-raw_counts <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "prepDE", "gene_count_matrix.csv")
+raw_counts <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "featurecounts", "gene_count_matrix.csv")
 stopifnot(file.exists(raw_counts))
 dir.create(cnt, showWarnings = FALSE, recursive = TRUE)
 QC_REMOVED <- c("T051F", "T051G")

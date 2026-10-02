@@ -25,16 +25,19 @@ its folder's `03_analyses/knit_html/`; this file leaves one per stage, and `run_
 | stage | runner | needs | about |
 |---|---|---|---|
 | 02 | `02_thread-strength/01_code/00_run_thread_strength.Rmd` | `01_mussel-measurements/` | 1 min |
-| 05 | `05_sequence-alignment/01_code/00_run_sequence_alignment.Rmd` | committed StringTie and FastQC tables | 1 min |
+| 05 | `05_sequence-alignment/01_code/00_run_sequence_alignment.Rmd` | committed StringTie and FastQC tables, `04`'s committed featureCounts matrix | 1 min |
 | 06 | `06_differential-expression/01_code/00_run_differential_expression.Rmd` | 05 | 10 min |
 | 04 | `04_iso-seq-transcriptome/01_code/00_run_isoseq.Rmd` | 06, committed Iso-Seq and recount gene counts | 12 min |
 | 07 | `07_enrichment/01_code/00_run_enrichment.Rmd` | 06, 05, `03_blast/` | 8 min |
 | 08 | `08_gene-annotation/01_code/00_run_gene_annotation.Rmd` | 06 | 1 min |
 | 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 06, 07, `03_blast/` | 4 min |
 
-Stage 04 runs after 06 because it repeats 06's contrasts on the Iso-Seq reference (step 04)
-and on option B's recounts of the genome (step 07) and compares them with 06; both read
-committed gene counts, so only those two steps run here.
+The count matrix of record (featureCounts on the RefSeq annotation with Iso-Seq-extended 3'
+ends) comes from `04_iso-seq-transcriptome` step 06, which is not run here; stage 05 takes its
+committed matrix (05 step 04). Stage 04 runs after 06 because it repeats 06's contrasts on the
+Iso-Seq reference (step 04) and on the six recounts of the genome (step 07), compares them with
+06 and with the previous record, and checks that its fit of the record reproduces 06's; both
+read committed gene counts, so only those two steps run here.
 
 Not run here, because they need data or machines outside this repository: the BLAST
 annotation (`03_blast/`, HPC), the Iso-Seq steps 01-03 and 05-06 (`04_iso-seq-transcriptome/`,

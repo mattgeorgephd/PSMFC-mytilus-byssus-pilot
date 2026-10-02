@@ -13,8 +13,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **Analysis.** One reproducible chain, runnable from the committed data: thread mechanics
   (`02`) and the Tag-seq counts (`05`) through differential expression (`06`), GO enrichment
   across treatments (`07`, `08`) and the per-animal associations of thread mechanics with
-  genes, DEG sets, enriched GO terms and mitochondrial expression (`09`). The Iso-Seq branch
-  (`04`) repeats `06`'s contrasts on the Iso-Seq transcriptome as a sensitivity analysis.
+  genes, DEG sets, enriched GO terms and mitochondrial expression (`09`). The counts of record
+  are featureCounts counts on the RefSeq annotation with Iso-Seq-extended 3' ends (made by
+  `04_iso-seq-transcriptome` steps 05-06, taken by `05` step 04; adopted 2026-10-02). The
+  Iso-Seq branch (`04` steps 01-04) repeats `06`'s contrasts on the Iso-Seq transcriptome as a
+  sensitivity analysis.
 - **Manuscript.** Linked from `README.md`. The contrasts of record are stressor vs day-3
   treatment control (TC). The mitochondrial genes have their own analysis and figure
   (`06` step 13, `figures/MT_mitochondrial_expression.png`).
@@ -40,7 +43,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   not in the repository), `05` step 03's recipe check (set `online: true`),
   `04_iso-seq-transcriptome` steps 01-03 and 05-06 (download the transcriptome, genome and
   reads and run minimap2, salmon, HISAT2, StringTie and featureCounts; set `online: true`;
-  steps 04 and 07 run as pipeline stage 04) and
+  steps 05-06 make the count matrix of record; steps 04 and 07 run as pipeline stage 04) and
   `08_gene-annotation` steps 02-03 (NCBI and OrthoDB; set `online: true`). Their committed
   outputs are what the pipeline reads.
 - **After a run:** check that every `run_log.csv` row is `TRUE`; that the `RUN_provenance*.txt`
@@ -81,6 +84,12 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     `06_differential-expression/03_analyses/_superseded/LC_contrasts/`. The foot-vs-gill
     contrast in the day-3 controls (`FG_TC`) is computed and drawn, but nothing of record
     rests on it.
+  - Counts: featureCounts (Subread 2.1.1), uniquely aligned reads on the sense strand, on the
+    RefSeq annotation (RS_2024_02) with each transcript's last exon extended to the 3' end of
+    its Iso-Seq isoforms (`ext3`), from HISAT2 2.2.1 alignments
+    (`05_sequence-alignment/03_analyses/featurecounts/gene_count_matrix.csv`). The previous
+    counts (StringTie + prepDE on the HPC alignment, `05 .../prepDE/`) are kept for comparison
+    (`04` step 07).
   - DEGs: apeglm-shrunk DESeq2 (Wald p from DESeq2's outlier-replaced refit, the standard
     workflow), padj < 0.05, after keeping genes with at least 10 counts in a third of the
     contrast's samples; one model per contrast, defined in

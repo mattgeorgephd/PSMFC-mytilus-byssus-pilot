@@ -1,25 +1,37 @@
 # 05_sequence-alignment
 
 Read QC, alignment and quantification of the Tag-seq reads against the *Mytilus trossulus*
-genome (GenBank GCA_036588685.1 / RefSeq GCF_036588685.1), ending in the count matrices that
+genome (GenBank GCA_036588685.1 / RefSeq GCF_036588685.1), ending in the count matrix that
 `06_differential-expression` starts from.
 
-The alignment itself, HISAT2 + StringTie (`01_code/01_hisat_stringtie.Rmd`), ran on a
-collaborator HPC workstation (paths under `/home/shared/...`) against trimmed reads and a genome
-that are not stored in this repository; it is kept verbatim as the method record, with its
-summary outputs committed in `03_analyses/`. The count-matrix step (`02_prepDE.Rmd`) runs
-anywhere.
+**The count matrix of record** (since 2026-10-02) is `03_analyses/featurecounts/gene_count_matrix.csv`,
+written by step 04: the trimmed reads realigned with HISAT2 and counted with featureCounts
+(uniquely aligned reads, sense strand) on the RefSeq annotation with its 3' ends extended by
+the Iso-Seq isoforms. The realignment and counting are steps 05 and 06 of
+`04_iso-seq-transcriptome` (option B there), because the extension needs that folder's Iso-Seq
+alignment; their committed matrix is what step 04 reads. Why it replaced the previous matrix is
+in `04_iso-seq-transcriptome/03_analyses/07_augmented-de/README.md`: featureCounts counts reads
+(prepDE estimates read bases over 75 while the reads average about 63 bases, and its
+gene-wise dispersions ran about 9% higher), and the RefSeq gene models often end before the 3'
+ends Tag-seq reads.
+
+**The previous matrix** came from HISAT2 + StringTie (`01_code/01_hisat_stringtie.Rmd`), run
+on a collaborator HPC workstation (paths under `/home/shared/...`) against trimmed reads and a
+genome that are not stored in this repository; it is kept verbatim as the method record, with
+its summary outputs committed in `03_analyses/`. Its count-matrix step (`02_prepDE.Rmd`) runs
+anywhere, and its matrix is still written, for `04` step 07's comparison.
 
 ## How to run
 
 Open `sequence-alignment.Rproj` and knit `01_code/00_run_sequence_alignment.Rmd` (or let the
-repository-level `00_run_pipeline.Rmd` do it). By default it runs steps 02 and 03.
+repository-level `00_run_pipeline.Rmd` do it). By default it runs steps 02 to 04.
 
 | step | script | what it does |
 |---|---|---|
 | 01 | `01_hisat_stringtie.Rmd` | HISAT2 alignment and StringTie quantification (`-e -B` against the reference annotation); writes `03_analyses/hisat/` and its `sample_list.txt`. HPC only |
 | 02 | `02_prepDE.Rmd` | gene and transcript count matrices in `03_analyses/prepDE/` (read length 75) |
 | 03 | `03_read_trimming.Rmd` | how the trimmed reads were made: per-library read retention from the committed FastQC tables, and (with `online: true`) the trimming recipe reproduced on a sample of reads; writes `03_analyses/read_trimming/` |
+| 04 | `04_count_matrix_of_record.Rmd` | the count matrix of record in `03_analyses/featurecounts/`: `04_iso-seq-transcriptome` step 06's featureCounts matrix on the 3'-extended annotation, its rows named as prepDE names them (`gene_id|gene_name` from `03_analyses/hisat/t_data.ctab`) |
 
 `02_prepDE.Rmd` counts from the per-sample StringTie GTFs when step 01's outputs are present,
 with `01_code/_prepde.R`, an R port of StringTie's `prepDE.py3` checked to give byte-identical
@@ -78,6 +90,7 @@ For anyone rerunning from raw reads:
 │   ├── 01_hisat_stringtie.Rmd          HISAT2 + StringTie (HPC record)
 │   ├── 02_prepDE.Rmd                   count matrices
 │   ├── 03_read_trimming.Rmd            how the trimmed reads were made (retention, recipe check)
+│   ├── 04_count_matrix_of_record.Rmd   the count matrix of record (featureCounts, from 04)
 │   ├── _prepde.R                       R port of prepDE.py3 (sourced by 02)
 │   ├── _derive_strg_gene_ids.R         one-off: recovers the StringTie gene IDs
 │   ├── _derive_mt_like_loci.R          one-off: loci the annotation names after a mitochondrial protein
@@ -91,7 +104,8 @@ For anyone rerunning from raw reads:
 │   └── strg_gene_ids.csv               StringTie gene IDs of 284 reference transcripts
 └── 03_analyses/
     ├── hisat/                          reference StringTie tables + MultiQC alignment reports
-    ├── prepDE/                         transcript and gene count matrices (the DE input)
+    ├── featurecounts/                  the count matrix of record (the DE input)
+    ├── prepDE/                         transcript and gene count matrices of the HPC alignment (previous record)
     ├── fastqc/{trimmed,untrimmed}/     FastQC per-sample read QC
     ├── read_trimming/                  read retention and the trimming recipe check
     ├── _superseded/kallisto/           kallisto quant per sample
@@ -108,5 +122,5 @@ For anyone rerunning from raw reads:
 
 `01_hisat_stringtie.Rmd` and `_superseded/07-HiSat_GL.Rmd` invoke HISAT2 / StringTie at fixed
 `/home/shared/...` paths and read inputs not committed here, so they do not run as they are
-outside that HPC environment. Packages for steps 02 and 03: base R, here, rmarkdown; step 03
+outside that HPC environment. Packages for steps 02 to 04: base R, here, rmarkdown, data.table (04); step 03
 with `online: true` also needs curl, perl, FASTX-Toolkit 0.0.14 and cutadapt (5.2 used).

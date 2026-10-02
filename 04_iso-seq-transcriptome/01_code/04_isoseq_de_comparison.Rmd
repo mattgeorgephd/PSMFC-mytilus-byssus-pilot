@@ -139,10 +139,13 @@ fwrite(deg_counts, file.path(de_dir, "isoseq_DEG_counts.csv"))
 
 # Why the references differ
 
-Counts per gene: the genome counts are `prepDE` estimates (coverage x transcript length / 75,
-the read length the original run assumed, so about the aligned read bases / 75), while the
-trimmed reads average about 63 bases; equal read numbers on both references therefore give an
-Iso-Seq / genome ratio of about 75 / 63 = 1.19. What matters beyond that is how the ratio spreads. The Iso-Seq-only
+Counts per gene: both references count reads. The genome counts of record are featureCounts
+counts of uniquely aligned reads on the RefSeq annotation with Iso-Seq-extended 3' ends
+(`05_sequence-alignment` step 04); salmon also counts reads, and shares those that fit several
+isoforms or genes among them. (The previous genome counts, StringTie + prepDE, were coverage x
+transcript length / 75, about the aligned read bases / 75, while the reads average about 63
+bases, so they ran about 1.19 times below a read count.) What matters is how the ratio
+spreads. The Iso-Seq-only
 DEGs are compared on their mean count on each reference, which shows whether they are genes the
 genome branch counted thinly.
 
