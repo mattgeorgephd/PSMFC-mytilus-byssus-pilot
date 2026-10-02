@@ -80,6 +80,27 @@ genome-wide BLAST annotation that are above the detection floor. The mitochondri
 in no gene universe. Script 02 adds six pathway modules, the leave-one-animal-out influence
 check and `best_hits_<T>.csv`, all through the same ANCOVA.
 
+In the current run two genes pass q < 0.1 within their metric, and one of them within its tier
+family too (`best_hits_<T>.csv`):
+
+- **Gill, candidate, plaque area (primary).** Animals that express LOC134718612 more strongly
+  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.034
+  over the 311 candidates, 0.069 over the primary family). It is annotated as heat shock 70 kDa
+  protein 12A, but only from a 32% identity BLAST hit, so it is a distant HSP70-family gene
+  rather than a confident ortholog; it is expressed at a low level in gill (DESeq2 base mean
+  about 10) and is not a TC DEG. Leaving out its most influential animal (T136) gives p 1.6e-5.
+  On the previous count matrix it was already the top plaque-area candidate (q 0.09, family q
+  0.18).
+- **Foot, DEG union, strongest thread (exploratory).** Animals that express LOC134698975
+  (dynein axonemal assembly factor 8, 36% BLAST identity) more strongly make stronger threads (partial r 0.57, 95%
+  interval 0.32 to 0.75, p 9.8e-5, q 0.091 over the 932 foot DEG-union genes, family q 0.18; mean
+  peak force, the primary metric, r 0.56, p 1.6e-4, q 0.15). It is a Foot DO down-regulated
+  DEG (log2 fold change -0.52) in the Foot DO down-regulated cilium and dynein-arm assembly terms (`07`); within arms,
+  the animals with less of it make weaker threads. Robust to leaving out one animal.
+
+The next candidates are glutathione peroxidase 7 with the strongest thread in gill
+(exploratory, q 0.12); the lowest foot candidate q is 0.46, and no module comes near (lowest q 0.59).
+
 Script 05 puts the sets the expression analysis found through the same ANCOVA: the up- and
 the down-regulated DEGs of each stressor, the genes behind every enriched topGO term of
 those runs (all three ontologies, marked where an FDR-controlled method agrees), and the
