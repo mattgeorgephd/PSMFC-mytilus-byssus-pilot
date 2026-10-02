@@ -124,10 +124,15 @@ QC are 64% (T051G) and 49% (T051F) mitochondrial, against at most 10% in the oth
 - **The mitochondrial signal does not depend on the reference.** Each library's mitochondrial
   share of reads correlates between the references at Spearman 0.87 (day-3 foot 0.85, day-3
   gill 0.81).
-- **Byssal genes.** The byssal-gene DEGs of the genome analysis replicate (Foot OA 1 of 1, Foot
-  OW 1 of 1, Foot DO 7 of 8). The Iso-Seq reference adds a few, but three of them (foot
-  proteins 4, 10 and 11) have shrunk fold changes near 0 with a small padj, the sign of a
-  gene expressed in a few animals only; they should not be read as treatment effects.
+- **Byssal genes.** Named as `09` names the byssal structural genes (best BLAST hit a foot
+  protein, plaque protein, precollagen, ACDC or byssal tyrosinase; 72 genes), the genome
+  analysis has six byssal DEGs: the three ACDC genes, down about two- to four-fold in both
+  Gill OA and Gill DO. All six are DEGs on the Iso-Seq reference too, with the same fold
+  changes. The Iso-Seq reference adds foot proteins 4, 10 and 11 in Foot OA and Foot DO, with
+  shrunk fold changes near 0 and a small padj, the sign of a gene expressed in a few animals
+  only; they should not be read as treatment effects. (An earlier version of this README gave
+  "Foot OA 1 of 1, Foot OW 1 of 1, Foot DO 7 of 8" from a broader, unrecorded definition; it is
+  replaced by this count, which step 07 reproduces for option B.)
 - **The genome analysis is conservative.** The Iso-Seq reference finds about twice as many DEGs.
   On genes counted by both it places about 1.3 times the reads on a typical gene (2.4 times or
   more on a quarter of genes), and most Iso-Seq-only DEGs on annotated genes are genes the
