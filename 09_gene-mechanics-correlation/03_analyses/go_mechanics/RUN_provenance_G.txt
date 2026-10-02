@@ -1,5 +1,5 @@
 [05_go_term_mechanics.Rmd]
-generated            : 2026-10-02 00:01:34
+generated            : 2026-10-02 00:23:26
 tissue               : G
 reported test        : ANCOVA level_day3 ~ score + treatment + level_baseline (script 01's metrics, scales and animals)
 metrics [tier]       : mean_force [primary], pad_area [primary], max_force [exploratory], adhesion_kpa [exploratory]
@@ -8,8 +8,8 @@ MIN_GENES / FDR_ALPHA: 3 / 0.1
 sets scored          : DEG set 6, GO term 100, mitochondrial 1 (of 120 sets)
 animals in the fits  : 46
 checks               : 5 run, 0 failed
-code commit          : 3beb73aa476c
-uncommitted changes  : YES, 2 tracked file(s) differ from the commit: M 09_gene-mechanics-correlation/01_code/gene-mechanics-pipeline_DOC.md; M AGENTS.md
+code commit          : d489806f7105
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):

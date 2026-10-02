@@ -1,12 +1,12 @@
-generated            : 2026-10-01 23:50:36
+generated            : 2026-10-02 00:12:16
 GO release           : 2023-07-27 (GO.db 3.18.0)
 DEG                  : padj < 0.05 in the 06 apeglm table; up and down tested separately
 universe             : genes with a non-missing padj in the contrast's apeglm table
 terms tested         : 10 or more annotated universe genes (topGO nodeSize); 10 to 500 for goseq and clusterProfiler
 families             : TC, FG
 genes                : 11319 in any contrast's table; with GO BP 6332, MF 6117, CC 6789
-code commit          : 3beb73aa476c
-uncommitted changes  : YES, 2 tracked file(s) differ from the commit: M 09_gene-mechanics-correlation/01_code/gene-mechanics-pipeline_DOC.md; M AGENTS.md
+code commit          : d489806f7105
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : topGO 2.58.0, goseq 1.58.0, clusterProfiler 4.14.0, enrichplot 1.26.1, rrvgo 1.18.0, GOSemSim 2.32.0, GO.db 3.18.0, AnnotationDbi 1.68.0, GSEABase 1.68.0, org.Hs.eg.db 3.18.0
 inputs (md5, repo-relative path):

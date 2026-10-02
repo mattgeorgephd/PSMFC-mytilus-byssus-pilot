@@ -1,5 +1,5 @@
 [01_gene_mechanics_correlation.Rmd]
-generated            : 2026-10-02 00:00:46
+generated            : 2026-10-02 00:22:39
 tissue               : G
 INCLUDE_CONTROL_ARM  : TRUE
 reported test        : ANCOVA level_day3 ~ expression + treatment + level_baseline (log scale; per-animal geometric mean, largest thread for max_force)
@@ -16,8 +16,8 @@ candidates tested    : 253 (33 at the detection floor)
 DEG union tested     : 728 of 738
 family sizes (tests) : candidate x primary 506, candidate x exploratory 506, DEG union 2912
 checks               : 16 run, 0 failed
-code commit          : 3beb73aa476c
-uncommitted changes  : YES, 2 tracked file(s) differ from the commit: M 09_gene-mechanics-correlation/01_code/gene-mechanics-pipeline_DOC.md; M AGENTS.md
+code commit          : d489806f7105
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : DESeq2 1.46.0, dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):
@@ -44,7 +44,7 @@ inputs (md5, repo-relative path):
   d3006bd11c0342334f36413177a80d8d  tools/gene_ids.R
 
 [02_gene_mechanics_expanded.Rmd]
-generated            : 2026-10-02 00:00:53
+generated            : 2026-10-02 00:22:45
 reported test        : script 01's ANCOVA (assoc_candidate_G.csv, assoc_DEGunion_G.csv)
 metrics [scale, tier]: mean_force [log, primary], pad_area [log, primary], max_force [log, exploratory], adhesion_kpa [log, exploratory]
 primary metrics      : mean_force, pad_area
@@ -54,8 +54,8 @@ FDR_ALPHA            : 0.1
 candidates tested    : 253 of 286 (floor filter in script 01)
 N_INFLUENCE_HITS     : 3
 checks               : 1 run, 0 failed
-code commit          : 3beb73aa476c
-uncommitted changes  : YES, 2 tracked file(s) differ from the commit: M 09_gene-mechanics-correlation/01_code/gene-mechanics-pipeline_DOC.md; M AGENTS.md
+code commit          : d489806f7105
+uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):
