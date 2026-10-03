@@ -24,7 +24,7 @@ READS_URL   <- paste0("https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-
                       "byssus-exp-analysis/data/raw-trimmed/")       # the trimmed reads HISAT2 used
 
 ## the annotation's mitochondrial loci (steps 04 and 05, through tools/mt_encoded.R)
-blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
+blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-uniprot2026_03", "LOC_GO_list.txt")
 t_data   <- here::here("03_analyses", "hisat", "t_data.ctab")
 mt_annot <- here::here("02_data", "annotation_mt_like_loci.csv")
 

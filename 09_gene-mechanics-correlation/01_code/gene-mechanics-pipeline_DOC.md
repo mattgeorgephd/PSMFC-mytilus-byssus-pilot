@@ -115,7 +115,7 @@ also absorbs any between-animal baseline differences the arm assignment did not 
 ### Annotation map and candidate universe
 
 `CANDIDATE_ANNOTATION = "genome"`: every gene in the count matrix is annotated with its best
-UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`, with
+UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt`, with
 `blast_pident` and `blast_evalue` carried along, and any expressed gene whose name matches
 `CANDIDATE_KEYWORDS` (byssal / collagen / plaque-curing / HSP / hypoxia / tRNA-synthetase /
 oxidative-stress terms) and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-10`,

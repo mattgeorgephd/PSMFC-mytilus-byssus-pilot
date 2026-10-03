@@ -28,7 +28,9 @@ Open `enrichment.Rproj` and knit `01_code/00_run_enrichment.Rmd` (or let the rep
 `01_code/_go_helpers.R` holds what the scripts share (gene sets, annotation readers, ancestor
 propagation, figure labels, the dot plot). Packages: topGO, goseq, clusterProfiler,
 enrichplot, rrvgo, GOSemSim, GO.db, GSEABase, org.Hs.eg.db (only for a column rrvgo insists
-on; step 05 replaces it), tidyverse, patchwork, here, rmarkdown.
+on; step 05 replaces it), tidyverse, patchwork, here, rmarkdown. `GO.db` must be 3.23.1 (GO
+release 2026-01-23): `01_code/_paths.R` stops otherwise (`check_go_release()`,
+`tools/pipeline_checks.R`; how to install it with R 4.4 is in `AGENTS.md`, How to run).
 
 ## Design
 
@@ -36,8 +38,9 @@ on; step 05 replaces it), tidyverse, patchwork, here, rmarkdown.
   the genes DESeq2 gave an adjusted p (independent filtering leaves the others at NA, so they
   could never be DEGs). Up- and down-regulated DEGs (padj < 0.05) are tested separately against
   that universe.
-- **Annotation.** The genome-wide BLAST (`03_blast/03_analyses/genome-foot/LOC_GO_list.txt`)
-  can give several hits per LOC; the highest bitscore is kept, as in `08` and `09`. Genes are
+- **Annotation.** The genome-wide BLAST of 2024 with the UniProt records of release 2026_03
+  (`03_blast/03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt`) can give several hits
+  per LOC; the highest bitscore is kept, as in `08` and `09`. Genes are
   joined to it through `gene_key()` (`tools/gene_ids.R`). GO IDs are trimmed and checked
   against `GO.db`. The mitochondrial loci are in no universe (05 leaves them out). topGO takes the direct annotation and walks the GO graph itself;
   goseq and clusterProfiler get each gene's terms plus all their ancestors.

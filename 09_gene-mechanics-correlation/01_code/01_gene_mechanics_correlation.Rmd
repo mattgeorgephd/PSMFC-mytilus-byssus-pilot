@@ -231,7 +231,7 @@ dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 CANDIDATE_ANNOTATION <- "genome"
 CANDIDATE_MAX_EVALUE <- 1e-10
 CANDIDATE_MIN_PIDENT <- 0
-MASTER_ANNOT_FILE <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
+MASTER_ANNOT_FILE <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-uniprot2026_03", "LOC_GO_list.txt")
 BYSSAL_STRUCTURAL_REGEX <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-",
                                  "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
                                  sep = "|")

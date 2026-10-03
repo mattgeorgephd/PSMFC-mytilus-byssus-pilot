@@ -30,7 +30,7 @@ own folder's `03_analyses/`; later folders read earlier ones.
 | `00_treatment_conditions/` | tank DO, pH, temperature and salinity record and summary table | reference only |
 | `01_mussel-measurements/` | mussel size, condition and thread-production workbooks | input: `mussel-size-measurements.xlsx` feeds `02_thread-strength` script 01 |
 | `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, mean and maximum peak force and plaque area | `01_code/00_run_thread_strength.Rmd` |
-| `03_blast/` | BLAST annotation of the genome CDS and the Iso-Seq transcriptome; the `genome-foot/` GO mapping used downstream | HPC method record; outputs committed |
+| `03_blast/` | BLAST annotation of the genome CDS and the Iso-Seq transcriptome; the 2024 genome hits with UniProt release 2026_03 records (`genome-foot-uniprot2026_03/LOC_GO_list.txt`), the gene-to-GO table used downstream | HPC method record; outputs committed; step 04 rebuilds the table of record offline |
 | `04_sequence-alignment/` | read QC and trimming record, the previous HISAT2 + StringTie count matrices (HPC record), the Iso-Seq isoforms placed on the genome, the RefSeq annotation with Iso-Seq-extended 3' ends, the reads realigned and counted with featureCounts on it (**the count matrix of record**), and the mitochondrial genes counted on the mitochondrial genome alone | `01_code/00_run_sequence_alignment.Rmd` (steps 02, 03, 07 and 08 by default; 02-08 with `online: true`) |
 | `05_differential-expression/` | DESeq2 for 7 contrasts (each stressor vs the day-3 treatment control, and foot vs gill), DEG annotation, figures; the mitochondrial proteins on their own (with the mitochondrial haplotype groups) | `01_code/00_run_differential_expression.Rmd` |
 | `06_iso-seq-transcriptome/` | sensitivity branch: the TC contrasts repeated with the reads quantified against the Iso-Seq transcriptome (salmon, tximport, on `04`'s isoform-to-gene map) and compared with `05`; and the comparison of `04`'s genome recounts with the previous record, the evidence for the count matrix of record | runner `01_code/00_run_isoseq.Rmd` (steps 03 and 04 by default; steps 02-04 with `online: true`) |
@@ -163,7 +163,9 @@ flowchart TB
   nor 08 reads the other; stage 09 reads `02`, `03`, `05` and `07`.
 - **The HPC steps are a break in the chain.** `03·01` (the BLAST annotation) and `04·01`
   (HISAT2 + StringTie) ran on an HPC with inputs that are not in the repository; the steps after
-  them read their committed outputs. `04·04` to `04·06` and `06·02` need the network and the
+  them read their committed outputs. `03·04` gives `03·01`'s 2024 hits the UniProt records of
+  release 2026_03; it runs offline from committed files but is not a pipeline stage (`03` has
+  no runner), and the pipeline reads its committed table. `04·04` to `04·06` and `06·02` need the network and the
   aligners and run only with their runner's `online: true`; the pipeline reads their committed
   outputs too.
 - **How the numbers changed on 2026-10-03.** The steps that build the count matrix of record
@@ -179,9 +181,11 @@ flowchart TB
   `05·01`'s `mitochondrial_loci.csv`, built from the count matrix they lead to; they now find
   the annotation's mitochondrial loci themselves with the same function
   (`tools/mt_encoded.R`), the same 331 loci.
-- **Committed inputs that no current step writes:** `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`
-  (`03·01` wrote it on the HPC; the script, fixed on 2026-10-03, rebuilds it from the 2024
-  blastx table),
+- **Committed inputs that no current step writes:** `03_blast/03_analyses/genome-foot/`
+  `genome_n_foot_blastx.tab`, `g.spid.txt` and `LOC_GO_list.txt` (`03·01` wrote them on the
+  HPC; the script, fixed on 2026-10-03, rebuilds the last two from the blastx table; `03·04`
+  reads all three, and nothing downstream reads them since the UniProt 2026_03 records were
+  adopted),
   `04_sequence-alignment/03_analyses/hisat/t_data.ctab` (an older HPC run's copy, one
   sample's table; read for gene names and transcript lengths, which come from the reference
   annotation), `04 .../prepDE/transcript_count_matrix.csv` (HPC `prepDE.py`) and
@@ -221,26 +225,30 @@ flowchart LR
 | 04 `04_analyze_thread_strength.Rmd` | yes | `02·03` summary; `_ancova.R`, `tools/plot_style.R`, `tools/pipeline_checks.R` | `04_analyze-thread-strength/`: `STATS_ancova_*.csv`, `DATA_ancova_animals.csv`, `DESC_*.csv`, `BP_*`, `LineBox_*` and `DIAG_*` figures, `RUN_provenance.txt` |
 | 05 `05_decompose_adhesion.Rmd` | yes | `02·03` summary; `02·04` `STATS_ancova_vs_control.csv`; the same helpers | `05_decompose-adhesion/`: `STATS_ancova_*.csv`, `DATA_ancova_animals.csv`, `mussel_response_classification.csv`, `STATS_failure_mode.csv`, `FIG_*` figures, `RUN_provenance.txt` |
 
-## 03_blast (HPC record, not run here)
+## 03_blast (HPC record; not a pipeline stage)
 
 ```mermaid
 flowchart LR
   ncbi(["RefSeq CDS (NCBI)"])
   uni(["UniProt Swiss-Prot and<br>Mytilus foot proteins"])
   iso(["Iso-Seq transcripts (owl)"])
+  rec(["UniProt records,<br>release 2026_03 (REST)"])
   b1["01 genome BLAST"]
   b2["02 UniProt check"]
   b3["03 Iso-Seq vs genome"]
+  b4["04 UniProt 2026_03 records"]
   ncbi --> b1
   uni --> b1
   uni --> b2
   iso --> b3
   ncbi --> b3
-  b1 -- "genome-foot/LOC_GO_list.txt" --> out(["06·04, 05·01, 05·06,<br>07·01, 09·01, 09·04"])
+  b1 -- "genome-foot/: blastx table,<br>g.spid.txt, LOC_GO_list.txt" --> b4
+  rec --> b4
+  b4 -- "genome-foot-uniprot2026_03/<br>LOC_GO_list.txt" --> out(["04·04, 04·05, 05·01, 05·06,<br>06·04, 07·01, 09·01, 09·04"])
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef off fill:#f6f1e6,stroke:#a08a5a,stroke-dasharray:5 3,color:#1b2730
-  class ncbi,uni,iso,out ext
-  class b1,b2,b3 off
+  class ncbi,uni,iso,rec,out ext
+  class b1,b2,b3,b4 off
 ```
 
 | step | in pipeline | reads | writes |
@@ -248,6 +256,7 @@ flowchart LR
 | 01 `01_genome_blast.Rmd` | no (HPC; `run: true`) | RefSeq CDS (NCBI); UniProt Swiss-Prot release 2024_04 (archive) and the UniProt Mytilus foot proteins (record copy in `02_data/`); the UniProt records of both (REST) | the blastx table (on the HPC), `03_analyses/genome-foot/LOC_GO_list.txt` and `g.spid.txt`; with `run: false` it only checks the committed tables against a blastx table |
 | 02 `02_genome_blast_uniprot_check.Rmd` | no (HPC) | an HPC blastx table and UniProt annotation | HPC intermediates only |
 | 03 `03_isoseq_vs_genome_blast.Rmd` | no (HPC) | Iso-Seq transcripts (owl), RefSeq CDS, foot proteins | HPC working files only |
+| 04 `04_refresh_uniprot_records.Rmd` | no (offline; not a pipeline stage) | `03·01` `genome-foot/genome_n_foot_blastx.tab` (the 2024 hits), `g.spid.txt` and `LOC_GO_list.txt` (column names and order); `genome-foot-uniprot2026_03/uniprot_records_2026_03.tsv` (the hit proteins' records, fetched from UniProt's REST service with `online: true`) | `genome-foot-uniprot2026_03/`: `LOC_GO_list.txt` (the table the analysis reads), `RUN_provenance.txt` |
 | `_uniprot_retrieval.py` | no (by hand) | an accession list; rest.uniprot.org | `uniprot-retrieval.tsv`, committed in `03_analyses/transcriptome-uniprot/` |
 
 ## 04_sequence-alignment
@@ -257,7 +266,7 @@ flowchart LR
   reads(["Tag-seq reads (gannet)"])
   ncbi(["RefSeq genome, GFF, GTF (NCBI)"])
   iso(["Iso-Seq transcripts (owl)"])
-  mt(["for the mitochondrial loci:<br>03·01 LOC_GO_list.txt;<br>02_data mt-like loci"])
+  mt(["for the mitochondrial loci:<br>03·04 LOC_GO_list.txt;<br>02_data mt-like loci"])
   a1["01 HISAT2 + StringTie"]
   a2["02 prepDE: previous matrix"]
   a3["03 read trimming record"]
@@ -304,7 +313,7 @@ flowchart LR
 | 01 `01_hisat_stringtie.Rmd` | no (HPC) | the 131 trimmed libraries; RefSeq genome and GTF (NCBI) | `hisat/`: MultiQC report and data, alignment logs (BAMs and per-sample tables are git-ignored) |
 | 02 `02_prepDE.Rmd` | yes | `prepDE/transcript_count_matrix.csv` and `hisat/t_data.ctab` (HPC); `02_data/strg_gene_ids.csv`; `_prepde.R` | `prepDE/gene_count_matrix.csv` (the previous matrix) |
 | 03 `03_read_trimming.Rmd` | yes (retention table); the recipe check needs the script's own `online: true` | `fastqc/*/multiqc_data/multiqc_fastqc.txt`; online: the first reads of one raw and one trimmed library (gannet) and the clipping script (GitHub) | `read_trimming/read_retention.csv`; online: `recipe_check.csv`, `RUN_provenance_recipe_check.txt` |
-| 04 `04_isoform_gene_map.Rmd` | no (`online: true`) | Iso-Seq FASTA (owl); RefSeq genome and GFF (NCBI, MD5-checked); for the annotation's mitochondrial loci (`tools/mt_encoded.R`), `03·01` `LOC_GO_list.txt`, `hisat/t_data.ctab` and `02_data/annotation_mt_like_loci.csv`; the retired CDS map in `_superseded/` (a cross-check) | `isoform-gene-map/`: `isoform_gene_map.csv.gz`, `isoform_gene_map_summary.csv`, `cds_map_agreement.csv`, `RUN_provenance.txt` (PAF alignments git-ignored) |
+| 04 `04_isoform_gene_map.Rmd` | no (`online: true`) | Iso-Seq FASTA (owl); RefSeq genome and GFF (NCBI, MD5-checked); for the annotation's mitochondrial loci (`tools/mt_encoded.R`), `03·04` `LOC_GO_list.txt`, `hisat/t_data.ctab` and `02_data/annotation_mt_like_loci.csv`; the retired CDS map in `_superseded/` (a cross-check) | `isoform-gene-map/`: `isoform_gene_map.csv.gz`, `isoform_gene_map_summary.csv`, `cds_map_agreement.csv`, `RUN_provenance.txt` (PAF alignments git-ignored) |
 | 05 `05_augmented_annotation.Rmd` | no (`online: true`; needs `04·04`'s git-ignored PAF and the GFF) | RefSeq GFF; `04·04` PAF and map; the same three files as `04·04` for the mitochondrial loci | `augmented-annotation/`: `ext3_extensions.csv.gz`, `full_added_transcripts.bed.gz`, `novel_loci_fate.csv`, `annotation_summary.csv`, `RUN_provenance.txt` (the GFF/SAF annotations are git-ignored) |
 | 06 `06_genome_recount.Rmd` | no (`online: true`) | `04·05` GFF/SAF; RefSeq genome and GTF (NCBI); the 131 trimmed libraries (gannet); `hisat/` MultiQC and `t_data.ctab`, `04·02` matrix, `_prepde.R` and `_prepde_sample.R` (checks against the previous record) | `genome-recount/`: `{stringtie,featurecounts}_{refseq,ext3,full}_gene_counts.csv.gz`, `mapping_summary.csv`, `checks.csv`, `RUN_provenance.txt` |
 | 07 `07_count_matrix_of_record.Rmd` | yes | `04·06` `genome-recount/featurecounts_ext3_gene_counts.csv.gz`; `hisat/t_data.ctab` (gene names); `04·02` matrix (comparison) | `featurecounts/gene_count_matrix.csv`, `featurecounts/RUN_provenance.txt` |
@@ -317,7 +326,7 @@ flowchart LR
   sh(["02_data sample sheets"])
   a4(["04·07 count matrix of record"])
   a1(["04·01 t_data.ctab;<br>04/02_data mt-like loci"])
-  b1(["03·01 LOC_GO_list.txt"])
+  b1(["03·04 LOC_GO_list.txt"])
   d1["01 clean counts, mitochondrial list"]
   d2["02 contrasts"]
   d3["03 DESeq2 fits"]
@@ -359,12 +368,12 @@ All 13 steps run in the pipeline.
 
 | step | reads | writes (`03_analyses/`) |
 |---|---|---|
-| 01 `01_clean_count_matrix.Rmd` | `04·07` `featurecounts/gene_count_matrix.csv`; `02_data/` sample sheet and RNA summary; for the mitochondrial list, `03·01` `LOC_GO_list.txt`, `04·01` `hisat/t_data.ctab` and `04_sequence-alignment/02_data/annotation_mt_like_loci.csv` (`tools/mt_encoded.R`) | `count_matrix/`: `gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`, `library_crosswalk.csv`, `mitochondrial_loci.csv` |
+| 01 `01_clean_count_matrix.Rmd` | `04·07` `featurecounts/gene_count_matrix.csv`; `02_data/` sample sheet and RNA summary; for the mitochondrial list, `03·04` `LOC_GO_list.txt`, `04·01` `hisat/t_data.ctab` and `04_sequence-alignment/02_data/annotation_mt_like_loci.csv` (`tools/mt_encoded.R`) | `count_matrix/`: `gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`, `library_crosswalk.csv`, `mitochondrial_loci.csv` |
 | 02 `02_define_contrasts.Rmd` | `05·01` sample table | `DEG_lists/contrasts.csv`, `contrast_samples.csv` |
 | 03 `03_deseq_contrasts.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·02` contrasts | `dds/*.rds` (git-ignored), `DEG_lists/filter_summary.csv`, `figures/PCA_*.png` |
 | 04 `04_shrinkage_filtration.Rmd` | `05·02` contrasts; `05·03` fits and filter summary | `DEG_lists/{Foot,Gill,Foot_vs_Gill}/<code>_{apeglm,siggene,filter_counts}.csv` and MA plots; `DEG_lists/DEG_counts.csv` |
 | 05 `05_fourlevel_sensitivity.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·04` DEG lists | `DEG_lists/sensitivity_fourlevel/` |
-| 06 `06_join_annotation.Rmd` | `05·04` DEG lists; `03·01` `LOC_GO_list.txt`; `05·01` mitochondrial list | `DEG_lists/GOterms_genome/<code>_sigs_{merged,ID,unID}.csv`, `DEG_lists/DEG_join_summary.csv` |
+| 06 `06_join_annotation.Rmd` | `05·04` DEG lists; `03·04` `LOC_GO_list.txt`; `05·01` mitochondrial list | `DEG_lists/GOterms_genome/<code>_sigs_{merged,ID,unID}.csv`, `DEG_lists/DEG_join_summary.csv` |
 | 07 `07_top_degs.Rmd` | `05·06` `*_sigs_ID.csv` | `top_DEGs/Top_50_genes/` |
 | 08 `08_deg_venn.Rmd` | `05·06` `*_sigs_merged.csv` | `figures/TC_venn_*.png` |
 | 09 `09_volcano_plots.Rmd` | `05·06` `*_sigs_merged.csv` | `figures/TC_volcano_{foot,gill}.png` |
@@ -383,7 +392,7 @@ flowchart LR
   m56(["04·05 extensions;<br>04·06 six recounts"])
   f05(["04·01 MultiQC;<br>04·02 previous matrix"])
   d06(["05·01, 05·02, 05·04<br>samples, contrasts, DEG tables"])
-  b1(["03·01 LOC_GO_list.txt"])
+  b1(["03·04 LOC_GO_list.txt"])
   i2["02 salmon"]
   i3["03 Iso-Seq DE vs 05"]
   i4["04 recounts vs 05"]
@@ -410,14 +419,14 @@ flowchart LR
 | 01 `01_isoseq_transcriptome_check.Rmd` | no (knit by hand) | the Iso-Seq FASTA (owl) | a length QC in `01_code/01_isoseq_transcriptome_check.md` |
 | 02 `02_salmon_quant.Rmd` | no (`online: true`) | the 131 trimmed libraries (gannet); the Iso-Seq FASTA (`04_sequence-alignment/02_data/`'s copy, else its own download); `04·04` map | `02_salmon/`: `gene_counts.csv.gz`, `salmon_mapping_summary.csv`, `read_classes_by_library.csv`, `RUN_provenance.txt` |
 | 03 `03_isoseq_de_comparison.Rmd` | yes | `06·02` counts and mapping summary; `04·04` map; `05·01` sample table, mitochondrial list and count matrix; `05·02` contrasts; `05·04` TC apeglm tables; `04·01` MultiQC | `03_isoseq-de/`: `*_TC_isoseq_apeglm.csv`, `reference_agreement.csv`, `isoseq_DEG_counts.csv`, `isoseq_only_DEGs.csv`, `counts_per_gene_both_references.csv`, `FIG_*`, `RUN_provenance.txt` |
-| 04 `04_augmented_de_comparison.Rmd` | yes | `04·06` six recounts; `04·05` extensions; `04·02` previous matrix; `05·01` sample table and mitochondrial list; `05·02` contrasts; `05·04` TC apeglm tables; `03·01` `LOC_GO_list.txt` | `04_augmented-de/`: the apeglm tables of every recount, `deg_summary.csv`, `record_change.csv`, `annotation_effect.csv`, `control_vs_previous.csv`, `mitochondrial_share.csv`, `new_DEGs.csv`, `byssal_genes.csv`, `FIG_*`, `RUN_provenance.txt` |
+| 04 `04_augmented_de_comparison.Rmd` | yes | `04·06` six recounts; `04·05` extensions; `04·02` previous matrix; `05·01` sample table and mitochondrial list; `05·02` contrasts; `05·04` TC apeglm tables; `03·04` `LOC_GO_list.txt` | `04_augmented-de/`: the apeglm tables of every recount, `deg_summary.csv`, `record_change.csv`, `annotation_effect.csv`, `control_vs_previous.csv`, `mitochondrial_share.csv`, `new_DEGs.csv`, `byssal_genes.csv`, `FIG_*`, `RUN_provenance.txt` |
 
 ## 07_enrichment
 
 ```mermaid
 flowchart LR
   d(["05·01 mitochondrial list;<br>05·02 contrasts; 05·04 apeglm tables"])
-  b1(["03·01 LOC_GO_list.txt"])
+  b1(["03·04 LOC_GO_list.txt"])
   a1(["04·01 t_data.ctab (lengths)"])
   g1["01 GO inputs"]
   g2["02 topGO"]
@@ -447,7 +456,7 @@ All six steps run in the pipeline; every step reads `05·02` `contrasts.csv` thr
 
 | step | reads | writes (`03_analyses/`) |
 |---|---|---|
-| 01 `01_go_inputs.Rmd` | `03·01` `LOC_GO_list.txt`; `04·01` `t_data.ctab`; `05·04` apeglm tables (all seven contrasts); `05·01` mitochondrial list | `01_go-inputs/gene_annotation.tsv`, `gene_sets_summary.csv`, `RUN_provenance.txt` |
+| 01 `01_go_inputs.Rmd` | `03·04` `LOC_GO_list.txt`; `04·01` `t_data.ctab`; `05·04` apeglm tables (all seven contrasts); `05·01` mitochondrial list | `01_go-inputs/gene_annotation.tsv`, `gene_sets_summary.csv`, `RUN_provenance.txt` |
 | 02 `02_topgo.Rmd` | `07·01` annotation; `05·04` apeglm tables | `02_topgo/`: `topgo_enriched.csv`, `topgo_all_terms_TC_*.csv`, `topgo_run_summary.csv`, dotplots |
 | 03 `03_goseq.Rmd` | as 02 | `03_goseq/`: the same set of tables, the PWF plot, dotplots |
 | 04 `04_clusterprofiler.Rmd` | as 02 | `04_clusterprofiler/`: the same set of tables, dotplots |
@@ -480,7 +489,7 @@ flowchart LR
 
 | step | in pipeline | reads | writes (`03_analyses/`) |
 |---|---|---|---|
-| 01 `01_go_slims.Rmd` | yes | `05·06` `*_sigs_ID.csv`; `05·01` mitochondrial list; `02_data/goslim_generic.obo` (GO release 2023-07-27) | `goslims/`: per-contrast slim tables, `goslim_summary_TC.csv`, `goslim_provenance.txt`, `goslim_TC_heatmap.png` |
+| 01 `01_go_slims.Rmd` | yes | `05·06` `*_sigs_ID.csv`; `05·01` mitochondrial list; `02_data/goslim_generic.obo` (GO release 2026-01-23; derived once by `_derive_goslim.R`) | `goslims/`: per-contrast slim tables, `goslim_summary_TC.csv`, `goslim_provenance.txt`, `goslim_TC_heatmap.png` |
 | 02 `02_uniprot_summaries.Rmd` | no (`online_annotation: true`) | `05·07` top-50 tables; NCBI E-utilities (`ENTREZ_KEY`) | `Top_gene_summaries/<code>_topgene_summs.csv`, `RUN_provenance_summaries.txt` |
 | 03 `03_ortholog_lists.Rmd` | no (`online_annotation: true`) | `08·02` summaries; OrthoDB 12 | `Top_gene_summaries/<code>_topgene_summs_ortho.csv`, `ortho_species.tab.gz`, `RUN_provenance_orthologs.txt` |
 
@@ -490,7 +499,7 @@ flowchart LR
 flowchart LR
   ex(["02_data/expected_animals.csv"])
   t(["02·03 thread summary;<br>02·04, 02·05 ANCOVA animals, response classes"])
-  b1(["03·01 LOC_GO_list.txt"])
+  b1(["03·04 LOC_GO_list.txt"])
   d(["05·01 counts, samples, mitochondrial list;<br>05·04 DEG lists; 05·06 *_sigs_ID.csv"])
   g(["07·02 topgo_enriched.csv;<br>07·06 consensus terms"])
   d13(["05·13 mt_share_by_sample.csv"])
@@ -525,10 +534,10 @@ the tissue suffix `<T>`.
 
 | step | reads | writes (`03_analyses/`) |
 |---|---|---|
-| 01 `01_gene_mechanics_correlation.Rmd` | `02·03` `thread-summary.xlsx`; `02·05` `mussel_response_classification.csv` and both `DATA_ancova_animals.csv` (an agreement check); `05·01` counts, sample table, mitochondrial list; `05·04` TC DEG lists; `05·06` `*_sigs_ID.csv`; `03·01` `LOC_GO_list.txt`; `02_data/expected_animals.csv` | `gene_mechanics/`: `paired_sample_manifest_<T>`, `animal_reconciliation_<T>`, `vst_paired_<T>`, `annotation_map.csv`, `candidate_genes_<T>`, `metrics_config_<T>`, `detection_floor_flags_<T>`, `assoc_candidate_<T>`, `assoc_DEGunion_<T>` (csv), three figures, `RUN_provenance_<T>.txt` |
+| 01 `01_gene_mechanics_correlation.Rmd` | `02·03` `thread-summary.xlsx`; `02·05` `mussel_response_classification.csv` and both `DATA_ancova_animals.csv` (an agreement check); `05·01` counts, sample table, mitochondrial list; `05·04` TC DEG lists; `05·06` `*_sigs_ID.csv`; `03·04` `LOC_GO_list.txt`; `02_data/expected_animals.csv` | `gene_mechanics/`: `paired_sample_manifest_<T>`, `animal_reconciliation_<T>`, `vst_paired_<T>`, `annotation_map.csv`, `candidate_genes_<T>`, `metrics_config_<T>`, `detection_floor_flags_<T>`, `assoc_candidate_<T>`, `assoc_DEGunion_<T>` (csv), three figures, `RUN_provenance_<T>.txt` |
 | 02 `02_gene_mechanics_expanded.Rmd` | `09·01` outputs only | `gene_mechanics/`: `module_members_<T>`, `module_associations_<T>`, `influence_top_hits_<T>`, `best_hits_<T>` (csv); adds its block to `RUN_provenance_<T>.txt` |
 | 03 `03_rna_thread_manifest_and_expression_tables.Rmd` | `05·01` counts and sample table; `02·03` summary; `02·02` raw thread workbook; `05·04` TC DEG lists; `09·01` `annotation_map.csv` | `expr_tables/`: `rna_thread_manifest_<T>.csv`, `top25_updown_<T>_*.csv`, `sample_metadata_<T>.csv` |
-| 04 `04_byssus_foot_gene_list_expression.Rmd` | `03·01` `LOC_GO_list.txt`; `05·04` TC DEG lists; `09·03` manifest; `02·03` summary; `05·01` counts | `byssus_genes/`: `byssus_gene_expression_<T>.csv`, `sample_metadata_<T>.csv`, `byssus_category_scores_<T>.csv` |
+| 04 `04_byssus_foot_gene_list_expression.Rmd` | `03·04` `LOC_GO_list.txt`; `05·04` TC DEG lists; `09·03` manifest; `02·03` summary; `05·01` counts | `byssus_genes/`: `byssus_gene_expression_<T>.csv`, `sample_metadata_<T>.csv`, `byssus_category_scores_<T>.csv` |
 | 05 `05_go_term_mechanics.Rmd` | `09·01` manifest, VST and metrics; `05·04` TC DEG lists; `07·02` `topgo_enriched.csv`; `07·06` `consensus_terms_TC_*.csv`; `05·13` `mt_share_by_sample.csv` | `go_mechanics/`: `mechanics_sets_<T>.csv`, `mechanics_set_associations_<T>.csv`, `go_mechanics_<T>.png`, `RUN_provenance_<T>.txt` |
 
 Every folder runner also writes its reports and logs to its own `03_analyses/knit_html/`

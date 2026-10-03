@@ -35,12 +35,23 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **Requirements:** the packages each folder's README lists (DESeq2, apeglm, ashr, topGO,
   goseq, clusterProfiler, enrichplot, rrvgo, GOSemSim, GO.db, GSEABase, org.Hs.eg.db,
   tidyverse, readxl, openxlsx, emmeans, here, rmarkdown, among others). Tested with R 4.4.3
-  and Bioconductor 3.20 packages, with `GO.db` and `org.Hs.eg.db` 3.18.0 (GO release
-  2023-07-27); the earlier analyses ran on R 4.2.2. GO results change with the GO release in
-  `GO.db`, so `07` records it with the package versions in
-  `03_analyses/01_go-inputs/RUN_provenance.txt`.
-- **Not run by the pipeline:** `03_blast/` and `04_sequence-alignment` step 01 (HPC, inputs
-  not in the repository), `04` steps 04-06 and step 08's mitochondrial alignment (download the
+  and Bioconductor 3.20 packages, except `GO.db` 3.23.1 (GO release 2026-01-23),
+  `org.Hs.eg.db` 3.23.1 and `AnnotationDbi` 1.74.0 (which they need), from Bioconductor 3.23;
+  the earlier analyses ran on R 4.2.2. GO results change with the GO release in `GO.db`, so
+  `07` and `08` stop unless it is 2026-01-23 (`check_go_release()`, `tools/pipeline_checks.R`)
+  and `07` records it with the package versions in
+  `03_analyses/01_go-inputs/RUN_provenance.txt`. Bioconductor 3.23 is the release for R 4.6;
+  with R 4.6, `BiocManager::install(version = "3.23")` installs all three. With R 4.4, install
+  the three source packages into the library the analysis uses, as was done here:
+  `install.packages(c("https://bioconductor.org/packages/3.23/bioc/src/contrib/AnnotationDbi_1.74.0.tar.gz",
+  "https://bioconductor.org/packages/3.23/data/annotation/src/contrib/GO.db_3.23.1.tar.gz",
+  "https://bioconductor.org/packages/3.23/data/annotation/src/contrib/org.Hs.eg.db_3.23.1.tar.gz"),
+  repos = NULL, type = "source")` (`BiocManager::valid()` then reports them as too new for
+  Bioconductor 3.20, which is expected).
+- **Not run by the pipeline:** `03_blast/` steps 01-03 and `04_sequence-alignment` step 01
+  (HPC, inputs not in the repository), `03_blast` step 04 (the 2024 hits with UniProt 2026_03
+  records; it runs offline from committed files, and `online: true` fetches the records again,
+  which works only while UniProt serves release 2026_03), `04` steps 04-06 and step 08's mitochondrial alignment (download the
   transcriptome, genome and reads and run minimap2, HISAT2, StringTie and featureCounts; set
   the `04` runner's `online: true`; steps 04-06 make the count matrix of record, which step 07
   takes), `04` step 03's recipe check (its own `online: true`), `06_iso-seq-transcriptome`
@@ -105,6 +116,12 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     step 08: HISAT2 default scoring against NC_007687.1, featureCounts per gene) and tested per
     protein in `05` step 13 with the nuclear genes' size factors; the haplotype covariate and
     a permissive alignment score are sensitivity checks there.
+  - Annotation: each gene's best hit (highest bitscore) in the genome blastx of 2024
+    (Swiss-Prot release 2024_04 plus the Mytilus foot proteins, `03_blast` step 01), with the
+    UniProt records of release 2026_03 (`03_blast` step 04,
+    `03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt`); GO release 2026-01-23
+    (`GO.db` 3.23.1) and its generic GO slim (`08_gene-annotation/02_data/goslim_generic.obo`).
+    The 2024 records (`genome-foot/LOC_GO_list.txt`) are kept for comparison.
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.

@@ -23,6 +23,6 @@ mito    <- here::here("03_analyses", "mitochondrial")       # mitochondrial gene
 dir.create(mito, recursive = TRUE, showWarnings = FALSE)
 
 # Cross-folder reads
-blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot")   # LOC_GO_list.txt
+blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-uniprot2026_03")   # LOC_GO_list.txt (UniProt 2026_03 records)
 t_data   <- file.path(repo_root, "04_sequence-alignment", "03_analyses", "hisat", "t_data.ctab")  # gene -> sequence
 mt_annot <- file.path(repo_root, "04_sequence-alignment", "02_data", "annotation_mt_like_loci.csv")  # loci named after a mitochondrial protein
