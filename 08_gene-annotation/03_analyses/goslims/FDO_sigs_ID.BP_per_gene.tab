@@ -2,209 +2,216 @@ LOC_ID	geneID	log2FoldChange	GOslim.BP	Term
 LOC134680861	S13A3	0.670749198631105	GO:0055085	transmembrane transport
 LOC134681019	OAS2	-1.18206248896737	GO:0002376;GO:0023052;GO:0048856;GO:0098542	immune system process;signaling;anatomical structure development;defense response to other organism
 LOC134681026	SOX14	0.804051560264945	GO:0006351;GO:0006355;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;anatomical structure development
-LOC134681027	CLH1	0.285202213395471	GO:0000278;GO:0005975;GO:0006886;GO:0006914;GO:0007010;GO:0007059;GO:0016192;GO:0065003;GO:0140014;GO:1901135	mitotic cell cycle;carbohydrate metabolic process;intracellular protein transport;autophagy;cytoskeleton organization;chromosome segregation;vesicle-mediated transport;protein-containing complex assembly;mitotic nuclear division;carbohydrate derivative metabolic process
+LOC134681027	CLH1	0.285202213395471	GO:0000278;GO:0005975;GO:0006886;GO:0007010;GO:0007059;GO:0016192;GO:0065003;GO:0072659;GO:0140014;GO:1901135	mitotic cell cycle;carbohydrate metabolic process;intracellular protein transport;cytoskeleton organization;chromosome segregation;vesicle-mediated transport;protein-containing complex assembly;protein localization to plasma membrane;mitotic nuclear division;carbohydrate derivative metabolic process
 LOC134681153	DYH10	-0.61484898387963	GO:0007018;GO:0048870	microtubule-based movement;cell motility
 LOC134681206	EFCB7	-0.656015281264429	GO:0006351;GO:0006355;GO:0006886;GO:0006913;GO:0023052	DNA-templated transcription;regulation of DNA-templated transcription;intracellular protein transport;nucleocytoplasmic transport;signaling
-LOC134681210	MTMR3	0.343538904984482	GO:0006629;GO:0006914	lipid metabolic process;autophagy
-LOC134681287	LRC43	-0.723892226885164	GO:0007010;GO:0044782	cytoskeleton organization;cilium organization
-LOC134682079	CP100	-0.679297290055179	GO:0007010;GO:0007018;GO:0044782;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;protein-containing complex assembly
-LOC134682382	CFA54	-0.534304597169098	GO:0003016;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870;GO:0050877	respiratory system process;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility;nervous system process
-LOC134682645	TBB2	0.725489238626025	GO:0000278;GO:0007010;GO:0065003	mitotic cell cycle;cytoskeleton organization;protein-containing complex assembly
+LOC134681210	MTMR3	0.343538904984482	GO:0000278;GO:0000910;GO:0006629;GO:0006914;GO:0061024	mitotic cell cycle;cytokinesis;lipid metabolic process;autophagy;membrane organization
+LOC134682079	CP100	-0.679297290055179	GO:0007010;GO:0007018;GO:0007059;GO:0044782;GO:0048856;GO:0065003	cytoskeleton organization;microtubule-based movement;chromosome segregation;cilium organization;anatomical structure development;protein-containing complex assembly
+LOC134682382	CFA54	-0.534304597169098	GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
+LOC134682645	TBB2	0.725489238626025	GO:0000278;GO:0007010;GO:0030154;GO:0048856;GO:0048870;GO:0065003	mitotic cell cycle;cytoskeleton organization;cell differentiation;anatomical structure development;cell motility;protein-containing complex assembly
 LOC134682920	SC6A5	0.550855345980362	GO:0023052;GO:0055085	signaling;transmembrane transport
 LOC134682928	SYCC	0.631744308323021	GO:0006399;GO:0006520	tRNA metabolic process;amino acid metabolic process
-LOC134682960	ACHA2	0.717199543207288	GO:0023052;GO:0050877	signaling;nervous system process
+LOC134682960	ACHA2	0.717199543207288	GO:0023052;GO:0050877;GO:0055085	signaling;nervous system process;transmembrane transport
 LOC134683013	TEKT3	-0.85980329865071	GO:0007018;GO:0022414;GO:0044782;GO:0048870	microtubule-based movement;reproductive process;cilium organization;cell motility
 LOC134683028	S39AE	0.782830451520116	GO:0005975;GO:0023052;GO:0030154;GO:0048856;GO:0055085	carbohydrate metabolic process;signaling;cell differentiation;anatomical structure development;transmembrane transport
 LOC134683165	TPPP3	-0.825253987800191	GO:0007010;GO:0065003	cytoskeleton organization;protein-containing complex assembly
 LOC134683202	PA2B1	3.80012699004757	GO:0006629	lipid metabolic process
-LOC134683210	RELN	1.33419069141928	GO:0007155;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0048870;GO:0050877;GO:0055085;GO:0061024	cell adhesion;signaling;cell differentiation;cell junction organization;anatomical structure development;cell motility;nervous system process;transmembrane transport;membrane organization
-LOC134683452	PLCD4	-0.820282969923292	GO:0006629;GO:0023052;GO:0055085	lipid metabolic process;signaling;transmembrane transport
+LOC134683210	RELN	1.33419069141928	GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0048870;GO:0050877;GO:0061024	signaling;cell differentiation;cell junction organization;anatomical structure development;cell motility;nervous system process;membrane organization
+LOC134683452	PLCD4	-0.820282969923292	GO:0006629;GO:0023052	lipid metabolic process;signaling
 LOC134683926	DNAI3	-0.605491037556386	GO:0007010;GO:0007018;GO:0030154;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;cell differentiation;cilium organization;cell motility;protein-containing complex assembly
 LOC134684518	FRM4A	0.428493367871258	GO:0007163	establishment or maintenance of cell polarity
 LOC134684749	DYRK2	-0.584333382633593	GO:0005975;GO:0006091;GO:0012501;GO:0023052	carbohydrate metabolic process;generation of precursor metabolites and energy;programmed cell death;signaling
-LOC134685059	RUVB2	0.54059078694561	GO:0006281;GO:0006310;GO:0006325;GO:0006351;GO:0006355;GO:0065003	DNA repair;DNA recombination;chromatin organization;DNA-templated transcription;regulation of DNA-templated transcription;protein-containing complex assembly
+LOC134685059	RUVB2	0.54059078694561	GO:0006325;GO:0006351;GO:0006355;GO:0065003	chromatin organization;DNA-templated transcription;regulation of DNA-templated transcription;protein-containing complex assembly
 LOC134685076	ZNT10	-0.601713960960702	GO:0023052;GO:0055085;GO:0098754	signaling;transmembrane transport;detoxification
-LOC134685136	DAAF1	-0.647367014689924	GO:0007010;GO:0044782	cytoskeleton organization;cilium organization
+LOC134685136	DAAF1	-0.647367014689924	GO:0007010;GO:0044782;GO:0048856	cytoskeleton organization;cilium organization;anatomical structure development
 LOC134685155	FICD	1.16125899162092	GO:0023052	signaling
 LOC134685161	TM237	-0.610774922295673	GO:0023052;GO:0044782	signaling;cilium organization
-LOC134685211	MFAP4	1.43616788625611	GO:0007155;GO:0030198	cell adhesion;extracellular matrix organization
+LOC134685211	MFAP4	1.43616788625611	GO:0030198	extracellular matrix organization
 LOC134685249	HR3	-0.751560461147715	GO:0006351;GO:0006355;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;anatomical structure development
-LOC134685318	GLGB	0.473392544230194	GO:0005975;GO:0006091;GO:0012501	carbohydrate metabolic process;generation of precursor metabolites and energy;programmed cell death
+LOC134685318	GLGB	0.473392544230194	GO:0005975;GO:0006091	carbohydrate metabolic process;generation of precursor metabolites and energy
 LOC134685357	IPO7	0.358775893673752	GO:0002376;GO:0006886;GO:0006913;GO:0030154;GO:0048856;GO:0098542	immune system process;intracellular protein transport;nucleocytoplasmic transport;cell differentiation;anatomical structure development;defense response to other organism
+LOC134685400	RASEF	0.40696977359996	GO:0016192	vesicle-mediated transport
 LOC134685401	KIF17	-0.338736251420048	GO:0007018;GO:0016192;GO:0044782	microtubule-based movement;vesicle-mediated transport;cilium organization
-LOC134685520	MGT4C	0.684863197000002	GO:0006486;GO:1901135	protein glycosylation;carbohydrate derivative metabolic process
-LOC134685616	SIR3	-0.578565324775957	GO:0006091;GO:0006629;GO:0023052	generation of precursor metabolites and energy;lipid metabolic process;signaling
+LOC134685520	MGT4C	0.684863197000002	GO:0009101;GO:1901135	glycoprotein biosynthetic process;carbohydrate derivative metabolic process
+LOC134685616	SIR3	-0.578565324775957	GO:0006091;GO:0006629;GO:0007005;GO:0023052	generation of precursor metabolites and energy;lipid metabolic process;mitochondrion organization;signaling
 LOC134685678	DIRA2	-0.603428764414158	GO:0023052	signaling
 LOC134685680	DBX1	0.655370074664959	GO:0006351;GO:0006355;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;anatomical structure development
 LOC134686279	MANF	0.716141019732807	GO:0030154;GO:0048856	cell differentiation;anatomical structure development
 LOC134686698	NECB	-0.822965934024584	GO:0051604	protein maturation
-LOC134686768	ANKR6	-0.792334470778625	GO:0023052;GO:0048856	signaling;anatomical structure development
+LOC134686768	ANKR6	-0.792334470778625	GO:0007163;GO:0023052	establishment or maintenance of cell polarity;signaling
 LOC134686863	SPON1	-0.626335166767764	GO:0007155	cell adhesion
-LOC134686881	SYTL4	-0.553679170671443	GO:0006886;GO:0016192;GO:0023052;GO:0042060;GO:0061024	intracellular protein transport;vesicle-mediated transport;signaling;wound healing;membrane organization
-LOC134686911	CATL	0.493604255452317	GO:0002376;GO:0012501;GO:0023052;GO:0030154;GO:0030163	immune system process;programmed cell death;signaling;cell differentiation;protein catabolic process
+LOC134686881	SYTL4	-0.553679170671443	GO:0006886;GO:0016192;GO:0042060;GO:0061024	intracellular protein transport;vesicle-mediated transport;wound healing;membrane organization
 LOC134687008	IF2G	0.446483683213727	GO:0002181;GO:0065003	cytoplasmic translation;protein-containing complex assembly
 LOC134687107	SACS	-1.12322523328556	GO:0006457;GO:0051604	protein folding;protein maturation
 LOC134687118	DYH5	-0.596145001799014	GO:0007010;GO:0007018;GO:0022414;GO:0044782;GO:0048856;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cilium organization;anatomical structure development;cell motility;protein-containing complex assembly
-LOC134687214	STXB5	0.316444473129821	GO:0016192;GO:0023052;GO:0065003	vesicle-mediated transport;signaling;protein-containing complex assembly
+LOC134687214	STXB5	0.316444473129821	GO:0016192	vesicle-mediated transport
 LOC134687225	MLP	-0.730339636426484	GO:0007155	cell adhesion
 LOC134687397	PH4H	-2.27716546321617	GO:0006520;GO:0048856;GO:0050877	amino acid metabolic process;anatomical structure development;nervous system process
-LOC134687434	HHAT	-0.731902958229031	GO:0023052	signaling
+LOC134687434	HHAT	-0.731902958229031	GO:0023052;GO:0051604	signaling;protein maturation
 LOC134687585	DYLT5	-0.869815928598908	GO:0007018	microtubule-based movement
 LOC134687647	DYH5	-0.547937876361538	GO:0007010;GO:0007018;GO:0022414;GO:0044782;GO:0048856;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cilium organization;anatomical structure development;cell motility;protein-containing complex assembly
 LOC134687679	SPEF2	-0.659108261523396	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
-LOC134687860	FAF1	0.373425332814065	GO:0006260;GO:0006351;GO:0006355;GO:0007155;GO:0012501;GO:0023052;GO:0030163;GO:0065003	DNA replication;DNA-templated transcription;regulation of DNA-templated transcription;cell adhesion;programmed cell death;signaling;protein catabolic process;protein-containing complex assembly
-LOC134687941	PAR14	-0.856075454886346	GO:0002376;GO:0023052;GO:0098542	immune system process;signaling;defense response to other organism
-LOC134688002	PAR14	-1.34030859047077	GO:0002376;GO:0023052;GO:0098542	immune system process;signaling;defense response to other organism
-LOC134688021	MYPT1	0.425544161645155	GO:0000278;GO:0006351;GO:0006355;GO:0006913;GO:0007010;GO:0007155;GO:0023052	mitotic cell cycle;DNA-templated transcription;regulation of DNA-templated transcription;nucleocytoplasmic transport;cytoskeleton organization;cell adhesion;signaling
-LOC134688158	PAR14	-0.850804252057523	GO:0002376;GO:0023052;GO:0098542	immune system process;signaling;defense response to other organism
+LOC134687860	FAF1	0.373425332814065	GO:0006260;GO:0007155;GO:0012501;GO:0023052;GO:0030163	DNA replication;cell adhesion;programmed cell death;signaling;protein catabolic process
+LOC134687941	PAR14	-0.856075454886346	GO:0002376;GO:0023052;GO:0055086;GO:0098542	immune system process;signaling;nucleobase-containing small molecule metabolic process;defense response to other organism
+LOC134688002	PAR14	-1.34030859047077	GO:0002376;GO:0023052;GO:0055086;GO:0098542	immune system process;signaling;nucleobase-containing small molecule metabolic process;defense response to other organism
+LOC134688021	MYPT1	0.425544161645155	GO:0000278;GO:0006351;GO:0006355;GO:0006913;GO:0007010;GO:0007155;GO:0023052;GO:0030154;GO:0048856	mitotic cell cycle;DNA-templated transcription;regulation of DNA-templated transcription;nucleocytoplasmic transport;cytoskeleton organization;cell adhesion;signaling;cell differentiation;anatomical structure development
+LOC134688158	PAR14	-0.850804252057523	GO:0002376;GO:0023052;GO:0055086;GO:0098542	immune system process;signaling;nucleobase-containing small molecule metabolic process;defense response to other organism
 LOC134688182	ORC3	-0.435101504621687	GO:0006260	DNA replication
-LOC134688238	RPGR	-0.496789218128247	GO:0007018;GO:0030154;GO:0030163;GO:0044782;GO:0048856;GO:0050877	microtubule-based movement;cell differentiation;protein catabolic process;cilium organization;anatomical structure development;nervous system process
+LOC134688238	RPGR	-0.496789218128247	GO:0006914;GO:0007018;GO:0030154;GO:0030163;GO:0044782;GO:0048856;GO:0050877	autophagy;microtubule-based movement;cell differentiation;protein catabolic process;cilium organization;anatomical structure development;nervous system process
 LOC134688259	SPG17	-0.568631305757296	GO:0006886;GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856	intracellular protein transport;cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development
 LOC134688271	LANC3	0.813679710821177	GO:0005975	carbohydrate metabolic process
-LOC134688320	TTF2	-1.17768707966989	GO:0006281;GO:0006351;GO:0016071	DNA repair;DNA-templated transcription;mRNA metabolic process
+LOC134688320	TTF2	-1.17768707966989	GO:0006351	DNA-templated transcription
 LOC134688348	ADGB	-0.792762054109763	GO:0022414;GO:0030154;GO:0048856	reproductive process;cell differentiation;anatomical structure development
 LOC134688352	ORCT	-0.656002089168766	GO:0012501	programmed cell death
 LOC134688400	CE290	-0.529008283471398	GO:0006351;GO:0006355;GO:0006886;GO:0030154;GO:0044782;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;intracellular protein transport;cell differentiation;cilium organization;anatomical structure development
+LOC134688473	KAD9	-0.683748881074439	GO:0055086;GO:1901135	nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
+LOC134688497	EFCB6	-1.04881839891806	GO:0007018;GO:0022414;GO:0048870	microtubule-based movement;reproductive process;cell motility
 LOC134688520	MYCBP	-0.47726663595693	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
-LOC134688602	DYH7	-0.582566218480552	GO:0007010;GO:0007018;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;cell motility;protein-containing complex assembly
+LOC134688602	DYH7	-0.582566218480552	GO:0007010;GO:0007018;GO:0022414;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cilium organization;cell motility;protein-containing complex assembly
 LOC134688692	IQUB	-0.627482727918942	GO:0007018;GO:0022414;GO:0044782;GO:0048870	microtubule-based movement;reproductive process;cilium organization;cell motility
-LOC134690148	KLF10	0.894487258827383	GO:0002376;GO:0006351;GO:0006355;GO:0023052;GO:0030154;GO:0048856	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;signaling;cell differentiation;anatomical structure development
+LOC134689709	ERIC3	-0.423808865768206	GO:0044782	cilium organization
+LOC134690148	KLF10	0.894487258827383	GO:0006351;GO:0006355;GO:0023052	DNA-templated transcription;regulation of DNA-templated transcription;signaling
 LOC134690789	PDIA6	0.554483586621924	GO:0006457;GO:0007155;GO:0023052;GO:0042060;GO:0051604	protein folding;cell adhesion;signaling;wound healing;protein maturation
 LOC134690802	S2532	0.867194990127301	GO:0055085	transmembrane transport
 LOC134690830	DRC1	-0.506476004540722	GO:0007010;GO:0007018;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;cell motility;protein-containing complex assembly
 LOC134691074	TPD54	0.315053501368275	GO:0005975	carbohydrate metabolic process
 LOC134691121	CRBL2	1.18347986402305	GO:0006351;GO:0006355;GO:0006629;GO:0030154;GO:0055085	DNA-templated transcription;regulation of DNA-templated transcription;lipid metabolic process;cell differentiation;transmembrane transport
-LOC134691150	MYO3B	-0.616276678489847	GO:0007010;GO:0048856;GO:0050877	cytoskeleton organization;anatomical structure development;nervous system process
+LOC134691150	MYO3B	-0.616276678489847	GO:0007010;GO:0030154;GO:0048856;GO:0050877	cytoskeleton organization;cell differentiation;anatomical structure development;nervous system process
 LOC134691255	ZFP90	0.723236320430572	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
-LOC134691334	PI4KB	0.791787956064909	GO:0006629;GO:0048856	lipid metabolic process;anatomical structure development
-LOC134691376	EFHC1	-0.483433946212496	GO:0000278;GO:0000910;GO:0007010;GO:0048856;GO:0048870	mitotic cell cycle;cytokinesis;cytoskeleton organization;anatomical structure development;cell motility
-LOC134691386	TRIB2	0.816566952888866	GO:0006351;GO:0006355;GO:0030154;GO:0030163	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;protein catabolic process
-LOC134692010	ERYA2	-0.856266816263229	GO:0006629;GO:0071554	lipid metabolic process;cell wall organization or biogenesis
-LOC134692028	MECOM	0.419605136593601	GO:0006325;GO:0006351;GO:0006355;GO:0012501;GO:0023052;GO:0030154;GO:0048856	chromatin organization;DNA-templated transcription;regulation of DNA-templated transcription;programmed cell death;signaling;cell differentiation;anatomical structure development
-LOC134692129	DMAP1	0.395424228282677	GO:0006281;GO:0006310;GO:0006351;GO:0006355;GO:0006886;GO:0006913;GO:0012501	DNA repair;DNA recombination;DNA-templated transcription;regulation of DNA-templated transcription;intracellular protein transport;nucleocytoplasmic transport;programmed cell death
+LOC134691334	PI4KB	0.791787956064909	GO:0006629;GO:0023052;GO:0048856	lipid metabolic process;signaling;anatomical structure development
+LOC134691376	EFHC1	-0.483433946212496	GO:0000278;GO:0000910;GO:0007010;GO:0007018;GO:0022414;GO:0048856;GO:0048870	mitotic cell cycle;cytokinesis;cytoskeleton organization;microtubule-based movement;reproductive process;anatomical structure development;cell motility
+LOC134691386	TRIB2	0.816566952888866	GO:0030154;GO:0030163	cell differentiation;protein catabolic process
+LOC134692010	ERYA2	-0.856266816263229	GO:0006629	lipid metabolic process
+LOC134692028	MECOM	0.419605136593601	GO:0006325;GO:0006351;GO:0006355;GO:0012501;GO:0023052;GO:0030154;GO:0048856;GO:0051604	chromatin organization;DNA-templated transcription;regulation of DNA-templated transcription;programmed cell death;signaling;cell differentiation;anatomical structure development;protein maturation
+LOC134692058	CF107	-0.542044627462969	GO:0007018;GO:0022414;GO:0048870	microtubule-based movement;reproductive process;cell motility
+LOC134692129	DMAP1	0.395424228282677	GO:0006281;GO:0006310;GO:0006325;GO:0006351;GO:0006355;GO:0006886;GO:0006913;GO:0012501	DNA repair;DNA recombination;chromatin organization;DNA-templated transcription;regulation of DNA-templated transcription;intracellular protein transport;nucleocytoplasmic transport;programmed cell death
 LOC134692133	SYFB	-1.03456909425355	GO:0006399;GO:0006520;GO:0065003	tRNA metabolic process;amino acid metabolic process;protein-containing complex assembly
-LOC134692413	EXOSX	0.493065471634649	GO:0006281;GO:0006399;GO:0016071;GO:0016073;GO:0031047;GO:0032200;GO:0042254	DNA repair;tRNA metabolic process;mRNA metabolic process;snRNA metabolic process;regulatory ncRNA-mediated gene silencing;telomere organization;ribosome biogenesis
-LOC134692455	NOG2	0.4559038228012	GO:0042254	ribosome biogenesis
+LOC134692413	EXOSX	0.493065471634649	GO:0006399;GO:0016071;GO:0016073;GO:0032200;GO:0042254	tRNA metabolic process;mRNA metabolic process;snRNA metabolic process;telomere organization;ribosome biogenesis
 LOC134692668	HES4A	0.975097664637175	GO:0006351;GO:0006355;GO:0012501;GO:0023052;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;programmed cell death;signaling;cell differentiation;anatomical structure development
 LOC134692703	ZN362	-0.449258165930053	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
 LOC134692717	TNPO1	0.36233618913049	GO:0006886;GO:0006913	intracellular protein transport;nucleocytoplasmic transport
 LOC134692757	MLF1	0.628153987248278	GO:0006351;GO:0006355;GO:0023052;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;signaling;cell differentiation;anatomical structure development
 LOC134692781	EMAL	-0.641666826147256	GO:0002376;GO:0007010;GO:0023052;GO:0050877;GO:0098542	immune system process;cytoskeleton organization;signaling;nervous system process;defense response to other organism
 LOC134692857	PER	0.547343084427633	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
-LOC134692876	ABCF3	0.72640523228454	GO:0098542	defense response to other organism
-LOC134693083	UBP5	0.495192378217953	GO:0030163	protein catabolic process
-LOC134693104	LRP6	-1.01519258138099	GO:0006351;GO:0006355;GO:0007155;GO:0012501;GO:0016192;GO:0022414;GO:0023052;GO:0030154;GO:0048856;GO:0048870	DNA-templated transcription;regulation of DNA-templated transcription;cell adhesion;programmed cell death;vesicle-mediated transport;reproductive process;signaling;cell differentiation;anatomical structure development;cell motility
+LOC134693083	UBP5	0.495192378217953	GO:0000278;GO:0002376;GO:0006351;GO:0006355;GO:0007155;GO:0030163	mitotic cell cycle;immune system process;DNA-templated transcription;regulation of DNA-templated transcription;cell adhesion;protein catabolic process
+LOC134693104	LRP6	-1.01519258138099	GO:0006351;GO:0006355;GO:0007155;GO:0012501;GO:0016192;GO:0022414;GO:0023052;GO:0030154;GO:0048856;GO:0048870;GO:0072659	DNA-templated transcription;regulation of DNA-templated transcription;cell adhesion;programmed cell death;vesicle-mediated transport;reproductive process;signaling;cell differentiation;anatomical structure development;cell motility;protein localization to plasma membrane
 LOC134693219	PYR1	0.59504835000965	GO:0006520;GO:0055086;GO:1901135	amino acid metabolic process;nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
-LOC134693428	MIB2	-1.48259270504086	GO:0016192;GO:0023052	vesicle-mediated transport;signaling
-LOC134693601	TEKT2	-0.600851180467064	GO:0007010;GO:0007018;GO:0022414;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cilium organization;cell motility;protein-containing complex assembly
+LOC134693428	MIB2	-1.48259270504086	GO:0016192	vesicle-mediated transport
+LOC134693435	CTL1	-0.471040448504499	GO:0055085	transmembrane transport
+LOC134693601	TEKT2	-0.600851180467064	GO:0007018;GO:0022414;GO:0044782;GO:0048870	microtubule-based movement;reproductive process;cilium organization;cell motility
 LOC134693705	GTR1	0.83904419547978	GO:0055085;GO:0065003	transmembrane transport;protein-containing complex assembly
-LOC134693708	PHB2	0.471015735279136	GO:0000278;GO:0002376;GO:0006091;GO:0006351;GO:0006355;GO:0006629;GO:0006886;GO:0006913;GO:0006914;GO:0007005;GO:0012501;GO:0022414;GO:0023052;GO:0048856;GO:0048870;GO:0055085;GO:0098542;GO:0140014	mitotic cell cycle;immune system process;generation of precursor metabolites and energy;DNA-templated transcription;regulation of DNA-templated transcription;lipid metabolic process;intracellular protein transport;nucleocytoplasmic transport;autophagy;mitochondrion organization;programmed cell death;reproductive process;signaling;anatomical structure development;cell motility;transmembrane transport;defense response to other organism;mitotic nuclear division
+LOC134693708	PHB2	0.471015735279136	GO:0002376;GO:0006351;GO:0006355;GO:0006629;GO:0006886;GO:0006913;GO:0006914;GO:0007005;GO:0012501;GO:0022414;GO:0023052;GO:0048856;GO:0048870;GO:0055085;GO:0098542	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;lipid metabolic process;intracellular protein transport;nucleocytoplasmic transport;autophagy;mitochondrion organization;programmed cell death;reproductive process;signaling;anatomical structure development;cell motility;transmembrane transport;defense response to other organism
 LOC134693724	DJC11	0.487938436476491	GO:0007005;GO:0061024	mitochondrion organization;membrane organization
 LOC134693887	ODAD1	-0.52320259532959	GO:0007010;GO:0007018;GO:0044782;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;protein-containing complex assembly
 LOC134693976	CFA65	-0.754559711986293	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
 LOC134694015	SC61B	0.46439372587281	GO:0006886;GO:0030163;GO:0055085	intracellular protein transport;protein catabolic process;transmembrane transport
 LOC134694021	PLK2	0.349635710788268	GO:0000278;GO:0002376;GO:0006914;GO:0006954;GO:0007010;GO:0012501;GO:0023052;GO:0030163;GO:0048856;GO:0048870;GO:0050877	mitotic cell cycle;immune system process;autophagy;inflammatory response;cytoskeleton organization;programmed cell death;signaling;protein catabolic process;anatomical structure development;cell motility;nervous system process
 LOC134694047	UNC9	0.756120957761134	GO:0055085	transmembrane transport
-LOC134694060	CO6A4	0.932514644981009	GO:0007155;GO:0030198	cell adhesion;extracellular matrix organization
-LOC134694221	LRP1	-0.459222288408063	GO:0002376;GO:0003013;GO:0006629;GO:0006954;GO:0007010;GO:0007155;GO:0012501;GO:0016192;GO:0023052;GO:0030154;GO:0030163;GO:0034330;GO:0048856;GO:0048870;GO:0072659	immune system process;circulatory system process;lipid metabolic process;inflammatory response;cytoskeleton organization;cell adhesion;programmed cell death;vesicle-mediated transport;signaling;cell differentiation;protein catabolic process;cell junction organization;anatomical structure development;cell motility;protein localization to plasma membrane
+LOC134694060	CO6A4	0.932514644981009	GO:0030198	extracellular matrix organization
+LOC134694221	LRP1	-0.459222288408063	GO:0002376;GO:0003013;GO:0006629;GO:0006954;GO:0007010;GO:0007155;GO:0012501;GO:0016192;GO:0023052;GO:0030154;GO:0030163;GO:0030198;GO:0034330;GO:0048856;GO:0048870;GO:0072659	immune system process;circulatory system process;lipid metabolic process;inflammatory response;cytoskeleton organization;cell adhesion;programmed cell death;vesicle-mediated transport;signaling;cell differentiation;protein catabolic process;extracellular matrix organization;cell junction organization;anatomical structure development;cell motility;protein localization to plasma membrane
 LOC134694369	ABCA1	-0.533926994607368	GO:0006629;GO:0007040;GO:0016192;GO:0023052;GO:0030154;GO:0055085;GO:0061024;GO:0065003	lipid metabolic process;lysosome organization;vesicle-mediated transport;signaling;cell differentiation;transmembrane transport;membrane organization;protein-containing complex assembly
 LOC134694607	DCTN6	-1.17655068228714	GO:0000278;GO:0007010	mitotic cell cycle;cytoskeleton organization
-LOC134694620	DYST	-0.259008816413044	GO:0007010;GO:0007018;GO:0007155;GO:0030154;GO:0034330;GO:0042060;GO:0048856	cytoskeleton organization;microtubule-based movement;cell adhesion;cell differentiation;cell junction organization;wound healing;anatomical structure development
+LOC134694620	DYST	-0.259008816413044	GO:0007010;GO:0007018;GO:0007163;GO:0030154;GO:0034330;GO:0042060;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;establishment or maintenance of cell polarity;cell differentiation;cell junction organization;wound healing;anatomical structure development;cell motility
+LOC134694655	PHNX	0.781503374524451	GO:0006281	DNA repair
 LOC134694787	CSPP1	-0.56268055682153	GO:0000910	cytokinesis
 LOC134694790	DYH7	-0.649792188918845	GO:0007010;GO:0007018;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;cell motility;protein-containing complex assembly
-LOC134694860	TXND3	-0.59996330457339	GO:0022414;GO:0030154;GO:0055086;GO:1901135	reproductive process;cell differentiation;nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
+LOC134694860	TXND3	-0.59996330457339	GO:0055086;GO:1901135	nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
 LOC134695210	MKX	0.778082101920799	GO:0006351;GO:0006355;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;anatomical structure development
 LOC134695224	UNC9	0.850185585340857	GO:0055085	transmembrane transport
-LOC134695456	EFHB	-0.9119417676882	GO:0023052	signaling
-LOC134695859	TIM16	0.61344470124384	GO:0006886;GO:0007005;GO:0048856;GO:0055085	intracellular protein transport;mitochondrion organization;anatomical structure development;transmembrane transport
+LOC134695456	EFHB	-0.9119417676882	GO:0007018;GO:0022414;GO:0023052;GO:0048870	microtubule-based movement;reproductive process;signaling;cell motility
+LOC134695781	HSP97	0.603228405092581	GO:0006457;GO:0051604	protein folding;protein maturation
+LOC134695859	TIM16	0.61344470124384	GO:0055085	transmembrane transport
 LOC134695863	S6A13	-1.2500526605753	GO:0055085	transmembrane transport
-LOC134695937	GLT10	0.405904175613693	GO:0006486;GO:1901135	protein glycosylation;carbohydrate derivative metabolic process
+LOC134695937	GLT10	0.405904175613693	GO:0009101;GO:1901135	glycoprotein biosynthetic process;carbohydrate derivative metabolic process
 LOC134695971	PDE4A	0.478941320730888	GO:0022414;GO:0023052;GO:0030154;GO:0048856;GO:0050877;GO:0055086;GO:1901135	reproductive process;signaling;cell differentiation;anatomical structure development;nervous system process;nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
 LOC134696032	AOSL	-0.878529288997766	GO:0006629	lipid metabolic process
 LOC134696143	LTV1	0.471240037422731	GO:0006913;GO:0042254	nucleocytoplasmic transport;ribosome biogenesis
-LOC134696286	TTLL7	-0.691381407680924	GO:0007010;GO:0030154;GO:0048856	cytoskeleton organization;cell differentiation;anatomical structure development
 LOC134696344	CP135	-0.71659799564411	GO:0007010;GO:0044782	cytoskeleton organization;cilium organization
 LOC134696387	CRYAA	1.8874897002642	GO:0006457;GO:0012501;GO:0048856;GO:0051604	protein folding;programmed cell death;anatomical structure development;protein maturation
 LOC134696403	MIEAP	-0.915183253440498	GO:0006914;GO:0007005;GO:0030163	autophagy;mitochondrion organization;protein catabolic process
 LOC134696535	FHDC1	-0.64617912312136	GO:0007010;GO:0044782;GO:0065003	cytoskeleton organization;cilium organization;protein-containing complex assembly
+LOC134696668	CAPSL	-0.64586200655861	GO:0030154;GO:0048856;GO:0048870	cell differentiation;anatomical structure development;cell motility
 LOC134696700	GAK	0.455492233732766	GO:0006457;GO:0016192;GO:0030154;GO:0048856;GO:0051604;GO:0065003;GO:0072659	protein folding;vesicle-mediated transport;cell differentiation;anatomical structure development;protein maturation;protein-containing complex assembly;protein localization to plasma membrane
 LOC134696989	KLHL3	1.23056680095708	GO:0003014;GO:0030163;GO:0048856	renal system process;protein catabolic process;anatomical structure development
 LOC134697055	NCL1	0.352143225723427	GO:0006351;GO:0006355;GO:0007163;GO:0042254	DNA-templated transcription;regulation of DNA-templated transcription;establishment or maintenance of cell polarity;ribosome biogenesis
-LOC134697084	TERA	0.388109804892782	GO:0000278;GO:0006281;GO:0006886;GO:0006914;GO:0007010;GO:0016192;GO:0030163	mitotic cell cycle;DNA repair;intracellular protein transport;autophagy;cytoskeleton organization;vesicle-mediated transport;protein catabolic process
+LOC134697084	TERA	0.388109804892782	GO:0000278;GO:0006260;GO:0006281;GO:0006886;GO:0006914;GO:0007010;GO:0016192;GO:0030163	mitotic cell cycle;DNA replication;DNA repair;intracellular protein transport;autophagy;cytoskeleton organization;vesicle-mediated transport;protein catabolic process
 LOC134697101	ANKL2	0.545930400972869	GO:0000278;GO:0012501;GO:0048856;GO:0061024;GO:0140014	mitotic cell cycle;programmed cell death;anatomical structure development;membrane organization;mitotic nuclear division
-LOC134697125	ARAP1	-0.491673444695804	GO:0007010;GO:0023052;GO:0048856	cytoskeleton organization;signaling;anatomical structure development
+LOC134697125	ARAP1	-0.491673444695804	GO:0007010;GO:0016192;GO:0023052;GO:0048856	cytoskeleton organization;vesicle-mediated transport;signaling;anatomical structure development
 LOC134697153	FEH1	0.43776026879977	GO:0006351;GO:0006355;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;anatomical structure development
 LOC134697195	ANO7	-0.593321209900327	GO:0055085;GO:0061024	transmembrane transport;membrane organization
-LOC134697210	OFD1	-0.483755559172889	GO:0007010;GO:0007018;GO:0023052;GO:0044782;GO:0048856	cytoskeleton organization;microtubule-based movement;signaling;cilium organization;anatomical structure development
-LOC134697218	SQSTM	0.486551920860155	GO:0002376;GO:0006351;GO:0006355;GO:0006886;GO:0006913;GO:0006914;GO:0007005;GO:0012501;GO:0023052;GO:0030154;GO:0030163;GO:0072659;GO:0098542	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;intracellular protein transport;nucleocytoplasmic transport;autophagy;mitochondrion organization;programmed cell death;signaling;cell differentiation;protein catabolic process;protein localization to plasma membrane;defense response to other organism
+LOC134697210	OFD1	-0.483755559172889	GO:0007018;GO:0044782;GO:0048856	microtubule-based movement;cilium organization;anatomical structure development
+LOC134697218	SQSTM	0.486551920860155	GO:0002376;GO:0006351;GO:0006355;GO:0006886;GO:0006913;GO:0006914;GO:0012501;GO:0023052;GO:0030163;GO:0072659;GO:0098542	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;intracellular protein transport;nucleocytoplasmic transport;autophagy;programmed cell death;signaling;protein catabolic process;protein localization to plasma membrane;defense response to other organism
 LOC134697259	SHRM2	-0.343473058719701	GO:0007010;GO:0048856;GO:0048870	cytoskeleton organization;anatomical structure development;cell motility
-LOC134697281	KCD12	0.622333018943795	GO:0023052;GO:0065003	signaling;protein-containing complex assembly
-LOC134697300	A0A193DU97	5.02622241877199	GO:0023052	signaling
-LOC134697393	SPART	0.762775353227616	GO:0023052;GO:0030154;GO:0048856;GO:0050877	signaling;cell differentiation;anatomical structure development;nervous system process
-LOC134697440	TBB4B	-0.875840192441869	GO:0000278;GO:0007010	mitotic cell cycle;cytoskeleton organization
-LOC134698874	SIK2	0.575076456490456	GO:0023052	signaling
+LOC134697281	KCD12	0.622333018943795	GO:0023052;GO:0030154;GO:0048856;GO:0065003	signaling;cell differentiation;anatomical structure development;protein-containing complex assembly
+LOC134697393	SPART	0.762775353227616	GO:0000278;GO:0000910;GO:0006914;GO:0023052;GO:0061024	mitotic cell cycle;cytokinesis;autophagy;signaling;membrane organization
+LOC134697440	TBB4B	-0.875840192441869	GO:0000278;GO:0007018;GO:0022414;GO:0048870	mitotic cell cycle;microtubule-based movement;reproductive process;cell motility
+LOC134698874	SIK2	0.575076456490456	GO:0023052;GO:0030163	signaling;protein catabolic process
+LOC134698922	LRC58	1.16803589520366	GO:0006790;GO:0030163	sulfur compound metabolic process;protein catabolic process
 LOC134698975	DAAF8	-0.515832495884364	GO:0007010;GO:0044782;GO:0065003	cytoskeleton organization;cilium organization;protein-containing complex assembly
-LOC134699268	P4HA1	0.698093623883878	GO:0030198	extracellular matrix organization
+LOC134699268	P4HA1	0.698093623883878	GO:0006520;GO:0006575;GO:0030198	amino acid metabolic process;modified amino acid metabolic process;extracellular matrix organization
 LOC134699437	DCDC1	-0.488302526449008	GO:0000278;GO:0000910;GO:0023052	mitotic cell cycle;cytokinesis;signaling
 LOC134700101	UNC9	0.626953077097441	GO:0055085	transmembrane transport
-LOC134700619	G3P	0.360480839160478	GO:0005975;GO:0006091	carbohydrate metabolic process;generation of precursor metabolites and energy
-LOC134705122	B3GN5	0.797242762619119	GO:0006486;GO:0006629;GO:0048856;GO:1901135	protein glycosylation;lipid metabolic process;anatomical structure development;carbohydrate derivative metabolic process
-LOC134705863	CTRO	-0.744385029386193	GO:0000278;GO:0000910;GO:0012501;GO:0023052;GO:0030154;GO:0048856	mitotic cell cycle;cytokinesis;programmed cell death;signaling;cell differentiation;anatomical structure development
-LOC134706194	RHG21	0.299843275199179	GO:0016192;GO:0023052	vesicle-mediated transport;signaling
-LOC134706246	C1GLT	0.733727822065333	GO:0006486;GO:1901135	protein glycosylation;carbohydrate derivative metabolic process
+LOC134700619	G3P	0.360480839160478	GO:0005975;GO:0006091;GO:0055086;GO:1901135	carbohydrate metabolic process;generation of precursor metabolites and energy;nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
+LOC134705122	B3GN5	0.797242762619119	GO:0006629;GO:0009101;GO:0048856;GO:1901135	lipid metabolic process;glycoprotein biosynthetic process;anatomical structure development;carbohydrate derivative metabolic process
+LOC134705863	CTRO	-0.744385029386193	GO:0000278;GO:0000910;GO:0007010;GO:0023052;GO:0030154;GO:0048856	mitotic cell cycle;cytokinesis;cytoskeleton organization;signaling;cell differentiation;anatomical structure development
+LOC134706194	RHG21	0.299843275199179	GO:0007018;GO:0016192;GO:0023052	microtubule-based movement;vesicle-mediated transport;signaling
+LOC134706246	C1GLT	0.733727822065333	GO:0009101;GO:1901135	glycoprotein biosynthetic process;carbohydrate derivative metabolic process
+LOC134706257	CF210	-0.474713532385695	GO:0007018;GO:0022414;GO:0048870	microtubule-based movement;reproductive process;cell motility
 LOC134706264	CNBD2	-0.749805893560843	GO:0022414	reproductive process
 LOC134706271	TTLL4	-0.890706075866757	GO:0007010;GO:0048856	cytoskeleton organization;anatomical structure development
 LOC134706345	GARS	0.691026553648454	GO:0006399;GO:0006520;GO:0055086;GO:0140053	tRNA metabolic process;amino acid metabolic process;nucleobase-containing small molecule metabolic process;mitochondrial gene expression
 LOC134706383	HDA11	-0.466477667430409	GO:0006325;GO:0030154;GO:0048856	chromatin organization;cell differentiation;anatomical structure development
-LOC134706576	CH60	0.628756458728085	GO:0002376;GO:0006310;GO:0006457;GO:0006886;GO:0007005;GO:0007155;GO:0012501;GO:0023052;GO:0048856;GO:0051604;GO:0055085;GO:0098542	immune system process;DNA recombination;protein folding;intracellular protein transport;mitochondrion organization;cell adhesion;programmed cell death;signaling;anatomical structure development;protein maturation;transmembrane transport;defense response to other organism
-LOC134706577	CH10	0.59826649694441	GO:0006457;GO:0051604	protein folding;protein maturation
-LOC134706580	TBA3	-0.852106714957162	GO:0000278;GO:0007010	mitotic cell cycle;cytoskeleton organization
-LOC134706690	B3GT5	0.836366435017365	GO:0006486;GO:0006629;GO:1901135	protein glycosylation;lipid metabolic process;carbohydrate derivative metabolic process
-LOC134706704	CLXN	-0.719284708332385	GO:0007010;GO:0007018;GO:0022414;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cilium organization;cell motility;protein-containing complex assembly
-LOC134706748	A0A193DU97	0.585315508593145	GO:0023052	signaling
+LOC134706576	CH60	0.628756458728085	GO:0002376;GO:0006310;GO:0006457;GO:0007005;GO:0007155;GO:0012501;GO:0023052;GO:0048856;GO:0051604;GO:0055085;GO:0098542	immune system process;DNA recombination;protein folding;mitochondrion organization;cell adhesion;programmed cell death;signaling;anatomical structure development;protein maturation;transmembrane transport;defense response to other organism
+LOC134706580	TBA3	-0.852106714957162	GO:0000278	mitotic cell cycle
+LOC134706690	B3GT5	0.836366435017365	GO:0009101;GO:1901135	glycoprotein biosynthetic process;carbohydrate derivative metabolic process
+LOC134706704	CLXN	-0.719284708332385	GO:0007010;GO:0007018;GO:0022414;GO:0023052;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;signaling;cilium organization;cell motility;protein-containing complex assembly
 LOC134706783	RBBP9	0.585468622997621	GO:0030154;GO:0048856	cell differentiation;anatomical structure development
 LOC134706791	ODFP2	-0.44906488501896	GO:0007010;GO:0022414;GO:0030154;GO:0044782;GO:0048856	cytoskeleton organization;reproductive process;cell differentiation;cilium organization;anatomical structure development
 LOC134706827	CAC1S	0.497906435349633	GO:0003012;GO:0030154;GO:0034330;GO:0048856;GO:0055085	muscle system process;cell differentiation;cell junction organization;anatomical structure development;transmembrane transport
-LOC134706868	CERKL	-0.614633126768715	GO:0006629;GO:0012501	lipid metabolic process;programmed cell death
-LOC134706872	TBA3	-1.08450128056484	GO:0000278;GO:0007010	mitotic cell cycle;cytoskeleton organization
+LOC134706868	CERKL	-0.614633126768715	GO:0012501	programmed cell death
+LOC134706872	TBA3	-1.08450128056484	GO:0000278	mitotic cell cycle
 LOC134706953	OXDD	1.15973192427273	GO:0006520	amino acid metabolic process
 LOC134706965	RGL1	0.529532773877459	GO:0023052	signaling
 LOC134706971	ROST	0.447290886379565	GO:0030154;GO:0048856	cell differentiation;anatomical structure development
 LOC134706993	KIF28	-0.461194296552881	GO:0007005;GO:0007018	mitochondrion organization;microtubule-based movement
 LOC134706996	PHP14	0.467616573494968	GO:0002376;GO:0007010;GO:0023052;GO:0048870	immune system process;cytoskeleton organization;signaling;cell motility
-LOC134707080	CHS2	-0.717848644111383	GO:0048856;GO:0071554;GO:1901135	anatomical structure development;cell wall organization or biogenesis;carbohydrate derivative metabolic process
+LOC134707080	CHS2	-0.717848644111383	GO:0048856;GO:1901135	anatomical structure development;carbohydrate derivative metabolic process
 LOC134707088	FAKD4	0.448184703624229	GO:0016071;GO:0140053	mRNA metabolic process;mitochondrial gene expression
-LOC134707106	ITB1B	0.735605698819942	GO:0007155;GO:0023052;GO:0030154;GO:0048856;GO:0048870	cell adhesion;signaling;cell differentiation;anatomical structure development;cell motility
+LOC134707106	ITB1B	0.735605698819942	GO:0007010;GO:0007155;GO:0023052;GO:0030154;GO:0048856;GO:0048870	cytoskeleton organization;cell adhesion;signaling;cell differentiation;anatomical structure development;cell motility
+LOC134707173	YMEL1	0.401739203675397	GO:0007005;GO:0030163;GO:0048856;GO:0051604;GO:0061024	mitochondrion organization;protein catabolic process;anatomical structure development;protein maturation;membrane organization
 LOC134707200	CCD13	-0.536669313739847	GO:0007010;GO:0044782	cytoskeleton organization;cilium organization
 LOC134707215	NF70	-0.446688136104507	GO:0006325;GO:0061024	chromatin organization;membrane organization
 LOC134707337	NF70	-0.308243539076404	GO:0006325;GO:0061024	chromatin organization;membrane organization
-LOC134707386	DDAH1	-0.640878805307537	GO:0003013;GO:0006520;GO:0023052;GO:0048856	circulatory system process;amino acid metabolic process;signaling;anatomical structure development
+LOC134707386	DDAH1	-0.640878805307537	GO:0003013;GO:0006520;GO:0048856	circulatory system process;amino acid metabolic process;anatomical structure development
 LOC134707402	CHMP5	0.345195358683462	GO:0016192;GO:0061024	vesicle-mediated transport;membrane organization
 LOC134707431	TMP2L	-0.463968958819496	GO:0055085	transmembrane transport
-LOC134707468	DOXA1	1.58706551216359	GO:0006575;GO:0006954;GO:0030154;GO:0048856	cellular modified amino acid metabolic process;inflammatory response;cell differentiation;anatomical structure development
-LOC134707545	MIPT3	-0.462040788698158	GO:0007010;GO:0007018;GO:0044782;GO:0048856;GO:0050877;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;anatomical structure development;nervous system process;protein-containing complex assembly
-LOC134707553	CNTRL	-0.665863855723582	GO:0007010;GO:0022414;GO:0030154;GO:0044782;GO:0048856	cytoskeleton organization;reproductive process;cell differentiation;cilium organization;anatomical structure development
-LOC134707656	SPTCA	-0.257914471614788	GO:0007010;GO:0022414;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0061024;GO:0065003	cytoskeleton organization;reproductive process;signaling;cell differentiation;cell junction organization;anatomical structure development;membrane organization;protein-containing complex assembly
-LOC134707770	SPAG6	-0.671484117446264	GO:0003016;GO:0007010;GO:0007018;GO:0007155;GO:0007163;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870;GO:0050877	respiratory system process;cytoskeleton organization;microtubule-based movement;cell adhesion;establishment or maintenance of cell polarity;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility;nervous system process
-LOC134707790	VAMP4	0.652717837126858	GO:0016192;GO:0061024;GO:0065003	vesicle-mediated transport;membrane organization;protein-containing complex assembly
+LOC134707468	DOXA1	1.58706551216359	GO:0006575;GO:0072659	modified amino acid metabolic process;protein localization to plasma membrane
+LOC134707545	IFT54	-0.462040788698158	GO:0007010;GO:0007018;GO:0030154;GO:0044782;GO:0048856;GO:0050877;GO:0065003	cytoskeleton organization;microtubule-based movement;cell differentiation;cilium organization;anatomical structure development;nervous system process;protein-containing complex assembly
+LOC134707553	CNTRL	-0.665863855723582	GO:0022414;GO:0030154;GO:0048856	reproductive process;cell differentiation;anatomical structure development
+LOC134707644	CFA77	-0.560308249213574	GO:0007155;GO:0023052;GO:0034330	cell adhesion;signaling;cell junction organization
+LOC134707656	SPTCA	-0.257914471614788	GO:0007010;GO:0022414;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0061024	cytoskeleton organization;reproductive process;signaling;cell differentiation;cell junction organization;anatomical structure development;membrane organization
+LOC134707770	SPAG6	-0.671484117446264	GO:0002376;GO:0003016;GO:0007010;GO:0007018;GO:0007155;GO:0007163;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870;GO:0050877	immune system process;respiratory system process;cytoskeleton organization;microtubule-based movement;cell adhesion;establishment or maintenance of cell polarity;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility;nervous system process
+LOC134707790	VAMP4	0.652717837126858	GO:0016192;GO:0061024;GO:0065003;GO:0072659	vesicle-mediated transport;membrane organization;protein-containing complex assembly;protein localization to plasma membrane
 LOC134707842	SYMC	0.49308165471945	GO:0006399;GO:0006520	tRNA metabolic process;amino acid metabolic process
 LOC134707932	URIC	1.2110565471585	GO:0055086	nucleobase-containing small molecule metabolic process
 LOC134707966	ODAD3	-0.407804936620316	GO:0007010;GO:0007018;GO:0022414;GO:0044782;GO:0048856;GO:0048870;GO:0050877;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cilium organization;anatomical structure development;cell motility;nervous system process;protein-containing complex assembly
 LOC134707973	TRPV6	-0.525018956353442	GO:0023052;GO:0050886;GO:0055085;GO:0065003	signaling;endocrine process;transmembrane transport;protein-containing complex assembly
-LOC134707977	TBA1	1.34847754719787	GO:0000278;GO:0007010	mitotic cell cycle;cytoskeleton organization
+LOC134707977	TBA1	1.34847754719787	GO:0000278	mitotic cell cycle
 LOC134708006	SC5A7	-1.55302941919566	GO:0055085	transmembrane transport
-LOC134708032	SMIP7	-0.845555438722469	GO:0022414;GO:0030154	reproductive process;cell differentiation
+LOC134708032	SMIP7	-0.845555438722469	GO:0022414	reproductive process
 LOC134708098	CF157	-0.741518440570257	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
 LOC134708175	LFG2	0.78325788809701	GO:0012501;GO:0023052;GO:0030154;GO:0048856	programmed cell death;signaling;cell differentiation;anatomical structure development
+LOC134708255	TEKL1	-0.762787939324686	GO:0007018;GO:0022414;GO:0048870	microtubule-based movement;reproductive process;cell motility
 LOC134708397	SACS	-1.59803431551573	GO:0006457;GO:0051604	protein folding;protein maturation
 LOC134708404	ANXA6	-0.492542081179604	GO:0003012;GO:0012501;GO:0023052;GO:0030154;GO:0048856;GO:0055085	muscle system process;programmed cell death;signaling;cell differentiation;anatomical structure development;transmembrane transport
-LOC134708467	GLNA	0.595400118779871	GO:0006520;GO:0048856;GO:0048870	amino acid metabolic process;anatomical structure development;cell motility
+LOC134708467	GLNA	0.595400118779871	GO:0002376;GO:0030154;GO:0048856;GO:0048870	immune system process;cell differentiation;anatomical structure development;cell motility
 LOC134708469	CE350	-0.498107673080131	GO:0007010;GO:0044782	cytoskeleton organization;cilium organization
-LOC134708533	TSC1	0.625415453240727	GO:0002376;GO:0006913;GO:0006914;GO:0007010;GO:0007155;GO:0023052;GO:0030154;GO:0034330;GO:0042254;GO:0048856;GO:0050877;GO:0055085	immune system process;nucleocytoplasmic transport;autophagy;cytoskeleton organization;cell adhesion;signaling;cell differentiation;cell junction organization;ribosome biogenesis;anatomical structure development;nervous system process;transmembrane transport
-LOC134709302	PAX9	0.689217458947197	GO:0006351;GO:0006355;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;anatomical structure development
+LOC134708533	TSC1	0.625415453240727	GO:0002376;GO:0006914;GO:0007010;GO:0007155;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0050877;GO:0055085	immune system process;autophagy;cytoskeleton organization;cell adhesion;signaling;cell differentiation;cell junction organization;anatomical structure development;nervous system process;transmembrane transport
+LOC134709302	PAX9	0.689217458947197	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
 LOC134710009	MAX	0.387668775823659	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
 LOC134710032	BBOF1	-0.655598189725476	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
-LOC134710081	CE128	-0.755612356882485	GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
+LOC134710063	PP4R3	0.381537802494838	GO:0006281	DNA repair
+LOC134710081	CE128	-0.755612356882485	GO:0007018;GO:0022414;GO:0023052;GO:0030154;GO:0044782;GO:0048856;GO:0048870	microtubule-based movement;reproductive process;signaling;cell differentiation;cilium organization;anatomical structure development;cell motility
 LOC134710092	UBXN1	-0.374174402800756	GO:0030163	protein catabolic process
 LOC134710273	GPC5	0.463017389580316	GO:0023052;GO:0048870	signaling;cell motility
 LOC134710337	MLP3C	0.648377739717801	GO:0006886;GO:0006914	intracellular protein transport;autophagy
@@ -215,20 +222,21 @@ LOC134710951	NINL	-0.932503479335858	GO:0007010	cytoskeleton organization
 LOC134711029	MDHC	0.310030259251398	GO:0006091;GO:0055086	generation of precursor metabolites and energy;nucleobase-containing small molecule metabolic process
 LOC134711077	OTX2	-0.662576519379607	GO:0006351;GO:0006355;GO:0023052;GO:0030154;GO:0048856;GO:0065003	DNA-templated transcription;regulation of DNA-templated transcription;signaling;cell differentiation;anatomical structure development;protein-containing complex assembly
 LOC134711211	YIF1B	0.371425259151981	GO:0007018;GO:0016192;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	microtubule-based movement;vesicle-mediated transport;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
-LOC134711376	HIF1A	0.487155185431096	GO:0005975;GO:0006091;GO:0006351;GO:0006355;GO:0006954;GO:0007018	carbohydrate metabolic process;generation of precursor metabolites and energy;DNA-templated transcription;regulation of DNA-templated transcription;inflammatory response;microtubule-based movement
+LOC134711254	HNRL1	-0.369869220323775	GO:0016071	mRNA metabolic process
+LOC134711376	HIF1A	0.487155185431096	GO:0005975;GO:0006091;GO:0006351;GO:0006355;GO:0006954;GO:0007018;GO:0048856;GO:0055086;GO:1901135	carbohydrate metabolic process;generation of precursor metabolites and energy;DNA-templated transcription;regulation of DNA-templated transcription;inflammatory response;microtubule-based movement;anatomical structure development;nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
 LOC134711379	DYH6	-0.514179404067688	GO:0007018;GO:0048870	microtubule-based movement;cell motility
-LOC134711414	RHOU	0.574264126971113	GO:0000278;GO:0006886;GO:0007005;GO:0007010;GO:0007163;GO:0016192;GO:0023052;GO:0048856	mitotic cell cycle;intracellular protein transport;mitochondrion organization;cytoskeleton organization;establishment or maintenance of cell polarity;vesicle-mediated transport;signaling;anatomical structure development
-LOC134711637	SPTCB	-0.254954339108176	GO:0007010;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0061024;GO:0065003	cytoskeleton organization;signaling;cell differentiation;cell junction organization;anatomical structure development;membrane organization;protein-containing complex assembly
+LOC134711399	KAD7	-0.567459677757375	GO:0055086	nucleobase-containing small molecule metabolic process
+LOC134711414	RHOU	0.574264126971113	GO:0007010;GO:0007163;GO:0016192;GO:0023052;GO:0034330;GO:0048856	cytoskeleton organization;establishment or maintenance of cell polarity;vesicle-mediated transport;signaling;cell junction organization;anatomical structure development
+LOC134711637	SPTCB	-0.254954339108176	GO:0007010;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0061024	cytoskeleton organization;signaling;cell differentiation;cell junction organization;anatomical structure development;membrane organization
 LOC134711718	DNAL1	-0.740628644552868	GO:0007010;GO:0044782;GO:0065003	cytoskeleton organization;cilium organization;protein-containing complex assembly
 LOC134711783	SYEP	0.35322917079213	GO:0006399;GO:0006520	tRNA metabolic process;amino acid metabolic process
 LOC134711804	CCD39	-0.661355093766841	GO:0007010;GO:0007018;GO:0044782;GO:0048856;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;anatomical structure development;cell motility;protein-containing complex assembly
 LOC134711806	TIM	0.639235671058285	GO:0006260;GO:0006281;GO:0023052	DNA replication;DNA repair;signaling
 LOC134711833	T22D1	0.436294511718033	GO:0002376;GO:0006351;GO:0006355;GO:0012501;GO:0023052;GO:0030154;GO:0048856	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;programmed cell death;signaling;cell differentiation;anatomical structure development
-LOC134711882	CALM	-1.42866326721521	GO:0007010	cytoskeleton organization
 LOC134711926	TTLL5	-0.56917186610843	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
 LOC134711990	CALM2	-0.579526209163174	GO:0007010	cytoskeleton organization
-LOC134712087	NRX1	0.444313419143064	GO:0016192;GO:0023052;GO:0034330;GO:0048856;GO:0050877	vesicle-mediated transport;signaling;cell junction organization;anatomical structure development;nervous system process
-LOC134712114	PYC	0.48618976608109	GO:0005975;GO:0006629;GO:0055086	carbohydrate metabolic process;lipid metabolic process;nucleobase-containing small molecule metabolic process
+LOC134712087	NRX1	0.444313419143064	GO:0016192;GO:0023052;GO:0034330;GO:0048856;GO:0050877;GO:0061024	vesicle-mediated transport;signaling;cell junction organization;anatomical structure development;nervous system process;membrane organization
+LOC134712114	PYC	0.48618976608109	GO:0005975;GO:0055086	carbohydrate metabolic process;nucleobase-containing small molecule metabolic process
 LOC134712116	ARGI1	-2.12218430661915	GO:0006520;GO:0071941	amino acid metabolic process;nitrogen cycle metabolic process
 LOC134712204	SC23A	0.8066741104284	GO:0006886;GO:0016192;GO:0048856;GO:0061024	intracellular protein transport;vesicle-mediated transport;anatomical structure development;membrane organization
 LOC134712215	EGLN1	1.39004781316352	GO:0006351;GO:0006355;GO:0012501;GO:0023052;GO:0034330;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;programmed cell death;signaling;cell junction organization;anatomical structure development
@@ -236,16 +244,16 @@ LOC134712229	DNJC3	0.698585031733318	GO:0006457;GO:0051604	protein folding;prote
 LOC134712253	DLRB2	-1.20060660143609	GO:0007018	microtubule-based movement
 LOC134712270	DRC9	-0.61535135145926	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
 LOC134712356	CENPE	-0.830344737596009	GO:0000278;GO:0007010;GO:0007018;GO:0007059;GO:0065003;GO:0140014	mitotic cell cycle;cytoskeleton organization;microtubule-based movement;chromosome segregation;protein-containing complex assembly;mitotic nuclear division
-LOC134712366	FOXN3	0.384469680426249	GO:0000278;GO:0006351;GO:0006355;GO:0023052;GO:0048856	mitotic cell cycle;DNA-templated transcription;regulation of DNA-templated transcription;signaling;anatomical structure development
+LOC134712366	FOXN3	0.384469680426249	GO:0000278;GO:0006351;GO:0006355;GO:0023052	mitotic cell cycle;DNA-templated transcription;regulation of DNA-templated transcription;signaling
 LOC134712368	SLC31	0.700770359768687	GO:0005975;GO:0055085	carbohydrate metabolic process;transmembrane transport
-LOC134712383	ZNFX1	-0.939045070861613	GO:0002376;GO:0006325;GO:0031047;GO:0098542	immune system process;chromatin organization;regulatory ncRNA-mediated gene silencing;defense response to other organism
-LOC134712427	ANR42	-0.585761573149068	GO:0006954	inflammatory response
-LOC134712485	LRRD1	-0.856698897000746	GO:0023052	signaling
+LOC134712383	ZNFX1	-0.939045070861613	GO:0002376;GO:0006325;GO:0006954;GO:0023052;GO:0031047;GO:0065003;GO:0098542	immune system process;chromatin organization;inflammatory response;signaling;regulatory ncRNA-mediated gene silencing;protein-containing complex assembly;defense response to other organism
+LOC134712427	ANR42	-0.585761573149068	GO:0006954;GO:0023052	inflammatory response;signaling
+LOC134712485	LRRD1	-0.856698897000746	GO:0002376;GO:0006954;GO:0023052;GO:0098542	immune system process;inflammatory response;signaling;defense response to other organism
 LOC134712495	AOFB	1.14346920086984	GO:0023052	signaling
 LOC134712498	MYO7A	-0.371675578497545	GO:0030154;GO:0048856;GO:0050877	cell differentiation;anatomical structure development;nervous system process
 LOC134712592	TRH	-0.677657343032228	GO:0006351;GO:0006355;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;anatomical structure development
 LOC134712655	STING	-0.746790109716985	GO:0002376;GO:0006914;GO:0023052;GO:0098542	immune system process;autophagy;signaling;defense response to other organism
-LOC134712659	PARP1	-0.417956033854417	GO:0002376;GO:0006260;GO:0006281;GO:0006351;GO:0006355;GO:0012501;GO:0098542	immune system process;DNA replication;DNA repair;DNA-templated transcription;regulation of DNA-templated transcription;programmed cell death;defense response to other organism
+LOC134712659	PARP1	-0.417956033854417	GO:0002376;GO:0006260;GO:0006281;GO:0006351;GO:0006355;GO:0098542	immune system process;DNA replication;DNA repair;DNA-templated transcription;regulation of DNA-templated transcription;defense response to other organism
 LOC134712678	BCOR	0.611151048704503	GO:0006325;GO:0006351;GO:0006355;GO:0048856	chromatin organization;DNA-templated transcription;regulation of DNA-templated transcription;anatomical structure development
 LOC134712683	MOT12	0.347203489258931	GO:0003013;GO:0055085	circulatory system process;transmembrane transport
 LOC134712684	RBMX	-0.440090029716259	GO:0006351;GO:0006355;GO:0016071;GO:0034330;GO:0065003	DNA-templated transcription;regulation of DNA-templated transcription;mRNA metabolic process;cell junction organization;protein-containing complex assembly
@@ -255,122 +263,124 @@ LOC134712784	IMA4	0.332564195231773	GO:0006886;GO:0006913	intracellular protein 
 LOC134712827	ITPR1	-0.675288327540217	GO:0012501;GO:0022414;GO:0023052;GO:0030154;GO:0048856;GO:0050877;GO:0055085;GO:0065003	programmed cell death;reproductive process;signaling;cell differentiation;anatomical structure development;nervous system process;transmembrane transport;protein-containing complex assembly
 LOC134713272	LAR	0.427029133634983	GO:0007155;GO:0022414;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0048870	cell adhesion;reproductive process;signaling;cell differentiation;cell junction organization;anatomical structure development;cell motility
 LOC134713577	CFA57	-0.643696524522279	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility;protein-containing complex assembly
-LOC134713921	GATM	-0.725804684643748	GO:0006575	cellular modified amino acid metabolic process
+LOC134713921	GATM	-0.725804684643748	GO:0003012;GO:0006575;GO:0050877	muscle system process;modified amino acid metabolic process;nervous system process
 LOC134714337	ARFG1	0.40632862897592	GO:0016192;GO:0023052	vesicle-mediated transport;signaling
-LOC134714372	TM214	0.777391703082109	GO:0012501	programmed cell death
 LOC134714403	SYFAB	-1.66927699946722	GO:0006399;GO:0006520;GO:0065003	tRNA metabolic process;amino acid metabolic process;protein-containing complex assembly
 LOC134714495	MADD4	-0.788649033535633	GO:0030154;GO:0030198;GO:0034330;GO:0048856	cell differentiation;extracellular matrix organization;cell junction organization;anatomical structure development
-LOC134714522	IFIH1	-0.648233758336256	GO:0002376;GO:0023052;GO:0065003;GO:0098542	immune system process;signaling;protein-containing complex assembly;defense response to other organism
-LOC134714631	PAR14	-0.77404229188251	GO:0002376;GO:0023052;GO:0098542	immune system process;signaling;defense response to other organism
+LOC134714522	IFIH1	-0.648233758336256	GO:0002376;GO:0006351;GO:0016071;GO:0023052;GO:0065003;GO:0098542	immune system process;DNA-templated transcription;mRNA metabolic process;signaling;protein-containing complex assembly;defense response to other organism
+LOC134714631	PAR14	-0.77404229188251	GO:0002376;GO:0023052;GO:0055086;GO:0098542	immune system process;signaling;nucleobase-containing small molecule metabolic process;defense response to other organism
 LOC134714646	OAT	0.59370376474646	GO:0006520	amino acid metabolic process
 LOC134714660	FANK1	-0.525534732609029	GO:0006351;GO:0006355;GO:0012501	DNA-templated transcription;regulation of DNA-templated transcription;programmed cell death
-LOC134714716	BTG1	0.802875628851194	GO:0000278;GO:0012501;GO:0022414;GO:0030154;GO:0048856	mitotic cell cycle;programmed cell death;reproductive process;cell differentiation;anatomical structure development
+LOC134714716	BTG1	0.802875628851194	GO:0012501;GO:0022414;GO:0030154;GO:0048856	programmed cell death;reproductive process;cell differentiation;anatomical structure development
 LOC134714750	NAMPT	-0.628604272498997	GO:0055086	nucleobase-containing small molecule metabolic process
 LOC134714760	ELL2	0.72212993841683	GO:0006351;GO:0006355;GO:0016073	DNA-templated transcription;regulation of DNA-templated transcription;snRNA metabolic process
 LOC134714762	PTN6	0.634696691238725	GO:0000278;GO:0002376;GO:0006954;GO:0007155;GO:0023052;GO:0030154;GO:0042060;GO:0048856;GO:0055085;GO:0098542	mitotic cell cycle;immune system process;inflammatory response;cell adhesion;signaling;cell differentiation;wound healing;anatomical structure development;transmembrane transport;defense response to other organism
 LOC134714771	TTLL6	-0.476326386565353	GO:0007010;GO:0007018;GO:0044782;GO:0048870	cytoskeleton organization;microtubule-based movement;cilium organization;cell motility
 LOC134714775	MPP10	0.415643714256673	GO:0042254	ribosome biogenesis
 LOC134714791	SYNC	0.596681236511371	GO:0006399;GO:0006520	tRNA metabolic process;amino acid metabolic process
-LOC134714841	MALT1	-0.813828673146294	GO:0002376;GO:0006351;GO:0006355;GO:0006913;GO:0007155;GO:0012501;GO:0023052;GO:0030154;GO:0030163;GO:0048856;GO:0098542	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;nucleocytoplasmic transport;cell adhesion;programmed cell death;signaling;cell differentiation;protein catabolic process;anatomical structure development;defense response to other organism
-LOC134714933	CCD87	-0.488721505490078	GO:0022414;GO:0030154	reproductive process;cell differentiation
+LOC134714841	MALT1	-0.813828673146294	GO:0002376;GO:0006913;GO:0007155;GO:0012501;GO:0023052;GO:0030154;GO:0030163;GO:0048856;GO:0098542	immune system process;nucleocytoplasmic transport;cell adhesion;programmed cell death;signaling;cell differentiation;protein catabolic process;anatomical structure development;defense response to other organism
+LOC134714933	CCD87	-0.488721505490078	GO:0022414	reproductive process
 LOC134714976	S29A3	0.813732429927028	GO:0055085	transmembrane transport
-LOC134714997	RHBT1	-0.440107212839549	GO:0007010;GO:0007163;GO:0016192;GO:0023052	cytoskeleton organization;establishment or maintenance of cell polarity;vesicle-mediated transport;signaling
-LOC134714999	IF122	-0.542249572052075	GO:0007018;GO:0023052;GO:0044782	microtubule-based movement;signaling;cilium organization
-LOC134715024	CF161	-0.736862386580663	GO:0044782	cilium organization
+LOC134714997	RHBT1	-0.440107212839549	GO:0007010;GO:0007163;GO:0023052;GO:0048856	cytoskeleton organization;establishment or maintenance of cell polarity;signaling;anatomical structure development
+LOC134714999	IF122	-0.542249572052075	GO:0007018;GO:0023052;GO:0044782;GO:0048856	microtubule-based movement;signaling;cilium organization;anatomical structure development
+LOC134715024	CF161	-0.736862386580663	GO:0007018;GO:0022414;GO:0044782;GO:0048870	microtubule-based movement;reproductive process;cilium organization;cell motility
 LOC134715131	RT29	0.475327785137795	GO:0012501;GO:0140053	programmed cell death;mitochondrial gene expression
 LOC134715134	KN14I	-0.616339631305492	GO:0007018	microtubule-based movement
-LOC134715138	GRP75	0.858689610452326	GO:0002376;GO:0006457;GO:0006790;GO:0030154;GO:0048856;GO:0051604	immune system process;protein folding;sulfur compound metabolic process;cell differentiation;anatomical structure development;protein maturation
+LOC134715138	HSPA9	0.858689610452326	GO:0002376;GO:0006457;GO:0030154;GO:0048856;GO:0051604	immune system process;protein folding;cell differentiation;anatomical structure development;protein maturation
 LOC134715175	CFA43	-0.459144485555053	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
 LOC134715213	KY	-0.785651825479271	GO:0048856	anatomical structure development
 LOC134715238	ZIG4	1.398184032964	GO:0030154;GO:0048856	cell differentiation;anatomical structure development
+LOC134715405	ELMD3	-0.67703476140085	GO:0044782	cilium organization
 LOC134715412	MKNK1	0.496901068002432	GO:0012501;GO:0023052	programmed cell death;signaling
-LOC134715424	DUOX2	-0.644285182126323	GO:0006575;GO:0023052;GO:0048856	cellular modified amino acid metabolic process;signaling;anatomical structure development
+LOC134715424	DUOX2	-0.644285182126323	GO:0006575;GO:0023052;GO:0048856	modified amino acid metabolic process;signaling;anatomical structure development
 LOC134715478	TACC1	0.336444512335358	GO:0000278;GO:0007010;GO:0048856	mitotic cell cycle;cytoskeleton organization;anatomical structure development
+LOC134715562	RASLC	0.91695698284161	GO:0023052	signaling
 LOC134715822	ARRD3	0.584071268609248	GO:0023052;GO:0048856	signaling;anatomical structure development
 LOC134715868	EI3JA	0.424302331782823	GO:0002181;GO:0065003	cytoplasmic translation;protein-containing complex assembly
-LOC134715894	KCC4	-0.578598388368227	GO:0002376;GO:0006351;GO:0006355;GO:0006954;GO:0023052;GO:0030154;GO:0048856;GO:0050877	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;inflammatory response;signaling;cell differentiation;anatomical structure development;nervous system process
+LOC134715873	CBCO1	-0.830361753868538	GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
+LOC134715894	KCC4	-0.578598388368227	GO:0002376;GO:0006351;GO:0006355;GO:0023052;GO:0030154;GO:0048856;GO:0050877	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;signaling;cell differentiation;anatomical structure development;nervous system process
 LOC134715905	CFA58	-0.411464196319745	GO:0007010;GO:0007018;GO:0022414;GO:0023052;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;signaling;cell differentiation;cilium organization;anatomical structure development;cell motility
 LOC134715945	CFA53	-0.600656738488795	GO:0007018;GO:0048856	microtubule-based movement;anatomical structure development
 LOC134716033	AT8B2	0.336290439633069	GO:0055085;GO:0061024	transmembrane transport;membrane organization
-LOC134716094	ERF1	0.509723945149539	GO:0002181	cytoplasmic translation
-LOC134716154	DYI2	-0.636427617625453	GO:0007010;GO:0007018;GO:0044782;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;protein-containing complex assembly
+LOC134716154	DYI2	-0.636427617625453	GO:0007010;GO:0007018;GO:0044782;GO:0048856;GO:0065003	cytoskeleton organization;microtubule-based movement;cilium organization;anatomical structure development;protein-containing complex assembly
 LOC134716407	SACS	-1.42581744933338	GO:0006457;GO:0051604	protein folding;protein maturation
 LOC134716418	ANR26	-0.39810365598782	GO:0030154	cell differentiation
-LOC134716854	HXK1	0.81606458430049	GO:0002376;GO:0005975;GO:0006091;GO:0006954;GO:0012501;GO:0098542;GO:1901135	immune system process;carbohydrate metabolic process;generation of precursor metabolites and energy;inflammatory response;programmed cell death;defense response to other organism;carbohydrate derivative metabolic process
+LOC134716854	HXK1	0.81606458430049	GO:0002376;GO:0005975;GO:0006091;GO:0012501;GO:0055085;GO:0055086;GO:1901135	immune system process;carbohydrate metabolic process;generation of precursor metabolites and energy;programmed cell death;transmembrane transport;nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
 LOC134717060	PRAF	-0.665070187075138	GO:0005975;GO:0015979;GO:0023052	carbohydrate metabolic process;photosynthesis;signaling
-LOC134717170	WNK3	0.442809806457197	GO:0012501;GO:0022600;GO:0023052;GO:0055085;GO:0072659	programmed cell death;digestive system process;signaling;transmembrane transport;protein localization to plasma membrane
+LOC134717170	WNK3	0.442809806457197	GO:0003014;GO:0012501;GO:0022600;GO:0023052;GO:0055085;GO:0072659	renal system process;programmed cell death;digestive system process;signaling;transmembrane transport;protein localization to plasma membrane
 LOC134718010	KCNAL	0.488850138025348	GO:0023052;GO:0050877;GO:0055085;GO:0065003	signaling;nervous system process;transmembrane transport;protein-containing complex assembly
-LOC134718580	MDM1	-0.898840423066654	GO:0007010;GO:0048856	cytoskeleton organization;anatomical structure development
+LOC134718580	SAXO6	-0.898840423066654	GO:0007010;GO:0048856	cytoskeleton organization;anatomical structure development
 LOC134718629	MPEG1	-1.31226198654425	GO:0002376;GO:0098542	immune system process;defense response to other organism
 LOC134718844	DYH6	-0.656513170132616	GO:0007018;GO:0048870	microtubule-based movement;cell motility
-LOC134718956	MNS1	-0.620413864740706	GO:0022414	reproductive process
+LOC134718956	MNS1	-0.620413864740706	GO:0044782	cilium organization
 LOC134719205	CELR2	-0.349824948335002	GO:0006351;GO:0006355;GO:0007018;GO:0007155;GO:0023052;GO:0030154;GO:0044782;GO:0048856;GO:0048870	DNA-templated transcription;regulation of DNA-templated transcription;microtubule-based movement;cell adhesion;signaling;cell differentiation;cilium organization;anatomical structure development;cell motility
+LOC134720611	CFA68	-0.720865174998015	GO:0007018;GO:0022414;GO:0048870	microtubule-based movement;reproductive process;cell motility
 LOC134720696	HNF4A	0.854864986470524	GO:0006351;GO:0006355;GO:0030154	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation
-LOC134720738	HEXB	-0.357670535068154	GO:0005975;GO:0006351;GO:0006355;GO:0006629;GO:0006790;GO:0007040;GO:0022414;GO:0030154;GO:0048856;GO:0048870;GO:0050877;GO:1901135	carbohydrate metabolic process;DNA-templated transcription;regulation of DNA-templated transcription;lipid metabolic process;sulfur compound metabolic process;lysosome organization;reproductive process;cell differentiation;anatomical structure development;cell motility;nervous system process;carbohydrate derivative metabolic process
+LOC134720738	HEXB	-0.357670535068154	GO:0005975;GO:0006351;GO:0006355;GO:0006629;GO:0022414;GO:0030154;GO:0030163;GO:0048856;GO:0048870;GO:1901135	carbohydrate metabolic process;DNA-templated transcription;regulation of DNA-templated transcription;lipid metabolic process;reproductive process;cell differentiation;protein catabolic process;anatomical structure development;cell motility;carbohydrate derivative metabolic process
 LOC134721016	CFA44	-0.617846299652186	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility
 LOC134721074	REM1	0.49816662573902	GO:0003012;GO:0023052;GO:0050877;GO:0055085	muscle system process;signaling;nervous system process;transmembrane transport
-LOC134721100	DYH9	-0.546688187023329	GO:0003016;GO:0007018;GO:0048870;GO:0050877	respiratory system process;microtubule-based movement;cell motility;nervous system process
+LOC134721100	DYH9	-0.546688187023329	GO:0007018;GO:0048870	microtubule-based movement;cell motility
 LOC134721402	TGM1	0.652190778997901	GO:0030154;GO:0048856	cell differentiation;anatomical structure development
-LOC134721406	RIPK3	-0.487892905252078	GO:0002376;GO:0006351;GO:0006355;GO:0012501;GO:0023052;GO:0030154;GO:0048856;GO:0048870;GO:0098542	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;programmed cell death;signaling;cell differentiation;anatomical structure development;cell motility;defense response to other organism
-LOC134721550	NHR48	0.423327722758431	GO:0006351;GO:0006355;GO:0030154	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation
+LOC134721406	RIPK3	-0.487892905252078	GO:0002376;GO:0012501;GO:0023052;GO:0030154;GO:0048856;GO:0048870;GO:0065003	immune system process;programmed cell death;signaling;cell differentiation;anatomical structure development;cell motility;protein-containing complex assembly
+LOC134721550	NHR48	0.423327722758431	GO:0006351;GO:0006355;GO:0023052;GO:0030154	DNA-templated transcription;regulation of DNA-templated transcription;signaling;cell differentiation
 LOC134721561	TLR3	-0.751633734224768	GO:0002376;GO:0006954;GO:0023052;GO:0098542	immune system process;inflammatory response;signaling;defense response to other organism
 LOC134721623	DNJB9	0.605003526225758	GO:0002376;GO:0023052;GO:0030154;GO:0030163;GO:0048856	immune system process;signaling;cell differentiation;protein catabolic process;anatomical structure development
-LOC134721793	SAC1	0.398465115229484	GO:0006629	lipid metabolic process
-LOC134721797	SPAT6	-0.75076277973573	GO:0022414;GO:0030154;GO:0044782	reproductive process;cell differentiation;cilium organization
+LOC134721793	SAC1	0.398465115229484	GO:0006629;GO:0016192	lipid metabolic process;vesicle-mediated transport
+LOC134721797	SPAT6	-0.75076277973573	GO:0022414;GO:0044782	reproductive process;cilium organization
 LOC134721852	PCKG	0.923765716762488	GO:0005975;GO:0006629	carbohydrate metabolic process;lipid metabolic process
 LOC134721858	RPF1	0.606550731355872	GO:0042254	ribosome biogenesis
 LOC134721963	SP17	-0.502882795264394	GO:0022414	reproductive process
-LOC134721973	HYDIN	-0.723816988706331	GO:0007010;GO:0007018;GO:0030154;GO:0044782;GO:0048856	cytoskeleton organization;microtubule-based movement;cell differentiation;cilium organization;anatomical structure development
+LOC134721973	HYDIN	-0.723816988706331	GO:0007010;GO:0007018;GO:0044782	cytoskeleton organization;microtubule-based movement;cilium organization
+LOC134721979	CFA90	-0.843288406974579	GO:0007018;GO:0022414;GO:0048870	microtubule-based movement;reproductive process;cell motility
 LOC134722045	DYH5	-0.570779647670864	GO:0007010;GO:0007018;GO:0022414;GO:0044782;GO:0048856;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cilium organization;anatomical structure development;cell motility;protein-containing complex assembly
-LOC134722081	DPM1	0.627550508517235	GO:0006486;GO:0006629;GO:0055086;GO:1901135	protein glycosylation;lipid metabolic process;nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
+LOC134722081	DPM1	0.627550508517235	GO:0006629;GO:0009101;GO:0051604;GO:1901135	lipid metabolic process;glycoprotein biosynthetic process;protein maturation;carbohydrate derivative metabolic process
 LOC134722086	S6A17	0.432583963870395	GO:0003013;GO:0030163;GO:0048856;GO:0055085	circulatory system process;protein catabolic process;anatomical structure development;transmembrane transport
 LOC134722089	CF263	-0.507508122349905	GO:0044782	cilium organization
-LOC134722146	DRC4	-0.527725300674259	GO:0007010;GO:0007018;GO:0022414;GO:0023052;GO:0044782;GO:0048856;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;signaling;cilium organization;anatomical structure development;cell motility
-LOC134723093	RN213	-0.994086526407425	GO:0002376;GO:0006629;GO:0006914;GO:0023052;GO:0030163;GO:0048856;GO:0098542	immune system process;lipid metabolic process;autophagy;signaling;protein catabolic process;anatomical structure development;defense response to other organism
-LOC134723123	KIN17	-0.620141546735517	GO:0006260;GO:0006281;GO:0006310;GO:0016071	DNA replication;DNA repair;DNA recombination;mRNA metabolic process
-LOC134723224	VAS1	0.580617919152885	GO:0055085	transmembrane transport
+LOC134722127	MOT14	0.621050584575874	GO:0055085	transmembrane transport
+LOC134722146	DRC4	-0.527725300674259	GO:0007010;GO:0007018;GO:0022414;GO:0023052;GO:0044782;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;signaling;cilium organization;cell motility;protein-containing complex assembly
+LOC134723093	RN213	-0.994086526407425	GO:0006629;GO:0006914;GO:0023052;GO:0030163;GO:0048856;GO:0098542	lipid metabolic process;autophagy;signaling;protein catabolic process;anatomical structure development;defense response to other organism
+LOC134723123	KIN17	-0.620141546735517	GO:0006260	DNA replication
+LOC134723224	VAS1	0.580617919152885	GO:0023052	signaling
 LOC134723308	TSR1	0.404749601165964	GO:0042254	ribosome biogenesis
 LOC134723511	PIRC1	-0.996062143496078	GO:0007010;GO:0007018;GO:0044782;GO:0048856	cytoskeleton organization;microtubule-based movement;cilium organization;anatomical structure development
 LOC134723868	CNBP	0.42412400148791	GO:0002181	cytoplasmic translation
-LOC134724165	HDHD5	2.66378335372187	GO:0006629	lipid metabolic process
-LOC134724276	RAB7	0.351560853474357	GO:0006629;GO:0006886;GO:0007040;GO:0016192;GO:0030163;GO:0061024	lipid metabolic process;intracellular protein transport;lysosome organization;vesicle-mediated transport;protein catabolic process;membrane organization
+LOC134724276	RAB7	0.351560853474357	GO:0006886;GO:0007040;GO:0016192;GO:0030163;GO:0061024	intracellular protein transport;lysosome organization;vesicle-mediated transport;protein catabolic process;membrane organization
 LOC134724433	GNL3	0.475739419442111	GO:0022414;GO:0030154;GO:0048856	reproductive process;cell differentiation;anatomical structure development
-LOC134724476	TOB1	0.492605532727276	GO:0016071;GO:0023052;GO:0030154	mRNA metabolic process;signaling;cell differentiation
-LOC134724514	SF01	0.348092354204992	GO:0006629;GO:0016071;GO:0022414;GO:0030154;GO:0048856;GO:0065003	lipid metabolic process;mRNA metabolic process;reproductive process;cell differentiation;anatomical structure development;protein-containing complex assembly
+LOC134724476	TOB1	0.492605532727276	GO:0016071	mRNA metabolic process
+LOC134724514	SF01	0.348092354204992	GO:0016071;GO:0065003	mRNA metabolic process;protein-containing complex assembly
 LOC134724580	GHITM	0.517583536552398	GO:0006091;GO:0007005;GO:0012501;GO:0023052;GO:0055085;GO:0061024	generation of precursor metabolites and energy;mitochondrion organization;programmed cell death;signaling;transmembrane transport;membrane organization
 LOC134724598	FNIP1	0.645272151870431	GO:0007040;GO:0023052	lysosome organization;signaling
-LOC134724614	ANXA7	-0.570101175018185	GO:0023052;GO:0030154;GO:0048856;GO:0061024	signaling;cell differentiation;anatomical structure development;membrane organization
+LOC134724614	ANXA7	-0.570101175018185	GO:0006914;GO:0023052;GO:0030154;GO:0048856;GO:0061024	autophagy;signaling;cell differentiation;anatomical structure development;membrane organization
 LOC134724736	IQCE	-0.768220284259996	GO:0048856	anatomical structure development
 LOC134724739	BAIP3	-0.556825531375143	GO:0016192;GO:0023052;GO:0048856	vesicle-mediated transport;signaling;anatomical structure development
 LOC134724759	DYHC	-0.531607540227699	GO:0007018	microtubule-based movement
 LOC134724874	EIF3D	0.529880659515629	GO:0002181;GO:0065003	cytoplasmic translation;protein-containing complex assembly
 LOC134724916	ANXA7	-0.553286046327411	GO:0006914;GO:0030154;GO:0048856	autophagy;cell differentiation;anatomical structure development
-LOC134725059	CWO	1.94450381069443	GO:0006351;GO:0006355;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;anatomical structure development
+LOC134725059	CWO	1.94450381069443	GO:0006351;GO:0006355;GO:0023052;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;signaling;cell differentiation;anatomical structure development
 LOC134725087	PAPSS	0.659503804007697	GO:0006790;GO:0055086;GO:1901135	sulfur compound metabolic process;nucleobase-containing small molecule metabolic process;carbohydrate derivative metabolic process
-LOC134725089	APLP	0.79167543057819	GO:0023052	signaling
-LOC134725208	HT1	-0.727440855608009	GO:0023052	signaling
 LOC134725293	TRPCG	-0.518472884970388	GO:0055085;GO:0065003	transmembrane transport;protein-containing complex assembly
 LOC134725347	TEKT3	-0.493094773480462	GO:0007018;GO:0022414;GO:0044782;GO:0048870	microtubule-based movement;reproductive process;cilium organization;cell motility
-LOC134725350	GALK1	0.680553729652974	GO:0005975;GO:0006091	carbohydrate metabolic process;generation of precursor metabolites and energy
+LOC134725350	GALK1	0.680553729652974	GO:0005975;GO:1901135	carbohydrate metabolic process;carbohydrate derivative metabolic process
 LOC134725463	HGS	0.599780405959052	GO:0016192	vesicle-mediated transport
-LOC134725495	L2GL1	-0.317263338770637	GO:0007010;GO:0007163;GO:0016192;GO:0023052;GO:0030154;GO:0048856	cytoskeleton organization;establishment or maintenance of cell polarity;vesicle-mediated transport;signaling;cell differentiation;anatomical structure development
+LOC134725495	L2GL1	-0.317263338770637	GO:0007010;GO:0007163;GO:0016192;GO:0023052;GO:0030154;GO:0048856;GO:0065003	cytoskeleton organization;establishment or maintenance of cell polarity;vesicle-mediated transport;signaling;cell differentiation;anatomical structure development;protein-containing complex assembly
 LOC134725633	ZSWM8	0.474021390105922	GO:0030163;GO:0031047	protein catabolic process;regulatory ncRNA-mediated gene silencing
-LOC134725661	4EBP1	0.525718580085195	GO:0002181;GO:0023052;GO:0065003	cytoplasmic translation;signaling;protein-containing complex assembly
+LOC134725661	4EBP1	0.525718580085195	GO:0000278;GO:0002181;GO:0023052;GO:0065003	mitotic cell cycle;cytoplasmic translation;signaling;protein-containing complex assembly
 LOC134725734	DDT4L	1.73047044458076	GO:0023052	signaling
-LOC134725749	ANK2	-0.273280427345187	GO:0003012;GO:0003013;GO:0016192;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0055085;GO:0061024;GO:0072659	muscle system process;circulatory system process;vesicle-mediated transport;signaling;cell differentiation;cell junction organization;anatomical structure development;transmembrane transport;membrane organization;protein localization to plasma membrane
+LOC134725749	ANK2	-0.273280427345187	GO:0003012;GO:0003013;GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0055085;GO:0061024;GO:0072659	muscle system process;circulatory system process;signaling;cell differentiation;cell junction organization;anatomical structure development;transmembrane transport;membrane organization;protein localization to plasma membrane
 LOC134725758	PRDX1	0.74676403979931	GO:0002376;GO:0098754	immune system process;detoxification
 LOC134725785	CRIP1	-0.453996239302917	GO:0002376;GO:0012501;GO:0022414;GO:0023052;GO:0048856	immune system process;programmed cell death;reproductive process;signaling;anatomical structure development
-LOC134725790	DYH3	-0.528038442626363	GO:0007018;GO:0048870	microtubule-based movement;cell motility
+LOC134725790	DYH3	-0.528038442626363	GO:0007010;GO:0007018;GO:0022414;GO:0030154;GO:0044782;GO:0048856;GO:0048870;GO:0065003	cytoskeleton organization;microtubule-based movement;reproductive process;cell differentiation;cilium organization;anatomical structure development;cell motility;protein-containing complex assembly
 LOC134725817	QRIC2	-0.937104136833958	GO:0007018;GO:0022414;GO:0030163;GO:0048870	microtubule-based movement;reproductive process;protein catabolic process;cell motility
 LOC134725835	HP1B3	-0.448203328203867	GO:0006325;GO:0065003	chromatin organization;protein-containing complex assembly
 LOC134725842	IRF2	-0.987227670996453	GO:0002376;GO:0006351;GO:0006355	immune system process;DNA-templated transcription;regulation of DNA-templated transcription
 LOC134725848	3MG	-0.816243191455679	GO:0006281	DNA repair
 LOC134725878	FXRD2	-0.641370194791803	GO:0030163	protein catabolic process
-LOC134725888	HELZ	-0.407250352860254	GO:0031047	regulatory ncRNA-mediated gene silencing
+LOC134725888	HELZ	-0.407250352860254	GO:0016071	mRNA metabolic process
 LOC134725956	ANKH1	0.323457785582503	GO:0002376;GO:0098542	immune system process;defense response to other organism
 LOC134726027	FXJ1B	-0.79810611598121	GO:0006351;GO:0006355;GO:0030154;GO:0044782;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;cilium organization;anatomical structure development
 LOC134726332	ABCA1	-0.473700078659101	GO:0006629;GO:0007040;GO:0016192;GO:0023052;GO:0030154;GO:0055085;GO:0061024;GO:0065003	lipid metabolic process;lysosome organization;vesicle-mediated transport;signaling;cell differentiation;transmembrane transport;membrane organization;protein-containing complex assembly
-LOC134727640	E75BC	0.48177392345345	GO:0006351;GO:0006355;GO:0006629;GO:0022414;GO:0023052;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;lipid metabolic process;reproductive process;signaling;cell differentiation;anatomical structure development
+LOC134727640	E75BC	0.48177392345345	GO:0006351;GO:0006355;GO:0006629;GO:0022414;GO:0030154;GO:0048856	DNA-templated transcription;regulation of DNA-templated transcription;lipid metabolic process;reproductive process;cell differentiation;anatomical structure development
 LOC134728104	NLK	0.549853880574436	GO:0006351;GO:0006355;GO:0023052	DNA-templated transcription;regulation of DNA-templated transcription;signaling
-LOC134728267	ANP1	-0.814397739780571	GO:0006486;GO:0071554;GO:1901135	protein glycosylation;cell wall organization or biogenesis;carbohydrate derivative metabolic process
+LOC134728130	DRC11	-0.681026405453836	GO:0007010;GO:0007018;GO:0022414;GO:0048870	cytoskeleton organization;microtubule-based movement;reproductive process;cell motility
+LOC134728267	ANP1	-0.814397739780571	GO:0009101;GO:0071554;GO:1901135	glycoprotein biosynthetic process;cell wall organization or biogenesis;carbohydrate derivative metabolic process
 LOC134728292	NOS1	1.00320725733425	GO:0003012;GO:0003013;GO:0006351;GO:0006355;GO:0006520;GO:0012501;GO:0023052;GO:0030154;GO:0048856;GO:0055085	muscle system process;circulatory system process;DNA-templated transcription;regulation of DNA-templated transcription;amino acid metabolic process;programmed cell death;signaling;cell differentiation;anatomical structure development;transmembrane transport
