@@ -1,15 +1,12 @@
 # 02_data
 
-DESeq2 inputs.
+Raw sample sheets; nothing here is written by a script.
 
-| Item | Description | Source |
-|------|-------------|--------|
-| `gene_count_matrix_clean.csv` | Gene-level StringTie count matrix | sequence-alignment (HISAT2 + StringTie) |
-| `transcript_count_matrix.csv` | Transcript-level count matrix | sequence-alignment |
-| `treatmentinfo_clean.csv` | Sample-to-treatment design table | curated |
-| `psmfc_mussel_rna_summary.csv` | RNA sample summary | sequencing submission |
-| `PSMFC-mytilus-byssus-pilot-RNA-tagseq_raw.csv` | Raw sample/RNA metadata | sequencing submission |
-| `gene_count_matrix_clean/` | Companion directory for the cleaned matrix | derived |
+| Item | Description | Read by |
+|------|-------------|---------|
+| `PSMFC-mytilus-byssus-pilot-RNA-tagseq_raw.csv` | Tag-seq sample sheet: library ID, treatment group (`trt`, e.g. `T_OA_d3`), RNA box and well, RNA concentration, volume and yield. Its last three, unnamed columns are free text; for the FX libraries they say "gill" and "foot_control", both wrong (see `../README.md`), and no script uses them | `01_clean_count_matrix.Rmd` |
+| `psmfc_mussel_rna_summary.csv` | RNA isolation log: sample (`T01-F_PG`, `T01-F`, `T01-G`), concentration, volume, yield, tissue label, isolation date | `01_clean_count_matrix.Rmd` (crosswalk check) |
 
-The gene count matrix is generated upstream from the StringTie ctabs in
-`sequence-alignment/03_analyses/hisat/` and placed here as the DE input.
+The gene count matrix comes from `../../05_sequence-alignment/03_analyses/prepDE/`; the clean
+matrix and the sample table built from these sheets are written to
+`../03_analyses/count_matrix/`.

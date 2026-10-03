@@ -1,0 +1,7 @@
+matrix,median_share_pct,previous_median_share_pct,spearman_with_previous
+stringtie refseq,2.59,2.32,0.992
+stringtie ext3,2.48,2.32,0.99
+stringtie full,2.05,2.32,0.985
+featurecounts refseq,1.04,2.32,0.848
+featurecounts ext3,1,2.32,0.846
+featurecounts full,0.88,2.32,0.848

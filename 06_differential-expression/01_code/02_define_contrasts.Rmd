@@ -1,0 +1,82 @@
+---
+title: "02 - Define the differential-expression contrasts"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# What this does
+
+Defines every pairwise DESeq2 contrast from the sample table written by script 01, so the
+sample set behind each result is set by rule in one place. (Before, the TC sample lists were
+written only by two scripts kept as superseded.) Two families, both on day-3 animals only:
+
+| family | contrast | samples | design | reference |
+|---|---|---|---|---|
+| **TC, of record** | `<T><X>_TC`, X = OA, OW, DO | one tissue: stressor X at day 3 + control at day 3 | `~ treatment` | `control` |
+| FG | `FG_TC` | foot + gill of the day-3 controls | `~ tissue` | `F` (foot) |
+
+T is `F` (foot) or `G` (gill). Samples are listed in sample-ID order.
+
+**No day-0 contrasts.** The day-0 lab-control animals are used as a control nowhere: their feet
+were dissected differently from the day-3 feet (two pieces, `F_PG` and `F`, against one), so
+a day-0 vs day-3 difference would mix the sampled region into the effect (script 01). The
+former LC family (each stressor, and the day-3 control, against the day-0 control) and the
+day-0 foot-vs-gill contrast `FG_LC` are retired; their tables are kept in
+`03_analyses/_superseded/LC_contrasts/`.
+
+Writes `03_analyses/DEG_lists/contrasts.csv` (one row per contrast) and
+`contrast_samples.csv` (one row per contrast x sample), read by script 03.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+ti <- read.csv(file.path(cnt, "treatmentinfo_clean.csv"), row.names = 1, colClasses = "character")
+stopifnot(all(ti$region %in% c("foot (phenol gland to tip)", "foot (without phenol gland)", "gill")))
+ti <- ti[ti$region != "foot (without phenol gland)" & ti$day == "3", ]   # day-3 libraries only (see above)
+```
+
+# Contrasts
+
+```{r define}
+tissues   <- c(F = "Foot", G = "Gill")
+stressors <- c("OA", "OW", "DO")
+defs <- list()
+add <- function(code, family, dir, design_var, ref, test, keep, description)
+  defs[[code]] <<- list(code = code, family = family, dir = dir, design_var = design_var,
+                        ref_level = ref, test_level = test, keep = keep, description = description)
+
+for (t in names(tissues)) {
+  for (x in stressors) {
+    add(paste0(t, x, "_TC"), "TC", tissues[[t]], "treatment", "control", x,
+        with(ti, tissue == t & day == "3" & treatment %in% c("control", x)),
+        sprintf("%s: %s vs day-3 treatment control", tissues[[t]], x))
+  }
+}
+add("FG_TC", "FG", "Foot_vs_Gill", "tissue", "F", "G",
+    with(ti, tissue %in% c("F", "G") & treatment == "control" & day == "3"),
+    "Gill vs foot, day-3 treatment controls")
+
+contrast_samples <- do.call(rbind, lapply(defs, function(d) {
+  s <- ti[d$keep, ]
+  s <- s[order(s$sample.1, method = "radix"), ]
+  data.frame(code = d$code, sample.1 = s$sample.1, tissue = s$tissue, treatment = s$treatment,
+             day = s$day, group = ifelse(s[[d$design_var]] == d$test_level, "test", "reference"))
+}))
+contrasts <- do.call(rbind, lapply(defs, function(d) {
+  s <- contrast_samples[contrast_samples$code == d$code, ]
+  data.frame(code = d$code, family = d$family, dir = d$dir, design_var = d$design_var,
+             ref_level = d$ref_level, test_level = d$test_level,
+             n_reference = sum(s$group == "reference"), n_test = sum(s$group == "test"),
+             description = d$description)
+}))
+rownames(contrasts) <- rownames(contrast_samples) <- NULL
+
+## every contrast has two groups, and the levels it names are the ones its samples carry
+stopifnot(all(contrasts$n_reference > 0), all(contrasts$n_test > 0),
+          !anyDuplicated(paste(contrast_samples$code, contrast_samples$sample.1)))
+write.csv(contrasts, file.path(deg, "contrasts.csv"), row.names = FALSE)
+write.csv(contrast_samples, file.path(deg, "contrast_samples.csv"), row.names = FALSE)
+knitr::kable(contrasts[, c("code", "family", "design_var", "ref_level", "test_level", "n_reference", "n_test", "description")])
+```

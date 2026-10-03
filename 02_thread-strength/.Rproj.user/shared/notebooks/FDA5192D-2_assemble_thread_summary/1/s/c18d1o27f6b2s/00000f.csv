@@ -1,6 +1,0 @@
-"0","write.xlsx(list(data = summary_tbl),"
-"0","           file = file.path(out_dir, ""thread-summary.xlsx""),"
-"0","           colNames = TRUE, overwrite = TRUE)"
-"0",""
-"0","message(""Wrote "", file.path(out_dir, ""thread-summary.xlsx""),"
-"0","        "" ("", nrow(summary_tbl), "" rows)."")"

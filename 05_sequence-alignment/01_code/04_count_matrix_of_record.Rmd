@@ -1,0 +1,102 @@
+---
+title: "04 - The count matrix of record: featureCounts on the 3'-extended annotation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# What this does
+
+Writes the gene count matrix that `06_differential-expression` starts from:
+`03_analyses/featurecounts/gene_count_matrix.csv`, genes x the 131 libraries.
+
+The counts are those of `04_iso-seq-transcriptome` step 06 (option B, adopted 2026-10-02):
+
+- **Alignment.** The trimmed reads (`../README.md`, "The reads") aligned to the genome with
+  HISAT2 2.2.1, the settings of step 01 (defaults and `--dta`). The splice sites of the RefSeq
+  annotation are given at alignment time (`--known-splicesite-infile`) instead of being built
+  into the index.
+- **Annotation.** RefSeq release RS_2024_02 of GCF_036588685.1 with the 3' ends extended by
+  the Iso-Seq isoforms (`ext3`, `04` step 05). 18,470 transcripts of 9,781 genes get their last
+  exon extended to the furthest 3' end of a same-gene isoform whose last aligned block overlaps
+  it; nothing else changes, so gene keys, names and GO annotation are RefSeq's.
+- **Counting.** featureCounts (Subread 2.1.1; Liao, Smyth and Shi 2014, *Bioinformatics*
+  30:923) on the annotation's exons: one count per uniquely aligned read on the sense strand
+  (`-s 1`); reads aligned to several places or overlapping more than one gene are left out.
+
+Those steps need the reads, the genome and the Iso-Seq alignment, so they are not run by the
+pipeline; their combined matrix (`featurecounts_ext3_gene_counts.csv.gz`) is committed in
+`04_iso-seq-transcriptome/03_analyses/06_genome-recount/`. This step only renames its rows.
+`04` step 07 records why this matrix replaced the previous one (StringTie + prepDE on the
+HPC alignment, steps 01 and 02, which still run and stay in `03_analyses/prepDE/`).
+
+**Row names.** featureCounts names a gene by its key (`LOC134721619`, `COX1`,
+`rna-NC_007687.1:1..1244`). The rows here carry the names the rest of the pipeline expects,
+built as prepDE builds them from the reference transcript table (`03_analyses/hisat/t_data.ctab`):
+`gene_id|gene_name`, else `gene_id`, else the transcript name for the mitochondrial tRNAs and
+rRNAs that have no gene record. `gene_key()` (`tools/gene_ids.R`) of each name is the
+featureCounts key, which is checked below. 47,522 of the 47,806 names are those of the previous
+matrix; the other 284 are genes StringTie had filed under its own `STRG` numbers there (263
+reference genes, now `gene-LOC...`, and the 21 mitochondrial tRNAs and rRNAs, now named by
+their transcript as the other five already were).
+
+```{r paths}
+repo_root <- normalizePath(file.path(here::here(), ".."))
+source(file.path(repo_root, "tools", "gene_ids.R"))         # gene_key()
+source(file.path(repo_root, "tools", "pipeline_checks.R"))  # provenance_lines()
+suppressPackageStartupMessages(library(data.table))
+fc_file   <- file.path(repo_root, "04_iso-seq-transcriptome", "03_analyses", "06_genome-recount",
+                       "featurecounts_ext3_gene_counts.csv.gz")
+fc_prov   <- file.path(dirname(fc_file), "RUN_provenance.txt")
+tdata     <- here::here("03_analyses", "hisat", "t_data.ctab")
+out_dir   <- here::here("03_analyses", "featurecounts")
+out_csv   <- file.path(out_dir, "gene_count_matrix.csv")
+stopifnot(file.exists(fc_file), file.exists(tdata))
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+```
+
+# Count matrix
+
+```{r matrix}
+fc <- fread(fc_file, sep = ",")
+stopifnot(names(fc)[1] == "gene", ncol(fc) == 132, !anyDuplicated(fc$gene),
+          all(grepl("^T[0-9]{3}[A-Z]+$", names(fc)[-1])),
+          identical(gene_key(fc$gene), fc$gene))                # featureCounts names are gene keys
+
+## prepDE's name for each gene: gene_id|gene_name, else gene_id, else the transcript name
+td <- fread(tdata)
+td[, name := fifelse(gene_id == ".", t_name, fifelse(gene_name == ".", gene_id, paste0(gene_id, "|", gene_name)))]
+nm <- unique(td[, .(key = gene_key(name), name)])
+stopifnot(!anyDuplicated(nm$key), all(fc$gene %in% nm$key))
+fc[, gene := nm$name[match(gene, nm$key)]]
+stopifnot(!anyDuplicated(fc$gene), identical(gene_key(fc$gene), nm$key[match(fc$gene, nm$name)]))
+
+setnames(fc, "gene", "gene_id")
+setorderv(fc, "gene_id")
+fwrite(fc, out_csv)
+cat("genes:", nrow(fc), "| libraries:", ncol(fc) - 1, "| counted reads per library: median",
+    median(colSums(fc[, -1])), "\n")
+```
+
+# Against the previous matrix
+
+```{r compare}
+prev <- fread(here::here("03_analyses", "prepDE", "gene_count_matrix.csv"), select = 1)[[1]]
+cat("names shared with the previous matrix (StringTie + prepDE):", sum(fc$gene_id %in% prev), "of", nrow(fc), "\n")
+cat("rows named differently:", paste(head(setdiff(fc$gene_id, prev), 5), collapse = ", "), "...\n")
+```
+
+# Provenance
+
+```{r provenance}
+writeLines(c(provenance_lines(
+  c("05 step 04: count matrix of record",
+    paste0("run                  : ", format(Sys.time(), "%Y-%m-%d %H:%M %Z")),
+    "counts               : featureCounts (unique, sense strand) on the ext3 annotation, 04 step 06",
+    "row names            : prepDE's gene_id|gene_name from t_data.ctab"),
+  c(here::here("01_code", "04_count_matrix_of_record.Rmd"), fc_file, fc_prov, tdata), repo_root,
+  packages = "data.table")),
+  file.path(out_dir, "RUN_provenance.txt"))
+```

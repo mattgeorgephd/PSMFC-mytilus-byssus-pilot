@@ -1,0 +1,308 @@
+---
+title: "05 - Genome annotation augmented with the Iso-Seq isoforms (option B)"
+output: html_document
+params:
+  threads: 4
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+Steps 02 to 04 showed that the RefSeq gene models often end before the 3' ends that Tag-seq
+reads (18% of the reads salmon assigned fell on isoforms running more than 100 bases past
+their gene's last annotated exon, and 14.5% on loci with no annotation). Option B, run here as
+a parallel analysis beside the method of record, recounts the Tag-seq reads on the genome
+with the RefSeq annotation augmented by the Iso-Seq isoforms. This step builds the
+annotations; step 06 realigns the reads and counts them on each; step 07 repeats `06`'s
+contrasts on every count matrix and compares them with the record.
+
+Three annotations, all on GCF_036588685.1 (RefSeq annotation release RS_2024_02):
+
+1. **`refseq`**: the RefSeq GFF unchanged, the annotation the record counted against. Counting
+   on it after the realignment here is the control: it shows how far step 06 reproduces the
+   record before any annotation changes.
+2. **`ext3`** (3' extension only): each RefSeq transcript's last exon is extended to the 3' end
+   of the furthest Iso-Seq isoform whose last aligned block overlaps that exon, on the same
+   strand and assigned to the same gene, when that end lies beyond the exon. The extension
+   stops before any other gene on the same strand. Nothing else changes: same genes, same
+   keys, same names and GO annotation. An isoform whose last block lies downstream of the
+   transcript's last exon (an extra exon, or an alignment across a long intron) extends
+   nothing, so `ext3` only lengthens 3' untranslated regions in place.
+3. **`full`**: the RefSeq annotation plus every such isoform as an extra transcript of its gene
+   (its aligned blocks as exons), plus the novel loci of step 02 as new genes
+   (`novel:<sequence>:<start>-<end>:<strand>`, each isoform a transcript). A novel locus that
+   overlaps the exons of exactly one gene on the same strand, counting that gene's added
+   isoforms, joins that gene; one overlapping several genes or a mitochondrial locus is left
+   out (below).
+
+Which isoforms are used: those step 02 `assigned` to a gene with no exon overlap with a second
+gene (readthrough isoforms, which would merge two genes, are left out, as are `ambiguous`
+placements), and the isoforms of novel loci. Mitochondrial isoforms are never added, and a
+novel locus holding an isoform with a mitochondrial segment (`mt_hit`) is left out, as step 04
+leaves those features out; the 310 mitochondrial loci stay in every annotation exactly as
+RefSeq has them, and step 07 leaves them out of the fits as `06` does.
+
+Writes, in `03_analyses/05_augmented-annotation/`:
+
+- `ext3_extensions.csv.gz`: every extended transcript: `transcript_id`, `gene` (gene key),
+  `seqid`, `strand`, the old and new 3' end, `extension_bp`, `isoforms` (how many isoforms
+  overlap the last exon), `capped` (stopped before another gene);
+- `full_added_transcripts.bed.gz`: the transcripts `full` adds, as BED12 (name =
+  `<gene>|<isoform>`), so `full` can be rebuilt without step 02's alignment;
+- `novel_loci_fate.csv`: how many of step 02's novel loci joined a gene, were left out, or
+  stay novel loci in `full`;
+- `annotation_summary.csv`: per annotation, genes, transcripts, exonic bases (exons of each
+  gene merged) and genes changed;
+- `RUN_provenance.txt`: rules, input MD5s.
+
+and, git-ignored (rebuilt here in a few minutes): `annotation_<refseq|ext3|full>.gff`
+(StringTie's input) and `annotation_<refseq|ext3|full>.saf` (featureCounts's input: the
+exons of each gene, keyed by `gene_key()`).
+
+Needs step 02's genome alignment of the isoforms (`02_isoform-gene-map/minimap2_isoforms_vs_genome.paf.gz`,
+git-ignored) and the RefSeq GFF in `02_data/`.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "gene_ids.R"))         # gene_key()
+source(file.path(repo_root, "tools", "pipeline_checks.R"))  # provenance_lines()
+suppressPackageStartupMessages({
+  library(data.table); library(GenomicRanges); library(GenomicAlignments)
+})
+paf <- file.path(map_dir, "minimap2_isoforms_vs_genome.paf.gz")
+map_file <- file.path(map_dir, "isoform_gene_map.csv.gz")
+stopifnot(file.exists(gff_gz), file.exists(paf), file.exists(map_file))
+```
+
+# The RefSeq GFF, line by line
+
+The GFF is read as text, so the augmented files differ from RefSeq's only where this step
+changes them.
+
+```{r gff}
+gff_lines <- readLines(gzfile(gff_gz))
+is_com <- startsWith(gff_lines, "#")
+body <- fread(text = gff_lines[!is_com], sep = "\t", header = FALSE, quote = "",
+              colClasses = c("character", "character", "character", "integer", "integer",
+                             "character", "character", "character", "character"))
+stopifnot(nrow(body) == sum(!is_com), ncol(body) == 9)
+setnames(body, c("seqid", "source", "type", "start", "end", "score", "strand", "phase", "attr"))
+body[, line := which(!is_com)]
+attr_of <- function(key, x) {                                   # value of one GFF3 attribute, or NA
+  has <- grepl(paste0("(^|;)", key, "="), x, perl = TRUE)
+  out <- rep(NA_character_, length(x))
+  out[has] <- sub(paste0("^(?:.*;)?", key, "=([^;]*).*$"), "\\1", x[has], perl = TRUE)
+  out
+}
+body[, ID := attr_of("ID", attr)]
+body[, Parent := sub(",.*$", "", attr_of("Parent", attr))]
+
+## each feature's top-level gene, following Parent upwards (as step 02)
+ids <- body[!is.na(ID) & !duplicated(ID) & !ID %in% ID[duplicated(ID)]]
+up <- setNames(ids$Parent, ids$ID)
+ex <- body[type == "exon"]
+ex[, top := Parent]
+for (i in 1:5) { nxt <- up[ex$top]; move <- !is.na(nxt); if (!any(move)) break; ex[move, top := nxt[move]] }
+stopifnot(!anyNA(ex$top))
+ex[, gene := gene_key(top)]
+top_of <- unique(ex[, .(gene, top)])
+stopifnot(!anyDuplicated(top_of$gene))                       # one GFF gene per key
+cat(nrow(ex), "exons in", uniqueN(ex$Parent), "transcripts of", uniqueN(ex$gene), "genes\n")
+```
+
+# The isoforms and their aligned blocks
+
+```{r isoforms}
+map <- fread(map_file)
+use <- map[(status == "assigned" & is.na(runner_up_overlap)) | status == "novel_locus"]
+mt_loci <- unique(map[status == "novel_locus" & mt_hit == TRUE, gene])
+use <- use[!(status == "novel_locus" & gene %in% mt_loci)]
+stopifnot(all(use[status == "assigned", gene] %in% top_of$gene))
+
+## the alignment of each isoform (the best one, as step 02 kept)
+awk_prog <- tempfile(fileext = ".awk")
+writeLines('BEGIN{FS=OFS="\\t"} {cg=""; for (i=13; i<=NF; i++) if ($i ~ /^cg:Z:/) cg=substr($i,6); print $1,$5,$6,$8,$9,$10,cg}', awk_prog)
+aln <- fread(cmd = sprintf("zcat %s | awk -f %s", shQuote(paf), shQuote(awk_prog)), sep = "\t", header = FALSE,
+             col.names = c("isoform", "strand", "seqid", "tstart", "tend", "matches", "cigar"))
+setorder(aln, isoform, -matches)
+aln <- aln[!duplicated(isoform)][isoform %in% use$isoform]
+aln <- merge(aln, use[, .(isoform, gene, status, m_seqid = seqid, m_strand = strand, m_start = start, m_end = end)], by = "isoform")
+## the same alignment step 02 used
+stopifnot(nrow(aln) == nrow(use), all(aln$seqid == aln$m_seqid), all(aln$strand == aln$m_strand),
+          all(aln$tstart + 1L == aln$m_start), all(aln$tend == aln$m_end))
+blocks <- extractAlignmentRangesOnReference(aln$cigar, pos = aln$tstart + 1L)
+blk <- data.table(isoform = rep(aln$isoform, lengths(blocks)), gene = rep(aln$gene, lengths(blocks)),
+                  status = rep(aln$status, lengths(blocks)), seqid = rep(aln$seqid, lengths(blocks)),
+                  strand = rep(aln$strand, lengths(blocks)), start = start(unlist(blocks)), end = end(unlist(blocks)))
+## an insertion between two introns leaves an empty range: drop those
+blk <- blk[end >= start]
+## blocks are split at introns (N) only; merge any that touch, per isoform
+rb <- reduce(GRanges(blk$isoform, IRanges(blk$start, blk$end)), min.gapwidth = 1L)
+if (length(rb) < nrow(blk)) {
+  info <- unique(blk[, .(isoform, gene, status, seqid, strand)])
+  blk <- merge(data.table(isoform = as.character(seqnames(rb)), start = start(rb), end = end(rb)), info, by = "isoform")
+  setcolorder(blk, c("isoform", "gene", "status", "seqid", "strand", "start", "end"))
+}
+cat(uniqueN(blk[status == "assigned", isoform]), "assigned isoforms on", uniqueN(blk[status == "assigned", gene]), "genes;",
+    uniqueN(blk[status == "novel_locus", isoform]), "isoforms in", uniqueN(blk[status == "novel_locus", gene]), "novel loci\n")
+```
+
+# Novel loci against the augmented genes
+
+Step 02 called a locus novel when its isoforms share fewer than 50 exonic bases with the
+RefSeq exons. Many such loci lie where a gene's own isoforms add exons (an extended 3' end,
+for instance), so in `full` they would overlap that gene and their reads would be split
+between the two or, for featureCounts, dropped as ambiguous. A novel locus whose exons overlap
+the exons of exactly one gene on the same strand (its RefSeq exons or its added isoforms) joins
+that gene; one that overlaps more than one gene, or a mitochondrial locus, is left out.
+
+```{r loci}
+mt_genes <- unique(fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))$LOC_ID)
+stopifnot(all(mt_genes %in% ex$gene))
+gene_ex <- rbind(ex[, .(gene, seqid, strand, start, end)], blk[status == "assigned", .(gene, seqid, strand, start, end)])
+nb <- blk[status == "novel_locus"]
+ho <- findOverlaps(GRanges(nb$seqid, IRanges(nb$start, nb$end), nb$strand),
+                   GRanges(gene_ex$seqid, IRanges(gene_ex$start, gene_ex$end), gene_ex$strand))
+lg <- unique(data.table(locus = nb$gene[queryHits(ho)], gene = gene_ex$gene[subjectHits(ho)]))
+lg_n <- lg[, .(genes = .N, mt = any(gene %in% mt_genes)), by = locus]
+join <- lg[locus %in% lg_n[genes == 1 & !mt, locus]]
+drop <- lg_n[genes > 1 | mt, locus]
+loci_fate <- data.table(fate = c("joined one gene", "left out (several genes or mitochondrial)", "kept as novel loci"),
+                        loci = c(nrow(join), length(drop), uniqueN(nb$gene) - nrow(join) - length(drop)),
+                        isoforms = c(nb[gene %in% join$locus, uniqueN(isoform)], nb[gene %in% drop, uniqueN(isoform)],
+                                     nb[!gene %in% c(join$locus, drop), uniqueN(isoform)]))
+blk[status == "novel_locus" & gene %in% join$locus, `:=`(gene = join$gene[match(gene, join$locus)], status = "joined")]
+blk <- blk[!(status == "novel_locus" & gene %in% drop)]
+fwrite(loci_fate, file.path(ann_dir, "novel_loci_fate.csv"))
+knitr::kable(loci_fate)
+```
+
+# `ext3`: last exons extended to the isoforms' 3' ends
+
+```{r ext3}
+## each transcript's last exon (by strand)
+ex[, is_last := fifelse(strand == "+", end == max(end), start == min(start)), by = Parent]
+te <- ex[is_last == TRUE]
+te <- te[!duplicated(Parent)]                                 # one last exon per transcript
+## each assigned isoform's last block
+tb <- blk[status == "assigned"][order(isoform, fifelse(strand == "+", -end, start))][!duplicated(isoform)]
+hits <- findOverlaps(GRanges(te$seqid, IRanges(te$start, te$end), te$strand),
+                     GRanges(tb$seqid, IRanges(tb$start, tb$end), tb$strand))
+h <- data.table(r = queryHits(hits), b = subjectHits(hits))
+h <- h[te$gene[r] == tb$gene[b]]
+h[, `:=`(strand = te$strand[r], iso3 = fifelse(te$strand[r] == "+", tb$end[b], tb$start[b]))]
+ext <- h[, .(new3 = if (strand[1] == "+") max(iso3) else min(iso3), isoforms = .N), by = r]
+ext[, `:=`(transcript_id = te$Parent[r], gene = te$gene[r], seqid = te$seqid[r], strand = te$strand[r],
+           old3 = fifelse(te$strand[r] == "+", te$end[r], te$start[r]), line = te$line[r])]
+ext <- ext[fifelse(strand == "+", new3 > old3, new3 < old3)]
+
+## stop before any other gene on the same strand (gene extents from their exons)
+span <- ex[, .(start = min(start), end = max(end)), by = .(gene, seqid, strand)]
+reg <- GRanges(ext$seqid, IRanges(pmin(ext$old3, ext$new3) + (ext$strand == "+"), pmax(ext$old3, ext$new3) - (ext$strand == "-")), ext$strand)
+oh <- findOverlaps(reg, GRanges(span$seqid, IRanges(span$start, span$end), span$strand))
+o <- data.table(r = queryHits(oh), s = subjectHits(oh))[ext$gene[r] != span$gene[s]]
+o[, cap := fifelse(ext$strand[r] == "+", span$start[s] - 1L, span$end[s] + 1L)]
+cap <- o[, .(cap = if (ext$strand[r[1]] == "+") min(cap) else max(cap)), by = r]
+ext[, capped := FALSE]
+ext[cap$r, `:=`(new3 = fifelse(strand == "+", pmin(new3, cap$cap), pmax(new3, cap$cap)), capped = TRUE)]
+ext <- ext[fifelse(strand == "+", new3 > old3, new3 < old3)]   # a gene right after the exon leaves no room
+ext[, extension_bp := abs(new3 - old3)]
+cat(nrow(ext), "transcripts of", uniqueN(ext$gene), "genes extended; median", median(ext$extension_bp),
+    "bases (interquartile", paste(quantile(ext$extension_bp, c(.25, .75)), collapse = " to "), "); capped:", sum(ext$capped), "\n")
+fwrite(ext[, .(transcript_id, gene, seqid, strand, old3, new3, extension_bp, isoforms, capped)],
+       file.path(ann_dir, "ext3_extensions.csv.gz"))
+```
+
+# Writing the annotations
+
+```{r write}
+## GFF: change the extended exons and widen their transcript and gene rows to cover them
+dup_id <- body[!is.na(ID) & duplicated(ID), unique(ID)]
+widen <- function(b, rows) {                                   # rows: data.table(ID, lo, hi)
+  w <- rows[, .(lo = min(lo), hi = max(hi)), by = ID]
+  i <- match(w$ID, b$ID); stopifnot(!anyNA(i), !any(w$ID %in% dup_id))
+  b[i, `:=`(start = pmin(start, w$lo), end = pmax(end, w$hi))]
+}
+b_ext <- copy(body)
+i <- match(ext$line, b_ext$line)
+b_ext[i[ext$strand == "+"], end := ext$new3[ext$strand == "+"]]
+b_ext[i[ext$strand == "-"], start := ext$new3[ext$strand == "-"]]
+ext_rng <- ext[, .(lo = pmin(old3, new3), hi = pmax(old3, new3), transcript_id, gene)]
+widen(b_ext, ext_rng[, .(ID = transcript_id, lo, hi)])
+widen(b_ext, ext_rng[, .(ID = top_of$top[match(gene, top_of$gene)], lo, hi)])
+
+## full: the isoforms as transcripts of their gene, novel loci as genes
+iso_id <- function(x) paste0("iso-", sub("^MT_Pool_HQ_transcript/", "", x))
+tx <- blk[, .(start = min(start), end = max(end)), by = .(isoform, gene, status, seqid, strand)]
+tx[, parent := fifelse(status %in% c("assigned", "joined"), top_of$top[match(gene, top_of$gene)], gene)]
+loci <- tx[status == "novel_locus", .(start = min(start), end = max(end)), by = .(gene, seqid, strand)]
+new_rows <- rbind(
+  loci[, .(seqid, source = "IsoSeq", type = "gene", start, end, score = ".", strand, phase = ".",
+           attr = paste0("ID=", gene, ";gene_biotype=isoseq_novel_locus"))],
+  tx[, .(seqid, source = "IsoSeq", type = "transcript", start, end, score = ".", strand, phase = ".",
+         attr = paste0("ID=", iso_id(isoform), ";Parent=", parent))],
+  blk[, .(seqid, source = "IsoSeq", type = "exon", start, end, score = ".", strand, phase = ".",
+          attr = paste0("ID=exon-", iso_id(isoform), "-", seq_len(.N), ";Parent=", iso_id(isoform))), by = isoform][, isoform := NULL])
+b_full <- copy(body)
+widen(b_full, tx[status %in% c("assigned", "joined"), .(ID = parent, lo = start, hi = end)])
+
+write_gff <- function(b, extra, path) {
+  out <- gff_lines
+  out[b$line] <- do.call(paste, c(b[, .(seqid, source, type, start, end, score, strand, phase, attr)], sep = "\t"))
+  if (!is.null(extra)) out <- c(out, do.call(paste, c(extra, sep = "\t")))
+  writeLines(out, path)
+}
+write_gff(body, NULL, file.path(ann_dir, "annotation_refseq.gff"))
+write_gff(b_ext, NULL, file.path(ann_dir, "annotation_ext3.gff"))
+write_gff(b_full, new_rows, file.path(ann_dir, "annotation_full.gff"))
+## the refseq file is RefSeq's GFF, byte for byte
+stopifnot(identical(unname(tools::md5sum(file.path(ann_dir, "annotation_refseq.gff"))),
+                    system(paste("gzip -dc", shQuote(gff_gz), "| md5sum | cut -c1-32"), intern = TRUE)))
+
+## SAF for featureCounts: the exons of each gene, by gene key
+saf_of <- function(e) e[, .(GeneID = gene, Chr = seqid, Start = start, End = end, Strand = strand)]
+ex_ext <- copy(ex); ex_ext[match(ext$line, line), `:=`(start = b_ext$start[match(ext$line, b_ext$line)],
+                                                        end = b_ext$end[match(ext$line, b_ext$line)])]
+saf <- list(refseq = saf_of(ex), ext3 = saf_of(ex_ext),
+            full = rbind(saf_of(ex), blk[, .(GeneID = gene, Chr = seqid, Start = start, End = end, Strand = strand)]))
+for (a in names(saf)) fwrite(unique(saf[[a]]), file.path(ann_dir, paste0("annotation_", a, ".saf")), sep = "\t")
+
+## BED12 of the transcripts full adds, so full can be rebuilt without step 02's alignment
+bed <- blk[order(isoform, start), .(seqid = seqid[1], start0 = min(start) - 1L, end = max(end), strand = strand[1], gene = gene[1],
+                                    n = .N, sizes = paste0(paste(end - start + 1L, collapse = ","), ","),
+                                    starts = paste0(paste(start - min(start), collapse = ","), ",")), by = isoform]
+fwrite(bed[, .(seqid, start0, end, name = paste0(gene, "|", isoform), score = 0, strand, start0, end, rgb = 0, n, sizes, starts)],
+       file.path(ann_dir, "full_added_transcripts.bed.gz"), sep = "\t", col.names = FALSE)
+```
+
+# Summary
+
+```{r summary}
+exonic_bp <- function(s) sum(width(reduce(GRanges(s$Chr, IRanges(s$Start, s$End), s$Strand) |> split(s$GeneID)) |> unlist()))
+summ <- data.table(annotation = names(saf),
+                   genes = vapply(saf, function(s) uniqueN(s$GeneID), 1L),
+                   transcripts = c(uniqueN(ex$Parent), uniqueN(ex$Parent), uniqueN(ex$Parent) + nrow(tx)),
+                   exonic_bases = vapply(saf, exonic_bp, 1),
+                   genes_changed = c(0L, uniqueN(ext$gene), uniqueN(tx$gene)))
+summ[, exonic_bases_vs_refseq := round(exonic_bases / exonic_bases[1], 3)]
+fwrite(summ, file.path(ann_dir, "annotation_summary.csv"))
+knitr::kable(summ)
+```
+
+```{r provenance}
+settings <- c("[05_augmented_annotation.Rmd]",
+              paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+              paste0("genome / annotation  : ", ASSEMBLY, " (RefSeq annotation RS_2024_02)"),
+              "isoforms used        : step 02 'assigned' with no exon overlap with a second gene; novel loci without an mt_hit isoform",
+              "ext3                 : last exon of each transcript extended to the furthest 3' end of a same-gene isoform whose last block overlaps it; stops before any other gene on the same strand",
+              "full                 : RefSeq plus the isoforms as transcripts of their gene, plus novel loci as genes; a locus overlapping one gene's exons (RefSeq or added) on its strand joins it, one overlapping several genes or a mitochondrial locus is left out",
+              paste0("novel loci           : ", paste(paste(loci_fate$fate, loci_fate$loci), collapse = "; ")),
+              paste0("transcripts extended : ", nrow(ext), " (", uniqueN(ext$gene), " genes)"),
+              paste0("transcripts added    : ", nrow(tx), " (", nrow(loci), " novel loci)"))
+writeLines(provenance_lines(settings, c(gff_gz, map_file, paf, here::here("01_code", "05_augmented_annotation.Rmd")),
+                            repo_root, packages = c("data.table", "GenomicRanges", "GenomicAlignments")),
+           file.path(ann_dir, "RUN_provenance.txt"))
+```

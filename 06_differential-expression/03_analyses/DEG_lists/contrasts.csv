@@ -1,0 +1,8 @@
+"code","family","dir","design_var","ref_level","test_level","n_reference","n_test","description"
+"FOA_TC","TC","Foot","treatment","control","OA",12,12,"Foot: OA vs day-3 treatment control"
+"FOW_TC","TC","Foot","treatment","control","OW",12,12,"Foot: OW vs day-3 treatment control"
+"FDO_TC","TC","Foot","treatment","control","DO",12,10,"Foot: DO vs day-3 treatment control"
+"GOA_TC","TC","Gill","treatment","control","OA",12,12,"Gill: OA vs day-3 treatment control"
+"GOW_TC","TC","Gill","treatment","control","OW",12,12,"Gill: OW vs day-3 treatment control"
+"GDO_TC","TC","Gill","treatment","control","DO",12,11,"Gill: DO vs day-3 treatment control"
+"FG_TC","FG","Foot_vs_Gill","tissue","F","G",12,12,"Gill vs foot, day-3 treatment controls"

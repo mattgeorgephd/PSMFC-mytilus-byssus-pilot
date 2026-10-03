@@ -1,0 +1,245 @@
+---
+title: "07 - Top 50 DEGs per contrast"
+output: html_document
+date: "2025-03-28"
+---
+
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))   # shared colours: red up, blue down
+dir.create(file.path(top, "Top_50_genes"), showWarnings = FALSE, recursive = TRUE)
+```
+
+For each TC contrast: the 25 most up- and 25 most down-regulated DEGs that have a UniProt hit
+(fewer on a side with fewer), written to `03_analyses/top_DEGs/Top_50_genes/<code>_topgenes.csv`
+and drawn as `<code>_top50.png`, each bar labelled with the gene symbol of the best hit.
+
+### Load libraries
+```{r}
+library(dplyr)
+library(readr)      # read_csv (the script did not load it; it only ran in sessions with tidyverse attached)
+library(ggplot2)
+library(gridExtra)
+```
+
+### Load DEGS
+```{r}
+# Gill (TC)
+GOW_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_ID.csv"))
+GOA_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_ID.csv"))
+GDO_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/GDO_sigs_ID.csv"))
+
+# Foot (TC)
+FOW_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_ID.csv"))
+FOA_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_ID.csv"))
+FDO_sigs_ID<- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_ID.csv"))
+
+# One row per gene: its best UniProt hit (highest bitscore; ties in table order), the rule 07
+# and 09 use. A gene with several hits (one per transcript) used to be labelled by whichever
+# hit came first in the table, which for LOC134695253 in GDO was not the best one.
+# Bar label: the gene symbol of the best UniProt hit, upper-cased so the label does not carry
+# the matched species' case convention, or a short protein name where UniProt gives none.
+# UniProt's gene-name field also holds locus tags (MCOR_42823, a M. coruscus locus that is
+# the byssal adhesive ACDC; ZK1073.1, CG8399, AAEL007634, SPBC18H10.09); the first name that
+# is not a locus tag is used, and the protein name if every name is one.
+LOCUS_TAG_RX <- "_[0-9]+$|^[A-Za-z0-9]+\\.[0-9]+[a-z]?$|^CG[0-9]+$|^[A-Z]{2,}[0-9]{4,}$"
+gene_symbol <- function(gene_name, protein_name) {
+  names_list <- strsplit(trimws(ifelse(is.na(gene_name), "", gene_name)), " +")
+  sym <- vapply(names_list, function(n) {
+    n <- n[nzchar(n) & !grepl(LOCUS_TAG_RX, n)]
+    if (length(n)) toupper(n[1]) else ""
+  }, "")
+  ifelse(nzchar(sym), sym, short_name(protein_name, 36))
+}
+best_hit <- function(d) d %>% arrange(desc(bitscore)) %>% distinct(gene, .keep_all = TRUE) %>%
+  mutate(gene_symbol = gene_symbol(gene_name, protein_name))
+GOW_sigs_ID<- best_hit(GOW_sigs_ID)
+GOA_sigs_ID<- best_hit(GOA_sigs_ID)
+GDO_sigs_ID<- best_hit(GDO_sigs_ID)
+
+FOW_sigs_ID<- best_hit(FOW_sigs_ID)
+FOA_sigs_ID<- best_hit(FOA_sigs_ID)
+FDO_sigs_ID<- best_hit(FDO_sigs_ID)
+
+
+```
+
+
+```{r helpers}
+# Where two genes in one plot share a label, the LOC ID is added. `geneID` (the entry-name
+# mnemonic, e.g. CO6A3 for COL6A3) is kept in the table but no longer used as a label.
+bar_labels <- function(d) {
+  lab <- d$gene_symbol
+  dup <- duplicated(lab) | duplicated(lab, fromLast = TRUE)
+  lab[dup] <- paste0(lab[dup], " (", d$LOC_ID[dup], ")")
+  setNames(lab, as.character(d$gene))
+}
+TISSUE_OF <- c(F = "Foot", G = "Gill")
+plot_top <- function(top_genes, code) {
+  p <- ggplot(top_genes, aes(x = gene, y = log2FoldChange, fill = log2FoldChange > 0)) +
+    geom_col(width = 0.75) +
+    geom_hline(yintercept = 0, colour = "grey30", linewidth = 0.3) +
+    scale_fill_manual(values = c("FALSE" = DIRECTION_COLORS[["down"]], "TRUE" = DIRECTION_COLORS[["up"]]),
+                      labels = c("FALSE" = "Down-regulated", "TRUE" = "Up-regulated"), name = NULL) +
+    coord_flip() +
+    scale_x_discrete(labels = bar_labels(top_genes)) +
+    labs(x = NULL, y = expression(Log[2]*" fold change (apeglm)"),
+         title = sprintf("%s %s vs day-3 control: largest annotated DEGs", TISSUE_OF[[substr(code, 1, 1)]],
+                         substr(code, 2, 3)),
+         caption = paste(strwrap(paste(
+           "Up to 25 up- and 25 down-regulated DEGs (padj < 0.05) with a UniProt hit, by fold change. Labels:",
+           "gene symbol of the best hit (upper-cased), or a protein name where UniProt gives none; the LOC ID",
+           "is added where two genes share a label."), width = 95), collapse = "\n")) +
+    theme_psmfc(10) +
+    theme(legend.position = "bottom", plot.title.position = "plot", plot.caption = element_text(hjust = 0),
+          plot.caption.position = "plot", panel.grid.major.y = element_blank())
+  ggsave(file.path(top, "Top_50_genes", paste0(code, "_top50.png")), p,
+         width = 7, height = 1.8 + 0.17 * nrow(top_genes), dpi = 300)
+  p
+}
+```
+# GOW 
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+GOW_top <- GOW_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes (by sign, so a contrast with fewer than
+# 25 genes on one side does not fill that side with genes from the other)
+top_up <- GOW_top %>% filter(log2FoldChange > 0) %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- GOW_top %>% filter(log2FoldChange < 0) %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+
+write.csv(top_genes, file.path(top, "Top_50_genes", "GOW_topgenes.csv"), row.names = FALSE)
+
+plot_top(top_genes, "GOW")
+```
+
+# FOW 
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+FOW_top <- FOW_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes (by sign, so a contrast with fewer than
+# 25 genes on one side does not fill that side with genes from the other)
+top_up <- FOW_top %>% filter(log2FoldChange > 0) %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- FOW_top %>% filter(log2FoldChange < 0) %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, file.path(top, "Top_50_genes", "FOW_topgenes.csv"), row.names = FALSE)
+
+plot_top(top_genes, "FOW")
+```
+# GDO
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+GDO_top <- GDO_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes (by sign, so a contrast with fewer than
+# 25 genes on one side does not fill that side with genes from the other)
+top_up <- GDO_top %>% filter(log2FoldChange > 0) %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- GDO_top %>% filter(log2FoldChange < 0) %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, file.path(top, "Top_50_genes", "GDO_topgenes.csv"), row.names = FALSE)
+
+plot_top(top_genes, "GDO")
+```
+
+
+# FDO
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+FDO_top <- FDO_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes (by sign, so a contrast with fewer than
+# 25 genes on one side does not fill that side with genes from the other)
+top_up <- FDO_top %>% filter(log2FoldChange > 0) %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- FDO_top %>% filter(log2FoldChange < 0) %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, file.path(top, "Top_50_genes", "FDO_topgenes.csv"), row.names = FALSE)
+
+
+plot_top(top_genes, "FDO")
+```
+
+# GOA
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+GOA_top <- GOA_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes (by sign, so a contrast with fewer than
+# 25 genes on one side does not fill that side with genes from the other)
+top_up <- GOA_top %>% filter(log2FoldChange > 0) %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- GOA_top %>% filter(log2FoldChange < 0) %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, file.path(top, "Top_50_genes", "GOA_topgenes.csv"), row.names = FALSE)
+
+plot_top(top_genes, "GOA")
+```
+
+# FOA
+```{r}
+
+# Sample DEG dataframe (Replace with your actual data)
+# Assume 'deg_results' contains 'gene', 'log2FoldChange', and 'padj'
+FOA_top <- FOA_sigs_ID %>% arrange(desc(log2FoldChange))
+
+
+# Extract top 25 upregulated and downregulated genes (by sign, so a contrast with fewer than
+# 25 genes on one side does not fill that side with genes from the other)
+top_up <- FOA_top %>% filter(log2FoldChange > 0) %>% arrange(desc(log2FoldChange)) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+top_down <- FOA_top %>% filter(log2FoldChange < 0) %>% arrange(log2FoldChange) %>% distinct(gene, .keep_all = TRUE) %>% slice_head(n = 25)
+
+# Combine both subsets
+top_genes <- bind_rows(top_up, top_down)
+
+# Set factor levels in REVERSE order to ensure positive log2FC is at the top in coord_flip()
+top_genes <- top_genes %>%arrange(desc(log2FoldChange))
+top_genes$gene <- factor(top_genes$gene, levels = rev(top_genes$gene))
+write.csv(top_genes, file.path(top, "Top_50_genes", "FOA_topgenes.csv"), row.names = FALSE)
+
+plot_top(top_genes, "FOA")
+```

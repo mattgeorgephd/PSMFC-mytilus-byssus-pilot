@@ -1,0 +1,4 @@
+"recipe","raw_reads","recipe_reads","trimmed_reads","shared_reads","identical_reads","recipe_only","trimmed_only","identical_share_of_trimmed"
+"tagseq_clipper + fastx_clipper (poly-A, adapter; -l 20)",55576,32298,32349,32297,32296,1,52,0.9984
+"tagseq_clipper + cutadapt -a AAAAAAAA -a AGATCGG -q 15 -m 25",55576,37526,32349,31479,19686,6047,870,0.6086
+"cutadapt 2022: -a A{8} -a G{8} -a AGATCGG -u 15 -m 20",55576,43843,32349,31608,1325,12235,741,0.041

@@ -1,0 +1,13 @@
+[03_salmon_quant.Rmd]
+generated            : 2026-10-02 07:08:38
+salmon               : salmon 1.10.3 (index -k 31; quant -l A --noLengthCorrection, no decoys)
+reads                : https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/ (131 files)
+gene counts          : tximport countsFromAbundance = "no" over step 02's isoform-to-gene map
+code commit          : a6ebbc81c553
+uncommitted changes  : no
+R                    : R version 4.4.3 (2025-02-28)
+packages             : tximport 1.34.0, data.table 1.18.6.1
+inputs (md5, repo-relative path):
+  e71381f7b6970fd20ff6b0e72006c80a  04_iso-seq-transcriptome/02_data/Mtros-hq_transcripts.fasta
+  775bbc4037ddb667dfcc2fec0765f1e8  04_iso-seq-transcriptome/03_analyses/02_isoform-gene-map/isoform_gene_map.csv.gz
+  8e59de6c8a65380585fd98d5ade9551b  04_iso-seq-transcriptome/01_code/03_salmon_quant.Rmd

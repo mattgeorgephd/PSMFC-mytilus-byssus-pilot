@@ -1,0 +1,202 @@
+---
+title: "01 - GO slim (biological process) of the treatment-control DEGs"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+Maps the annotated DEGs of the six treatment-control (TC) contrasts onto the generic GO slim
+(biological process), counts up- and down-regulated genes per slim term, and draws them.
+
+Inputs:
+
+- `06_differential-expression/03_analyses/DEG_lists/GOterms_genome/<code>_sigs_ID.csv`: each
+  TC DEG with a UniProt hit, its log2 fold change and its GO IDs (06 script 06);
+- `02_data/goslim_generic.obo`: the generic GO slim of GO release 2023-07-27 (see the file's
+  header). The GO graph, the descendants of each slim term, comes from `GO.db`.
+
+A gene belongs to a slim term when any of its GO IDs is that term or one of its descendants.
+A gene can belong to several slim terms, so the counts do not add up to the number of DEGs.
+
+Outputs, in `03_analyses/goslims/`:
+
+- `<code>_sigs_ID.tab`: one row per BP slim term, with the number of genes (all, up, down),
+  the GO IDs that mapped to it, and the genes' UniProt entry-name mnemonics (`geneID`, e.g.
+  `CO6A3` for COL6A3) and LOC IDs;
+- `<code>_sigs_ID.BP_per_gene.tab`: one row per DEG with its slim terms;
+- `goslim_summary_TC.csv`: the six contrasts in one long table, the data behind the figure;
+- `goslim_TC_heatmap.png`;
+- `goslim_provenance.txt`: the slim and `GO.db` versions behind the run.
+
+**One annotation per gene.** A gene with several transcripts can carry several BLAST hits;
+it takes the GO IDs of its best hit (highest bitscore, ties in table order), as in
+`07_enrichment`. The earlier version of this script took the first-listed hit, which gave 33
+of the TC DEGs a different set of GO IDs from the one 07 tested.
+
+**Mitochondrial genes.** The mitochondrial genome's genes and their 293 nuclear copies (126
+protein-coding LOCs, 167 pseudogenes) are no longer in the genome DEG lists (06 step 03); they
+are analysed on their own in 06 step 13. The check below stops if any reaches a DEG table.
+
+**Correction to the earlier version.** `06-get_GOSlims.Rmd`, whose tables are kept in
+`03_analyses/_superseded/goslims_genome/`, lost most of the annotation in two places. The GO
+IDs were split on ";" without removing the space after it, and `GSEABase::GOCollection()`
+drops IDs that start with a space, so each gene contributed only its first-listed GO ID
+(UniProt lists them in numeric order, so often a cellular-component term). Then genes were
+looked up for only the first GO ID of each slim term, so its tables listed 36-65% of the
+gene-to-slim links implied even by their own `GO.IDs` column. It also downloaded the current
+slim into the GSEABase package folder on every run; the slim is now pinned in `02_data/`.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))
+suppressPackageStartupMessages({
+  library(GSEABase); library(GO.db); library(dplyr); library(tidyr); library(ggplot2)
+})
+codes    <- c("FOA", "FOW", "FDO", "GOA", "GOW", "GDO")   # tissue + stressor, TC contrasts
+slim_obo <- file.path(dat, "goslim_generic.obo")
+stopifnot(file.exists(slim_obo))
+mt_loci  <- read.csv(file.path(repo_root, "06_differential-expression", "03_analyses", "count_matrix",
+                               "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
+```
+
+# Slim terms and what each covers
+
+```{r slim}
+slim_ids <- ids(getOBOCollection(slim_obo))
+info <- suppressMessages(AnnotationDbi::select(GO.db, slim_ids, c("ONTOLOGY", "TERM"), "GOID"))
+missing_in_godb <- info$GOID[is.na(info$ONTOLOGY)]
+if (length(missing_in_godb)) message("slim terms not in this GO.db: ", paste(missing_in_godb, collapse = ", "))
+bp <- info[!is.na(info$ONTOLOGY) & info$ONTOLOGY == "BP", c("GOID", "TERM")]
+bp <- bp[order(bp$GOID), ]
+## each slim term covers itself and all its descendants
+offspring  <- as.list(GOBPOFFSPRING[bp$GOID])
+cover_long <- bind_rows(lapply(bp$GOID, function(s) {
+  o <- offspring[[s]]
+  data.frame(GOslim.BP = s, GO_ID = unique(c(s, o[!is.na(o)])))
+}))
+cat(nrow(bp), "BP slim terms of", length(slim_ids), "covering", n_distinct(cover_long$GO_ID), "BP terms\n")
+```
+
+# Map each contrast's DEGs
+
+```{r map}
+slim_one <- function(code) {
+  sig <- read.csv(file.path(deg, "GOterms_genome", paste0(code, "_sigs_ID.csv")),
+                  stringsAsFactors = FALSE)
+  if (any(sig$gene %in% mt_loci$gene))
+    stop(code, ": mitochondrial loci in the DEG table; rerun 06_differential-expression")
+  genes <- sig %>% arrange(desc(bitscore)) %>% distinct(LOC_ID, .keep_all = TRUE) %>%   # best hit
+    transmute(LOC_ID, geneID, log2FoldChange, GO_ID = ifelse(is.na(GO_ID), "", GO_ID))
+  gene_go <- genes %>%
+    separate_rows(GO_ID, sep = ";") %>%
+    mutate(GO_ID = trimws(GO_ID)) %>%                 # "GO:1; GO:2" -> "GO:1", "GO:2"
+    filter(grepl("^GO:[0-9]{7}$", GO_ID)) %>%
+    distinct()
+  hits <- inner_join(gene_go, cover_long, by = "GO_ID", relationship = "many-to-many")
+
+  by_slim <- hits %>%
+    group_by(GOslim.BP) %>%
+    summarise(GO.IDs  = paste(sort(unique(GO_ID)), collapse = ";"),
+              n_genes = n_distinct(LOC_ID),
+              n_up    = n_distinct(LOC_ID[log2FoldChange > 0]),
+              n_down  = n_distinct(LOC_ID[log2FoldChange < 0]),
+              Genes   = paste(sort(unique(geneID)), collapse = ";"),
+              LOC_IDs = paste(sort(unique(LOC_ID)), collapse = ";"), .groups = "drop")
+  slim_tab <- bp %>% dplyr::rename(GOslim.BP = GOID, Term = TERM) %>%
+    left_join(by_slim, by = "GOslim.BP") %>%
+    mutate(across(c(n_genes, n_up, n_down), ~ coalesce(.x, 0L)),
+           across(c(GO.IDs, Genes, LOC_IDs), ~ coalesce(.x, ""))) %>%
+    select(GOslim.BP, Term, n_genes, n_up, n_down, GO.IDs, Genes, LOC_IDs)
+
+  per_gene <- hits %>%
+    left_join(dplyr::rename(bp, GOslim.BP = GOID, Term = TERM), by = "GOslim.BP") %>%
+    distinct(LOC_ID, geneID, log2FoldChange, GOslim.BP, Term) %>%
+    arrange(GOslim.BP) %>%
+    group_by(LOC_ID, geneID, log2FoldChange) %>%
+    summarise(GOslim.BP = paste(GOslim.BP, collapse = ";"), Term = paste(Term, collapse = ";"),
+              .groups = "drop") %>%
+    arrange(LOC_ID)
+
+  write.table(slim_tab, file.path(goslims, paste0(code, "_sigs_ID.tab")),
+              sep = "\t", quote = FALSE, row.names = FALSE)
+  write.table(per_gene, file.path(goslims, paste0(code, "_sigs_ID.BP_per_gene.tab")),
+              sep = "\t", quote = FALSE, row.names = FALSE)
+
+  list(slim = mutate(slim_tab, code = code),
+       counts = data.frame(code = code, DEGs_annotated = nrow(genes),
+                           with_GO = n_distinct(gene_go$LOC_ID),
+                           in_a_BP_slim_term = n_distinct(hits$LOC_ID),
+                           GO_IDs = n_distinct(gene_go$GO_ID),
+                           GO_IDs_under_a_BP_slim_term = n_distinct(hits$GO_ID)))
+}
+
+res <- lapply(codes, slim_one)
+coverage <- bind_rows(lapply(res, `[[`, "counts"))
+knitr::kable(coverage, caption = "annotated TC DEGs and how many reach a BP slim term")
+```
+
+# Summary table and figure
+
+```{r summary}
+tissue_of   <- c(F = "Foot", G = "Gill")
+summary_tc <- bind_rows(lapply(res, `[[`, "slim")) %>%
+  mutate(tissue = unname(tissue_of[substr(code, 1, 1)]), stressor = substr(code, 2, 3)) %>%
+  left_join(select(coverage, code, in_a_BP_slim_term), by = "code") %>%
+  select(code, tissue, stressor, GOslim.BP, Term, n_genes, n_up, n_down, in_a_BP_slim_term)
+write.csv(summary_tc, file.path(goslims, "goslim_summary_TC.csv"), row.names = FALSE)
+
+writeLines(c(paste0("generated : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             paste0("slim      : ", sub("^data-version: ", "", grep("^data-version:", readLines(slim_obo), value = TRUE))),
+             paste0("GO.db     : ", packageVersion("GO.db"), " (GO source date ",
+                    GO.db::GO_dbInfo()$value[GO.db::GO_dbInfo()$name == "GOSOURCEDATE"], ")"),
+             paste0("GSEABase  : ", packageVersion("GSEABase")),
+             paste0("BP slim terms: ", nrow(bp))),
+           file.path(goslims, "goslim_provenance.txt"))
+```
+
+Slim terms with fewer than five DEGs over the six contrasts are left out of the figure (they
+are in `goslim_summary_TC.csv`).
+
+```{r figure, fig.width = 9, fig.height = 9}
+MIN_TOTAL <- 5
+n_terms_hit <- n_distinct(summary_tc$GOslim.BP[summary_tc$n_genes > 0])
+long <- summary_tc %>%
+  group_by(GOslim.BP) %>% filter(sum(n_genes) >= MIN_TOTAL) %>% ungroup() %>%
+  pivot_longer(c(n_up, n_down), names_to = "direction", values_to = "n") %>%
+  mutate(direction = factor(ifelse(direction == "n_up", "Up-regulated", "Down-regulated"),
+                            levels = c("Up-regulated", "Down-regulated")),
+         contrast = factor(paste(tissue, stressor), levels = paste(rep(c("Foot", "Gill"), each = 3),
+                                                                   c("OA", "OW", "DO"))))
+term_order <- long %>% group_by(Term) %>% summarise(total = sum(n)) %>% arrange(total, Term) %>% pull(Term)
+long$Term <- factor(long$Term, levels = term_order)
+## one single-hue ramp per direction (light = few genes, saturated = many)
+ramp <- function(n, hue) ifelse(n == 0, "#f4f4f4",
+                                scales::seq_gradient_pal("#f7f7f7", hue)(sqrt(n / max(long$n))))
+long$fill <- ifelse(long$direction == "Up-regulated", ramp(long$n, DIRECTION_COLORS[["up"]]),
+                    ramp(long$n, DIRECTION_COLORS[["down"]]))
+p <- ggplot(long, aes(contrast, Term)) +
+  geom_tile(aes(fill = fill), colour = "white", linewidth = 0.6) +
+  geom_text(data = filter(long, n > 0), aes(label = n), size = 2.8, colour = "grey10") +
+  scale_fill_identity() +
+  facet_wrap(~ direction) +
+  scale_x_discrete(position = "top") +
+  labs(x = NULL, y = NULL,
+       title = "Treatment-control DEGs by GO slim term (biological process)",
+       caption = paste(strwrap(paste0(
+         "Numbers are DEGs (apeglm padj < 0.05) with a UniProt GO annotation under the slim term; ",
+         "a gene can count under several terms. ", nlevels(long$Term), " of the ", n_terms_hit,
+         " slim terms with any DEG are shown (at least ", MIN_TOTAL, " DEGs over all contrasts). ",
+         "Generic GO slim, GO release 2023-07-27. Mitochondrial genes and their nuclear copies are ",
+         "analysed separately (06 step 13)."), width = 120), collapse = "\n")) +
+  theme_psmfc(10) +
+  theme(panel.grid = element_blank(), axis.ticks = element_blank(),
+        axis.text.x.top = element_text(angle = 45, hjust = 0), plot.caption = element_text(hjust = 0),
+        plot.caption.position = "plot", plot.title.position = "plot")
+h <- 1.6 + 0.19 * nlevels(long$Term)
+ggsave(file.path(goslims, "goslim_TC_heatmap.png"), p, width = 9, height = h, dpi = 300, limitsize = FALSE)
+p
+```

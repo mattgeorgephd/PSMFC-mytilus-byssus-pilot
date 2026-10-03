@@ -1,2 +1,0 @@
-"0","ggsave(file.path(OUT_DIR, sprintf(""top_candidate_scatter_%s.png"", TISSUE)),"
-"0","       width = 9, height = 7, dpi = 150)"

@@ -1,39 +1,135 @@
-# sequence-alignment
+# 05_sequence-alignment
 
-Read QC and alignment of Tag-seq reads to the *Mytilus trossulus* genome (GenBank
-GCA_036588685.1 / RefSeq GCF_036588685.1), producing the count inputs used downstream by
-differential-expression.
+Read QC, alignment and quantification of the Tag-seq reads against the *Mytilus trossulus*
+genome (GenBank GCA_036588685.1 / RefSeq GCF_036588685.1), ending in the count matrix that
+`06_differential-expression` starts from.
 
-The authoritative pipeline is HISAT2 + StringTie (`01_code/13-Hisat.Rmd`). These scripts
-ran on a collaborator HPC workstation (paths under `/home/shared/...`) against raw reads
-and a genome that are NOT stored in this repo; they are kept verbatim as the method record.
-Only their committed outputs are in `03_analyses/`.
+**The count matrix of record** (since 2026-10-02) is `03_analyses/featurecounts/gene_count_matrix.csv`,
+written by step 04: the trimmed reads realigned with HISAT2 and counted with featureCounts
+(uniquely aligned reads, sense strand) on the RefSeq annotation with its 3' ends extended by
+the Iso-Seq isoforms. The realignment and counting are steps 05 and 06 of
+`04_iso-seq-transcriptome` (option B there), because the extension needs that folder's Iso-Seq
+alignment; their committed matrix is what step 04 reads. Why it replaced the previous matrix is
+in `04_iso-seq-transcriptome/03_analyses/07_augmented-de/README.md`: featureCounts counts reads
+(prepDE estimates read bases over 75 while the reads average about 63 bases, and its
+gene-wise dispersions ran about 9% higher), and the RefSeq gene models often end before the 3'
+ends Tag-seq reads.
+
+**The previous matrix** came from HISAT2 + StringTie (`01_code/01_hisat_stringtie.Rmd`), run
+on a collaborator HPC workstation (paths under `/home/shared/...`) against trimmed reads and a
+genome that are not stored in this repository; it is kept verbatim as the method record, with
+its summary outputs committed in `03_analyses/`. Its count-matrix step (`02_prepDE.Rmd`) runs
+anywhere, and its matrix is still written, for `04` step 07's comparison.
+
+## How to run
+
+Open `sequence-alignment.Rproj` and knit `01_code/00_run_sequence_alignment.Rmd` (or let the
+repository-level `00_run_pipeline.Rmd` do it). By default it runs steps 02 to 05 (step 05
+only summarises its committed counts unless its own `online: true` is set).
+
+| step | script | what it does |
+|---|---|---|
+| 01 | `01_hisat_stringtie.Rmd` | HISAT2 alignment and StringTie quantification (`-e -B` against the reference annotation); writes `03_analyses/hisat/` and its `sample_list.txt`. HPC only |
+| 02 | `02_prepDE.Rmd` | gene and transcript count matrices in `03_analyses/prepDE/` (read length 75) |
+| 03 | `03_read_trimming.Rmd` | how the trimmed reads were made: per-library read retention from the committed FastQC tables, and (with `online: true`) the trimming recipe reproduced on a sample of reads; writes `03_analyses/read_trimming/` |
+| 04 | `04_count_matrix_of_record.Rmd` | the count matrix of record in `03_analyses/featurecounts/`: `04_iso-seq-transcriptome` step 06's featureCounts matrix on the 3'-extended annotation, its rows named as prepDE names them (`gene_id|gene_name` from `03_analyses/hisat/t_data.ctab`) |
+| 05 | `05_mitogenome_counts.Rmd` | the mitochondrial genes counted on the mitochondrial genome alone, in `03_analyses/mitogenome/`: with `online: true` each library's reads are downloaded and aligned to NC_007687.1 with HISAT2 (default scoring, of record, and a permissive score) and counted per gene with featureCounts (`_mitogenome_library.sh`); read by `06_differential-expression` step 13. About 1 hour; offline, the committed counts are summarised |
+
+`02_prepDE.Rmd` counts from the per-sample StringTie GTFs when step 01's outputs are present,
+with `01_code/_prepde.R`, an R port of StringTie's `prepDE.py3` checked to give byte-identical
+matrices. Without them, which is the case in this repository, it rebuilds the gene matrix from
+the committed transcript matrix (the original `prepDE.py` output) through the reference
+transcript table (`03_analyses/hisat/t_data.ctab`) and `02_data/strg_gene_ids.csv`, and checks
+the sums. `01_code/_derive_strg_gene_ids.R` is the one-off record of how that ID map was
+recovered.
+
+## The reads
+
+GSAF (University of Texas at Austin, job JA22078) sequenced the 131 libraries as 3' Tag-seq,
+single-end 100 bp on a NovaSeq S1, over two lanes. The reads aligned in step 01 are the files
+`*_L099_R1_cmb.trim.fastq.gz`: one per library, the two lanes combined (`cmb`, lane `L099`),
+trimmed. Who trimmed them was not recorded, but step 03 reproduces the recipe: 99.8% of the
+trimmed reads in a sample of library T001F (32,296 of 32,349) are identical, base for base and
+in quality, to the output of
+
+    tagseq_clipper.pl raw.fastq \
+      | fastx_clipper -a AAAAAAAA -l 20 -Q33 \
+      | fastx_clipper -a AGATCGGAAG -l 20 -Q33
+
+that is, the Matz-lab Tag-seq clipper (https://github.com/z0on/tag-based_RNAseq; Meyer,
+Aglyamova and Matz 2011, *Molecular Ecology* 20:3599), which cuts the 5' leader (degenerate
+bases and the template-switching G run) and drops PCR duplicates (reads sharing the leader and
+the first 20 bases), then FASTX-Toolkit 0.0.14 `fastx_clipper` for the poly-A tail and the
+Illumina adapter, keeping reads of 20 bases or more, with no quality filter. The other recipes
+tried match far fewer reads (`03_analyses/read_trimming/recipe_check.csv`). As a result the
+analysed reads are deduplicated: in the 72 libraries with both raw lanes in the FastQC tables
+(`03_analyses/fastqc/untrimmed/`), a median of 43% of raw reads remain (35 to 58%), and the 131
+trimmed libraries hold 0.78 to 3.86 million reads (median 2.72 million) of 20 to 95 bases (mean
+about 63).
+
+For anyone rerunning from raw reads:
+
+- **Where the raw reads are.** All 131 libraries, both lanes (262 files, the April 2022
+  delivery), are on owl at https://owl.fish.washington.edu/nightingales/M_trossulus/
+  (`T*_S*_L00[12]_R1_001.fastq.gz`; the paired `69M_1.fastq.gz`-style files there are not
+  from this Tag-seq run). gannet `20220405-tagseq/` holds a partial copy: 145 files of 73 libraries (T001 to
+  T030, T131G and T132 to T137; T030G lane 1 only), the set the FastQC tables cover. The one
+  file compared (T030G lane 1) is byte-identical on both servers; owl keeps no checksums for
+  this set.
+- **The August 2022 trimming is a different one.** Matt George's 2022 script
+  (`01_code/_superseded/1_1_process-tagseq-data-mytilus.Rmd`) trimmed the first 73 libraries with
+  cutadapt (a fixed 15-base 5' cut, no deduplication) and aligned them to other *Mytilus*
+  genomes; `03_analyses/fastqc/multiqc_report_trimmed_merged_2022-08-09.html` is the QC of those
+  reads, not of the reads analysed here.
 
 ## Layout
 
 ```
-sequence-alignment/
+05_sequence-alignment/
 ├── sequence-alignment.Rproj
 ├── 01_code/
-│   ├── 13-Hisat.Rmd                 authoritative HISAT2 + StringTie (HPC)
-│   └── _superseded/
-│       ├── 07-HiSat_GL.Rmd          earlier HISAT2 attempt (different assembly + augustus)
-│       └── 07-kallisto.Rmd(.md)     kallisto pseudo-alignment, superseded by HISAT2
+│   ├── 00_run_sequence_alignment.Rmd   batch runner
+│   ├── 01_hisat_stringtie.Rmd          HISAT2 + StringTie (HPC record)
+│   ├── 02_prepDE.Rmd                   count matrices
+│   ├── 03_read_trimming.Rmd            how the trimmed reads were made (retention, recipe check)
+│   ├── 04_count_matrix_of_record.Rmd   the count matrix of record (featureCounts, from 04)
+│   ├── 05_mitogenome_counts.Rmd        mitochondrial reads on the mitogenome alone
+│   ├── _mitogenome_library.sh          one library of step 05 (alignment and counts)
+│   ├── _derive_mitogenome.R            one-off: the mitogenome FASTA and its genes
+│   ├── _prepde.R                       R port of prepDE.py3 (sourced by 02)
+│   ├── _derive_strg_gene_ids.R         one-off: recovers the StringTie gene IDs
+│   ├── _derive_mt_like_loci.R          one-off: loci the annotation names after a mitochondrial protein
+│   └── _superseded/                    records (README inside)
+│       ├── 1_1_process-tagseq-data-mytilus.Rmd   2022 cutadapt trimming + HISAT2 to other genomes
+│       ├── 07-HiSat_GL.Rmd             earlier HISAT2 attempt (different assembly + augustus)
+│       └── 07-kallisto.Rmd(.md)        kallisto pseudo-alignment, superseded by HISAT2
 ├── 02_data/
-│   └── sample-submission/           Tag-seq sequencing submission paperwork
+│   ├── sample-submission/              Tag-seq sequencing submission paperwork
+│   ├── annotation_mt_like_loci.csv     mitochondrial copies in the annotation (read by 06 step 01)
+│   ├── mitogenome_NC_007687.1.fa       the mitochondrial genome (read by step 05)
+│   ├── mitogenome_genes.saf            its 38 genes, rRNAs and tRNAs (read by step 05)
+│   └── strg_gene_ids.csv               StringTie gene IDs of 284 reference transcripts
 └── 03_analyses/
-    ├── hisat/                       StringTie ctabs + MultiQC alignment reports
-    ├── fastqc/{trimmed,untrimmed}/  FastQC per-sample read QC
-    └── _superseded/kallisto/        kallisto quant per sample
+    ├── hisat/                          reference StringTie tables + MultiQC alignment reports
+    ├── featurecounts/                  the count matrix of record (the DE input)
+    ├── mitogenome/                     mitochondrial reads on the mitogenome alone (06 step 13's input)
+    ├── prepDE/                         transcript and gene count matrices of the HPC alignment (previous record)
+    ├── fastqc/{trimmed,untrimmed}/     FastQC per-sample read QC
+    ├── read_trimming/                  read retention and the trimming recipe check
+    ├── _superseded/kallisto/           kallisto quant per sample
+    └── knit_html/                      runner reports and logs (git-ignored)
 ```
 
 ## External inputs (not in repo)
 
 | Input | Location |
 |-------|----------|
-| Raw / trimmed Tag-seq reads | gannet: `panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/` |
-| Genome assembly + annotation | NCBI `GCF_036588685.1` (downloaded in the script) |
+| Raw (untrimmed) Tag-seq reads, all 131 libraries, two lanes each | owl: https://owl.fish.washington.edu/nightingales/M_trossulus/ (gannet `20220405-tagseq/` has 73 of them) |
+| Trimmed reads (`*_L099_R1_cmb.trim.fastq.gz`), all 131 libraries, read by `01_hisat_stringtie.Rmd` and by `04_iso-seq-transcriptome` | gannet: https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/ (recipe above) |
+| Genome assembly + annotation | NCBI `GCF_036588685.1` (downloaded by the script into `02_data/ncbi_dataset/`, git-ignored) |
 
-`13-Hisat.Rmd` and `07-HiSat_GL.Rmd` invoke HISAT2/StringTie at fixed `/home/shared/...`
-paths and read inputs not committed here, so they do not run as-is outside that HPC
-environment. They are retained as the documented method.
+`01_hisat_stringtie.Rmd` and `_superseded/07-HiSat_GL.Rmd` invoke HISAT2 / StringTie at fixed
+`/home/shared/...` paths and read inputs not committed here, so they do not run as they are
+outside that HPC environment. Step 05 with `online: true` needs HISAT2 2.2.1, samtools and
+Subread 2.1.1's featureCounts (its `bin` parameter). Packages for steps 02 to 05: base R, here, rmarkdown, data.table (04, 05); step 03
+with `online: true` also needs curl, perl, FASTX-Toolkit 0.0.14 and cutadapt (5.2 used).

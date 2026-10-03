@@ -1,0 +1,103 @@
+---
+title: "10 - Number of DEGs per contrast"
+output: html_document
+date: "2025-03-26"
+---
+
+```{r paths, include=FALSE}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))   # shared colours: red up, blue down
+```
+
+```{r}
+library(tidyverse)   # readr::read_csv, dplyr, ggplot2, forcats::fct_relevel
+## (ggpattern was loaded here but never used; the plot is a plain geom_bar)
+```
+
+### Load DEGS
+```{r}
+# Gill (TC)
+GOW_sigs <- read_csv(file.path(deg, "GOterms_genome/GOW_sigs_merged.csv"))
+GOA_sigs <- read_csv(file.path(deg, "GOterms_genome/GOA_sigs_merged.csv"))
+GDO_sigs <- read_csv(file.path(deg, "GOterms_genome/GDO_sigs_merged.csv"))
+
+# Foot (TC)
+FOW_sigs <- read_csv(file.path(deg, "GOterms_genome/FOW_sigs_merged.csv"))
+FOA_sigs <- read_csv(file.path(deg, "GOterms_genome/FOA_sigs_merged.csv"))
+FDO_sigs <- read_csv(file.path(deg, "GOterms_genome/FDO_sigs_merged.csv"))
+
+# Select only unique identifiers
+GOW_sigs <- unique(GOW_sigs)
+GOA_sigs <- unique(GOA_sigs)
+GDO_sigs <- unique(GDO_sigs)
+
+FOW_sigs <- unique(FOW_sigs)
+FOA_sigs <- unique(FOA_sigs)
+FDO_sigs <- unique(FDO_sigs)
+
+
+```
+
+# Counting up- and down-regulated GENES (the merged tables carry one row per BLAST hit, so
+# a gene with several hits would otherwise be counted several times)
+```{r}
+GOW_pos<- n_distinct(filter(GOW_sigs, log2FoldChange > 0)$gene)
+GOW_neg<- n_distinct(filter(GOW_sigs, log2FoldChange < 0)$gene)
+
+FOW_pos<- n_distinct(filter(FOW_sigs, log2FoldChange > 0)$gene)
+FOW_neg<- n_distinct(filter(FOW_sigs, log2FoldChange < 0)$gene)
+
+GOA_pos<- n_distinct(filter(GOA_sigs, log2FoldChange > 0)$gene)
+GOA_neg<- n_distinct(filter(GOA_sigs, log2FoldChange < 0)$gene)
+
+FOA_pos<- n_distinct(filter(FOA_sigs, log2FoldChange > 0)$gene)
+FOA_neg<- n_distinct(filter(FOA_sigs, log2FoldChange < 0)$gene)
+
+GDO_pos<- n_distinct(filter(GDO_sigs, log2FoldChange > 0)$gene)
+GDO_neg<- n_distinct(filter(GDO_sigs, log2FoldChange < 0)$gene)
+
+FDO_pos<- n_distinct(filter(FDO_sigs, log2FoldChange > 0)$gene)
+FDO_neg<- n_distinct(filter(FDO_sigs, log2FoldChange < 0)$gene)
+
+
+```
+
+
+# Putting gene count numbers in a data frame
+```{r}
+DEG_num <- tibble(
+  tissue = c("Foot", "Foot","Foot","Foot","Foot","Foot","Gill","Gill","Gill","Gill","Gill","Gill"),
+  treatment = c("Ocean Warming", "Ocean Warming", "Ocean Acidification", "Ocean Acidification", "Hypoxia", "Hypoxia", "Ocean Warming", "Ocean Warming", "Ocean Acidification", "Ocean Acidification", "Hypoxia", "Hypoxia"),
+  updown = c("up", "down","up", "down","up", "down","up", "down","up", "down","up", "down" ),
+  num_genes = c(FOW_pos, FOW_neg, FOA_pos, FOA_neg, FDO_pos, FDO_neg, GOW_pos, GOW_neg,GOA_pos, GOA_neg, GDO_pos, GDO_neg )
+)
+```
+
+# Setting a graph theme
+```{r}
+my_theme <- theme_classic()+
+    theme(axis.text.x = element_text(color="black",angle = 45, vjust = 1, hjust = 1, size = 18),
+        axis.title.x = element_text(color="black",size = 20),
+        axis.title.y = element_text(color="black",size = 20),      
+        axis.text.y = element_text(color="black",size = 18),
+       legend.text = element_text(color="black",size = 18),      # Change legend text size
+    legend.title = element_blank(),
+    panel.border = element_rect(colour = "black", fill=NA, linewidth=1))
+```
+
+# Graphing numbers of DEGS within each treatment
+```{r}
+p <- DEG_num %>%
+  mutate(treatment = fct_relevel(treatment, c("Ocean Acidification", "Ocean Warming", "Hypoxia"))) %>% 
+  ggplot(aes(x=tissue, y = num_genes, fill=updown))+
+  geom_bar(stat= "identity", position = "dodge")+
+  facet_wrap(~treatment)+
+  scale_fill_manual(labels = c(down = "Decreased", up = "Increased"),
+                    values = c(down = DIRECTION_COLORS[["down"]], up = DIRECTION_COLORS[["up"]]))+
+  labs(x = "Tissue", y = "Number of DEG")+   # x is tissue; the panels are the treatments
+  my_theme +
+  theme(panel.spacing = unit(2, "lines"))       # after my_theme: a complete theme replaces earlier settings
+print(p)
+ggsave(file.path(figs, "TC_DEG_numbers.png"), p, width = 10, height = 6, dpi = 300)
+```
+

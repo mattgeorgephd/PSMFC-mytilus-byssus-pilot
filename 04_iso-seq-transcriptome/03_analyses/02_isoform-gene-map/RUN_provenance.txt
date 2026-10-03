@@ -1,0 +1,18 @@
+[02_isoform_gene_map.Rmd]
+generated            : 2026-10-02 07:07:27
+minimap2             : 2.31-r1302 (-c -x splice:hq -uf --secondary=no)
+genome / annotation  : GCF_036588685.1_PNRI_Mtr1.1.1.hap1 (RefSeq annotation RS_2024_02), MD5s checked against NCBI
+assignment           : gap-compressed identity (1 - de) >= 0.9; most exonic bases shared with a gene, same strand, >= 50; ambiguous when mapq 0 or a second gene shares >= 0.98 of that
+isoforms             : 411251
+code commit          : a6ebbc81c553
+uncommitted changes  : no
+R                    : R version 4.4.3 (2025-02-28)
+packages             : data.table 1.18.6.1, GenomicRanges 1.58.0, GenomicAlignments 1.42.0, rtracklayer 1.66.0
+inputs (md5, repo-relative path):
+  e71381f7b6970fd20ff6b0e72006c80a  04_iso-seq-transcriptome/02_data/Mtros-hq_transcripts.fasta
+  9982a092a77102e03ae5c3885bee94f6  04_iso-seq-transcriptome/02_data/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna.gz
+  9d2edc71bf94b51a6f42cde8a7a5eb6d  04_iso-seq-transcriptome/02_data/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.gff.gz
+  5396f366c34d95a122fbaf61e74f4060  06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
+  6a73c5aca828460ce53ad348ffb4f398  06_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv
+  c967e2b03b38e87082a0969ae1c87e2f  04_iso-seq-transcriptome/03_analyses/_superseded/02_isoform-gene-map_cds/isoform_gene_map.csv.gz
+  2c5ff104a9793dc2aa1da05ac92c5288  04_iso-seq-transcriptome/01_code/02_isoform_gene_map.Rmd

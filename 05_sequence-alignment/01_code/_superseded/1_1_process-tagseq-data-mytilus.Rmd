@@ -1,0 +1,563 @@
+---
+title: "Process tagseq data - PSMFC mytilus byssus samples"
+output: html_notebook
+---
+
+
+```{bash, engine.opts='-l'}
+echo $PATH
+```
+
+# Download genome
+```{bash}
+mkdir sequences/
+cd sequences/
+
+# mytilus edulis genome: https://www.ncbi.nlm.nih.gov/assembly/GCA_019925275.1
+wget -r \
+--no-directories --no-parent \
+-P . \
+-A GCA_019925275.1_mytilus_edulis.fna https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/genome/ \
+--no-check-certificate
+
+# mytilus gallo genome: https://www.ncbi.nlm.nih.gov/assembly/GCA_900618805.1
+wget -r \
+--no-directories --no-parent \
+-P . \
+-A GCA_900618805.1_mytilus_galloprovincialis.fna https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/genome/ \
+--no-check-certificate
+
+# mytilus trossulus transcriptome - https://www.ncbi.nlm.nih.gov/sra/SRX3198554[accn]
+wget -r \
+--no-directories --no-parent \
+-P . \
+-A SRR6051615-mytilus_trossulus_transcriptome.fasta https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/genome/ \
+--no-check-certificate
+
+```
+
+# Download mytilus trossulus transcriptome - https://www.ncbi.nlm.nih.gov/sra/SRX3198554[accn]
+```{bash}
+
+# /home/shared/sratoolkit.2.11.2-ubuntu64/bin/vdb-config --interactive
+
+/home/shared/sratoolkit.2.11.2-ubuntu64/bin/fasterq-dump --split-files SRR6051615 -O /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/ -e 48
+
+```
+# Download mytilus trossulus transcriptome - https://www.ncbi.nlm.nih.gov/sra/SRX3198554[accn]
+# https://blogs.iu.edu/ncgas/2021/02/22/a-beginners-guide-to-the-sra/
+```{bash}
+# /home/shared/sratoolkit.2.11.2-ubuntu64/bin/vdb-config --interactive
+
+mkdir SRA/
+cd SRA/
+
+# Download SRA accession list - all 47 mytilus trossulus
+wget -r \
+--no-directories --no-parent \
+-P . \
+-A SraAccList.txt https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/genome/ \
+--no-check-certificate
+
+# Download SRA files using SRA accession list
+/home/shared/sratoolkit.2.11.2-ubuntu64/bin/prefetch \
+--option-file SraAccList.txt
+
+# Move .sra files out of containing folders to SRA
+mv */* .
+
+# convert files to fastq
+for file in *.sra; do /home/shared/sratoolkit.2.11.2-ubuntu64/bin/fasterq-dump "${file}"; done # e -48
+
+```
+
+```{bash}
+# Create list of fastq files used in analysis
+## Uses parameter substitution to strip leading path from filename
+for fastq in "${!R1_array[@]}"
+do
+  {
+    md5sum "${R1_array[${fastq}]}"
+    md5sum "${R2_array[${fastq}]}"
+  } >> input_fastqs.md5
+done
+
+```
+
+
+```{bash}
+
+export PATH=/home/shared/samtools-1.12:$PATH
+export PATH=/home/shared/jellyfish-2.3.0/bin:$PATH
+export PATH=/home/shared/bowtie2-2.4.4-linux-x86_64:$PATH
+export PATH=/home/shared/salmon-1.4.0_linux_x86_64/bin:$PATH
+
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+
+mkdir trinity_out/
+
+cd SRA/
+
+# Create array of fastq R1 files
+left_array=("/home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/SRA"/*_1*.fastq)
+
+# Create array of fastq R2 files
+right_array=("/home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/SRA"/*_2*.fastq)
+
+# Create comma-separated lists of FastQ reads
+left_list=$(echo "${left_array[@]}" | tr " " ",")
+right_list=$(echo "${right_array[@]}" | tr " " ",")
+
+cd ..
+
+/home/shared/trinityrnaseq-v2.12.0/Trinity \
+--seqType fq \
+--SS_lib_type RF \
+--left "${left_list}" \
+--right "${right_list}" \
+--max_memory 100G \
+--CPU 48 \
+--output trinity_out/
+
+```
+
+```{bash}
+head sequences/GCA_019925275.1_mytilus_edulis.fna
+
+head sequences/GCA_900618805.1_mytilus_galloprovincialis.fna
+```
+
+# Calculate chromosome lengths
+```{bash}
+awk '$0 ~ ">" {print c; c=0;printf substr($0,2,14) "\t"; } $0 !~ ">" {c+=length($0);} END { print c; }' \
+sequences/GCA_019925275.1_mytilus_edulis.fna \
+| sed 's/Cr//g' \
+| awk '{print $1"\t"$3}' \
+| tail -n +2 \
+> sequences/GCA_019925275.1_mytilus_edulis_genomic-sequence-lengths.txt
+
+head sequences/GCA_019925275.1_mytilus_edulis_genomic-sequence-lengths.txt
+```
+
+```{bash}
+
+awk '$0 ~ ">" {print c; c=0;printf substr($0,2,14) "\t"; } $0 !~ ">" {c+=length($0);} END { print c; }' \
+sequences/GCA_900618805.1_mytilus_galloprovincialis.fna \
+| sed 's/Cr//g' \
+| awk '{print $1"\t"$2}' \
+| tail -n +2 \
+> sequences/GCA_900618805.1_mytilus_galloprovincialis_genomic-sequence-lengths.txt
+
+head sequences/GCA_900618805.1_mytilus_galloprovincialis_genomic-sequence-lengths.txt
+
+```
+
+# Generate mRNA feature track from genomic_sequence
+```{bash}
+head sequences/GCF_006149115.2_Oner_1.1_genomic.gff
+
+grep -e "Gnomon	mRNA" -e "RefSeq	mRNA" -e "cmsearch	mRNA" -e "tRNAscan-SE	mRNA" \
+sequences/GCF_006149115.2_Oner_1.1_genomic.gff \
+| /home/shared/bedtools2/bin/sortBed \
+-faidx sequences/GCF_006149115.2_Oner_1.1_genomic-sequence-lengths.txt \
+> sequences/GCF_006149115.2_Oner_1.1_mRNA.gff
+
+head sequences/GCF_006149115.2_Oner_1.1_mRNA.gff
+```
+
+# Download tag-seq data
+```{bash}
+mkdir raw-data/
+cd raw-data/
+
+wget -r \
+--no-directories --no-parent \
+-P . \
+-A .fastq.gz https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/20220405-tagseq/ \
+--no-check-certificate
+
+```
+
+# unzip .fastq.gz files
+```{bash}
+cd raw-data/
+gunzip *.fastq.gz
+
+```
+
+# Run fastqc on untrimmed files
+```{bash}
+mkdir fastqc/
+mkdir fastqc/untrimmed/
+
+/home/shared/FastQC/fastqc \
+/home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/raw-data/*.fastq \
+--outdir /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/fastqc/untrimmed/ \
+--quiet
+
+```
+
+# Run multiqc
+```{bash}
+
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+
+cd fastqc/untrimmed/
+
+multiqc .
+
+```
+
+# trim adapter sequences
+```{bash}
+mkdir trim-fastq/
+cd raw-data
+
+for F in *.fastq
+do
+#strip .fastq and directory structure from each file, then
+# add suffice .trim to create output name for each file
+results_file="$(basename -a $F)"
+
+# run cutadapt on each file
+/home/shared/8TB_HDD_02/mattgeorgephd/.local/bin/cutadapt $F -a A{8} -a G{8} -a AGATCGG -u 15 -m 20 -o \
+/home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/trim-fastq/$results_file
+done
+
+```
+
+```{bash}
+
+# Before trimming
+! wc -l /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/merged-fastq/*.fastq
+
+# After trimming
+! wc -l /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/trim-fastq/*.fastq
+
+```
+
+```{r}
+# Reads remaining after trimming and filtering (%)
+1472899016/1582147952*100
+```
+
+
+# Run fastqc on trimmed files
+```{bash}
+mkdir fastqc/
+mkdir fastqc/trimmed/
+
+/home/shared/FastQC/fastqc \
+/home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/merged-fastq/*.fastq \
+--outdir /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/fastqc/trimmed/ \
+--quiet
+
+```
+
+# Run multiqc on trimmed files
+```{bash}
+
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+
+cd fastqc/trimmed/
+
+multiqc .
+
+```
+
+# Interleave sequences
+```{bash}
+
+cd trim-fastq/
+
+for filename in *_R1_*.fastq
+do
+# first, make the base by removing .extract.fastq.gz
+  base=$(basename $filename .fastq)
+  echo $base
+
+# now, construct the R2 filename by replacing R1 with R2
+baseR2=${base/_R1/_R2}
+echo $baseR2
+
+# construct the output filename
+  output=${base/_R1/}.pe.fastq
+
+  (interleave-reads.py ${base}.fastq ${baseR2}.fastq | \
+  gzip > $output)
+done
+
+```
+
+# de Novo assembly using Trinity 
+```{bash}
+
+export PATH=/home/shared/samtools-1.12:$PATH
+export PATH=/home/shared/jellyfish-2.3.0/bin:$PATH
+export PATH=/home/shared/bowtie2-2.4.4-linux-x86_64:$PATH
+export PATH=/home/shared/salmon-1.4.0_linux_x86_64/bin:$PATH
+
+eval "$(/opt/anaconda/anaconda3/bin/conda shell.bash hook)"
+conda activate
+
+mkdir trinity_out/
+
+/home/shared/trinityrnaseq-v2.12.0/Trinity --seqType fq \
+--left sequences/SRR6051615_1.fastq \
+--right sequences/SRR6051615_2.fastq \
+--max_memory 100G \
+--CPU 48 \
+--output home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/trinity_out/
+
+```
+
+```{bash}
+# https://github.com/trinityrnaseq/trinityrnaseq/wiki/Genome-Guided-Trinity-Transcriptome-Assembly
+# Trinity --genome_guided_bam rnaseq.coordSorted.bam \
+#         --genome_guided_max_intron 10000 \
+#         --max_memory 10G --CPU 10 
+
+
+transrate --reference sequences/SRR6051615-mytilus_trossulus_transcriptome.fasta \
+          --left trim-fastq/T001F_S100_L001_R1_001.fastq \
+          --right trim-fastq/T001F_S100_L002_R1_001.fastq \
+          --threads 48
+          --output transrate_output/  
+
+```
+
+
+# concatenate fastq files by lane
+```{bash}
+mkdir merged-fastq
+cd trim-fastq/
+
+printf '%s\n' *.fastq | sed 's/^\([^_]*_[^_]*\).*/\1/' | uniq |
+while read prefix; do
+    cat "$prefix"*R1*.fastq >"${prefix}_R1.fastq"
+    # cat "$prefix"*R2*.fastq >"${prefix}_R2.fastq" # include if more than one run
+done
+
+# I moved files to merged-fastq
+```
+
+
+# create hisat2 index for cgigas genome (took 28 min on Raven)
+```{bash}
+
+/home/shared/hisat2-2.2.1/hisat2-build \
+-f /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/GCA_019925275.1_mytilus_edulis.fna  /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/hisat2_index_edulis.fa # called the reference genome (scaffolds)
+
+```
+
+# create hisat2 index for cgigas genome (took 20 min on Raven)
+```{bash}
+
+/home/shared/hisat2-2.2.1/hisat2-build \
+-f /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/GCA_900618805.1_mytilus_galloprovincialis.fna  /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/hisat2_index_gallo.fa # called the reference genome (scaffolds)
+
+```
+
+# create hisat2 index for cgigas genome (took 20 min on Raven)
+```{bash}
+
+/home/shared/hisat2-2.2.1/hisat2-build \
+-p 48 \
+-f \
+/home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/SRR6051615-mytilus_trossulus_transcriptome.fasta  /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/hisat2_index_trossulus.fa # called the reference genome (scaffolds)
+
+```
+
+
+# Run hisat2 on trimmed reads (took 40 min on Raven)
+```{bash}
+
+mkdir hisat2_edulis_sam/
+mkdir hisat2_edulis_bam/
+cd /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/merged-fastq/
+
+# This script exports alignments as bam files
+# sorts the bam file because Stringtie takes a sorted file for input (--dta)
+# removes the sam file because it is no longer needed
+array=($(ls *.fastq)) # call the sequences - make an array to align
+for i in ${array[@]}; do
+       sample_name=`echo $i| awk -F [.] '{print $1}'`
+	/home/shared/hisat2-2.2.1/hisat2 \
+	  -p 48 \
+	  --dta \
+	  -x /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/hisat2_index_edulis.fa \
+	  -U ${i} \
+	  -S /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_edulis_sam/${sample_name}.sam 
+	  
+	  /home/shared/samtools-1.12/samtools sort -@ 8 -o                /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_edulis_bam/${sample_name}.bam /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_edulis_sam/${sample_name}.sam
+    		echo "${i} bam-ified!"
+        # rm ${sample_name}.sam
+done >> hisat2out_edulis.txt 2>&1
+
+```
+
+# check % alignment from hisat2
+```{bash}
+
+grep "overall alignment rate" /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/merged-fastq/hisat2out_edulis.txt
+
+# average alignment rate = 34.12 +/- 2.38 sd
+
+```
+
+# Run hisat2 on trimmed reads
+```{bash}
+
+mkdir hisat2_gallo_sam/
+mkdir hisat2_gallo_bam/
+cd /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/merged-fastq/
+
+# This script exports alignments as bam files
+# sorts the bam file because Stringtie takes a sorted file for input (--dta)
+# removes the sam file because it is no longer needed
+array=($(ls *.fastq)) # call the sequences - make an array to align
+for i in ${array[@]}; do
+       sample_name=`echo $i| awk -F [.] '{print $1}'`
+	/home/shared/hisat2-2.2.1/hisat2 \
+	  -q \
+	  -p 48 \
+	  --dta \
+	  -x /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/hisat2_index_gallo.fa \
+	  -U ${i} \
+	  -S /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_gallo_sam/${sample_name}.sam 
+	  
+	  /home/shared/samtools-1.12/samtools sort -@ 48 -o                /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_gallo_bam/${sample_name}.bam /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_gallo_sam/${sample_name}.sam
+    		echo "${i} bam-ified!"
+        # rm ${sample_name}.sam
+done >> hisat2out_gallo.txt 2>&1
+
+```
+
+# check % alignment from hisat2
+```{bash}
+
+grep "overall alignment rate" /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/merged-fastq/hisat2out_gallo.txt
+
+# average alignment rate = 34.97 +/- 3.53 sd
+
+```
+
+# Run hisat2 on trimmed reads (took 40 min on Raven)
+```{bash}
+
+mkdir hisat2_tross_sam/
+mkdir hisat2_tross_bam/
+cd /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/merged-fastq/
+
+# This script exports alignments as bam files
+# sorts the bam file because Stringtie takes a sorted file for input (--dta)
+# removes the sam file because it is no longer needed
+array=($(ls *.fastq)) # call the sequences - make an array to align
+for i in ${array[@]}; do
+       sample_name=`echo $i| awk -F [.] '{print $1}'`
+	/home/shared/hisat2-2.2.1/hisat2 \
+	  -p 48 \
+	  --dta \
+	  -x /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/SRR6051615-mytilus_trossulus_transcriptome.fasta \
+	  -U ${i} \
+	  -S /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_tross_sam/${sample_name}.sam 
+	  
+	  /home/shared/samtools-1.12/samtools sort -@ 48 -o                /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_tross_bam/${sample_name}.bam /home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/hisat2_tross_sam/${sample_name}.sam
+    		echo "${i} bam-ified!"
+        # rm ${sample_name}.sam
+done >> hisat2out_edulis.txt 2>&1
+
+```
+
+# Assemble bowtie alignments w/ stringtie2 using mRNA genome feature track
+```{bash}
+
+array=($(ls /home/shared/8TB_HDD_02/mattgeorgephd/gigas-WGBS-ploidy-desiccation/bowtie_bam/*.bam))
+
+for i in ${array[@]}; do
+        sample_name=`echo $i| awk -F [.] '{print $1}'`
+	      /home/shared/stringtie-2.2.1.Linux_x86_64/stringtie \
+	      -p 48 \
+	      -e \
+	      -B \
+	      -G /home/shared/8TB_HDD_02/mattgeorgephd/gigas-WGBS-ploidy-desiccation/sequences/SRR6051615-mytilus_trossulus_transcriptome.fasta \
+	      -A ${sample_name}.gene_abund.tab \
+	      -o ${sample_name}.gtf ${i} \
+
+        echo "StringTie assembly for seq file ${i}" $(date)
+done
+
+echo "StringTie assembly COMPLETE, starting assembly analysis" $(date)
+
+# 20220607 - I could not figure out how to designate the output. All outputs ended up in bowtie output folder.
+
+```
+
+```{bash}
+
+cd /home/shared/8TB_HDD_02/mattgeorgephd/gigas-WGBS-ploidy-desiccation/bowtie_bam
+
+# make gtf list file (needed for stringtie merge function)
+for filename in *.gtf; do 
+  echo $PWD/$filename; 
+  done > gtf_list.txt
+
+# make listGTF file (needed for count matrix), two columns w/ sample ID
+for filename in *.gtf; do 
+  echo $filename $PWD/$filename; 
+  done > listGTF.txt
+
+# merge GTFs into a single file
+/home/shared/stringtie-2.2.1.Linux_x86_64/stringtie \
+  --merge \
+  -p 48 \
+	-G /home/shared/8TB_HDD_02/mattgeorgephd/gigas-WGBS-ploidy-desiccation/sequences/cgigas_uk_roslin_v1_mRNA.gff \
+	-o cgigas_merged.gtf gtf_list.txt #Merge GTFs to form $
+
+echo "Stringtie merge complete" $(date)
+
+# Compute accuracy of gff
+# gffcompare -r ../../../refs/Panopea-generosa-v1.0.a4.mRNA_SJG.gff3 -G -o merged Pgenerosa_merged.gtf #Compute the accuracy and pre$
+# echo "GFFcompare complete, Starting gene count matrix assembly..." $(date)
+
+# Compile gene count matrix from GTFs
+/home/shared/stringtie-2.2.1.Linux_x86_64/prepDE.py \
+  -g cgigas_gene_count_matrix.csv \
+  -i listGTF.txt #Compile the gene count matrix
+
+echo "Gene count matrix compiled." $(date)
+
+```
+
+```{bash}
+
+mkdir transrate_output/
+
+export PATH=/usr/share/rvm:$PATH
+export PATH=/usr/share/rvm/gems:$PATH
+export PATH=/usr/share/rvm/gems/ruby-3.0.0:$PATH
+export PATH=/usr/share/rvm/gems/ruby-3.0.0/bin:$PATH
+
+# /usr/share/rvm/gems/ruby-3.0.0/bin/transrate
+
+# /usr/share/rvm/bin/rvm use ruby-3.0.0
+
+/usr/share/rvm/gems/ruby-3.0.0/bin/transrate --reference home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/sequences/SRR6051615-mytilus_trossulus_transcriptome.fasta \
+          --left home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/trim-fastq/T001F_S100_L001_R1_001.fastq \
+          --right home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/trim-fastq/T001F_S100_L002_R1_001.fastq \
+          --threads 48 \
+          --output home/shared/8TB_HDD_02/mattgeorgephd/PSMFC-mytilus-byssus-pilot/transrate_output/  
+
+          # --reference reference.fa \
+          
+
+```
+
+```{bash}
+
+transrate --help
+
+```

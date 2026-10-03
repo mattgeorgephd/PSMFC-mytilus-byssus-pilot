@@ -1,0 +1,130 @@
+"sample.1","tissue","treatment","day","region","haplotype","mt_reads_pct_of_nuclear"
+"T001F","F","control","0","foot (phenol gland to tip)","reference-like",3.77301586375037
+"T001FX","F","control","0","foot (without phenol gland)","reference-like",3.67915119323312
+"T001G","G","control","0","gill","reference-like",6.11137558507626
+"T002F","F","control","0","foot (phenol gland to tip)","reference-like",5.45892003796351
+"T002FX","F","control","0","foot (without phenol gland)","reference-like",4.80021018227632
+"T002G","G","control","0","gill","reference-like",7.55991660875608
+"T003F","F","control","0","foot (phenol gland to tip)","reference-like",4.3503009327282
+"T003FX","F","control","0","foot (without phenol gland)","reference-like",3.86682989830807
+"T003G","G","control","0","gill","reference-like",6.11234109272267
+"T004F","F","control","0","foot (phenol gland to tip)","reference-like",3.25038136425195
+"T004FX","F","control","0","foot (without phenol gland)","reference-like",2.72059191121332
+"T004G","G","control","0","gill","reference-like",4.47232977348197
+"T005F","F","control","0","foot (phenol gland to tip)","group A",4.42243213617899
+"T005FX","F","control","0","foot (without phenol gland)","group A",2.63433011298565
+"T005G","G","control","0","gill","group A",3.51098171788984
+"T006F","F","control","0","foot (phenol gland to tip)","reference-like",6.06678952751276
+"T006FX","F","control","0","foot (without phenol gland)","reference-like",4.05374777113373
+"T006G","G","control","0","gill","reference-like",5.10754733490324
+"T007F","F","control","0","foot (phenol gland to tip)","reference-like",3.5963725454346
+"T007FX","F","control","0","foot (without phenol gland)","reference-like",3.74485713954075
+"T007G","G","control","0","gill","reference-like",3.59423095901612
+"T008F","F","control","0","foot (phenol gland to tip)","reference-like",4.01204527198651
+"T008FX","F","control","0","foot (without phenol gland)","reference-like",4.20566630701694
+"T008G","G","control","0","gill","reference-like",5.10827398529327
+"T009F","F","control","0","foot (phenol gland to tip)","reference-like",4.91484851826014
+"T009FX","F","control","0","foot (without phenol gland)","reference-like",4.5919368051042
+"T009G","G","control","0","gill","reference-like",5.30384784568289
+"T010F","F","control","0","foot (phenol gland to tip)","reference-like",3.36854945827752
+"T010FX","F","control","0","foot (without phenol gland)","reference-like",2.70579482284238
+"T010G","G","control","0","gill","reference-like",3.78472736487672
+"T011F","F","control","0","foot (phenol gland to tip)","reference-like",4.18199270038394
+"T011FX","F","control","0","foot (without phenol gland)","reference-like",3.3508531218157
+"T011G","G","control","0","gill","reference-like",3.94578739654512
+"T012F","F","control","0","foot (phenol gland to tip)","reference-like",3.82455590204584
+"T012FX","F","control","0","foot (without phenol gland)","reference-like",2.91991117299382
+"T012G","G","control","0","gill","reference-like",4.20461905775004
+"T014F","F","OA","3","foot (phenol gland to tip)","reference-like",6.79562598265232
+"T014G","G","OA","3","gill","reference-like",6.89676751582866
+"T015F","F","OA","3","foot (phenol gland to tip)","reference-like",4.05311486177621
+"T015G","G","OA","3","gill","reference-like",7.68805975432759
+"T016F","F","OA","3","foot (phenol gland to tip)","group A",5.30208746336129
+"T016G","G","OA","3","gill","group A",6.53888285703207
+"T017F","F","OA","3","foot (phenol gland to tip)","group B",7.72833160930519
+"T017G","G","OA","3","gill","group B",7.69148655075834
+"T019F","F","OA","3","foot (phenol gland to tip)","reference-like",4.53156921520315
+"T019G","G","OA","3","gill","reference-like",6.10296106003245
+"T021F","F","OA","3","foot (phenol gland to tip)","reference-like",6.3455232281345
+"T021G","G","OA","3","gill","reference-like",5.37900980557128
+"T023F","F","OA","3","foot (phenol gland to tip)","reference-like",4.79966296914368
+"T023G","G","OA","3","gill","reference-like",6.52811533648426
+"T025F","F","OA","3","foot (phenol gland to tip)","reference-like",4.1983001544822
+"T025G","G","OA","3","gill","reference-like",6.29214721139771
+"T026F","F","OA","3","foot (phenol gland to tip)","reference-like",6.76324501507084
+"T026G","G","OA","3","gill","reference-like",7.38237737390575
+"T027F","F","OA","3","foot (phenol gland to tip)","reference-like",5.73211062689841
+"T027G","G","OA","3","gill","reference-like",8.54003064227218
+"T029F","F","OW","3","foot (phenol gland to tip)","group A",5.84965657482098
+"T029G","G","OW","3","gill","group A",5.25966843314943
+"T030F","F","OW","3","foot (phenol gland to tip)","reference-like",3.54174997089624
+"T030G","G","OW","3","gill","reference-like",3.98159765788373
+"T031F","F","OW","3","foot (phenol gland to tip)","group A",3.81299922578696
+"T031G","G","OW","3","gill","group A",4.46720578043985
+"T033F","F","OW","3","foot (phenol gland to tip)","reference-like",5.48994250777021
+"T033G","G","OW","3","gill","reference-like",5.87673518071163
+"T034F","F","OW","3","foot (phenol gland to tip)","reference-like",4.41404347633595
+"T034G","G","OW","3","gill","reference-like",4.70276067151042
+"T035F","F","OW","3","foot (phenol gland to tip)","reference-like",5.07402660444202
+"T035G","G","OW","3","gill","reference-like",5.11233735920424
+"T036F","F","OW","3","foot (phenol gland to tip)","reference-like",7.10173319592289
+"T036G","G","OW","3","gill","reference-like",5.81672281463848
+"T037F","F","OW","3","foot (phenol gland to tip)","reference-like",5.40673196850182
+"T037G","G","OW","3","gill","reference-like",4.55406873658893
+"T038F","F","OW","3","foot (phenol gland to tip)","reference-like",3.54879988717508
+"T038G","G","OW","3","gill","reference-like",4.37302653861702
+"T039F","F","OW","3","foot (phenol gland to tip)","reference-like",6.00466314178543
+"T039G","G","OW","3","gill","reference-like",4.95805559876979
+"T040F","F","OW","3","foot (phenol gland to tip)","reference-like",4.79234754759449
+"T040G","G","OW","3","gill","reference-like",5.07045755348343
+"T041F","F","OW","3","foot (phenol gland to tip)","reference-like",4.15555688618536
+"T041G","G","OW","3","gill","reference-like",5.06736039429731
+"T046F","F","DO","3","foot (phenol gland to tip)","group B",3.07863593399863
+"T046G","G","DO","3","gill","group B",4.45583779543604
+"T047G","G","DO","3","gill","reference-like",7.50282899173591
+"T049F","F","DO","3","foot (phenol gland to tip)","reference-like",3.11777433079884
+"T049G","G","DO","3","gill","reference-like",5.00599794450607
+"T052F","F","DO","3","foot (phenol gland to tip)","reference-like",2.89527110236792
+"T052G","G","DO","3","gill","reference-like",3.81772130113667
+"T055F","F","DO","3","foot (phenol gland to tip)","group A",3.252641570462
+"T055G","G","DO","3","gill","group A",5.18729841179112
+"T056F","F","DO","3","foot (phenol gland to tip)","group A",3.81803058082667
+"T056G","G","DO","3","gill","group A",4.60708304415484
+"T057F","F","DO","3","foot (phenol gland to tip)","reference-like",4.59208214236824
+"T057G","G","DO","3","gill","reference-like",6.15678463729088
+"T058F","F","DO","3","foot (phenol gland to tip)","reference-like",3.90997134890408
+"T058G","G","DO","3","gill","reference-like",4.39792259016628
+"T110F","F","DO","3","foot (phenol gland to tip)","reference-like",4.57965721326263
+"T110G","G","DO","3","gill","reference-like",5.60472160115923
+"T111F","F","DO","3","foot (phenol gland to tip)","group B",3.59498479822341
+"T111G","G","DO","3","gill","group B",5.68367672493409
+"T112F","F","DO","3","foot (phenol gland to tip)","reference-like",4.64563365888582
+"T112G","G","DO","3","gill","reference-like",5.12949599009415
+"T118F","F","OA","3","foot (phenol gland to tip)","reference-like",4.58068561008826
+"T118G","G","OA","3","gill","reference-like",7.22582211349928
+"T119F","F","OA","3","foot (phenol gland to tip)","reference-like",4.69132418681141
+"T119G","G","OA","3","gill","reference-like",7.6973292533975
+"T126F","F","control","3","foot (phenol gland to tip)","reference-like",3.18281134087537
+"T126G","G","control","3","gill","reference-like",5.36132779089261
+"T127F","F","control","3","foot (phenol gland to tip)","group A",3.79173157579389
+"T127G","G","control","3","gill","group A",3.89751434580284
+"T128F","F","control","3","foot (phenol gland to tip)","reference-like",3.87437306789764
+"T128G","G","control","3","gill","reference-like",4.77271597825907
+"T129F","F","control","3","foot (phenol gland to tip)","group A",2.7738386018165
+"T129G","G","control","3","gill","group A",3.47065954822701
+"T130F","F","control","3","foot (phenol gland to tip)","reference-like",6.23436727195648
+"T130G","G","control","3","gill","reference-like",5.24394895995405
+"T131F","F","control","3","foot (phenol gland to tip)","reference-like",3.91495760223528
+"T131G","G","control","3","gill","reference-like",4.4315968097459
+"T132F","F","control","3","foot (phenol gland to tip)","reference-like",5.28512638995844
+"T132G","G","control","3","gill","reference-like",5.25610558956048
+"T133F","F","control","3","foot (phenol gland to tip)","reference-like",4.86460579918524
+"T133G","G","control","3","gill","reference-like",5.13833114659228
+"T134F","F","control","3","foot (phenol gland to tip)","reference-like",3.67967112024666
+"T134G","G","control","3","gill","reference-like",4.68965095593659
+"T135F","F","control","3","foot (phenol gland to tip)","reference-like",5.49875685124698
+"T135G","G","control","3","gill","reference-like",5.57729171583179
+"T136F","F","control","3","foot (phenol gland to tip)","reference-like",4.40119466557235
+"T136G","G","control","3","gill","reference-like",4.15061420882551
+"T137F","F","control","3","foot (phenol gland to tip)","group B",5.29334147807744
+"T137G","G","control","3","gill","group B",5.44366217768973

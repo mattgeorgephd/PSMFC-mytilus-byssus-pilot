@@ -1,0 +1,90 @@
+---
+title: "11 - DEG figures for every contrast (TC and foot vs gill)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+Draws the results of the seven contrasts from script 04: the six treatment-control (TC)
+contrasts and the foot-vs-gill contrast of the day-3 controls (FG), which had tables but no
+figures. Scripts 08-10 keep drawing the manuscript figures for the TC contrasts.
+
+1. `DEG_counts_all_contrasts.png`: up- and down-regulated DEGs per contrast, by family.
+2. `volcano_<family>.png`: volcano plots (apeglm log2 fold change against -log10 adjusted p).
+
+The day-0 lab-control (LC) contrasts were retired (scripts 01 and 02); their figures are kept in
+`03_analyses/_superseded/LC_contrasts/`.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))
+suppressPackageStartupMessages({ library(dplyr); library(tidyr); library(ggplot2) })
+contrasts <- read.csv(file.path(deg, "contrasts.csv"), colClasses = "character")
+counts    <- read.csv(file.path(deg, "DEG_counts.csv"))
+PADJ <- 0.05
+read_full <- function(code) {
+  r <- contrasts[contrasts$code == code, ]
+  d <- read.csv(file.path(deg, r$dir, paste0(code, "_apeglm.csv")))
+  d$code <- code; d$family <- r$family
+  d
+}
+label_of <- setNames(contrasts$description, contrasts$code)
+save_fig <- function(plot, name, w, h) {
+  ggsave(file.path(figs, name), plot, width = w, height = h, dpi = 300); print(plot)
+}
+```
+
+# DEG counts
+
+```{r counts, fig.width = 10, fig.height = 5}
+cnt_long <- counts %>%
+  mutate(family = factor(family, levels = c("TC", "FG")),
+         code = factor(code, levels = rev(contrasts$code))) %>%
+  pivot_longer(c(n_up, n_down), names_to = "direction", values_to = "n") %>%
+  mutate(direction = ifelse(direction == "n_up", "up", "down"),
+         signed = ifelse(direction == "up", n, -n))
+save_fig(ggplot(cnt_long, aes(signed, code, fill = direction)) +
+           geom_col(width = 0.7) +
+           geom_text(aes(label = n, hjust = ifelse(signed > 0, -0.15, 1.15)), size = 3) +
+           geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.3) +
+           facet_grid(family ~ ., scales = "free_y", space = "free_y") +
+           scale_fill_manual(values = DIRECTION_COLORS[c("up", "down")],
+                             labels = c(up = "Up-regulated", down = "Down-regulated"), name = NULL) +
+           scale_x_continuous(labels = abs, expand = expansion(mult = 0.15)) +
+           labs(x = "DEGs (apeglm padj < 0.05)", y = NULL,
+                caption = "TC: vs day-3 treatment control (of record). FG: gill vs foot in the day-3 controls.") +
+           theme_psmfc() + theme(legend.position = "top"),
+         "DEG_counts_all_contrasts.png", 9, 4.5)
+```
+
+# Volcano plots
+
+```{r volcano, fig.width = 11, fig.height = 7}
+for (fam in c("TC", "FG")) {
+  d <- bind_rows(lapply(contrasts$code[contrasts$family == fam], read_full)) %>%
+    filter(!is.na(padj)) %>%
+    mutate(status = case_when(padj < PADJ & log2FoldChange > 0 ~ "up",
+                              padj < PADJ & log2FoldChange < 0 ~ "down", TRUE ~ "ns"),
+           panel = factor(sprintf("%s\n%s", code, label_of[code]),
+                          levels = sprintf("%s\n%s", contrasts$code[contrasts$family == fam],
+                                           label_of[contrasts$code[contrasts$family == fam]])))
+  n_lab <- d %>% group_by(panel) %>% summarise(lab = sprintf("up %d / down %d", sum(status == "up"), sum(status == "down")))
+  ncol_f <- if (fam == "FG") 1 else 3
+  p <- ggplot(d, aes(log2FoldChange, -log10(padj), colour = status)) +
+    geom_point(data = filter(d, status == "ns"), size = 0.5, alpha = 0.4) +
+    geom_point(data = filter(d, status != "ns"), size = 0.7, alpha = 0.7) +
+    geom_hline(yintercept = -log10(PADJ), linetype = "dashed", linewidth = 0.3, colour = "grey40") +
+    geom_text(data = n_lab, aes(x = -Inf, y = Inf, label = lab), inherit.aes = FALSE,
+              hjust = -0.05, vjust = 1.4, size = 3) +
+    facet_wrap(~ panel, ncol = ncol_f, scales = "free") +
+    scale_colour_manual(values = DIRECTION_COLORS,
+                        labels = c(up = "Up", down = "Down", ns = "Not significant"), name = NULL) +
+    labs(x = "log2 fold change (apeglm)", y = "-log10 adjusted p") +
+    theme_psmfc(10) + theme(legend.position = "top")
+  save_fig(p, sprintf("volcano_%s.png", fam), if (fam == "FG") 4.5 else 10, if (fam == "FG") 4.5 else 7)
+}
+```

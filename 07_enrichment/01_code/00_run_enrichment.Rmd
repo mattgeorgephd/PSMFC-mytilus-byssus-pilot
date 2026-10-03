@@ -1,0 +1,55 @@
+---
+title: "00 - Run the GO enrichment analysis"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  steps: "all"          # "all", or step numbers, e.g. [2, 5]
+  stop_on_fail: true    # stop at the first failed step
+  cores: 4              # parallel runs in steps 02-04; the scripts use 1 on Windows
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Runs every numbered script in `01_code/` in order, each in its own R process, with an HTML
+report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
+Knit this file from inside `enrichment.Rproj`, or let the repository-level
+`00_run_pipeline.Rmd` call it after `06_differential-expression`.
+
+| step | script | writes to `03_analyses/` |
+|---|---|---|
+| 01 | `01_go_inputs.Rmd` | `01_go-inputs/`: gene annotation (best BLAST hit, GO by ontology, transcript length) and gene-set sizes |
+| 02 | `02_topgo.Rmd` | `02_topgo/`: topGO weight01 Fisher, the enrichment of record |
+| 03 | `03_goseq.Rmd` | `03_goseq/`: goseq Wallenius with length bias, and the length-bias diagnostic |
+| 04 | `04_clusterprofiler.Rmd` | `04_clusterprofiler/`: clusterProfiler `enricher`, compareCluster view |
+| 05 | `05_rrvgo.Rmd` | `05_rrvgo/`: topGO terms reduced to clusters (REVIGO-style) |
+| 06 | `06_method_comparison.Rmd` | `06_method-comparison/`: agreement between the methods, consensus terms |
+
+Every method uses the same genes: for each of the 7 contrasts in
+`06_differential-expression/03_analyses/DEG_lists/contrasts.csv` (six TC, one foot vs gill),
+the universe is the genes DESeq2 tested (non-missing adjusted p) and up- and down-regulated
+DEGs (padj < 0.05) are tested separately, in each of the three ontologies. Step 02 takes about
+three minutes on four cores; the rest about five together. Step 05 needs `org.Hs.eg.db` (installed on first run if missing), for a column it
+then replaces; see the script.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+source(file.path(here::here(), "..", "tools", "run_steps.R"))
+html_dir <- here::here("03_analyses", "knit_html")
+par_steps <- setNames(rep(list(list(cores = params$cores)), 3), c("02", "03", "04"))
+run_log <- run_steps(here::here("01_code"), html_dir, steps = params$steps, step_params = par_steps,
+                     stop_on_fail = isTRUE(params$stop_on_fail))
+finish_run(run_log, html_dir, "GO enrichment")
+```
+
+# After a run
+
+Start with `06_method-comparison/consensus_terms_TC_BP.csv` (terms enriched by topGO and by
+at least one other method) and the topGO dot plots in `02_topgo/`. topGO's `weight01`
+p-values are not FDR-adjusted, by convention; in runs where no FDR-controlled method finds
+any term, treat its list as exploratory. Terms marked as carried mostly by mitochondrially
+encoded protein LOCs (Gill OA up) count one mitochondrial signal many times.

@@ -1,0 +1,35 @@
+"code","direction","GO.ID","Term","Annotated","Significant","p_weight01","methods","n_methods"
+"FOA_TC","up","GO:0006418","tRNA aminoacylation for protein translation",21,13,4.8793632688122e-18,"weight01;classic;goseq;clusterProfiler",4
+"FOA_TC","up","GO:0030968","endoplasmic reticulum unfolded protein response",26,5,0.000159186304104431,"weight01;classic;goseq;clusterProfiler",4
+"FOA_TC","up","GO:0006446","regulation of translational initiation",26,5,0.000208902262995139,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0060294","cilium movement involved in cell motility",79,34,1.50419293023416e-10,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0007288","sperm axoneme assembly",20,10,1.2709379425365e-09,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0036158","outer dynein arm assembly",17,9,4.62408925703331e-09,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0036159","inner dynein arm assembly",10,7,1.77936763563245e-08,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0030317","flagellated sperm motility",62,24,1.81086107079972e-08,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0035082","axoneme assembly",74,37,6.06042831438291e-08,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0003341","cilium movement",115,46,6.33041966022742e-07,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0003351","epithelial cilium movement involved in extracellular fluid movement",34,13,7.99045269814552e-06,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0060271","cilium assembly",203,56,2.93165818306663e-05,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0018200","peptidyl-glutamic acid modification",11,5,3.97451334501727e-05,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0007368","determination of left/right symmetry",51,11,0.000122241398105597,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0090660","cerebrospinal fluid circulation",14,5,0.000155804650065144,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0021591","ventricular system development",22,6,0.000179921187998779,"weight01;classic;clusterProfiler",3
+"FDO_TC","down","GO:0070212","protein poly-ADP-ribosylation",10,4,0.000456805063780788,"weight01;classic;clusterProfiler",3
+"FDO_TC","down","GO:0030030","cell projection organization",587,75,0.000626443231225009,"weight01;classic",2
+"FDO_TC","down","GO:0060336","negative regulation of type II interferon-mediated signaling pathway",11,4,0.000695125023969712,"weight01;classic;clusterProfiler",3
+"FDO_TC","down","GO:1902216","positive regulation of interleukin-4-mediated signaling pathway",11,4,0.000695125023969712,"weight01;classic;clusterProfiler",3
+"FDO_TC","down","GO:0007018","microtubule-based movement",215,57,0.000709941228936109,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0060285","cilium-dependent cell motility",86,37,0.00127715532831325,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0042531","positive regulation of tyrosine phosphorylation of STAT protein",13,4,0.0014124875878171,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:0042532","negative regulation of tyrosine phosphorylation of STAT protein",13,4,0.0014124875878171,"weight01;clusterProfiler",2
+"FDO_TC","down","GO:0120316","sperm flagellum assembly",29,13,0.00406399657722933,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0000226","microtubule cytoskeleton organization",302,60,0.00556808410470469,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0006749","glutathione metabolic process",26,8,1.67989089616634e-07,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0006457","protein folding",105,11,0.000430811741597651,"weight01;classic;clusterProfiler",3
+"GOA_TC","up","GO:0034976","response to endoplasmic reticulum stress",117,12,0.00156577903449918,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","up","GO:0036503","ERAD pathway",54,7,0.00094867373417097,"weight01;clusterProfiler",2
+"GDO_TC","up","GO:0006487","protein N-linked glycosylation",27,6,0.00230424177525618,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","up","GO:0034976","response to endoplasmic reticulum stress",116,12,0.00782361105666301,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","down","GO:0055057","neuroblast division",12,4,2.33637543194385e-05,"weight01;classic;goseq;clusterProfiler",4
+"GDO_TC","down","GO:0002250","adaptive immune response",66,8,0.000180716558611098,"weight01;classic;goseq;clusterProfiler",4

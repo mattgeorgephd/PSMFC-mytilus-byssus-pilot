@@ -1,3 +1,0 @@
-"0","knitr::kable(adhesion_ancova$vs_control %>%"
-"0","               select(arm, estimate, pct_change, ci_low, ci_high, p_unadjusted,"
-"0","                      ci_low_dunnett, ci_high_dunnett, p_dunnett), digits = 4)"

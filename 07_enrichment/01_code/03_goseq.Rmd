@@ -1,0 +1,150 @@
+---
+title: "03 - GO enrichment with goseq (comparison method)"
+output: html_document
+params:
+  families: ["TC", "FG"]
+  ontologies: ["BP", "MF", "CC"]
+  padj_cutoff: 0.05
+  cores: 4                          # set to 1 on Windows (no forking)
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+goseq (Young et al. 2010, Genome Biology 11:R14), the method of the oyster Tag-seq template
+(`template-oyster-pipeline/6_GO-annotation.Rmd`), run on the same gene sets as topGO
+(script 02) for comparison:
+
+- **genes**: the contrast's universe genes that carry a GO term of the ontology and have a
+  length; up and down DEGs tested separately;
+- **length bias**: a probability weighting function (PWF) of DE on the median reference
+  transcript length is fitted per run (`nullp`) and the Wallenius approximation used. The
+  template used the genomic span (start to end, introns included) instead; transcript
+  length is what a read-count bias would follow. 3' Tag-seq should carry little length bias,
+  and `goseq_pwf_TC_BP.png` shows how much is left;
+- **annotation**: direct GO IDs plus all their ancestors (goseq tests the annotation as
+  given, so without propagation a parent term would miss its children's genes);
+- **terms tested**: 10 to 500 annotated genes, the window clusterProfiler (script 04) uses;
+- **enriched**: Benjamini-Hochberg adjusted over-representation p < 0.05 within each run and
+  ontology. The template called terms at an unadjusted p < 0.05, which, over thousands of
+  terms, admits many false positives; the unadjusted p is reported too.
+
+Writes, in `03_analyses/03_goseq/`: `goseq_enriched.csv`, `goseq_all_terms_TC_<ontology>.csv`
+(one per ontology, read by script 06), `goseq_run_summary.csv`, `goseq_pwf_TC_BP.png` and
+`goseq_<family>_<ontology>_dotplot.png` for every family and ontology.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(here::here("01_code", "_go_helpers.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))
+suppressPackageStartupMessages({ library(goseq); library(GO.db); library(dplyr); library(ggplot2) })
+annot <- read_annotation()
+len   <- setNames(annot$length, annot$gene)
+cores <- if (.Platform$OS.type == "windows") 1L else as.integer(params$cores)
+runs  <- runs_for(unlist(params$families))
+onts  <- unlist(params$ontologies)
+## propagated annotation once per ontology, for every gene in any universe
+prop  <- setNames(lapply(onts, function(o) gene2go_propagated(annot, o)), onts)
+```
+
+# Run goseq
+
+```{r goseq}
+run_goseq <- function(code, direction, ontology) {
+  s  <- gene_sets(code)
+  pg <- prop[[ontology]]
+  genes <- intersect(s$universe, unique(pg$gene))
+  genes <- genes[!is.na(len[genes])]
+  de <- setNames(as.integer(genes %in% s[[direction]]), genes)
+  summ <- data.frame(code, direction, ontology, genes_annotated = length(de), DEGs_annotated = sum(de))
+  if (sum(de) < 2) return(list(summary = cbind(summ, terms_tested = 0L, enriched = 0L), terms = NULL, pwf = NULL))
+  pwf <- suppressMessages(nullp(de, bias.data = len[genes], plot.fit = FALSE))
+  g2c <- pg[pg$gene %in% genes, ]
+  size <- table(g2c$GO)
+  keep_terms <- names(size)[size >= MIN_GS & size <= MAX_GS]
+  g2c <- g2c[g2c$GO %in% keep_terms, ]
+  res <- suppressMessages(goseq(pwf, gene2cat = split(g2c$GO, g2c$gene), method = "Wallenius",
+                                use_genes_without_cat = TRUE))
+  ## use_genes_without_cat = TRUE keeps every annotated gene of the ontology in the test even
+  ## if all its terms fall outside the size window; genes with no term of the ontology were
+  ## never in `genes`
+  res <- res[res$category %in% keep_terms, ]
+  res$padj <- p.adjust(res$over_represented_pvalue, "BH")
+  terms <- data.frame(code, direction, ontology, GO.ID = res$category, numDEInCat = res$numDEInCat,
+                      numInCat = res$numInCat, p_over = res$over_represented_pvalue, padj = res$padj)
+  enr <- terms$GO.ID[terms$padj < params$padj_cutoff]
+  hits <- g2c[g2c$GO %in% enr & g2c$gene %in% names(de)[de == 1], ]
+  by_term <- split(hits$gene, hits$GO)
+  terms$genes <- ""
+  terms$genes[match(enr, terms$GO.ID)] <- vapply(by_term[enr], function(g) paste(sort(g), collapse = ";"), "")
+  list(summary = cbind(summ, terms_tested = nrow(terms), enriched = length(enr)), terms = terms,
+       pwf = if (ontology == "BP") data.frame(code, direction, DE = pwf$DEgenes, length = pwf$bias.data, pwf = pwf$pwf))
+}
+
+jobs <- merge(runs, data.frame(ontology = onts), by = NULL)
+jobs <- jobs[order(match(jobs$code, contrasts$code), jobs$direction != "up", jobs$ontology), ]
+t0  <- Sys.time()
+res <- parallel::mclapply(seq_len(nrow(jobs)), function(i)
+  run_goseq(jobs$code[i], jobs$direction[i], jobs$ontology[i]), mc.cores = cores)
+stopifnot(!vapply(res, inherits, TRUE, what = "try-error"))
+cat(nrow(jobs), "goseq runs took", round(as.numeric(difftime(Sys.time(), t0, units = "mins")), 1), "min\n")
+
+terms <- bind_rows(lapply(res, `[[`, "terms")) %>% left_join(distinct(runs, code, family), by = "code") %>%
+  mutate(Term = go_term(GO.ID))
+run_summary <- bind_rows(lapply(res, `[[`, "summary")) %>% left_join(distinct(runs, code, family), by = "code")
+write.csv(run_summary, file.path(out_goseq, "goseq_run_summary.csv"), row.names = FALSE)
+enriched <- terms %>% filter(padj < params$padj_cutoff) %>%
+  select(code, family, direction, ontology, GO.ID, Term, numDEInCat, numInCat, p_over, padj, genes) %>%
+  arrange(match(code, contrasts$code), desc(direction == "up"), ontology, padj)
+write.csv(enriched, file.path(out_goseq, "goseq_enriched.csv"), row.names = FALSE)
+for (o in onts)
+  write.csv(terms %>% filter(family == "TC", ontology == o) %>%
+              select(code, direction, GO.ID, numInCat, numDEInCat, p_over, padj),
+            file.path(out_goseq, sprintf("goseq_all_terms_TC_%s.csv", o)), row.names = FALSE)
+knitr::kable(run_summary %>% filter(ontology == "BP"), caption = "BP runs")
+```
+
+# Length bias
+
+```{r pwf, fig.width = 10, fig.height = 6}
+pwf <- bind_rows(lapply(res, `[[`, "pwf")) %>% filter(code %in% contrasts$code[contrasts$family == "TC"]) %>%
+  mutate(run = factor(paste(contrast_label(code), direction),
+                      levels = paste(rep(contrast_label(contrasts$code[contrasts$family == "TC"]), each = 2), c("up", "down"))))
+binned <- pwf %>% group_by(run) %>% arrange(length, .by_group = TRUE) %>%
+  mutate(bin = ceiling(seq_along(length) / 400)) %>%
+  group_by(run, bin) %>% summarise(length = median(length), prop = mean(DE), .groups = "drop")
+p <- ggplot(pwf, aes(length, pwf)) +
+  geom_point(data = binned, aes(length, prop), colour = "grey55", size = 1) +
+  geom_line(colour = "#2a78d6", linewidth = 0.8) +
+  facet_wrap(~ run, ncol = 4, scales = "free_y") +
+  scale_x_log10() +
+  labs(x = "median reference transcript length (bp, log scale)", y = "proportion DE",
+       title = "goseq probability weighting functions, TC contrasts (biological process genes)",
+       caption = "Grey: proportion of DEGs in bins of 400 genes ordered by length. Blue: the fitted PWF used by the Wallenius test.") +
+  theme_psmfc(9) + theme(plot.caption = element_text(hjust = 0), plot.caption.position = "plot",
+                         plot.title.position = "plot")
+ggsave(file.path(out_goseq, "goseq_pwf_TC_BP.png"), p, width = 10, height = 6.5, dpi = 300)
+p
+```
+
+# Figures
+
+```{r dotplots, fig.width = 10, fig.height = 9}
+for (fam in unique(runs$family)) for (ont in onts) {
+  e <- enriched %>% filter(family == fam, ontology == ont)
+  if (!nrow(e)) next
+  top <- e %>% group_by(code, direction) %>% slice_min(padj, n = 5, with_ties = FALSE) %>% ungroup()
+  d <- e %>% filter(GO.ID %in% top$GO.ID) %>% transmute(code, direction, Term, p = padj, n = numDEInCat)
+  print(go_dotplot(d, contrasts$code[contrasts$family == fam],
+                   title = sprintf("goseq, %s: %s", ONT_NAME[[ont]], FAMILY_TITLE[[fam]]),
+                   caption = sprintf(paste("The 5 most significant terms of each contrast and direction (BH-adjusted",
+                                           "Wallenius p < %s; a point only where the term is enriched). Terms of 10 to 500",
+                                           "annotated genes; length-bias weighting by transcript length. Colour capped at 1e-%d."),
+                                     params$padj_cutoff, P_CAP),
+                   file = file.path(out_goseq, sprintf("goseq_%s_%s_dotplot.png", fam, ont)),
+                   p_label = "-log10 adjusted p"))
+}
+```

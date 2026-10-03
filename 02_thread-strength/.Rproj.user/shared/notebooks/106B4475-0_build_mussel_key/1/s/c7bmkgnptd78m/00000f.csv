@@ -1,8 +1,0 @@
-"0","# Collapse any spelling of a tag to prefix + zero-padded 3 digits (T37 -> T037) so the same"
-"0","# physical animal joins across sources. Returns NA for anything that is not a tag."
-"0","norm_id <- function(x) {"
-"0","  x   <- trimws(as.character(x))"
-"0","  pre <- sub(""^([A-Za-z]+).*$"", ""\\1"", x)"
-"0","  num <- suppressWarnings(as.integer(sub(""^[A-Za-z]+0*([0-9]+).*$"", ""\\1"", x)))"
-"0","  ifelse(is.na(num) | pre == x, NA_character_, sprintf(""%s%03d"", pre, num))"
-"0","}"

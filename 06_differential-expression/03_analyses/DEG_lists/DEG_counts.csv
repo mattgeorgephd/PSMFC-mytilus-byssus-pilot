@@ -1,0 +1,8 @@
+"code","family","tissue_dir","description","genes_tested","n_DEG","n_up","n_down"
+"FOA_TC","TC","Foot","Foot: OA vs day-3 treatment control",7908,161,108,53
+"FOW_TC","TC","Foot","Foot: OW vs day-3 treatment control",8138,211,126,85
+"FDO_TC","TC","Foot","Foot: DO vs day-3 treatment control",7797,678,278,400
+"GOA_TC","TC","Gill","Gill: OA vs day-3 treatment control",10773,584,229,355
+"GOW_TC","TC","Gill","Gill: OW vs day-3 treatment control",10678,227,106,121
+"GDO_TC","TC","Gill","Gill: DO vs day-3 treatment control",10673,404,186,218
+"FG_TC","FG","Foot_vs_Gill","Gill vs foot, day-3 treatment controls",10049,5893,3415,2478

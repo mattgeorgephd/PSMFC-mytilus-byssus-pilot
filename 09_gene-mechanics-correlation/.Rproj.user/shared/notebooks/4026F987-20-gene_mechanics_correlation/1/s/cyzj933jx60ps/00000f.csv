@@ -1,8 +1,0 @@
-"0","# Get the correct Bioconductor repository link for your R version"
-"0","# bioc_version <- BiocManager::version()"
-"0","# bioc_repo <- paste0(""https://bioconductor.org/packages/"", bioc_version, ""/bioc"")"
-"0","# "
-"0","# # Install DESeq2 directly as a standard package "
-"0","# install.packages(""GenomeInfoDbData"", repos = c(Bioc = bioc_repo, CRAN = ""https://cloud.r-project.org""))"
-"0","# install.packages(""DESeq2"", repos = c(Bioc = bioc_repo, CRAN = ""https://cloud.r-project.org""))"
-"0",""

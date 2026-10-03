@@ -1,0 +1,10 @@
+"step","count"
+"genes_in_matrix",47806
+"genes_after_filtering",10990
+"genes_dropped",36816
+"results_normal",10990
+"results_apeglm",10990
+"results_ashr",10990
+"DEG_apeglm_padj",3039
+"DEG_ashr_padj",3039
+"DEG_normal_padj",3039

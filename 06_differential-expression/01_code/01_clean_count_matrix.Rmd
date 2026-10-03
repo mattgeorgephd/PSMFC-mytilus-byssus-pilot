@@ -1,0 +1,161 @@
+---
+title: "01 - Clean gene count matrix and sample table"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# What this does
+
+Starts the differential-expression analysis from the gene count matrix of record written by
+`05_sequence-alignment/01_code/04_count_matrix_of_record.Rmd` (featureCounts on the RefSeq
+annotation with Iso-Seq-extended 3' ends; unique reads, sense strand), and the raw sample sheet
+in `02_data/`:
+
+1. orders the libraries, removes T051F and T051G (QC), and sorts the genes by ID. The counts
+   are unchanged. (The previous matrix, StringTie + prepDE in
+   `05_sequence-alignment/03_analyses/prepDE/`, named its columns by read file, as
+   `A10-T015F_S172`; the renaming below still handles that form.);
+2. builds the sample table (`sample.1`, `tissue`, `treatment`, `day`, `region`) from the
+   sample sheet; treatment and day come from `trt` (`T_OA_d3` -> OA, 3);
+3. checks every library against the RNA isolation log and writes the crosswalk between the
+   two naming schemes (below);
+4. lists the mitochondrial loci (below), which the genome analysis leaves out and step 13
+   analyses on their own.
+
+**Foot regions.** Two pieces of the foot were sequenced, and the sheets name them
+inconsistently:
+
+| library ID | `tissue` | `region` | sampled in | isolation log name (tissue label) |
+|---|---|---|---|---|
+| `T001F` | F | foot (phenol gland to tip) | every animal | `T01-F_PG` ("phenol gland") |
+| `T001FX` | F | foot (without phenol gland) | the 12 day-0 animals only | `T01-F` ("foot") |
+| `T001G` | G | gill | every animal | `T01-G` ("gill") |
+
+Both are foot tissue. The sample sheet's free-text columns call the FX libraries "gill" and
+"foot_control"; both are wrong and are not used. The FX libraries stay in the count matrix and
+the sample table but enter no contrast (`02_define_contrasts.Rmd`), because the two regions
+differ strongly in expression, byssal genes included.
+
+**Day-0 lab controls.** The day-0 feet were cut into two pieces (`F_PG` and `F` in the
+isolation log); the day-3 feet were sampled as one (`F_PG` only). The part of the foot behind a
+day-0 library is therefore not the part behind a day-3 library, and the experimenter confirms
+the day-0 animals are not true lab controls. No contrast uses the day-0 libraries; they stay in
+the count matrix and appear only in the all-sample PCA (step 03).
+
+**Mitochondrial loci.** The reference holds the female-type mitochondrial genome
+(NC_007687.1: 12 protein genes and their tRNAs), and 293 loci on unplaced scaffolds are copies
+of its protein genes (126 protein-coding LOCs and 167 pseudogenes), which take a large and
+variable share of the mitochondrial reads (`tools/mt_encoded.R`). `mitochondrial_loci.csv` lists all of them; steps 03 and 05 fit the
+genome without them, and step 13 analyses one summed count per mitochondrial protein.
+
+Writes `03_analyses/count_matrix/gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`,
+`library_crosswalk.csv` and `mitochondrial_loci.csv`, which later steps read. Replaces `01_5-gene_count_matrix.Rmd`, which
+could not run (it read a matrix that was not in the repository and its sample-table step was
+never finished).
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+raw_counts <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "featurecounts", "gene_count_matrix.csv")
+stopifnot(file.exists(raw_counts))
+dir.create(cnt, showWarnings = FALSE, recursive = TRUE)
+QC_REMOVED <- c("T051F", "T051G")
+```
+
+# Count matrix
+
+```{r counts}
+gcm <- read.csv(raw_counts, check.names = FALSE, row.names = 1)
+## read-file base name -> sample ID: drop the plate well ("A10-") and the sequencing index ("_S172")
+ids <- sub("^[A-H][0-9]+-", "", sub("_S[0-9]+$", "", colnames(gcm)))
+stopifnot(!anyDuplicated(ids), all(grepl("^T[0-9]{3}[A-Z]+$", ids)))
+colnames(gcm) <- ids
+gcm <- gcm[order(rownames(gcm), method = "radix"), setdiff(ids[order(ids, method = "radix")], QC_REMOVED)]
+cat("genes:", nrow(gcm), "| samples:", ncol(gcm), "(", paste(QC_REMOVED, collapse = ", "), "removed )\n")
+write.csv(gcm, file.path(cnt, "gene_count_matrix_clean.csv"), row.names = TRUE)
+```
+
+# Sample table
+
+```{r samples}
+sheet <- read.csv(file.path(dat, "PSMFC-mytilus-byssus-pilot-RNA-tagseq_raw.csv"))
+sheet <- sheet[!is.na(sheet$trt) & sheet$trt != "", ]          # drop the sheet's blank rows
+stopifnot(all(grepl("^T_[A-Za-z]+_d[0-9]+$", sheet$trt)))
+## library-ID suffix -> tissue and foot region (see the table above)
+suffix  <- sub("^T[0-9]+", "", sheet$sample.1)
+regions <- c(F = "foot (phenol gland to tip)", FX = "foot (without phenol gland)", G = "gill")
+stopifnot(all(suffix %in% names(regions)))
+ti <- data.frame(sample.1  = sheet$sample.1,
+                 tissue    = ifelse(suffix == "G", "G", "F"),
+                 treatment = sub("^T_(.*)_d[0-9]+$", "\\1", sheet$trt),
+                 day       = sub("^.*_d", "", sheet$trt),
+                 region    = unname(regions[suffix]))
+
+## T047F has no library; T047G does. The count matrix is the source of which samples exist.
+not_sequenced <- setdiff(ti$sample.1, c(colnames(gcm), QC_REMOVED))
+cat("in the sample sheet but not in the count matrix:", paste(not_sequenced, collapse = ", "), "\n")
+ti <- ti[match(colnames(gcm), ti$sample.1), ]
+stopifnot(!anyNA(ti$sample.1))
+rownames(ti) <- ti$sample.1
+write.csv(ti, file.path(cnt, "treatmentinfo_clean.csv"), row.names = TRUE)
+knitr::kable(as.data.frame(table(paste(ti$treatment, "day", ti$day), ti$region)) |>
+               tidyr::pivot_wider(names_from = Var2, values_from = Freq), caption = "samples by group and region")
+```
+
+# Crosswalk to the RNA isolation log
+
+The isolation log (`02_data/psmfc_mussel_rna_summary.csv`) names the phenol-gland-to-tip
+extractions `T01-F_PG` and the rest of the foot `T01-F`, so its "F" is the library suffix
+"FX", not "F". Each library is matched to its isolation row on the mussel tag, RNA
+concentration, volume and yield, which are copied between the two sheets, and the match
+must agree with the region assigned above.
+
+```{r crosswalk}
+iso <- read.csv(file.path(dat, "psmfc_mussel_rna_summary.csv"), check.names = FALSE)
+tag <- function(x) sprintf("T%03d", as.integer(sub("^T0*([0-9]+).*$", "\\1", x)))
+key <- function(mussel, conc, vol, yield) paste(mussel, conc, vol, yield)
+iso_key <- key(tag(iso$sample), iso$`concentration(ng/uL)`, iso$`volume(uL)`, iso$`yield(ng)`)
+lib_key <- key(tag(sheet$sample.1), sheet$conc_ng_uL.1, sheet$vol_uL, sheet$yield_ng)
+stopifnot(!anyDuplicated(iso_key))
+hit <- match(lib_key, iso_key)
+xw <- data.frame(sample.1 = sheet$sample.1, region = unname(regions[suffix]),
+                 in_count_matrix = ifelse(sheet$sample.1 %in% colnames(gcm), "yes",
+                                          ifelse(sheet$sample.1 %in% QC_REMOVED, "removed at QC", "not sequenced")),
+                 isolation_log_sample = iso$sample[hit], isolation_log_tissue = iso$tissue[hit],
+                 isolation_date = iso$isolation_date[hit])
+expected_label <- c("foot (phenol gland to tip)" = "phenol gland", "foot (without phenol gland)" = "foot",
+                    gill = "gill")
+bad <- xw[is.na(hit) | expected_label[xw$region] != xw$isolation_log_tissue, ]
+if (nrow(bad)) { print(bad); stop(nrow(bad), " library(ies) do not match the isolation log as expected.") }
+xw <- xw[order(xw$sample.1, method = "radix"), ]
+write.csv(xw, file.path(cnt, "library_crosswalk.csv"), row.names = FALSE)
+knitr::kable(table(region = xw$region, isolation_log_tissue = xw$isolation_log_tissue))
+```
+
+# Mitochondrial loci
+
+One row per matrix row that is mitochondrial: on the mitogenome (`source = mitogenome`,
+from the StringTie table of `05_sequence-alignment`), or a copy (`source = nuclear copy`): a
+LOC whose best BLAST hit (highest bitscore, `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`)
+is a mitochondrially encoded protein, or a locus NCBI names after one
+(`05_sequence-alignment/02_data/annotation_mt_like_loci.csv`; this catches the pseudogene
+copies, which have no CDS to BLAST). The two routes agree on every coding copy, protein
+included; `evidence` says which found each row. `mt_protein` is the protein the row counts towards in
+step 13; the share of each sample's reads the two sources hold is printed.
+
+```{r mitochondrial}
+source(file.path(repo_root, "tools", "gene_ids.R"))     # gene_key()
+source(file.path(repo_root, "tools", "mt_encoded.R"))
+mtl <- mitochondrial_loci(rownames(gcm), file.path(blast_go, "LOC_GO_list.txt"), t_data, mt_annot)
+stopifnot(!anyDuplicated(mtl$gene), all(mtl$gene %in% rownames(gcm)),
+          sum(mtl$source == "mitogenome" & mtl$mt_protein != "tRNA/rRNA") == 12)
+write.csv(mtl, file.path(cnt, "mitochondrial_loci.csv"), row.names = FALSE)
+knitr::kable(table(mt_protein = mtl$mt_protein, source = mtl$source), caption = "mitochondrial rows")
+nuclear_total <- colSums(gcm[!rownames(gcm) %in% mtl$gene, ])
+share <- sapply(c("mitogenome", "nuclear copy"), function(s)
+  100 * colSums(gcm[mtl$gene[mtl$source == s], , drop = FALSE]) / nuclear_total)
+knitr::kable(apply(share, 2, function(x) round(quantile(x, c(0, 0.25, 0.5, 0.75, 1)), 3)),
+             caption = "mitochondrial reads as % of each sample's other reads")
+```

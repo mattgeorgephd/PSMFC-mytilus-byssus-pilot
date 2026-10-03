@@ -1,0 +1,120 @@
+---
+title: "05 - Reduce redundant GO terms with rrvgo (REVIGO-style)"
+output: html_document
+params:
+  families: ["TC", "FG"]
+  ontologies: ["BP", "MF", "CC"]
+  threshold: 0.7     # rrvgo's default; similar to REVIGO's "medium" list
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+Summarises each run's enriched terms from topGO (script 02, weight01 p < 0.01), in each
+ontology, into clusters of similar terms, the way REVIGO does, with rrvgo (Sayols 2023,
+microPublication Biology, doi:10.17912/micropub.biology.000811). It replaces the REVIGO web
+submissions, whose inputs were built from an older version of the DEG tables (kept in
+`03_analyses/_superseded/`).
+
+- **similarity**: Wang's graph-based measure (Wang et al. 2007, Bioinformatics 23:1274),
+  computed with `GOSemSim::goSim()` on the GO graph alone. `rrvgo::calculateSimMatrix()` is
+  not used because it keeps only terms with human annotation in the OrgDb, which would drop
+  terms that are annotated in the mussel but not in human;
+- **clusters**: complete-linkage clustering of 1 - similarity, cut at 0.7
+  (`rrvgo::reduceSimMatrix()`); the term with the smallest p in each cluster is its parent;
+- `reduceSimMatrix()` also reads term sizes from an OrgDb (`org.Hs.eg.db`) for its `size`
+  column; that column is replaced with the term's annotated genes in the contrast's universe.
+  Neither the clustering nor the choice of parent uses it.
+
+Writes, in `03_analyses/05_rrvgo/`:
+
+- `rrvgo_reduced_terms.csv`: every enriched term with its ontology, cluster and parent;
+- `rrvgo_parents.csv`: one row per parent term and run, with the number of terms it stands
+  for, the smallest p among them and the distinct DEGs they contain;
+- `rrvgo_<family>_<ontology>_parents.png`: the parent terms of every run side by side, for
+  every family and ontology.
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(here::here("01_code", "_go_helpers.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))
+if (!requireNamespace("org.Hs.eg.db", quietly = TRUE)) BiocManager::install("org.Hs.eg.db")
+suppressPackageStartupMessages({ library(rrvgo); library(GOSemSim); library(dplyr); library(ggplot2) })
+onts <- unlist(params$ontologies)
+enriched <- read.csv(file.path(out_topgo, "topgo_enriched.csv"), stringsAsFactors = FALSE) %>%
+  filter(ontology %in% onts, family %in% unlist(params$families))
+## GO graph only, one per ontology; Wang similarity needs no information content
+sem <- setNames(lapply(onts, function(o) GOSemSim::godata(ont = o, computeIC = FALSE)), onts)
+```
+
+# Reduce each run
+
+```{r reduce}
+## a term on its own, as its own cluster (a run with one term, or a term the GO graph of
+## GOSemSim cannot place, whose similarities are all NA)
+singletons <- function(e, first_cluster = 1L)
+  data.frame(go = e$GO.ID, cluster = first_cluster - 1L + seq_len(nrow(e)), parent = e$GO.ID,
+             score = -log10(e$p_weight01), term = e$Term, parentTerm = e$Term)
+
+reduce_run <- function(e, ont) {
+  e <- e[order(e$p_weight01), ]
+  if (nrow(e) == 1) return(singletons(e))
+  ids <- e$GO.ID
+  m <- matrix(GOSemSim::goSim(ids, ids, semData = sem[[ont]], measure = "Wang"), ncol = length(ids),
+              dimnames = list(ids, ids))
+  keep <- !apply(m, 2, function(x) all(is.na(x)))
+  if (any(!keep)) message(sum(!keep), " term(s) without a Wang similarity kept as their own cluster: ",
+                          paste(ids[!keep], collapse = ", "))
+  if (sum(keep) < 2) return(singletons(e))
+  m <- m[keep, keep, drop = FALSE]
+  r <- suppressMessages(reduceSimMatrix(m, scores = setNames(-log10(e$p_weight01), ids),
+                                        threshold = params$threshold, orgdb = "org.Hs.eg.db"))
+  r <- r[, c("go", "cluster", "parent", "score", "term", "parentTerm")]
+  stopifnot(setequal(r$go, ids[keep]))    # reduceSimMatrix drops no term
+  rbind(r, singletons(e[!keep, , drop = FALSE], max(r$cluster) + 1L))
+}
+
+runs <- distinct(enriched, code, family, direction, ontology)
+reduced <- bind_rows(lapply(seq_len(nrow(runs)), function(i) {
+  e <- enriched %>% filter(code == runs$code[i], direction == runs$direction[i], ontology == runs$ontology[i])
+  r <- reduce_run(e, runs$ontology[i])
+  e2 <- e[match(r$go, e$GO.ID), ]
+  data.frame(runs[i, ], r, size = e2$Annotated, Significant = e2$Significant, p_weight01 = e2$p_weight01,
+             genes = e2$genes, row.names = NULL)
+})) %>% arrange(match(code, contrasts$code), desc(direction == "up"), ontology, parentTerm, desc(score))
+write.csv(reduced %>% select(-genes), file.path(out_rrvgo, "rrvgo_reduced_terms.csv"), row.names = FALSE)
+
+parents <- reduced %>%
+  group_by(code, family, direction, ontology, parent, parentTerm) %>%
+  summarise(n_terms = n(), best_p = min(p_weight01),
+            genes = paste(sort(unique(unlist(strsplit(genes[nzchar(genes)], ";")))), collapse = ";"),
+            .groups = "drop") %>%
+  mutate(n_genes = lengths(strsplit(genes, ";"))) %>%
+  arrange(match(code, contrasts$code), desc(direction == "up"), ontology, best_p)
+write.csv(parents %>% select(code, family, direction, ontology, parent, parentTerm, n_terms, best_p, n_genes, genes),
+          file.path(out_rrvgo, "rrvgo_parents.csv"), row.names = FALSE)
+knitr::kable(parents %>% count(code, direction, ontology, name = "parent_terms") %>%
+               left_join(enriched %>% count(code, direction, ontology, name = "enriched_terms"),
+                         by = c("code", "direction", "ontology")),
+             caption = "enriched terms and the parent terms they reduce to")
+```
+
+# Figures
+
+```{r figures, fig.width = 10, fig.height = 9}
+for (fam in unique(runs$family)) for (ont in onts) {
+  d <- parents %>% filter(family == fam, ontology == ont) %>%
+    transmute(code, direction, Term = parentTerm, p = best_p, n = n_terms)
+  if (!nrow(d)) next
+  print(go_dotplot(d, contrasts$code[contrasts$family == fam],
+                   title = sprintf("Enriched GO terms after rrvgo reduction (%s): %s", ONT_NAME[[ont]], FAMILY_TITLE[[fam]]),
+                   caption = sprintf(paste("Each point is a cluster of similar topGO terms (weight01 p < 0.01; Wang similarity,",
+                                           "clusters cut at %s), named after its most significant term. Size: terms in the",
+                                           "cluster; colour: the smallest p in it, capped at 1e-%d."), params$threshold, P_CAP),
+                   file = file.path(out_rrvgo, sprintf("rrvgo_%s_%s_parents.png", fam, ont)),
+                   p_label = "-log10 p\n(weight01)", n_label = "terms in cluster"))
+}
+```

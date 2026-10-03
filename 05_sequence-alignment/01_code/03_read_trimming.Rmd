@@ -1,0 +1,164 @@
+---
+title: "03 - How the trimmed Tag-seq reads were made"
+output: html_document
+params:
+  online: false          # true: download a sample of reads and reproduce the trimming (needs the tools below)
+  sample_bytes: 3000000  # bytes of each gzipped FASTQ to download for the reproduction
+  perl: "perl"
+  fastx_bin: ""          # folder holding fastx_clipper (FASTX-Toolkit 0.0.14); "" = on the PATH
+  cutadapt: "cutadapt"   # used only for the two comparison recipes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+The reads that HISAT2 aligned (step 01) are the files `*_L099_R1_cmb.trim.fastq.gz`, one per
+library (gannet `panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/`,
+dated 2022-11-30). How they were made was not written down: the 2023 analysis downloaded them
+ready-trimmed from a list that was not kept. This step records what can be established.
+
+1. **Read retention, from the committed FastQC tables (always runs).** Per library, the raw
+   reads (both lanes, `03_analyses/fastqc/untrimmed/`, from the April 2022 delivery) and the
+   trimmed reads (`03_analyses/fastqc/trimmed/`). Writes
+   `03_analyses/read_trimming/read_retention.csv`.
+2. **The trimming recipe, reproduced on a sample (`online: true` only).** Downloads the start
+   of library T001F's raw lane-1 file and of its trimmed file, runs three candidate recipes on
+   the raw reads and compares each with the trimmed file read by read. Writes
+   `03_analyses/read_trimming/recipe_check.csv` and `RUN_provenance_recipe_check.txt`; with
+   `online: false` the committed copies are kept.
+
+The three recipes:
+
+- `tagseq_clipper + fastx_clipper`: the Matz-lab Tag-seq clipper (`tagseq_clipper.pl`,
+  https://github.com/z0on/tag-based_RNAseq; Meyer, Aglyamova and Matz 2011, *Molecular
+  Ecology* 20:3599), which removes the 5' leader (degenerate bases and the template-switching
+  G run) and drops PCR duplicates (reads sharing the leader and the first 20 bases of insert),
+  then FASTX-Toolkit 0.0.14 `fastx_clipper` for the poly-A tail and the Illumina adapter, each
+  keeping reads of at least 20 bases;
+- `tagseq_clipper + cutadapt`: the clipper with the cutadapt line of the current Matz-lab
+  walkthrough (`-a AAAAAAAA -a AGATCGG -q 15 -m 25`);
+- `cutadapt 2022`: the cutadapt command of the August 2022 processing script
+  (`_superseded/1_1_process-tagseq-data-mytilus.Rmd`: `-a A{8} -a G{8} -a AGATCGG -u 15 -m 20`,
+  no clipper, no deduplication).
+
+```{r paths}
+repo_root <- normalizePath(file.path(here::here(), ".."))
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # provenance_lines()
+fq_dir  <- here::here("03_analyses", "fastqc")
+out_dir <- here::here("03_analyses", "read_trimming")
+dir.create(out_dir, showWarnings = FALSE)
+```
+
+# 1. Read retention
+
+```{r retention}
+fastqc_table <- function(sub) {
+  d <- read.delim(file.path(fq_dir, sub, "multiqc_data", "multiqc_fastqc.txt"), check.names = FALSE)
+  data.frame(sample = d[["Sample"]], reads = d[["Total Sequences"]], mean_length = d[["avg_sequence_length"]])
+}
+library_of <- function(s) sub("_S[0-9]+_.*$", "", sub("^[A-H][0-9]+-", "", s))
+
+raw <- fastqc_table("untrimmed")
+raw$library <- library_of(raw$sample)
+raw <- do.call(rbind, lapply(split(raw, raw$library), function(d)
+  data.frame(library = d$library[1], raw_lanes = nrow(d), raw_reads = sum(d$reads))))
+trim <- fastqc_table("trimmed")
+trim$library <- library_of(trim$sample)
+stopifnot(!anyDuplicated(trim$library), !anyDuplicated(raw$library))
+ret <- merge(trim[, c("library", "reads", "mean_length")], raw, by = "library", all.x = TRUE)
+names(ret)[names(ret) == "reads"] <- "trimmed_reads"
+## a library with one raw lane on gannet (T030G) has no comparable raw total
+ret$retained <- ifelse(ret$raw_lanes %in% 2, round(ret$trimmed_reads / ret$raw_reads, 4), NA)
+ret$trimmed_mean_length <- round(ret$mean_length, 1)
+ret <- ret[order(ret$library), c("library", "raw_lanes", "raw_reads", "trimmed_reads", "trimmed_mean_length", "retained")]
+write.csv(ret, file.path(out_dir, "read_retention.csv"), row.names = FALSE, na = "")
+
+cat(nrow(ret), "trimmed libraries;", sum(!is.na(ret$raw_reads)), "with raw reads on gannet;",
+    sum(!is.na(ret$retained)), "with both lanes\n")
+summary(ret$retained)
+summary(ret$trimmed_reads)
+```
+
+# 2. The recipe, reproduced on a sample
+
+```{r recipe, eval = isTRUE(params$online)}
+gannet  <- "https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-byssus-pilot/"
+raw_url <- paste0(gannet, "20220405-tagseq/T001F_S100_L001_R1_001.fastq.gz")
+cmb_url <- paste0(gannet, "byssus-exp-analysis/data/raw-trimmed/A1-T001F_S100_L099_R1_cmb.trim.fastq.gz")
+clipper_url <- "https://raw.githubusercontent.com/z0on/tag-based_RNAseq/master/tagseq_clipper.pl"
+tmp <- tempfile("trimcheck"); dir.create(tmp)
+f <- function(x) file.path(tmp, x)
+fastx <- if (nzchar(params$fastx_bin)) file.path(params$fastx_bin, "fastx_clipper") else "fastx_clipper"
+
+## the first sample_bytes of each gzipped file; zcat stops at the cut with an error, ignored
+get_head <- function(url, out) {
+  stopifnot(system(sprintf("curl -sS -r 0-%d %s | (zcat 2>/dev/null || true) > %s",
+                           params$sample_bytes - 1, shQuote(url), shQuote(out))) == 0)
+  x <- readLines(out)
+  n <- 4 * (length(x) %/% 4) - 4                      # drop the last, possibly cut, record
+  x <- x[seq_len(n)]
+  ok <- nchar(x[seq(2, n, 4)]) == nchar(x[seq(4, n, 4)])
+  stopifnot(all(ok), all(startsWith(x[seq(1, n, 4)], "@")))
+  writeLines(x, out)
+  invisible(n / 4)
+}
+n_raw <- get_head(raw_url, f("raw.fq"))
+n_cmb <- get_head(cmb_url, f("cmb.fq"))
+download.file(clipper_url, f("tagseq_clipper.pl"), quiet = TRUE)
+
+read_fq <- function(path) {
+  x <- readLines(path)
+  i <- seq(1, length(x), 4)
+  data.frame(id = sub(" .*$", "", x[i]), seq = x[i + 1], qual = x[i + 3])
+}
+raw <- read_fq(f("raw.fq")); cmb <- read_fq(f("cmb.fq"))
+## compare only the raw reads the trimmed sample reaches: up to the last raw read present in it
+last <- max(match(cmb$id, raw$id), na.rm = TRUE)
+region <- raw$id[seq_len(last)]
+cmb <- cmb[cmb$id %in% region, ]
+
+sh <- function(cmd) stopifnot(system(cmd) == 0)
+clip <- sprintf("%s %s %s", params$perl, shQuote(f("tagseq_clipper.pl")), shQuote(f("raw.fq")))
+sh(sprintf("%s 2> %s | %s -a AAAAAAAA -l 20 -Q33 | %s -a AGATCGGAAG -l 20 -Q33 > %s",
+           clip, shQuote(f("clip.log")), fastx, fastx, shQuote(f("r1.fq"))))
+sh(sprintf("%s 2>/dev/null | %s - -a AAAAAAAA -a AGATCGG -q 15 -m 25 -o %s > /dev/null 2>&1",
+           clip, params$cutadapt, shQuote(f("r2.fq"))))
+sh(sprintf("%s %s -a 'A{8}' -a 'G{8}' -a AGATCGG -u 15 -m 20 -o %s > /dev/null 2>&1",
+           params$cutadapt, shQuote(f("raw.fq")), shQuote(f("r3.fq"))))
+
+compare <- function(path, recipe) {
+  r <- read_fq(path); r <- r[r$id %in% region, ]
+  m <- merge(r, cmb, by = "id", suffixes = c("_recipe", "_trimmed"))
+  data.frame(recipe = recipe, raw_reads = length(region), recipe_reads = nrow(r), trimmed_reads = nrow(cmb),
+             shared_reads = nrow(m), identical_reads = sum(m$seq_recipe == m$seq_trimmed & m$qual_recipe == m$qual_trimmed),
+             recipe_only = sum(!r$id %in% cmb$id), trimmed_only = sum(!cmb$id %in% r$id))
+}
+chk <- rbind(compare(f("r1.fq"), "tagseq_clipper + fastx_clipper (poly-A, adapter; -l 20)"),
+             compare(f("r2.fq"), "tagseq_clipper + cutadapt -a AAAAAAAA -a AGATCGG -q 15 -m 25"),
+             compare(f("r3.fq"), "cutadapt 2022: -a A{8} -a G{8} -a AGATCGG -u 15 -m 20"))
+chk$identical_share_of_trimmed <- round(chk$identical_reads / chk$trimmed_reads, 4)
+write.csv(chk, file.path(out_dir, "recipe_check.csv"), row.names = FALSE)
+knitr::kable(chk)
+cat(readLines(f("clip.log")), sep = "\n")
+
+ver <- function(cmd) tryCatch(system(cmd, intern = TRUE)[1], error = function(e) NA_character_)
+writeLines(c(provenance_lines(
+  c("[03_read_trimming.Rmd, recipe check]",
+    paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+    paste0("raw sample           : ", raw_url, " (first ", params$sample_bytes, " bytes, ", n_raw, " reads)"),
+    paste0("trimmed sample       : ", cmb_url, " (first ", params$sample_bytes, " bytes, ", n_cmb, " reads)"),
+    paste0("tagseq_clipper.pl    : ", clipper_url, " (md5 ", unname(tools::md5sum(f("tagseq_clipper.pl"))), ")"),
+    paste0("fastx_clipper        : ", ver(sprintf("%s -h 2>&1 | grep -m1 'FASTX Toolkit'", fastx))),
+    paste0("cutadapt             : ", ver(sprintf("%s --version", params$cutadapt)))),
+  here::here("01_code", "03_read_trimming.Rmd"), repo_root)),
+  file.path(out_dir, "RUN_provenance_recipe_check.txt"))
+unlink(tmp, recursive = TRUE)
+```
+
+```{r show-committed}
+rc <- file.path(out_dir, "recipe_check.csv")
+if (file.exists(rc)) knitr::kable(read.csv(rc, check.names = FALSE))
+```

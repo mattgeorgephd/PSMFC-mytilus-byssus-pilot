@@ -1,0 +1,79 @@
+---
+title: "00 - Run the gene-mechanics analysis for foot and gill"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  tissues: ["F", "G"]   # which tissues to run; one or both
+  steps: "all"          # "all", or step numbers, e.g. [1, 2]
+  stop_on_fail: true    # stop a tissue's chain at its first failed step
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Scripts 01 to 05 take a knit parameter `tissue` (`"F"` foot, the default, or `"G"` gill).
+This runner renders them in order for each tissue requested, each in its own R process, so
+the gill analysis is the same code as the foot analysis with one parameter changed and the
+two cannot drift apart. Reports and logs carry the tissue in their name
+(`01_gene_mechanics_correlation_F.html`) and land in `03_analyses/knit_html/` (git-ignored)
+with `run_log.csv`.
+
+| step | script | writes to `03_analyses/` |
+|---|---|---|
+| 01 | `01_gene_mechanics_correlation.Rmd` | `gene_mechanics/`: paired manifest, VST, candidate set, per-gene ANCOVA (the reported test) |
+| 02 | `02_gene_mechanics_expanded.Rmd` | `gene_mechanics/`: pathway modules, influence check, best hits |
+| 03 | `03_rna_thread_manifest_and_expression_tables.Rmd` | `expr_tables/`: RNA x thread manifest, top DEG expression tables |
+| 04 | `04_byssus_foot_gene_list_expression.Rmd` | `byssus_genes/`: byssus/foot gene list and its expression |
+| 05 | `05_go_term_mechanics.Rmd` | `go_mechanics/`: mechanics against DEG sets, enriched GO terms and mitochondrial expression |
+
+Every output is tissue-suffixed (`_F` / `_G`) except `annotation_map.csv`, a
+tissue-independent LOC-to-protein map. Run after `02_thread-strength`,
+`06_differential-expression` and `07_enrichment` (step 05 reads its topGO results); the repository-level `00_run_pipeline.Rmd` runs them in order.
+If a step fails, that tissue's chain stops (later steps read its outputs), the other tissue
+still runs, and the runner fails after writing `run_log.csv`.
+
+```{r run}
+## Resolve this folder from the repository root, not here::here(): if `here` was loaded in a
+## session that started at the repository root it resolves to the root .Rproj instead.
+find_repo_root <- function(start = getwd()) {
+  d <- normalizePath(start, winslash = "/", mustWork = FALSE)
+  for (i in 1:8) {
+    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    d <- dirname(d)
+  }
+  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+}
+repo_root <- find_repo_root()
+source(file.path(repo_root, "tools", "run_steps.R"))
+gm_dir   <- file.path(repo_root, "09_gene-mechanics-correlation")
+code_dir <- file.path(gm_dir, "01_code")
+html_dir <- file.path(gm_dir, "03_analyses", "knit_html")
+
+tissues <- toupper(unlist(params$tissues))
+stopifnot(all(tissues %in% c("F", "G")))
+steps <- substr(list_steps(code_dir, params$steps), 1, 2)
+run_log <- do.call(rbind, lapply(tissues, function(tissue)
+  run_steps(code_dir, html_dir, steps = params$steps,
+            step_params = setNames(rep(list(list(tissue = tissue)), length(steps)), steps),
+            stop_on_fail = isTRUE(params$stop_on_fail), suffix = paste0("_", tissue))))
+finish_run(run_log, html_dir, "Gene-mechanics")
+```
+
+# What differs between the tissues
+
+Nothing in the code. What differs is the data:
+
+- The gill count matrix has 59 libraries against 58 for foot. T047 has a gill library but no
+  foot library, so T047 can enter the gill paired set but not the foot one. T051F and T051G
+  were removed at QC (`06_differential-expression/01_code/01_clean_count_matrix.Rmd`).
+- Foot means the phenol gland to the tip of the foot, the region sampled in every animal. The
+  twelve day-0 animals also have a library of the rest of the foot (IDs ending `FX`); no
+  script here uses them.
+- The DEG union is built from the tissue's own `<T><X>_TC_siggene.csv` lists, written by
+  `06_differential-expression/01_code/04_shrinkage_filtration.Rmd`.
+- The foot is the byssus-producing organ. A gill association is a systemic-state readout,
+  not a mechanism at the site of thread production, and should be framed that way.

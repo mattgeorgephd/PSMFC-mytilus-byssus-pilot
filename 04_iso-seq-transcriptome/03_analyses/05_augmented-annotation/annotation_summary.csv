@@ -1,0 +1,4 @@
+annotation,genes,transcripts,exonic_bases,genes_changed,exonic_bases_vs_refseq
+refseq,47806,68103,89131047,0,1
+ext3,47806,68103,93193744,9781,1.046
+full,60293,430079,137331335,31470,1.541

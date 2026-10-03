@@ -1,0 +1,271 @@
+---
+title: "04 - Byssus/foot gene list + expression across thread-tested mussels"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+params:
+  tissue: "F"   # "F" foot (default) or "G" gill
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Purpose
+
+Build a gene list **narrowed to byssus/foot-relevant proteins and processes** (structural
+byssal/foot proteins, byssal collagens, cross-linking and curing enzymes, collagen
+biosynthesis, and named ECM/adhesion proteins), and tabulate their expression across every
+sequenced mussel that has thread data, with each gene's stress-responsiveness annotated.
+
+This refines the repo's existing approach (script 11), which greps only "foot"/"byss" and
+so misses collagens, plaque proteins, tyrosinases, and cross-linkers. It also **excludes**
+generic antioxidant peroxidases / peroxiredoxins and monoamine/polyamine oxidases, which a
+naive "peroxidase|amine oxidase" filter wrongly pulls in.
+
+Reads script 03's `rna_thread_manifest_<T>.csv` for the mussel set, so run 03 first. All paths resolve automatically.
+
+```{r config}
+suppressPackageStartupMessages({ library(DESeq2); library(readxl); library(here); library(tidyverse) })
+
+## ---- analysis options --------------------------------------------------------------
+## Tissue comes from the knit parameter (`params$tissue`, default "F") so the same script
+## serves foot and gill; the driver 00_run_gene_mechanics_by_tissue.Rmd renders both.
+## When run chunk-by-chunk outside a knit, `params` may not exist; fall back to foot.
+TISSUE <- if (exists("params") && !is.null(params$tissue)) toupper(params$tissue) else "F"
+stopifnot(TISSUE %in% c("F", "G"))
+HI_CONF_ONLY <- FALSE             # TRUE = keep only confident blast annotations (pident>=40 & evalue<1e-10)
+KEEP_CATEGORIES <- c("byssal_structural","byssal_accessory","collagen",
+                     "crosslink_curing","collagen_biosynth","ecm_adhesion")
+USE_RAW_THREAD_SET <- FALSE        # FALSE = mussels in the thread summary; TRUE = any extracted trace (manifest)
+MIN_COUNT <- 5                     # gene kept if count > MIN_COUNT in >= 1/3 of thread-having samples
+
+## ---- portable paths ----------------------------------------------------------------
+find_repo_root <- function(start = here::here()) {
+  d <- normalizePath(start, winslash = "/")
+  for (i in 1:6) {
+    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    d <- dirname(d)
+  }
+  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+}
+repo_root    <- find_repo_root()
+source(file.path(repo_root, "tools", "gene_ids.R"))   # gene_key(): count-matrix name -> LOC key
+DE_DIR       <- file.path(repo_root, "06_differential-expression")
+COUNT_FILE   <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_matrix_clean.csv")
+THREAD_FILE  <- file.path(repo_root, "02_thread-strength", "03_analyses", "03_assemble-thread-summary",
+                          "thread-summary.xlsx")
+EXPR_DIR     <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "expr_tables")  # script 03 outputs
+LOC_GO_FILE  <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
+OUT_DIR      <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "byssus_genes")
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+```
+
+---
+
+# 1. Build the byssus/foot gene list (categorised)
+
+```{r genelist}
+ann <- read_delim(LOC_GO_FILE, delim = "\t",
+                  show_col_types = FALSE) %>%
+  mutate(LOC_ID = str_extract(as.character(gene), "LOC\\d+")) %>%
+  filter(!is.na(LOC_ID)) %>%
+  mutate(across(c(pident, evalue, bitscore), as.numeric)) %>%
+  arrange(desc(bitscore)) %>% distinct(LOC_ID, .keep_all = TRUE)   # best hit per LOC
+
+PN <- replace_na(ann$`Protein.names`, "")
+g  <- function(rx, x = PN) grepl(rx, x, ignore.case = TRUE, perl = TRUE)
+
+category <- dplyr::case_when(
+  g("foot protein|adhesive plaque|polyphenolic|byssal protein-?\\d|\\bMGFP|\\bMCFP|Mefp|byssal EP|\\bACDC\\b|mussel byssus|mussel adhesive|preCol") ~ "byssal_structural",
+  g("byssal peroxidase|peroxidasin|\\btyrosinase|catechol oxidase|lysyl oxidase|transglutaminase|gamma-glutamyltransferase|DOPA decarboxylase|aromatic-L-amino-acid decarboxylase|tyrosine decarboxylase") &
+    !g("glutathione|thioredoxin|peroxiredoxin|monoamine|diamine|polyamine|spermine|histone demethylase|renalase|chloride intracellular|lysine-specific") ~ "crosslink_curing",
+  g("prolyl 4-hydroxylase|prolyl 3-hydroxylase|lysyl hydroxylase|procollagen-lysine|procollagen-proline|protein disulfide-isomerase") ~ "collagen_biosynth",
+  g("\\bcollagen\\b|procollagen") ~ "collagen",
+  g("byssal|byssus") ~ "byssal_accessory",
+  g("\\bADAMTS|thrombospondin|fibrillin|\\blaminin|von Willebrand factor|fibronectin|matrilin|tenascin|nidogen|perlecan|basement membrane-specific") ~ "ecm_adhesion",
+  TRUE ~ NA_character_)
+
+byss <- ann %>% mutate(category = category) %>% filter(!is.na(category)) %>%
+  mutate(hi_conf = pident >= 40 & evalue < 1e-10)
+
+cat("Byssus/foot genes:", nrow(byss), "| high-confidence:", sum(byss$hi_conf, na.rm = TRUE), "\n")
+byss %>% dplyr::count(category) %>% as.data.frame() %>% print()
+```
+
+---
+
+# 2. Stress-responsiveness (foot/gill DEG contrasts)
+
+```{r de}
+deg_dir <- file.path(DE_DIR, "03_analyses", "DEG_lists", ifelse(TISSUE == "F", "Foot", "Gill"))
+add_lfc <- function(tcode) {
+  f <- file.path(deg_dir, sprintf("%s%s_TC_siggene.csv", TISSUE, tcode))   # DEGs, padj < 0.05
+  if (!file.exists(f)) return(tibble(LOC_ID = character(), lfc = numeric()))
+  d <- read.csv(f)
+  gcol <- grep("gene", names(d), ignore.case = TRUE, value = TRUE)[1]
+  tibble(LOC_ID = gene_key(d[[gcol]]),
+         lfc = d$log2FoldChange)
+}
+for (tc in c("OA","OW","DO")) {
+  lf <- add_lfc(tc) %>% distinct(LOC_ID, .keep_all = TRUE)
+  byss[[paste0(TISSUE, "_", tc, "_log2FC")]] <- round(lf$lfc[match(byss$LOC_ID, lf$LOC_ID)], 2)
+}
+byss$n_DE <- rowSums(!is.na(byss[, grep("_log2FC$", names(byss))]))
+```
+
+---
+
+# 3. Thread-having mussels and VST expression
+
+```{r expr}
+## thread-having mussel set: from script 03's reconciliation handoff (run 03 first)
+man_path <- file.path(EXPR_DIR, sprintf("rna_thread_manifest_%s.csv", TISSUE))
+if (!file.exists(man_path))
+  stop("rna_thread_manifest_", TISSUE, ".csv not found in ", EXPR_DIR, " - run script 03 first.")
+manifest <- read_csv(man_path, show_col_types = FALSE)
+thread_mussels <- if (USE_RAW_THREAD_SET) {
+  manifest %>% filter(raw_post > 0 | raw_pre > 0) %>% pull(mussel)
+} else {
+  manifest %>% filter(in_summary_post > 0 | in_summary_base > 0) %>% pull(mussel)
+}
+thread_mussels <- unique(thread_mussels)
+
+## per-mussel day-3 thread mechanics for the companion table (the thread summary)
+norm_id <- function(x) {
+  x   <- as.character(x)
+  pre <- gsub("[0-9].*$", "", x)
+  num <- suppressWarnings(as.integer(gsub("[^0-9].*$", "", gsub("^[^0-9]+", "", x))))
+  ifelse(is.na(num), NA_character_, sprintf("%s%03d", pre, num))
+}
+read_thread_summary <- function(path) {
+  d <- readxl::read_excel(path, sheet = "data")
+  ren <- c(mussel_ID = "mussel", thread_num = "thread", treatment = "thread_trt")
+  for (from in names(ren)) {
+    to <- ren[[from]]
+    if (from %in% names(d) && !to %in% names(d)) names(d)[names(d) == from] <- to
+  }
+  if (!"phase" %in% names(d))
+    d$phase <- dplyr::case_when(d$thread_trt == "lab_control" ~ "lab",
+                                d$thread_trt == "baseline"    ~ "pre",
+                                TRUE                          ~ "post")
+  d %>% mutate(mussel = norm_id(mussel), adhesion_kpa = max_force / pad_area * 1000) %>%
+    filter(!is.na(adhesion_kpa))
+}
+thr_raw <- read_thread_summary(THREAD_FILE)
+samples_wanted <- paste0(thread_mussels, TISSUE)
+
+cm <- read.csv(COUNT_FILE, row.names = 1, check.names = FALSE)
+## "F$" keeps the phenol-gland-to-tip foot libraries and leaves out the day-0 FX libraries
+tissue_cols <- if (TISSUE=="F") grep("F$", colnames(cm), value=TRUE) else grep("G$", colnames(cm), value=TRUE)
+dds <- DESeqDataSetFromMatrix(round(as.matrix(cm[, tissue_cols])),
+                              DataFrame(row.names = tissue_cols), design = ~ 1)
+dds <- dds[rowSums(counts(dds)) > 0, ]
+vmat <- assay(vst(dds, blind = TRUE))
+rownames(vmat) <- gene_key(rownames(vmat))
+
+samples_have <- intersect(samples_wanted, colnames(vmat))
+counts_named <- counts(dds); rownames(counts_named) <- rownames(vmat)
+cat("Thread-having mussels:", length(thread_mussels), "| with", TISSUE, "expression:",
+    length(samples_have), "\n")
+```
+
+---
+
+# 4. Assemble the narrowed expression table
+
+```{r assemble}
+genes <- byss
+if (HI_CONF_ONLY)       genes <- filter(genes, hi_conf)
+genes <- filter(genes, category %in% KEEP_CATEGORIES, LOC_ID %in% rownames(vmat))
+
+## keep genes actually expressed in the thread-having samples
+cmat <- counts_named[genes$LOC_ID, samples_have, drop = FALSE]
+expressed <- rowSums(cmat > MIN_COUNT) >= ceiling(length(samples_have)/3)
+genes <- genes[expressed, ]
+cat("Byssus genes expressed in", TISSUE, "across thread-having mussels:", nrow(genes), "\n")
+
+expr_block <- as.data.frame(round(vmat[genes$LOC_ID, samples_have, drop = FALSE], 3))
+table_out <- genes %>%
+  transmute(category, LOC_ID, protein_name = `Protein.names`, gene_name = `Gene.Names`,
+            pident = round(pident,1), evalue, hi_conf,
+            !!!set_names(map(grep("_log2FC$", names(genes), value = TRUE),
+                             ~ genes[[.x]]), grep("_log2FC$", names(genes), value = TRUE)),
+            n_DE) %>%
+  bind_cols(expr_block) %>%
+  arrange(factor(category, levels = KEEP_CATEGORIES), desc(n_DE), protein_name)
+
+write_csv(table_out, file.path(OUT_DIR, sprintf("byssus_gene_expression_%s.csv", TISSUE)))
+
+## companion: per-mussel treatment + thread mechanics
+mech <- thr_raw %>% filter(phase == "post") %>%
+  group_by(mussel) %>% summarise(treatment = dplyr::first(mussel_trt), n_plaques = n(),
+            mean_force = round(mean(max_force, na.rm=TRUE),3),   # each thread's peak force, averaged
+            max_force = round(max(max_force, na.rm=TRUE),3),     # the strongest thread
+            pad_area = round(mean(pad_area, na.rm=TRUE),2),
+            adhesion_kpa = round(mean(adhesion_kpa, na.rm=TRUE),1), .groups="drop")
+sample_meta <- tibble(sample = samples_have, mussel = sub(paste0(TISSUE,"$"),"",samples_have)) %>%
+  left_join(mech, by = "mussel")
+write_csv(sample_meta, file.path(OUT_DIR, sprintf("sample_metadata_%s.csv", TISSUE)))
+
+cat("\nGene counts in final table by category:\n")
+table_out %>% dplyr::count(category) %>% as.data.frame() %>% print()
+cat("\nByssus genes that respond to stress (n_DE>0):\n")
+table_out %>% filter(n_DE > 0) %>%
+  select(category, protein_name, ends_with("_log2FC")) %>% as.data.frame() %>% print()
+```
+
+---
+
+# 5. Optional: per-category module score per mussel
+
+A compact summary, mean VST per category per mussel, useful for plotting category-level
+expression against thread mechanics (it could enter the script-20 ANCOVA with the
+category mean as the predictor).
+
+```{r catscore}
+cat_score <- map_dfr(unique(genes$category), function(cc) {
+  locs <- genes$LOC_ID[genes$category == cc]
+  if (length(locs) < 2) return(NULL)
+  tibble(category = cc, sample = samples_have,
+         mean_vst = colMeans(vmat[locs, samples_have, drop = FALSE]))
+}) %>%
+  pivot_wider(names_from = category, values_from = mean_vst) %>%
+  mutate(mussel = sub(paste0(TISSUE,"$"), "", sample)) %>%
+  left_join(mech, by = "mussel")
+write_csv(cat_score, file.path(OUT_DIR, sprintf("byssus_category_scores_%s.csv", TISSUE)))
+cat("Wrote per-category mean-expression scores (", ncol(cat_score), "cols ).\n")
+```
+
+---
+
+# 6. Notes
+
+```{r notes, echo=FALSE, results='asis'}
+cat("
+**Outputs (", OUT_DIR, "):**
+
+- `byssus_gene_expression_<tissue>.csv` - the narrowed list: category, protein, blast
+  quality (pident/evalue/hi_conf), per-contrast log2FC, n_DE, then VST expression across
+  every thread-having mussel (columns like `T046F` = mussel `T046`).
+- `sample_metadata_<tissue>.csv` - per mussel: treatment and post-stress thread mechanics,
+  to align against the expression columns.
+- `byssus_category_scores_<tissue>.csv` - mean VST per category per mussel + mechanics.
+
+**Interpretation / caveats:**
+
+- Categories were built from UniProt names + a tight enzyme filter; `hi_conf` flags
+  confident blast hits (pident>=40, evalue<1e-10). Set `HI_CONF_ONLY=TRUE` to drop weak
+  annotations (e.g. distant paralog hits among the many byssal-protein gene copies).
+- Byssal proteins are a highly duplicated gene family, so one protein name maps to many
+  LOCs; that is real, not a bug, but treat the paralog set with care.
+- The per-contrast log2FC and `n_DE` columns show which categories (structural vs
+  curing/biosynthesis) respond to stress; the table lets you check this per gene per animal.
+- Columns are limited to mussels in the thread summary; set `USE_RAW_THREAD_SET=TRUE`
+  to include every animal with an extracted trace (script 03 manifest).
+")
+```

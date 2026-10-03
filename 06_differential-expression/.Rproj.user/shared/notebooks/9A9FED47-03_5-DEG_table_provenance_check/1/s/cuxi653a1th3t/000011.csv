@@ -1,5 +1,0 @@
-"0","cat(if (REWRITE_STALE) ""\nStale files were rewritten (params$rewrite_stale = TRUE); re-run 04-File_joining.Rmd next.\n"""
-"0","    else ""\nCheck only (params$rewrite_stale = FALSE). Knit with rewrite_stale = TRUE to overwrite stale files.\n"")"
-"1","
-Check only (params$rewrite_stale = FALSE). Knit with rewrite_stale = TRUE to overwrite stale files.
-"
