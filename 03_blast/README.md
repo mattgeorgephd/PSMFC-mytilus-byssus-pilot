@@ -46,6 +46,8 @@ outputs are in `03_analyses/`.
 │   ├── 02_genome_blast_uniprot_check.Rmd  checks of a SwissProt-only genome blastx (HPC); writes nothing
 │   ├── 03_isoseq_vs_genome_blast.Rmd      Iso-Seq transcriptome vs genome (HPC)
 │   ├── 04_refresh_uniprot_records.Rmd     the genome hits with UniProt 2026_03 records (offline)
+│   ├── _blastx_parts.sh                   step 01's blastx in resumable parts
+│   ├── _build_foot_fasta.R                one-off: the 2026 search's foot proteins (196 + 45 byssal)
 │   ├── _uniprot_retrieval.py              UniProt retrieval for transcriptome blast hits
 │   └── _superseded/                       the 2024 version of step 01 (README inside)
 ├── 02_data/                         pointers only; databases/FASTAs are external

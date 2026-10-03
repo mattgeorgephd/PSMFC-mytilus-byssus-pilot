@@ -29,8 +29,9 @@ e-value at most 1e-20, one target sequence per query. Each hit is joined to its 
 (protein names, gene names, GO terms) and each CDS to its gene (`LOC` ID). It was run twice: in
 2024 on the lab server (Swiss-Prot 2024_04, the committed 2024 foot proteins; outputs in
 `03_analyses/genome-foot/`), and in October 2026 in the cloud environment (Swiss-Prot 2026_03,
-the foot proteins of that release, `foot_fasta: uniprotkb_mytilus_foot_2026_03.fasta`, 200
-parts on 4 threads; outputs in `03_analyses/genome-foot-sprot2026_03/`, with the blastx table
+the 196 foot proteins of that release's query plus 45 byssal proteins it misses,
+`foot_fasta: uniprotkb_mytilus_foot_2026_03_byssal.fasta` (`_build_foot_fasta.R`), 200 parts on
+4 threads; outputs in `03_analyses/genome-foot-sprot2026_03/`, with the blastx table
 and `RUN_provenance.txt`). Writes, in `03_analyses/<res_folder>/`:
 
 - `LOC_GO_list.txt`: one row per blastx hit (HSP): the CDS (`transcript`), the hit split into
@@ -120,7 +121,9 @@ bash "`r here::here('01_code', '_blastx_parts.sh')`" "`r params$blast_bin`" "`r 
 # The UniProt records of the hits (lab server)
 
 The two record tables of the 2024 run, with the same fields: the reviewed entries (Swiss-Prot)
-and the entries of the "mytilus foot" query. UniProt's REST service serves the current release
+and the foot proteins searched (in 2024 the entries of the "mytilus foot" query, which were the
+proteins of its foot FASTA; now the records of every accession in `foot_fasta`, so that proteins
+added to the query's, such as the 45 byssal proteins of the 2026 search, have theirs). UniProt's REST service serves the current release
 only, so a new download differs from the 2024 one in its annotation: on 2026-10-03 (release
 2026_03) the GO terms of 13,667 of the 16,675 genes' best hits had changed (28,150 gene-GO
 pairs added, 31,946 removed). The column names are those of 2024 (checked the same day), so the
@@ -134,8 +137,17 @@ served=$(curl -sS -D - -o /dev/null "https://rest.uniprot.org/uniprotkb/search?q
 [ "$served" = "`r rel`" ] || { echo "UniProt serves release ${served}; the records would not be of release `r rel`" >&2; exit 1; }
 curl -sS -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgene_oln%2Ccc_interaction%2Ccc_induction%2Cgo_p%2Cgo_c%2Cgo_f%2Cgo_id%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway&format=tsv&query=%28*%29+AND+%28reviewed%3Atrue%29" \
   | gunzip -c > "`r sprot_info_tsv`"
-curl -sS -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_id%2Cgo_p%2Cgo_f%2Cgo_c%2Cgo%2Cgene_oln%2Ccc_induction%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway%2Ccc_interaction&format=tsv&query=%28mytilus+foot%29" \
-  | gunzip -c > "`r foot_info_tsv`"
+## the foot proteins' records, by accession: those of the FASTA searched (in 2024 the records of
+## the "(mytilus foot)" query, which were the proteins of the FASTA then)
+grep "^>" "`r foot_fa`" | cut -d"|" -f2 > foot_accessions.txt
+rm -f "`r foot_info_tsv`" foot_acc_part_*
+split -l 400 foot_accessions.txt foot_acc_part_
+for f in foot_acc_part_*; do
+  curl -sS "https://rest.uniprot.org/uniprotkb/accessions?accessions=$(paste -sd, "$f")&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_id%2Cgo_p%2Cgo_f%2Cgo_c%2Cgo%2Cgene_oln%2Ccc_induction%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway%2Ccc_interaction&format=tsv" > foot_part.tsv
+  if [ -f "`r foot_info_tsv`" ]; then tail -n +2 foot_part.tsv >> "`r foot_info_tsv`"; else mv foot_part.tsv "`r foot_info_tsv`"; fi
+done
+rm -f foot_acc_part_* foot_part.tsv
+echo "foot records: $(( $(wc -l < "`r foot_info_tsv`") - 1 )) of $(wc -l < foot_accessions.txt) foot proteins"
 ```
 
 # The tables
