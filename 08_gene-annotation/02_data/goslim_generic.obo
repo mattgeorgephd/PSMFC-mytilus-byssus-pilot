@@ -1,8 +1,8 @@
 format-version: 1.2
-data-version: go/releases/2023-07-27 (goslim_generic subset, derived)
+data-version: go/releases/2026-01-23 (goslim_generic subset, derived)
 subsetdef: goslim_generic "Generic GO slim"
 ontology: go/subsets/goslim_generic
-remark: Terms tagged 'subset: goslim_generic' (not obsolete) in geneontology/go-ontology src/ontology/go-edit.obo at commit 17c29bbeb77e74a160c8a162806845af127631b9 (2023-07-27), the same GO release as GO.db 3.18.0. Only id, name and namespace are kept; the GO graph comes from GO.db. The official release file is https://current.geneontology.org/ontology/subsets/goslim_generic.obo.
+remark: Terms tagged 'subset: goslim_generic' (not obsolete) in geneontology/go-ontology src/ontology/go-edit.obo at commit d52c5a160a478c03c9f92cb1c67bf81695ff3f6b (2026-01-22 18:38 UTC, the last commit before the release), the same GO release as GO.db 3.23.1. Only id, name and namespace are kept; the GO graph comes from GO.db. The official release file is https://current.geneontology.org/ontology/subsets/goslim_generic.obo.
 
 [Term]
 id: GO:0000228
@@ -299,12 +299,6 @@ namespace: biological_process
 subset: goslim_generic
 
 [Term]
-id: GO:0006486
-name: protein glycosylation
-namespace: biological_process
-subset: goslim_generic
-
-[Term]
 id: GO:0006520
 name: amino acid metabolic process
 namespace: biological_process
@@ -312,7 +306,7 @@ subset: goslim_generic
 
 [Term]
 id: GO:0006575
-name: cellular modified amino acid metabolic process
+name: modified amino acid metabolic process
 namespace: biological_process
 subset: goslim_generic
 
@@ -416,6 +410,12 @@ subset: goslim_generic
 id: GO:0008289
 name: lipid binding
 namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0009101
+name: glycoprotein biosynthetic process
+namespace: biological_process
 subset: goslim_generic
 
 [Term]
@@ -828,7 +828,7 @@ subset: goslim_generic
 
 [Term]
 id: GO:0140299
-name: small molecule sensor activity
+name: molecular sensor activity
 namespace: molecular_function
 subset: goslim_generic
 

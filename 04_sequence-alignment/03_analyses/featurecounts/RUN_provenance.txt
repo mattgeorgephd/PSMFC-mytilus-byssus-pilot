@@ -1,10 +1,10 @@
 04 step 07: count matrix of record
-run                  : 2026-10-03 07:02 UTC
+run                  : 2026-10-03 19:58 UTC
 counts               : featureCounts (unique, sense strand) on the ext3 annotation, step 06
 row names            : prepDE's gene_id|gene_name from t_data.ctab
-code commit          : 469246a2bdf4
+code commit          : edee965df2de
 uncommitted changes  : no
-R                    : R version 4.4.3 (2025-02-28)
+R                    : R version 4.6.1 (2026-06-24)
 packages             : data.table 1.18.6.1
 inputs (md5, repo-relative path):
   f8014b1d2b08d026c6dbca8e1f24dbb1  04_sequence-alignment/01_code/07_count_matrix_of_record.Rmd

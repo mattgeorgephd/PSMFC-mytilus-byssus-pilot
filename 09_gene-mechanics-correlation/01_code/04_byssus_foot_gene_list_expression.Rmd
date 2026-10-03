@@ -60,7 +60,7 @@ COUNT_FILE   <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_mat
 THREAD_FILE  <- file.path(repo_root, "02_thread-strength", "03_analyses", "03_assemble-thread-summary",
                           "thread-summary.xlsx")
 EXPR_DIR     <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "expr_tables")  # script 03 outputs
-LOC_GO_FILE  <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
+LOC_GO_FILE  <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-uniprot2026_03", "LOC_GO_list.txt")
 OUT_DIR      <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "byssus_genes")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 ```

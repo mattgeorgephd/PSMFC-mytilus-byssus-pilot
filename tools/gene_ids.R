@@ -14,7 +14,7 @@
 ##
 ## gene_key() returns the LOC identifier when the name holds one, otherwise the gene_id
 ## without its "gene-" prefix. That is the key of the BLAST / UniProt table
-## (03_blast/03_analyses/genome-foot/LOC_GO_list.txt, column `gene`: LOC IDs, and ND2, CYTB,
+## (03_blast/03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt, column `gene`: LOC IDs, and ND2, CYTB,
 ## ... for the mitochondrial genes) and of the reference annotation (t_data.ctab gene_id
 ## without "gene-"). It is unique across the matrix; taking the text after "|" is not, since
 ## it collapses the tRNA genes onto their shared gene_name and leaves "gene-" on the 739

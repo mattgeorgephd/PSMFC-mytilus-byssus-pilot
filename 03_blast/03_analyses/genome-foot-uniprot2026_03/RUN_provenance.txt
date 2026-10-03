@@ -1,0 +1,14 @@
+03 step 04: genome BLAST hits with current UniProt records
+run                  : 2026-10-03 15:26 UTC
+UniProt release      : 2026_03 (records of the hit proteins, REST accessions endpoint)
+hits                 : the 2024 blastx search (Swiss-Prot 2024_04 plus the mytilus foot proteins), one row per HSP
+code commit          : 9f38fa6d1f3b
+uncommitted changes  : no
+R                    : R version 4.4.3 (2025-02-28)
+packages             : data.table 1.18.6.1
+inputs (md5, repo-relative path):
+  07d26d040ed3fa7292226bbdb1df51a5  03_blast/01_code/04_refresh_uniprot_records.Rmd
+  521f4d6729cfc433f63875909413b640  03_blast/03_analyses/genome-foot/genome_n_foot_blastx.tab
+  4bdce312ba260d167eeec0f957ef7830  03_blast/03_analyses/genome-foot/g.spid.txt
+  6bd66a3af047ceb9a58a09bad9fdabdb  03_blast/03_analyses/genome-foot/LOC_GO_list.txt
+  22422c9a5da7e3d819f5ed36b5649515  03_blast/03_analyses/genome-foot-uniprot2026_03/uniprot_records_2026_03.tsv

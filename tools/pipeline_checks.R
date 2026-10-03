@@ -84,3 +84,17 @@ provenance_lines <- function(header, inputs, repo_root, packages = character(0))
     "inputs (md5, repo-relative path):",
     paste0("  ", md5, "  ", vapply(inputs, rel_path, character(1), repo_root = repo_root)))
 }
+
+## The GO release the analysis is of. GO enrichment and GO slims change with the release in
+## GO.db, so the GO steps (07, 08 step 01) stop when GO.db holds another one, instead of giving
+## results of a release nobody chose. GO.db 3.23.1 (Bioconductor 3.23) holds this release.
+GO_RELEASE_OF_RECORD <- "2026-01-23"
+check_go_release <- function(expected = GO_RELEASE_OF_RECORD) {
+  info <- GO.db::GO_dbInfo()
+  got  <- info$value[info$name == "GOSOURCEDATE"]
+  if (!identical(got, expected))
+    stop("GO.db ", as.character(utils::packageVersion("GO.db")), " holds GO release ", got,
+         "; this analysis is of GO release ", expected,
+         " (install GO.db 3.23.1 from Bioconductor 3.23, see AGENTS.md, How to run)", call. = FALSE)
+  invisible(got)
+}

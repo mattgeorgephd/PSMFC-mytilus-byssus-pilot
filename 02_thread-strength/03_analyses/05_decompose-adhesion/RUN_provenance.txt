@@ -1,4 +1,4 @@
-generated : 2026-10-03 07:02:05
+generated : 2026-10-03 19:58:32
 input     : 03_analyses/03_assemble-thread-summary/thread-summary.xlsx
 model     : per-animal ANCOVA, log(day-3 level) ~ arm + log(baseline level); mean_force and pad_area geometric means, max_force the largest thread
 animals   : mean_force 48 (control 12, OA 12, OW 12, DO 12)
@@ -6,13 +6,13 @@ animals   : max_force 48 (control 12, OA 12, OW 12, DO 12)
 animals   : pad_area 48 (control 12, OA 12, OW 12, DO 12)
 multiplicity : unadjusted and Dunnett (emmeans mvt, seed 20260930)
 classified animals: 61 (48 paired)
-R / emmeans : R version 4.4.3 (2025-02-28) / 2.0.4
-code commit          : 469246a2bdf4
+R / emmeans : R version 4.6.1 (2026-06-24) / 2.0.4
+code commit          : edee965df2de
 uncommitted changes  : no
-R                    : R version 4.4.3 (2025-02-28)
+R                    : R version 4.6.1 (2026-06-24)
 packages             : emmeans 2.0.4
 inputs (md5, repo-relative path):
-  71619b84dedd75ed13da52866abdf0c7  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
+  55e8a7446884f64ef360d12650ee9000  02_thread-strength/03_analyses/03_assemble-thread-summary/thread-summary.xlsx
   368f9b47a493fdc894bd5c9a46dc2b3a  02_thread-strength/01_code/05_decompose_adhesion.Rmd
   95ad5e8b9d6029d12d4c8d407b79bc6e  02_thread-strength/01_code/_ancova.R
-  39e378e11109e3a5c02a9631957bb4ce  02_thread-strength/03_analyses/04_analyze-thread-strength/STATS_ancova_vs_control.csv
+  5317320e6046be8616ce45680365aa96  02_thread-strength/03_analyses/04_analyze-thread-strength/STATS_ancova_vs_control.csv

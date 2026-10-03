@@ -34,13 +34,31 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   then knit the script. Run the steps before it first.
 - **Requirements:** the packages each folder's README lists (DESeq2, apeglm, ashr, topGO,
   goseq, clusterProfiler, enrichplot, rrvgo, GOSemSim, GO.db, GSEABase, org.Hs.eg.db,
-  tidyverse, readxl, openxlsx, emmeans, here, rmarkdown, among others). Tested with R 4.4.3
-  and Bioconductor 3.20 packages, with `GO.db` and `org.Hs.eg.db` 3.18.0 (GO release
-  2023-07-27); the earlier analyses ran on R 4.2.2. GO results change with the GO release in
-  `GO.db`, so `07` records it with the package versions in
-  `03_analyses/01_go-inputs/RUN_provenance.txt`.
-- **Not run by the pipeline:** `03_blast/` and `04_sequence-alignment` step 01 (HPC, inputs
-  not in the repository), `04` steps 04-06 and step 08's mitochondrial alignment (download the
+  tidyverse, readxl, openxlsx, emmeans, here, rmarkdown, R.utils (for `data.table::fread` on
+  `.gz` files), among others). Tested with R 4.6.1 and Bioconductor 3.23
+  (`BiocManager::install(version = "3.23")`): DESeq2 1.52.0, apeglm 1.34.0, ashr 2.2.63, topGO
+  2.64.0, goseq 1.64.0, clusterProfiler 4.20.0, rrvgo 1.24.0, GOSemSim 2.38.3, `GO.db` 3.23.1
+  (GO release 2026-01-23) and `org.Hs.eg.db` 3.23.1. The previous runs used R 4.4.3 with
+  Bioconductor 3.20 and, before that, R 4.2.2; on the same inputs R 4.6.1 / Bioconductor 3.23
+  gave the same DEGs, GO terms, GO slims and gene-mechanics results (log2 fold changes within
+  1e-6). GO results change with the GO release in `GO.db`, so `07` and `08` stop unless it is
+  2026-01-23 (`check_go_release()`, `tools/pipeline_checks.R`), and `07` records it with the
+  package versions in `03_analyses/01_go-inputs/RUN_provenance.txt`. `renv.lock` at the root
+  records every package of the library the pipeline last ran with (277, R's recommended packages
+  included: Matrix 1.7-6, MASS 7.3-66, mgcv 1.9-4, survival 3.8-12, ...): with R 4.6.1,
+  `install.packages("renv"); renv::restore(lockfile = "renv.lock", library = "<library>",
+  prompt = FALSE)` rebuilds it (the project does not activate renv, so nothing else changes).
+  System libraries are not in it (on Ubuntu 24.04: libcurl, libssl, libxml2, libfontconfig,
+  libharfbuzz, libfribidi, libfreetype, libpng, libtiff, libjpeg, libwebp, libcairo2, libglpk,
+  libgmp, libicu, libuv, libnlopt, libgit2, ImageMagick and pandoc, as `-dev` packages). On a
+  machine that had an older R, keep the old R's packages off the library path (on Ubuntu,
+  packages in `/usr/lib/R/site-library` built for R 4.3 fail to load in R 4.6), for example
+  `R_LIBS_SITE=/nonexistent R_LIBS=<library>` when installing and running, and upgrade R's
+  recommended packages with R (CRAN's Ubuntu repository builds them for 4.6).
+- **Not run by the pipeline:** `03_blast/` steps 01-03 and `04_sequence-alignment` step 01
+  (HPC, inputs not in the repository), `03_blast` step 04 (the 2024 hits with UniProt 2026_03
+  records; it runs offline from committed files, and `online: true` fetches the records again,
+  which works only while UniProt serves release 2026_03), `04` steps 04-06 and step 08's mitochondrial alignment (download the
   transcriptome, genome and reads and run minimap2, HISAT2, StringTie and featureCounts; set
   the `04` runner's `online: true`; steps 04-06 make the count matrix of record, which step 07
   takes), `04` step 03's recipe check (its own `online: true`), `06_iso-seq-transcriptome`
@@ -105,6 +123,12 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     step 08: HISAT2 default scoring against NC_007687.1, featureCounts per gene) and tested per
     protein in `05` step 13 with the nuclear genes' size factors; the haplotype covariate and
     a permissive alignment score are sensitivity checks there.
+  - Annotation: each gene's best hit (highest bitscore) in the genome blastx of 2024
+    (Swiss-Prot release 2024_04 plus the Mytilus foot proteins, `03_blast` step 01), with the
+    UniProt records of release 2026_03 (`03_blast` step 04,
+    `03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt`); GO release 2026-01-23
+    (`GO.db` 3.23.1) and its generic GO slim (`08_gene-annotation/02_data/goslim_generic.obo`).
+    The 2024 records (`genome-foot/LOC_GO_list.txt`) are kept for comparison.
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.
