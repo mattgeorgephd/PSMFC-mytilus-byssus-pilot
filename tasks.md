@@ -150,18 +150,26 @@ the other sections use the new ones.
   code, the runners (the pipeline's stages now run 02, 04, 05, 06, 07, 08, 09), `.gitignore`,
   the READMEs, `AGENTS.md` and the step map follow. Every folder now reads only lower-numbered
   folders; `03_blast` and `04` step 01 (HPC) stay a break in the chain.
+- **Online steps and the whole pipeline rerun under the new names** (2026-10-03).
+  `04_sequence-alignment` steps 04-06 and 08, step 03's recipe check and
+  `06_iso-seq-transcriptome` step 02 rerun from their caches, then `00_run_pipeline.Rmd` from a
+  clean commit: every step TRUE, `09` checks 0 failed, every output table byte-identical to
+  before the renumbering.
+- **Genome BLAST script fixed** (2026-10-03). `03_blast/01_code/01_genome_blast.Rmd` runs again
+  (the 2024 version is in `01_code/_superseded/`). From the 2024 blastx table it rebuilds
+  `g.spid.txt` and, in its `as_2024` mode, `LOC_GO_list.txt` byte for byte; its database was
+  Swiss-Prot release 2024_04 (not 2024_01), and its search reproduces the 2024 hits on a
+  100-CDS sample.
 
 ## In progress
 
 - Proofreading the regenerated figures before they go into the manuscript.
-- **Folder numbers in run order** (option C, this pull request). Left: rerun the online steps
-  from their caches and the whole pipeline under the new names, and make
-  `03_blast/01_code/01_genome_blast.Rmd` run as written.
 
 ## Blocked or waiting on a decision
 
 | item | why it is blocked | who |
 |---|---|---|
+| UniProt annotation refresh | the UniProt records in `LOC_GO_list.txt` are those of 2024 (hits from Swiss-Prot 2024_04). Measured on 2026-10-03 with today's records (2026_03) and the pinned GO release: the mitochondrial loci and every DEG are unchanged, but 110 of the 296 TC GO terms of record drop out and 93 come in (of those dropping out, 34 sit just above p = 0.01, 52 further away and 24 are no longer tested), the Gill OA and Gill DO "response to endoplasmic reticulum stress" terms lose significance, 1 gene leaves each byssal list, and `09`'s two gene-level associations stay. A refresh would also need a newer GO.db (not reachable from the cloud environment) and the 05 step 06 entry-name check relaxed. Keep 2024 or refresh, as its own pull request | Matt |
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
