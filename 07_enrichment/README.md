@@ -29,8 +29,8 @@ Open `enrichment.Rproj` and knit `01_code/00_run_enrichment.Rmd` (or let the rep
 propagation, figure labels, the dot plot). Packages: topGO, goseq, clusterProfiler,
 enrichplot, rrvgo, GOSemSim, GO.db, GSEABase, org.Hs.eg.db (only for a column rrvgo insists
 on; step 05 replaces it), tidyverse, patchwork, here, rmarkdown. `GO.db` must be 3.23.1 (GO
-release 2026-01-23): `01_code/_paths.R` stops otherwise (`check_go_release()`,
-`tools/pipeline_checks.R`; how to install it with R 4.4 is in `AGENTS.md`, How to run).
+release 2026-01-23, Bioconductor 3.23): `01_code/_paths.R` stops otherwise
+(`check_go_release()`, `tools/pipeline_checks.R`; see `AGENTS.md`, How to run).
 
 ## Design
 

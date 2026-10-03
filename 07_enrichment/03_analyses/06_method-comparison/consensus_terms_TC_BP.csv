@@ -7,11 +7,11 @@
 "FDO_TC","down","GO:0007288","sperm axoneme assembly",22,11,3.20825766336637e-10,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0036158","outer dynein arm assembly",15,9,1.639819019473e-09,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0060294","cilium movement involved in cell motility",111,46,7.48424739459073e-09,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0036159","inner dynein arm assembly",11,7,6.82404671225446e-08,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0036159","inner dynein arm assembly",11,7,6.82404671225443e-08,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0003341","cilium movement",146,58,6.35256995305315e-07,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0060271","cilium assembly",219,59,8.93911473793297e-07,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0035082","axoneme assembly",72,35,1.42003245385439e-05,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0007368","determination of left/right symmetry",52,11,0.000285449325750863,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0007368","determination of left/right symmetry",52,11,0.000285449325750864,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0018200","peptidyl-glutamic acid modification",10,4,0.000559256822083518,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:1905515","non-motile cilium assembly",27,6,0.000797206638790575,"weight01;classic;clusterProfiler",3
 "FDO_TC","down","GO:0042532","negative regulation of tyrosine phosphorylation of STAT protein",11,4,0.00084950237621133,"weight01;classic;clusterProfiler",3
@@ -20,7 +20,7 @@
 "FDO_TC","down","GO:0042531","positive regulation of tyrosine phosphorylation of STAT protein",12,4,0.00123178550041889,"weight01;clusterProfiler",2
 "FDO_TC","down","GO:0070212","protein poly-ADP-ribosylation",12,4,0.00123178550041889,"weight01;clusterProfiler",2
 "FDO_TC","down","GO:0007018","microtubule-based movement",245,69,0.00136500748351075,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0120316","sperm flagellum assembly",35,15,0.00144274272967944,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0044458","motile cilium assembly",46,18,0.00828212619985101,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0120316","sperm flagellum assembly",35,15,0.00144274272967945,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0044458","motile cilium assembly",46,18,0.00828212619985102,"weight01;classic;goseq;clusterProfiler",4
 "GOA_TC","up","GO:0006749","glutathione metabolic process",32,9,7.27996409436227e-08,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0019752","carboxylic acid metabolic process",313,22,3.83601776992271e-05,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0019752","carboxylic acid metabolic process",313,22,3.83601776992272e-05,"weight01;classic;goseq;clusterProfiler",4

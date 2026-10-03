@@ -1,13 +1,13 @@
 "code","direction","GO.ID","Term","Annotated","Significant","p_weight01","methods","n_methods"
 "FOA_TC","up","GO:0004812","aminoacyl-tRNA ligase activity",21,13,1.43733394891877e-17,"weight01;classic;goseq;clusterProfiler",4
 "FOA_TC","up","GO:0000049","tRNA binding",14,7,5.01899315499913e-09,"weight01;classic;goseq;clusterProfiler",4
-"FOA_TC","up","GO:0005524","ATP binding",480,27,1.12954842818293e-06,"weight01;classic;goseq;clusterProfiler",4
+"FOA_TC","up","GO:0005524","ATP binding",480,27,1.12954842818294e-06,"weight01;classic;goseq;clusterProfiler",4
 "FOA_TC","up","GO:0003743","translation initiation factor activity",31,7,2.85976411016627e-06,"weight01;classic;goseq;clusterProfiler",4
-"FOA_TC","up","GO:0160215","deacylase activity",19,4,0.000602140365496792,"weight01;classic;goseq;clusterProfiler",4
+"FOA_TC","up","GO:0160215","deacylase activity",19,4,0.000602140365496791,"weight01;classic;goseq;clusterProfiler",4
 "FOA_TC","up","GO:0052689","carboxylic ester hydrolase activity",22,4,0.00108183105485619,"weight01;classic;clusterProfiler",3
 "FDO_TC","down","GO:0008569","minus-end-directed microtubule motor activity",18,12,2.31698943164223e-13,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0045505","dynein intermediate chain binding",30,14,1.85920116992706e-12,"weight01;classic;goseq;clusterProfiler",4
-"FDO_TC","down","GO:0051959","dynein light intermediate chain binding",21,12,3.29169423784983e-12,"weight01;classic;goseq;clusterProfiler",4
+"FDO_TC","down","GO:0051959","dynein light intermediate chain binding",21,12,3.29169423784982e-12,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0008017","microtubule binding",117,24,2.33818368615132e-11,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0005509","calcium ion binding",260,27,5.02013883755206e-06,"weight01;classic;goseq;clusterProfiler",4
 "FDO_TC","down","GO:0005524","ATP binding",545,43,1.09454710582494e-05,"weight01;classic",2
@@ -22,7 +22,7 @@
 "FDO_TC","down","GO:0038024","cargo receptor activity",25,5,0.00293982867517882,"weight01;classic;clusterProfiler",3
 "FDO_TC","down","GO:0016776","phosphotransferase activity, phosphate group as acceptor",16,4,0.00333372153216668,"weight01;clusterProfiler",2
 "GOA_TC","up","GO:0004364","glutathione transferase activity",22,9,3.03105445840553e-09,"weight01;classic;goseq;clusterProfiler",4
-"GOA_TC","up","GO:0016836","hydro-lyase activity",27,6,7.87549267396684e-05,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0016836","hydro-lyase activity",27,6,7.87549267396686e-05,"weight01;classic;goseq;clusterProfiler",4
 "GOA_TC","up","GO:0016667","oxidoreductase activity, acting on a sulfur group of donors",33,7,0.00149643002148013,"weight01;classic;goseq;clusterProfiler",4
 "GOA_TC","up","GO:0016651","oxidoreductase activity, acting on NAD(P)H",30,5,0.00161172809746385,"weight01;goseq;clusterProfiler",3
-"GOA_TC","up","GO:0016616","oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor",77,9,0.00878706421712852,"weight01;classic;goseq;clusterProfiler",4
+"GOA_TC","up","GO:0016616","oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor",77,9,0.00878706421712853,"weight01;classic;goseq;clusterProfiler",4

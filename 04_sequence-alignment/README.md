@@ -184,6 +184,6 @@ For anyone rerunning from raw reads:
 `/home/shared/...` paths and read inputs not committed here, so they do not run as they are
 outside that HPC environment. Steps 04 to 06 and step 08 with `online: true` need the tools
 above (the runner's `minimap2` and `bin` parameters). Packages for steps 02 to 08: base R,
-here, rmarkdown, data.table (04 to 08), GenomicRanges and GenomicAlignments (04, 05),
+here, rmarkdown, data.table and R.utils (04 to 08), GenomicRanges and GenomicAlignments (04, 05),
 rtracklayer and Biostrings (04); step 03 with `online: true` also needs curl, perl, FASTX-Toolkit 0.0.14 and
 cutadapt (5.2 used).

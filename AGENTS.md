@@ -34,20 +34,19 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   then knit the script. Run the steps before it first.
 - **Requirements:** the packages each folder's README lists (DESeq2, apeglm, ashr, topGO,
   goseq, clusterProfiler, enrichplot, rrvgo, GOSemSim, GO.db, GSEABase, org.Hs.eg.db,
-  tidyverse, readxl, openxlsx, emmeans, here, rmarkdown, among others). Tested with R 4.4.3
-  and Bioconductor 3.20 packages, except `GO.db` 3.23.1 (GO release 2026-01-23),
-  `org.Hs.eg.db` 3.23.1 and `AnnotationDbi` 1.74.0 (which they need), from Bioconductor 3.23;
-  the earlier analyses ran on R 4.2.2. GO results change with the GO release in `GO.db`, so
-  `07` and `08` stop unless it is 2026-01-23 (`check_go_release()`, `tools/pipeline_checks.R`)
-  and `07` records it with the package versions in
-  `03_analyses/01_go-inputs/RUN_provenance.txt`. Bioconductor 3.23 is the release for R 4.6;
-  with R 4.6, `BiocManager::install(version = "3.23")` installs all three. With R 4.4, install
-  the three source packages into the library the analysis uses, as was done here:
-  `install.packages(c("https://bioconductor.org/packages/3.23/bioc/src/contrib/AnnotationDbi_1.74.0.tar.gz",
-  "https://bioconductor.org/packages/3.23/data/annotation/src/contrib/GO.db_3.23.1.tar.gz",
-  "https://bioconductor.org/packages/3.23/data/annotation/src/contrib/org.Hs.eg.db_3.23.1.tar.gz"),
-  repos = NULL, type = "source")` (`BiocManager::valid()` then reports them as too new for
-  Bioconductor 3.20, which is expected).
+  tidyverse, readxl, openxlsx, emmeans, here, rmarkdown, R.utils (for `data.table::fread` on
+  `.gz` files), among others). Tested with R 4.6.1 and Bioconductor 3.23
+  (`BiocManager::install(version = "3.23")`): DESeq2 1.52.0, apeglm 1.34.0, ashr 2.2.63, topGO
+  2.64.0, goseq 1.64.0, clusterProfiler 4.20.0, rrvgo 1.24.0, GOSemSim 2.38.3, `GO.db` 3.23.1
+  (GO release 2026-01-23) and `org.Hs.eg.db` 3.23.1. The previous runs used R 4.4.3 with
+  Bioconductor 3.20 and, before that, R 4.2.2; on the same inputs R 4.6.1 / Bioconductor 3.23
+  gave the same DEGs, GO terms, GO slims and gene-mechanics results (log2 fold changes within
+  1e-6). GO results change with the GO release in `GO.db`, so `07` and `08` stop unless it is
+  2026-01-23 (`check_go_release()`, `tools/pipeline_checks.R`), and `07` records it with the
+  package versions in `03_analyses/01_go-inputs/RUN_provenance.txt`. On a machine that had an
+  older R, keep the old R's packages off the library path (on Ubuntu, packages in
+  `/usr/lib/R/site-library` built for R 4.3 fail to load in R 4.6): for example
+  `R_LIBS_SITE=/nonexistent R_LIBS=<library>` when installing and running.
 - **Not run by the pipeline:** `03_blast/` steps 01-03 and `04_sequence-alignment` step 01
   (HPC, inputs not in the repository), `03_blast` step 04 (the 2024 hits with UniProt 2026_03
   records; it runs offline from committed files, and `online: true` fetches the records again,

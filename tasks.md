@@ -179,8 +179,8 @@ the other sections use the new ones.
 
 ## Known limitations (documented, not blocking)
 
-- **No locked software environment.** The pipeline was tested with R 4.4.3 and Bioconductor
-  3.20 (versions recorded in each `RUN_provenance*.txt`), but the repository has no `renv.lock`
+- **No locked software environment.** The pipeline was tested with R 4.6.1 and Bioconductor
+  3.23 (versions recorded in each `RUN_provenance*.txt`), but the repository has no `renv.lock`
   or conda environment file, so a new machine has to assemble the packages by hand. System
   libraries matter too: after the cloud container was rebuilt on 2026-10-01, every figure
   re-rendered with different fonts (same data, different bytes).
@@ -213,4 +213,4 @@ the other sections use the new ones.
 
 - Update the manuscript text.
 - Library QC sensitivity run (T025G, T035G, T040F).
-- Add an environment lockfile (renv or conda) for the R 4.4.3 / Bioconductor 3.20 set.
+- Add an environment lockfile (renv or conda) for the R 4.6.1 / Bioconductor 3.23 set.
