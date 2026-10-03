@@ -1,5 +1,5 @@
 check,value
-"per-library counter = 05 port (genes, all counts equal)","47806 genes, TRUE"
+"per-library counter = step 02 port (genes, all counts equal)","47806 genes, TRUE"
 "control vs record, transcripts compared",68103
 "control vs record, transcripts with identical coverage",60491
 "control vs record, Spearman of transcript coverage",0.948
