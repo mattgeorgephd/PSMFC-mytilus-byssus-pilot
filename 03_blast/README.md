@@ -17,6 +17,14 @@ transcriptome to the genome. Two lines of work:
   mode, `LOC_GO_list.txt` byte for byte (given the 2024 UniProt records, which UniProt no longer
   serves and which were rebuilt from the committed file for the test). With `run: false`, the
   default, it only checks the committed tables against a blastx table given as `blastx_tab`.
+  The analysis reads the same hits with current UniProt records:
+  `04_refresh_uniprot_records.Rmd` joins the 2024 blastx table (committed) to the records of
+  UniProt release 2026_03 for the 10,740 hit proteins (committed as fetched) and writes
+  `03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt`, one row per hit, with the columns
+  of the 2024 table. It runs offline; `online: true` fetches the records again (UniProt serves
+  only its current release, so a newer release goes in a new folder). Every gene keeps its
+  2024 best hit; 670 of the hit proteins' names and 8,991 of their GO ID sets have changed
+  since 2024.
   `02_genome_blast_uniprot_check.Rmd`, formerly `08_gene-annotation/01_code/Annotation.Rmd`,
   inspects a SwissProt-only blastx of the same CDS and the UniProt annotation download; it
   writes only HPC intermediates, nothing in this repository.
@@ -37,12 +45,14 @@ outputs are in `03_analyses/`.
 │   ├── 01_genome_blast.Rmd                genome CDS vs Swiss-Prot+foot (HPC, run: true); writes LOC_GO/g.spid
 │   ├── 02_genome_blast_uniprot_check.Rmd  checks of a SwissProt-only genome blastx (HPC); writes nothing
 │   ├── 03_isoseq_vs_genome_blast.Rmd      Iso-Seq transcriptome vs genome (HPC)
+│   ├── 04_refresh_uniprot_records.Rmd     the genome hits with UniProt 2026_03 records (offline)
 │   ├── _uniprot_retrieval.py              UniProt retrieval for transcriptome blast hits
 │   └── _superseded/                       the 2024 version of step 01 (README inside)
 ├── 02_data/                         pointers only; databases/FASTAs are external
 └── 03_analyses/
     ├── transcriptome-uniprot/       isoseq-transcriptome vs UniProt blastx + GO/SPID tables
-    └── genome-foot/                 LOC_GO_list.txt, g.spid.txt (genome blast GO mapping)
+    ├── genome-foot/                 LOC_GO_list.txt, g.spid.txt, blastx table (genome blast, 2024 records)
+    └── genome-foot-uniprot2026_03/  LOC_GO_list.txt with UniProt 2026_03 records (read by the analysis)
 ```
 
 ## External inputs (not in repo)
