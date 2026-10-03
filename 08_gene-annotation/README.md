@@ -6,7 +6,9 @@ tables and top-50 lists of `06_differential-expression` and writes only to its o
 `03_analyses/`.
 
 Paths resolve through `01_code/_paths.R` (`here::here()` anchored on `gene-annotation.Rproj`).
-The genome BLAST that produced the annotation is in `03_blast` (its record script
+No step reads `03_blast` directly: the BLAST annotation reaches this folder through
+`06_differential-expression` step 06 (`*_sigs_ID.csv`). The genome BLAST that produced it is in
+`03_blast` (its record script
 `02_genome_blast_uniprot_check.Rmd` used to sit here as `Annotation.Rmd`); an earlier
 annotation attempt is kept under `01_code/_superseded/`.
 

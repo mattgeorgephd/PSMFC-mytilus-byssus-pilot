@@ -21,11 +21,11 @@ About fifteen minutes, six of them in script 03 and four in script 13.
 
 | step | script | reads | writes to `03_analyses/` |
 |---|---|---|---|
-| 01 | `01_clean_count_matrix.Rmd` | `05_sequence-alignment/03_analyses/featurecounts/gene_count_matrix.csv` and `hisat/t_data.ctab`, `02_data/` sample sheets, the BLAST table | `count_matrix/`, including `mitochondrial_loci.csv` |
+| 01 | `01_clean_count_matrix.Rmd` | `05_sequence-alignment/03_analyses/featurecounts/gene_count_matrix.csv` and `hisat/t_data.ctab`, `05_sequence-alignment/02_data/annotation_mt_like_loci.csv`, `02_data/` sample sheets, the BLAST table | `count_matrix/`, including `mitochondrial_loci.csv` |
 | 02 | `02_define_contrasts.Rmd` | the sample table | `DEG_lists/contrasts.csv`, `contrast_samples.csv` |
 | 03 | `03_deseq_contrasts.Rmd` | counts (without the mitochondrial loci), contrasts | `dds/` (fitted objects, git-ignored), `DEG_lists/filter_summary.csv`, PCA plots in `figures/` |
 | 04 | `04_shrinkage_filtration.Rmd` | `dds/` | `DEG_lists/<Foot,Gill,Foot_vs_Gill>/`: apeglm tables, DEG lists, MA plots; `DEG_lists/DEG_counts.csv` |
-| 05 | `05_fourlevel_sensitivity.Rmd` | counts, TC DEG lists | `DEG_lists/sensitivity_fourlevel/` |
+| 05 | `05_fourlevel_sensitivity.Rmd` | counts, sample table, `mitochondrial_loci.csv`, TC DEG lists | `DEG_lists/sensitivity_fourlevel/` |
 | 06 | `06_join_annotation.Rmd` | TC DEG lists, `03_blast/03_analyses/genome-foot/LOC_GO_list.txt` | `DEG_lists/GOterms_genome/`, `DEG_lists/DEG_join_summary.csv` |
 | 07 | `07_top_degs.Rmd` | annotated TC DEGs | `top_DEGs/Top_50_genes/`: the top-50 tables and bar plots labelled by gene symbol |
 | 08-10 | `08_deg_venn.Rmd`, `09_volcano_plots.Rmd`, `10_number_degs.Rmd` | annotated TC DEGs | the manuscript TC figures in `figures/` (`TC_venn_*`, `TC_volcano_*`, `TC_DEG_numbers.png`) |

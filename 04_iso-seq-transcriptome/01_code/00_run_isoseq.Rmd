@@ -4,7 +4,7 @@ author: "Byssus expression analysis"
 date: "`r Sys.Date()`"
 output: html_document
 params:
-  online: false         # steps 02-03 and 05-06 download inputs and run the aligners; false runs steps 04 and 07
+  online: false         # true: steps 02-07 (02, 03 and 06 download inputs and run the aligners; 05 needs 02's local files); false: steps 04 and 07
   minimap2: "minimap2"  # binary paths for steps 02 and 03
   salmon: "salmon"
   bin: ""               # step 06: folder with hisat2, samtools, stringtie and featureCounts ("" = PATH)
@@ -26,7 +26,7 @@ log in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
 
 | step | script | writes to `03_analyses/` | needs |
 |---|---|---|---|
-| 01 | `01_isoseq_transcriptome_check.Rmd` | nothing (a length QC; chunks not evaluated) | owl |
+| 01 | `01_isoseq_transcriptome_check.Rmd` | nothing in `03_analyses/` (a length QC knit by hand; not run by this runner) | owl |
 | 02 | `02_isoform_gene_map.Rmd` | `02_isoform-gene-map/`: each isoform's genome gene | owl, NCBI, minimap2; about 1.5 hours, 9 GB of memory |
 | 03 | `03_salmon_quant.Rmd` | `03_salmon/`: mapping summary and gene counts | gannet, salmon; about 15 minutes for the index plus 3 to 4 minutes per library |
 | 04 | `04_isoseq_de_comparison.Rmd` | `04_isoseq-de/`: TC contrasts on the Iso-Seq counts and the comparison with the genome | committed files only |

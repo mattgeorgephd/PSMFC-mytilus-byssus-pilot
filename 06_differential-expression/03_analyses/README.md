@@ -20,7 +20,9 @@ Everything here is written by the scripts in `../01_code/` and rebuilt by
 | `_superseded/` | the previous scripts | per-contrast count and sample tables; the retired LC contrasts (`LC_contrasts/`); kept as a record |
 | `knit_html/` | the runner | HTML reports and logs (git-ignored) |
 
-Read by: `07_enrichment` (contrasts and apeglm tables), `08_gene-annotation`
+Read by: `04_iso-seq-transcriptome` (steps 02 and 05: `mitochondrial_loci.csv`; steps 04 and
+07: contrasts, sample table, `mitochondrial_loci.csv`, TC apeglm tables, and for step 04 the
+count matrix), `07_enrichment` (contrasts, apeglm tables, `mitochondrial_loci.csv`), `08_gene-annotation`
 (`GOterms_genome/`, `top_DEGs/`, `mitochondrial_loci.csv`) and `09_gene-mechanics-correlation`
 (count matrix, sample table, `mitochondrial_loci.csv`, TC DEG lists, `GOterms_genome/`,
 `mitochondrial/mt_share_by_sample.csv`).

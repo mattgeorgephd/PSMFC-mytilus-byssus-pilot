@@ -51,5 +51,5 @@ finish_run(run_log, html_dir, "GO enrichment")
 Start with `06_method-comparison/consensus_terms_TC_BP.csv` (terms enriched by topGO and by
 at least one other method) and the topGO dot plots in `02_topgo/`. topGO's `weight01`
 p-values are not FDR-adjusted, by convention; in runs where no FDR-controlled method finds
-any term, treat its list as exploratory. Terms marked as carried mostly by mitochondrially
-encoded protein LOCs (Gill OA up) count one mitochondrial signal many times.
+any term, treat its list as exploratory. The mitochondrial loci are in no universe (step 01
+stops if any reach the gene sets), so no term is carried by them.

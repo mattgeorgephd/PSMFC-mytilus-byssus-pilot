@@ -16,6 +16,8 @@ Inputs:
 
 - `06_differential-expression/03_analyses/DEG_lists/GOterms_genome/<code>_sigs_ID.csv`: each
   TC DEG with a UniProt hit, its log2 fold change and its GO IDs (06 script 06);
+- `06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv`: the
+  mitochondrial loci (06 script 01), checked to be absent from the DEG lists;
 - `02_data/goslim_generic.obo`: the generic GO slim of GO release 2023-07-27 (see the file's
   header). The GO graph, the descendants of each slim term, comes from `GO.db`.
 

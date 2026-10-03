@@ -70,6 +70,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   for other folders. Never absolute paths. Folder names are hard-coded in each `_paths.R`,
   the `paths` chunks of `09`, `00_run_pipeline.Rmd` and `tools/pipeline_checks.R`, so renaming
   a numbered folder means updating them.
+- **Step map.** The root `README.md` ("How the steps connect") maps what every step reads and
+  writes. Update its table and diagram in the same change as any change to a step's inputs or
+  outputs.
 - **Nothing is deleted.** Retire a script or output to a `_superseded/` folder with a README
   saying what replaced it. Every analysis folder (which lists its scripts) and its `02_data/`
   and `03_analyses/` have a README listing the files and what produces them; output subfolders

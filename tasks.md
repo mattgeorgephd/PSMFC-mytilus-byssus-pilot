@@ -122,10 +122,15 @@ Conventions and how to run are in `AGENTS.md`.
   proteins and their sum (1.41-fold); Foot OA raises ND2, ND3 and ND5, its sum 1.19-fold (p
   0.061); OW and DO none. The 21 mitochondrial tRNAs and rRNAs the previous matrix had named by
   StringTie number are now recognised (331 mitochondrial loci).
+- **Pull request merged** (2026-10-03): the work above is on `main`.
+- **Step map** (2026-10-03). The root `README.md` ("How the steps connect") maps what every step
+  reads and writes, traced from the code, with an overview diagram and one per folder. Folder
+  READMEs and comments that named the wrong readers or inputs were corrected (06's count matrix
+  source and readers, 07's step inputs, 08's annotation source, 02's ANCOVA metrics, 05's prepDE
+  readers, 03's download claims, 04's step 01, `tools/` users).
 
 ## In progress
 
-- Review and merge of the pull request carrying this work (branch `claude/jolly-clarke-7afl1v`).
 - Proofreading the regenerated figures before they go into the manuscript.
 
 ## Blocked or waiting on a decision
@@ -133,7 +138,7 @@ Conventions and how to run are in `AGENTS.md`.
 | item | why it is blocked | who |
 |---|---|---|
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
-| Merge the pull request | branch `claude/jolly-clarke-7afl1v`; merging deletes untracked `.Rhistory` copies from local checkouts (see the PR) | Matt |
+| Folder numbering | the numbers are not a run order: `04_iso-seq-transcriptome` builds the count matrix of record (steps 02, 05, 06) upstream of `05` and `06` and compares with `06` downstream (steps 04, 07). Keep the numbers and rely on the step map, move the count-building steps into `05`, or renumber the folders (root `README.md`, "How the steps connect") | Matt |
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
@@ -160,9 +165,22 @@ Conventions and how to run are in `AGENTS.md`.
   outputs; `vst_paired_<T>.csv` (7 to 11 MB each) is rewritten on every 09 run.
 - **No continuous integration.** Nothing runs the pipeline on a push; the checks are the
   runners, the provenance files and the `09` checks.
+- **A loop through the mitochondrial list.** `04` steps 02 and 05 read `06`'s
+  `mitochondrial_loci.csv`, which `06` step 01 builds from the count matrix that `04` step 06
+  makes. It is at a fixed point (the 21 loci added since those steps ran have no isoforms), but
+  a change to the list would need `04` steps 02, 05, 06, then `05` and `06` rerun. Deriving the
+  list in `04` from the annotation would remove the loop. Step 05's provenance does not record
+  the list it read, and step 02's records the previous one (its README explains).
+- **Numbers computed outside the pipeline.** The Iso-Seq vs genome correlation of the
+  mitochondrial share (Spearman 0.91; `04` README) is computed by hand from committed files;
+  no step writes it.
+- **Inputs no current step writes:** `LOC_GO_list.txt` (`03_blast`, HPC; the script no longer
+  runs as written), `05 .../hisat/t_data.ctab` (one sample's table from an older HPC run),
+  `05 .../prepDE/transcript_count_matrix.csv` (HPC `prepDE.py`) and `05 .../fastqc/` (the
+  earlier `byssus-exp-analysis` repository).
 
 ## Up next
 
-- Merge this pull request, then update the manuscript text.
+- Update the manuscript text.
 - Library QC sensitivity run (T025G, T035G, T040F).
 - Add an environment lockfile (renv or conda) for the R 4.4.3 / Bioconductor 3.20 set.

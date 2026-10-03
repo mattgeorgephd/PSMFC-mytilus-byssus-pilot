@@ -1,7 +1,9 @@
 # count_matrix
 
-Written by `../../01_code/01_clean_count_matrix.Rmd`; read by every later step and by `07`
-and `09`.
+Written by `../../01_code/01_clean_count_matrix.Rmd`. In this folder, steps 02 (sample table),
+03 and 05 (all but the crosswalk), 06 (`mitochondrial_loci.csv`) and 13 read it. Elsewhere,
+`04_iso-seq-transcriptome` steps 02, 04, 05 and 07, `07_enrichment` step 01, `08_gene-annotation`
+step 01 (`mitochondrial_loci.csv`) and `09_gene-mechanics-correlation` read it.
 
 | File | Contents |
 |---|---|

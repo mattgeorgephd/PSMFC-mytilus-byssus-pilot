@@ -12,7 +12,8 @@ knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
 # What this does
 
 Turns the per-sample StringTie output of `01_hisat_stringtie.Rmd` into the gene and transcript
-count matrices that `06_differential-expression` starts from, with `prepde()` in
+count matrices of the previous record (the count matrices of record until 2026-10-02, when
+step 04's featureCounts matrix replaced them), with `prepde()` in
 `_prepde.R`, an R port of StringTie's `prepDE.py3`:
 
     count = ceiling(cov * transcript length / read length)
@@ -33,8 +34,9 @@ Two ways to run, chosen automatically:
    `_derive_strg_gene_ids.R`).
 
 Files are written with LF line ends, as everything in this repository (prepDE.py3 writes
-CRLF; the values are identical). Either way the output is `03_analyses/prepDE/gene_count_matrix.csv`, which
-`06_differential-expression/01_code/01_clean_count_matrix.Rmd` reads.
+CRLF; the values are identical). Either way the output is `03_analyses/prepDE/gene_count_matrix.csv`,
+which step 04 (a comparison), `06_differential-expression` step 13 and
+`04_iso-seq-transcriptome` steps 06 and 07 read as the previous record.
 
 ```{r paths}
 source(here::here("01_code", "_prepde.R"))

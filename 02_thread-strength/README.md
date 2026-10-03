@@ -6,7 +6,8 @@ Plaque adhesion strength and thread mechanics from tensometer pull tests, before
 Self-contained and reproducible from this repository apart from one manual input, the
 plaque measurements, noted below. It reads one file from outside this folder
 (`../01_mussel-measurements/mussel-size-measurements.xlsx`, script 01) and sources the shared
-`../tools/pipeline_checks.R` (scripts 04 and 05, for `RUN_provenance.txt`).
+`../tools/pipeline_checks.R` (scripts 04 and 05, for `RUN_provenance.txt`) and
+`../tools/plot_style.R` (scripts 04 and 05, the figure colours).
 
 ## Layout
 

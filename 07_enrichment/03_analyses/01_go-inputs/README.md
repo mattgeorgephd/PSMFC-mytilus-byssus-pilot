@@ -1,6 +1,6 @@
 # 01_go-inputs
 
-Written by `../../01_code/01_go_inputs.Rmd`; read by every later step.
+Written by `../../01_code/01_go_inputs.Rmd`; `gene_annotation.tsv` is read by steps 02, 03 and 04.
 
 | File | Contents |
 |---|---|

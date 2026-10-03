@@ -23,7 +23,7 @@ were used).
 
 | step | script | writes to `03_analyses/` | needs |
 |---|---|---|---|
-| 01 | `01_isoseq_transcriptome_check.Rmd` | nothing (a length QC; its chunks are not evaluated by default) | owl |
+| 01 | `01_isoseq_transcriptome_check.Rmd` | nothing in `03_analyses/` (a length QC knit by hand, not by the runner; it downloads the FASTA if missing and rewrites its own `01_isoseq_transcriptome_check.md`) | owl |
 | 02 | `02_isoform_gene_map.Rmd` | `02_isoform-gene-map/`: each isoform's genome gene | owl, NCBI, minimap2; about 1.5 hours and 9 GB of memory |
 | 03 | `03_salmon_quant.Rmd` | `03_salmon/`: mapping summary and gene counts | gannet, salmon; about 15 minutes for the index plus 3 to 4 minutes per library |
 | 04 | `04_isoseq_de_comparison.Rmd` | `04_isoseq-de/`: the TC contrasts on the Iso-Seq counts and the comparison with the genome | committed files only |
@@ -130,7 +130,11 @@ record (featureCounts on the 3'-extended RefSeq annotation, since 2026-10-02):
 - **The mitochondrial signal does not depend on the reference.** Each library's mitochondrial
   share of reads (`06` step 13, counted on the mitochondrial genome alone) correlates with the
   Iso-Seq reference's at Spearman 0.91 (day-3 foot 0.90, day-3 gill 0.84; 0.87 with the
-  previous genome count).
+  previous genome count). No step writes these correlations: they were computed by hand from
+  `03_analyses/03_salmon/read_classes_by_library.csv` (`pct_mitochondrial`) and
+  `06_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv`, and recomputed
+  from the committed files on 2026-10-03 (all 129 libraries in both, 0.914; day-3 foot 0.899,
+  day-3 gill 0.836).
 - **Byssal genes.** Named as `09` names the byssal structural genes (best BLAST hit a foot
   protein, plaque protein, precollagen, ACDC or byssal tyrosinase; 72 genes), the genome
   analysis has the three ACDC genes down about two- to four-fold in both Gill OA and Gill DO,
