@@ -3,7 +3,7 @@
 Written by `../../01_code/02_uniprot_summaries.Rmd` (NCBI E-utilities) and
 `../../01_code/03_ortholog_lists.Rmd` (OrthoDB). Both need network access, so the runner skips
 them by default (`online: false`). The tables here were refreshed on 2026-10-02 from the
-current top-50 lists (`06_differential-expression/03_analyses/top_DEGs/Top_50_genes/`).
+current top-50 lists (`05_differential-expression/03_analyses/top_DEGs/Top_50_genes/`).
 
 | File | Contents |
 |---|---|
@@ -30,7 +30,7 @@ that day.
   accession (O95238, SPDEF, gave AR). Step 02 now follows the accession to its NCBI Protein
   record and that protein's linked gene. The FOA and GOA tables had also been fetched from an
   earlier top-50 list; all six now match their lists. The lists themselves changed on
-  2026-10-01, when the 167 mitochondrial pseudogene copies left the 06 fits (7 accessions
+  2026-10-01, when the 167 mitochondrial pseudogene copies left the 05 fits (7 accessions
   entered, 9 left), and again on 2026-10-02 with the new count matrix.
 - **Orthologs.** Step 03 could not run as written (it joined OrthoDB's headerless species
   table on a column it does not have), so the earlier `_ortho` tables came from an older

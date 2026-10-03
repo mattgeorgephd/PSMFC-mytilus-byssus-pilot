@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
 Runs every numbered script in `01_code/` in order, each in its own R process, with an HTML
 report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
 Knit this file from inside `enrichment.Rproj`, or let the repository-level
-`00_run_pipeline.Rmd` call it after `06_differential-expression`.
+`00_run_pipeline.Rmd` call it after `05_differential-expression`.
 
 | step | script | writes to `03_analyses/` |
 |---|---|---|
@@ -30,7 +30,7 @@ Knit this file from inside `enrichment.Rproj`, or let the repository-level
 | 06 | `06_method_comparison.Rmd` | `06_method-comparison/`: agreement between the methods, consensus terms |
 
 Every method uses the same genes: for each of the 7 contrasts in
-`06_differential-expression/03_analyses/DEG_lists/contrasts.csv` (six TC, one foot vs gill),
+`05_differential-expression/03_analyses/DEG_lists/contrasts.csv` (six TC, one foot vs gill),
 the universe is the genes DESeq2 tested (non-missing adjusted p) and up- and down-regulated
 DEGs (padj < 0.05) are tested separately, in each of the three ontologies. Step 02 takes about
 three minutes on four cores; the rest about five together. Step 05 needs `org.Hs.eg.db` (installed on first run if missing), for a column it

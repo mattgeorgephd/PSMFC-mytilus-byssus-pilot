@@ -28,7 +28,7 @@ Three kinds of set, all for this script's tissue and the treatment-control (TC) 
 record:
 
 1. **DEG sets**: the up- and the down-regulated DEGs of each stressor
-   (`06_differential-expression`, `<T><X>_TC_siggene.csv`), six sets;
+   (`05_differential-expression`, `<T><X>_TC_siggene.csv`), six sets;
 2. **enriched GO terms**: every term topGO `weight01` enriched in one of those runs
    (`07_enrichment/03_analyses/02_topgo/topgo_enriched.csv`), scored on the DEGs that put it
    there (the term's genes in that run). `fdr_supported` marks the terms a method with
@@ -36,8 +36,8 @@ record:
    `06_method-comparison/consensus_terms_TC_<ontology>.csv`); outside those, topGO's lists
    are exploratory;
 3. **mitochondrial expression**: the reads of the 12 mitochondrial protein genes (counted on
-   the mitochondrial genome alone, `05_sequence-alignment` step 08) as a share of the library's
-   nuclear reads, on the log scale, from `06 .../mitochondrial/mt_share_by_sample.csv`.
+   the mitochondrial genome alone, `04_sequence-alignment` step 08) as a share of the library's
+   nuclear reads, on the log scale, from `05 .../mitochondrial/mt_share_by_sample.csv`.
    These loci are left out of every gene set above.
 
 **Score.** A set's score is the first principal component of its member genes' VST values
@@ -78,10 +78,10 @@ FDR_ALPHA  <- 0.10                          # as scripts 01 and 02
 find_repo_root <- function(start = getwd()) {
   d <- normalizePath(start, winslash = "/", mustWork = FALSE)
   for (i in 1:8) {
-    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("05_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+  stop("Repo root not found: need a parent containing 05_differential-expression/ and 02_thread-strength/.")
 }
 repo_root <- find_repo_root()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance
@@ -90,7 +90,7 @@ source(file.path(repo_root, "tools", "gene_ids.R"))          # gene_key()
 IN_DIR  <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "gene_mechanics")
 OUT_DIR <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "go_mechanics")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
-DE  <- file.path(repo_root, "06_differential-expression", "03_analyses")
+DE  <- file.path(repo_root, "05_differential-expression", "03_analyses")
 GO  <- file.path(repo_root, "07_enrichment", "03_analyses")
 need <- function(f) { if (!file.exists(f)) stop("Missing ", f, " - run the step that writes it first."); f }
 
@@ -203,7 +203,7 @@ scored$pc1_var <- round(vapply(scores, `[[`, 0, "var_expl"), 3)
 
 ## 3. mitochondrial expression: log of the mitochondrial protein reads as a share of nuclear reads
 mt_file <- file.path(DE, "mitochondrial", "mt_share_by_sample.csv")
-warn_unless(file.exists(mt_file), "Missing ", mt_file, "; run 06_differential-expression step 13. ",
+warn_unless(file.exists(mt_file), "Missing ", mt_file, "; run 05_differential-expression step 13. ",
             "The mitochondrial row is skipped.")
 if (file.exists(mt_file)) {
   mt <- read.csv(mt_file, stringsAsFactors = FALSE)

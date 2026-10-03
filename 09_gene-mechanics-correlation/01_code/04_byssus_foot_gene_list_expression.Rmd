@@ -48,14 +48,14 @@ MIN_COUNT <- 5                     # gene kept if count > MIN_COUNT in >= 1/3 of
 find_repo_root <- function(start = here::here()) {
   d <- normalizePath(start, winslash = "/")
   for (i in 1:6) {
-    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("05_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+  stop("Repo root not found: need a parent containing 05_differential-expression/ and 02_thread-strength/.")
 }
 repo_root    <- find_repo_root()
 source(file.path(repo_root, "tools", "gene_ids.R"))   # gene_key(): count-matrix name -> LOC key
-DE_DIR       <- file.path(repo_root, "06_differential-expression")
+DE_DIR       <- file.path(repo_root, "05_differential-expression")
 COUNT_FILE   <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_matrix_clean.csv")
 THREAD_FILE  <- file.path(repo_root, "02_thread-strength", "03_analyses", "03_assemble-thread-summary",
                           "thread-summary.xlsx")

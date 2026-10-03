@@ -7,9 +7,9 @@ library(here)
 repo_root <- normalizePath(file.path(here::here(), ".."))
 dat       <- here::here("02_data")
 
-# Read from 06_differential-expression (never written here)
-deg      <- file.path(repo_root, "06_differential-expression", "03_analyses", "DEG_lists")
-top50_in <- file.path(repo_root, "06_differential-expression", "03_analyses", "top_DEGs", "Top_50_genes")
+# Read from 05_differential-expression (never written here)
+deg      <- file.path(repo_root, "05_differential-expression", "03_analyses", "DEG_lists")
+top50_in <- file.path(repo_root, "05_differential-expression", "03_analyses", "top_DEGs", "Top_50_genes")
 
 # This analysis's own outputs
 goslims  <- here::here("03_analyses", "goslims")

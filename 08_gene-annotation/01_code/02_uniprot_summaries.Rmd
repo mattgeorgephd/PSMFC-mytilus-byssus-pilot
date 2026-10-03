@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 # What this does
 
 For every UniProt accession in the six TC top-50 lists
-(`06_differential-expression/03_analyses/top_DEGs/Top_50_genes/<code>_topgenes.csv`), finds
+(`05_differential-expression/03_analyses/top_DEGs/Top_50_genes/<code>_topgenes.csv`), finds
 the NCBI Gene record of that protein and its summary, through NCBI E-utilities (rentrez; Winter
 2017, *The R Journal* 9:520):
 

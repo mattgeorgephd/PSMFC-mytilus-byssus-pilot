@@ -2,12 +2,12 @@
 
 Functional annotation of the treatment-control (TC) DEGs: their GO slim (biological process)
 profile, NCBI gene summaries and bivalve orthologs of the top DEGs. It reads the annotated DEG
-tables and top-50 lists of `06_differential-expression` and writes only to its own
+tables and top-50 lists of `05_differential-expression` and writes only to its own
 `03_analyses/`.
 
 Paths resolve through `01_code/_paths.R` (`here::here()` anchored on `gene-annotation.Rproj`).
 No step reads `03_blast` directly: the BLAST annotation reaches this folder through
-`06_differential-expression` step 06 (`*_sigs_ID.csv`). The genome BLAST that produced it is in
+`05_differential-expression` step 06 (`*_sigs_ID.csv`). The genome BLAST that produced it is in
 `03_blast` (its record script
 `02_genome_blast_uniprot_check.Rmd` used to sit here as `Annotation.Rmd`); an earlier
 annotation attempt is kept under `01_code/_superseded/`.
@@ -15,7 +15,7 @@ annotation attempt is kept under `01_code/_superseded/`.
 ## How to run
 
 Open `gene-annotation.Rproj` and knit `01_code/00_run_gene_annotation.Rmd` (or let the
-repository-level `00_run_pipeline.Rmd` do it, after 06).
+repository-level `00_run_pipeline.Rmd` do it, after 05).
 
 | step | script | writes to `03_analyses/` | network |
 |---|---|---|---|
@@ -51,7 +51,7 @@ even by their own GO-ID column.
 Each gene takes the GO IDs of its best BLAST hit (highest bitscore), as in `07_enrichment`;
 until 2026-10-01 it took its first-listed hit, which gave 33 TC DEGs a different set of GO IDs
 from the one 07 tested. The mitochondrial genes and their nuclear copies are no longer in the
-DEG lists (they are analysed on their own in `06_differential-expression` step 13); before
+DEG lists (they are analysed on their own in `05_differential-expression` step 13); before
 they were removed they made up 89 of the 103 genes in Gill OA's "generation of precursor
 metabolites and energy" cell, one mitochondrial signal counted many times.
 

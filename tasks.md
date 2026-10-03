@@ -1,8 +1,14 @@
 # tasks.md
 
 Current sprint: make the analysis run end to end, from thread strength and Tag-seq counts
-to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-02.
+to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-03.
 Conventions and how to run are in `AGENTS.md`.
+
+The analysis folders were renumbered on 2026-10-03 so that their numbers are the run order:
+`05_sequence-alignment` became `04_`, `06_differential-expression` became `05_` and
+`04_iso-seq-transcriptome` became `06_` (root `README.md`, "What the map shows about the
+order", maps the steps). Entries under Done written before then keep the numbers of their time;
+the other sections use the new ones.
 
 ## Done
 
@@ -138,14 +144,19 @@ Conventions and how to run are in `AGENTS.md`.
   caches and the retired CDS map; `05`'s count matrix of record and mitogenome counts are steps
   07 and 08; what stays in `04` is renumbered 01 to 04 (salmon 02, Iso-Seq DE 03, recount
   comparison 04). Both runners rerun offline with identical outputs.
+- **Folders renumbered** (2026-10-03, option C). `05_sequence-alignment`,
+  `06_differential-expression` and `04_iso-seq-transcriptome` are now `04_sequence-alignment`,
+  `05_differential-expression` and `06_iso-seq-transcriptome`, with their caches; every path in
+  code, the runners (the pipeline's stages now run 02, 04, 05, 06, 07, 08, 09), `.gitignore`,
+  the READMEs, `AGENTS.md` and the step map follow. Every folder now reads only lower-numbered
+  folders; `03_blast` and `04` step 01 (HPC) stay a break in the chain.
 
 ## In progress
 
 - Proofreading the regenerated figures before they go into the manuscript.
-- **Folder numbers in run order** (option C, this pull request). Left: rename the folders
-  (`05` to `04`, `06` to `05`, `04` to `06`) and every reference, rerun the online steps from
-  their caches and the whole pipeline, and make `03_blast/01_code/01_genome_blast.Rmd` run as
-  written.
+- **Folder numbers in run order** (option C, this pull request). Left: rerun the online steps
+  from their caches and the whole pipeline under the new names, and make
+  `03_blast/01_code/01_genome_blast.Rmd` run as written.
 
 ## Blocked or waiting on a decision
 
@@ -156,7 +167,7 @@ Conventions and how to run are in `AGENTS.md`.
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,022 of 7,367 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
-| `03_blast/` and `05` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` would not run as written (`mytfoot_uniprot_info` read but `mytilus_foot_uniprot_info` used; `masterID` never defined) | HPC user |
+| `03_blast/` and `04` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` would not run as written (`mytfoot_uniprot_info` read but `mytilus_foot_uniprot_info` used; `masterID` never defined) | HPC user |
 
 ## Known limitations (documented, not blocking)
 
@@ -179,11 +190,11 @@ Conventions and how to run are in `AGENTS.md`.
 - **No continuous integration.** Nothing runs the pipeline on a push; the checks are the
   runners, the provenance files and the `09` checks.
 - **Numbers computed outside the pipeline.** The Iso-Seq vs genome correlation of the
-  mitochondrial share (Spearman 0.91; `04` README) is computed by hand from committed files;
+  mitochondrial share (Spearman 0.91; `06` README) is computed by hand from committed files;
   no step writes it.
 - **Inputs no current step writes:** `LOC_GO_list.txt` (`03_blast`, HPC; the script no longer
-  runs as written), `05 .../hisat/t_data.ctab` (one sample's table from an older HPC run),
-  `05 .../prepDE/transcript_count_matrix.csv` (HPC `prepDE.py`) and `05 .../fastqc/` (the
+  runs as written), `04 .../hisat/t_data.ctab` (one sample's table from an older HPC run),
+  `04 .../prepDE/transcript_count_matrix.csv` (HPC `prepDE.py`) and `04 .../fastqc/` (the
   earlier `byssus-exp-analysis` repository).
 
 ## Up next

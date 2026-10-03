@@ -4,7 +4,7 @@
 ## "gene-LOC134682960|LOC134682960"); its annotation comes from the LOC key after the "|",
 ## through 01_go-inputs/gene_annotation.tsv written by script 01.
 
-PADJ   <- 0.05                 # a DEG, as in 06_differential-expression
+PADJ   <- 0.05                 # a DEG, as in 05_differential-expression
 ONTS   <- c("BP", "MF", "CC")
 MIN_GS <- 10                   # smallest GO term tested (annotated genes in the universe)
 MAX_GS <- 500                  # largest, for clusterProfiler
