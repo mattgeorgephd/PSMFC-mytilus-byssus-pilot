@@ -6,7 +6,11 @@ params:
   work_dir: "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis"   # holds data/ and output/
   blast_bin: "/home/shared/ncbi-blast-2.15.0+/bin"
   threads: 20
-  sprot_release: "2024_04"  # the release the 2024 database held (see "The BLAST database")
+  sprot_release: "2024_04"  # the release the 2024 database held (see "The BLAST database"); "2026_03" for the 2026 run
+  foot_fasta: "uniprotkb_mytilus_foot.fasta"   # in 02_data/: the copy the 2024 run used; uniprotkb_mytilus_foot_2026_03.fasta for the 2026 run
+  res_folder: "genome-foot"  # in 03_analyses/: the 2024 tables; genome-foot-sprot2026_03 for the 2026 run
+  parts: 1                # blastx in this many resumable parts (1 = one run, as in 2024; see _blastx_parts.sh)
+  jobs: 1                 # parts searched at a time, threads / jobs threads each
   as_2024: false          # true: keep the two quirks of the 2024 run (see "Reproducing the 2024 tables")
   blastx_tab: ""          # an existing blastx table to rebuild the tables from ("" = the one this run writes)
 ---
@@ -22,8 +26,12 @@ Annotates the genome's coding sequences: every CDS of RefSeq `GCF_036588685.1`
 *BMC Bioinformatics* 10:421) against UniProtKB/Swiss-Prot (`sprot_release`; see below) plus the UniProt
 "mytilus foot" proteins (`02_data/uniprotkb_mytilus_foot.fasta`, the copy the 2024 run used),
 e-value at most 1e-20, one target sequence per query. Each hit is joined to its UniProt record
-(protein names, gene names, GO terms) and each CDS to its gene (`LOC` ID). Writes, in
-`03_analyses/genome-foot/`:
+(protein names, gene names, GO terms) and each CDS to its gene (`LOC` ID). It was run twice: in
+2024 on the lab server (Swiss-Prot 2024_04, the committed 2024 foot proteins; outputs in
+`03_analyses/genome-foot/`), and in October 2026 in the cloud environment (Swiss-Prot 2026_03,
+the foot proteins of that release, `foot_fasta: uniprotkb_mytilus_foot_2026_03.fasta`, 200
+parts on 4 threads; outputs in `03_analyses/genome-foot-sprot2026_03/`, with the blastx table
+and `RUN_provenance.txt`). Writes, in `03_analyses/<res_folder>/`:
 
 - `LOC_GO_list.txt`: one row per blastx hit (HSP): the CDS (`transcript`), the hit split into
   `sp`, `uniprot_accession`, `geneID` and `species`, the alignment columns, the UniProt record,
@@ -47,20 +55,26 @@ suppressPackageStartupMessages({ library(dplyr); library(stringr); library(tidyr
 data_dir <- file.path(params$work_dir, "data")
 out_dir  <- file.path(params$work_dir, "output")
 cds_fa   <- file.path(data_dir, "ncbi_dataset", "data", "GCF_036588685.1", "cds_from_genomic.fasta")
-foot_fa  <- here::here("02_data", "uniprotkb_mytilus_foot.fasta")       # the copy the 2024 run used
-sprot_fa <- file.path(data_dir, paste0("uniprot_sprot_r", params$sprot_release, ".fasta"))
-db       <- file.path(data_dir, "swissprot_n_mytilusfoot_db")
-blastx   <- if (nzchar(params$blastx_tab)) params$blastx_tab else file.path(out_dir, "genome_n_foot_blastx.tab")
-sprot_info_tsv <- file.path(data_dir, "uniprot2024.tsv")                # reviewed UniProt records
-foot_info_tsv  <- file.path(data_dir, "trembl_foot_info.tsv")           # the "mytilus foot" records
-res_dir  <- here::here("03_analyses", "genome-foot")
+rel      <- params$sprot_release
+foot_fa  <- here::here("02_data", params$foot_fasta)                     # the foot proteins searched
+sprot_fa <- file.path(data_dir, paste0("uniprot_sprot_r", rel, ".fasta"))
+db       <- file.path(data_dir, paste0("swissprot_n_mytilusfoot_r", rel))   # 2024: swissprot_n_mytilusfoot_db
+## the working files are named by release (the 2024 run wrote genome_n_foot_blastx.tab,
+## uniprot2024.tsv and trembl_foot_info.tsv)
+blastx   <- if (nzchar(params$blastx_tab)) params$blastx_tab else file.path(out_dir, paste0("genome_n_foot_blastx_r", rel, ".tab"))
+sprot_info_tsv <- file.path(data_dir, paste0("uniprot_reviewed_r", rel, ".tsv"))     # reviewed UniProt records
+foot_info_tsv  <- file.path(data_dir, paste0("uniprot_mytilus_foot_r", rel, ".tsv")) # the "mytilus foot" records
+res_dir  <- here::here("03_analyses", params$res_folder)
+repo_root <- normalizePath(file.path(here::here(), ".."))
 ```
 
 # The BLAST database and the search (lab server)
 
 Swiss-Prot of the pinned release comes from UniProt's archive of previous releases
 (`previous_releases/release-<release>/knowledgebase/uniprot_sprot-only<release>.tar.gz`, which
-holds `uniprot_sprot.fasta.gz`; checked 2026-10-03). The 2024 script downloaded
+holds `uniprot_sprot.fasta.gz`; checked 2026-10-03), or, while the release is the current one
+and not yet archived, from `current_release` (the chunk stops if the release is neither). The
+database and its FASTA are made once; a rerun reuses them. The 2024 script downloaded
 `current_release` and saved it as `uniprot_sprot_r2024_01.fasta`, but its hits match release
 2024_04 (UniProt release notes: 24 July 2024) and no other: of the releases from 2023_05 to
 2024_05, 2024_04 is the only one that holds all 10,740 subjects of the 2024 hits as written
@@ -73,24 +87,34 @@ of the 2024 copy).
 ```{bash database, eval = params$run}
 set -euo pipefail
 cd "`r data_dir`"
-rel="`r params$sprot_release`"
-curl -sS -o "uniprot_sprot-only${rel}.tar.gz" \
-  "https://ftp.uniprot.org/pub/databases/uniprot/previous_releases/release-${rel}/knowledgebase/uniprot_sprot-only${rel}.tar.gz"
-tar -xzf "uniprot_sprot-only${rel}.tar.gz" uniprot_sprot.fasta.gz
-gunzip -c uniprot_sprot.fasta.gz > "`r sprot_fa`"
-cat "`r sprot_fa`" "`r foot_fa`" > swissprot_n_mytilusfoot.fasta
-"`r params$blast_bin`/makeblastdb" -in swissprot_n_mytilusfoot.fasta -dbtype prot -out "`r db`"
+rel="`r rel`"
+uni="https://ftp.uniprot.org/pub/databases/uniprot"
+if [ ! -f "`r db`.pin" ]; then
+  if curl -sfI "${uni}/previous_releases/release-${rel}/knowledgebase/uniprot_sprot-only${rel}.tar.gz" > /dev/null; then
+    curl -sS -o "uniprot_sprot-only${rel}.tar.gz" "${uni}/previous_releases/release-${rel}/knowledgebase/uniprot_sprot-only${rel}.tar.gz"
+    tar -xzf "uniprot_sprot-only${rel}.tar.gz" uniprot_sprot.fasta.gz
+  else
+    cur=$(curl -sS "${uni}/current_release/knowledgebase/complete/reldate.txt" | sed -n 's/^UniProtKB\/Swiss-Prot Release \([0-9_]*\) .*$/\1/p')
+    [ "$cur" = "$rel" ] || { echo "Swiss-Prot release ${rel} is neither archived nor current (current: ${cur})" >&2; exit 1; }
+    curl -sS -o uniprot_sprot.fasta.gz "${uni}/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz"
+  fi
+  gunzip -c uniprot_sprot.fasta.gz > "`r sprot_fa`"
+  cat "`r sprot_fa`" "`r foot_fa`" > "swissprot_n_mytilusfoot_r${rel}.fasta"
+  "`r params$blast_bin`/makeblastdb" -in "swissprot_n_mytilusfoot_r${rel}.fasta" -dbtype prot -out "`r db`"
+fi
+"`r params$blast_bin`/blastdbcmd" -db "`r db`" -info | head -3
 ```
 
+The search is `blastx -evalue 1E-20 -max_target_seqs 1 -outfmt 6` of every CDS against the
+database, run by `_blastx_parts.sh`: with `parts: 1` as one command, as in 2024; with more, in
+that many parts of the CDS FASTA (in order), each written whole or not at all, so that an
+interrupted run resumes where it stopped (knit again, or run the helper with the same
+arguments), and joined in order at the end. Each query's hits do not depend on the other
+queries, so the parts give the table one run gives (checked on 99 CDSs, byte for byte).
+
 ```{bash blastx, eval = params$run}
-"`r params$blast_bin`/blastx" \
-  -query "`r cds_fa`" \
-  -db "`r db`" \
-  -out "`r blastx`" \
-  -evalue 1E-20 \
-  -num_threads `r params$threads` \
-  -max_target_seqs 1 \
-  -outfmt 6
+bash "`r here::here('01_code', '_blastx_parts.sh')`" "`r params$blast_bin`" "`r cds_fa`" "`r db`" \
+  "`r blastx`" `r params$threads` `r params$parts` `r params$jobs`
 ```
 
 # The UniProt records of the hits (lab server)
@@ -105,6 +129,9 @@ tables the analysis reads keep their layout.
 ```{bash uniprot, eval = params$run}
 set -euo pipefail
 cd "`r data_dir`"
+served=$(curl -sS -D - -o /dev/null "https://rest.uniprot.org/uniprotkb/search?query=accession:P69905&size=1" \
+  | tr -d '\r' | sed -n 's/^[Xx]-[Uu]ni[Pp]rot-[Rr]elease: *//p')
+[ "$served" = "`r rel`" ] || { echo "UniProt serves release ${served}; the records would not be of release `r rel`" >&2; exit 1; }
 curl -sS -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgene_oln%2Ccc_interaction%2Ccc_induction%2Cgo_p%2Cgo_c%2Cgo_f%2Cgo_id%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway&format=tsv&query=%28*%29+AND+%28reviewed%3Atrue%29" \
   | gunzip -c > "`r sprot_info_tsv`"
 curl -sS -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_id%2Cgo_p%2Cgo_f%2Cgo_c%2Cgo%2Cgene_oln%2Ccc_induction%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway%2Ccc_interaction&format=tsv&query=%28mytilus+foot%29" \
@@ -201,4 +228,24 @@ knitr::kable(data.frame(
   measure = c("blastx hits", "LOC_GO_list rows", "hits not in LOC_GO_list",
               "LOC_GO_list rows that are not hits", "LOC_GO_list rows repeated"),
   n = c(length(hits), length(rows), sum(!hits %in% rows), sum(!rows %in% hits), sum(duplicated(rows)))))
+```
+
+# Provenance
+
+```{r provenance, eval = params$run}
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # provenance_lines()
+blast_version <- system2(file.path(params$blast_bin, "blastx"), "-version", stdout = TRUE)[1]
+db_info <- system2(file.path(params$blast_bin, "blastdbcmd"), c("-db", shQuote(db), "-info"), stdout = TRUE)
+writeLines(provenance_lines(
+  c("03 step 01: genome CDS blastx against Swiss-Prot and the Mytilus foot proteins",
+    paste0("run                  : ", format(Sys.time(), "%Y-%m-%d %H:%M %Z")),
+    paste0("Swiss-Prot release   : ", rel, " (UniProt records of the same release, REST)"),
+    paste0("foot proteins        : 02_data/", params$foot_fasta, " (", sum(startsWith(readLines(foot_fa), ">")), " sequences)"),
+    paste0("blastx               : ", blast_version, "; -evalue 1E-20 -max_target_seqs 1 -outfmt 6; ",
+           params$parts, " part(s), ", params$threads, " threads"),
+    paste0("database             : ", trimws(db_info[grepl("sequences;", db_info)])),
+    paste0("hits (HSPs)          : ", nrow(read.delim(blastx, header = FALSE)))),
+  c(here::here("01_code", "01_genome_blast.Rmd"), here::here("01_code", "_blastx_parts.sh"), foot_fa, cds_fa,
+    blastx, sprot_info_tsv, foot_info_tsv), repo_root, packages = c("dplyr", "stringr", "tidyr")),
+  file.path(res_dir, "RUN_provenance.txt"))
 ```
