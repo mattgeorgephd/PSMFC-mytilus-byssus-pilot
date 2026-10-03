@@ -179,9 +179,10 @@ the other sections use the new ones.
 
 ## Known limitations (documented, not blocking)
 
-- **No locked software environment.** The pipeline was tested with R 4.6.1 and Bioconductor
-  3.23 (versions recorded in each `RUN_provenance*.txt`), but the repository has no `renv.lock`
-  or conda environment file, so a new machine has to assemble the packages by hand. System
+- **Software environment only partly locked.** The pipeline was tested with R 4.6.1 and
+  Bioconductor 3.23; `renv.lock` (2026-10-03) records all 277 R packages of that library, and each
+  `RUN_provenance*.txt` the versions a step used, but the system libraries and the R build are not
+  locked (no container image). System
   libraries matter too: after the cloud container was rebuilt on 2026-10-01, every figure
   re-rendered with different fonts (same data, different bytes).
 - **Annotation provenance.** `LOC_GO_list.txt` comes from one blastx search
@@ -213,4 +214,3 @@ the other sections use the new ones.
 
 - Update the manuscript text.
 - Library QC sensitivity run (T025G, T035G, T040F).
-- Add an environment lockfile (renv or conda) for the R 4.6.1 / Bioconductor 3.23 set.

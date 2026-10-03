@@ -43,10 +43,18 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   gave the same DEGs, GO terms, GO slims and gene-mechanics results (log2 fold changes within
   1e-6). GO results change with the GO release in `GO.db`, so `07` and `08` stop unless it is
   2026-01-23 (`check_go_release()`, `tools/pipeline_checks.R`), and `07` records it with the
-  package versions in `03_analyses/01_go-inputs/RUN_provenance.txt`. On a machine that had an
-  older R, keep the old R's packages off the library path (on Ubuntu, packages in
-  `/usr/lib/R/site-library` built for R 4.3 fail to load in R 4.6): for example
-  `R_LIBS_SITE=/nonexistent R_LIBS=<library>` when installing and running.
+  package versions in `03_analyses/01_go-inputs/RUN_provenance.txt`. `renv.lock` at the root
+  records every package of the library the pipeline last ran with (277, R's recommended packages
+  included: Matrix 1.7-6, MASS 7.3-66, mgcv 1.9-4, survival 3.8-12, ...): with R 4.6.1,
+  `install.packages("renv"); renv::restore(lockfile = "renv.lock", library = "<library>",
+  prompt = FALSE)` rebuilds it (the project does not activate renv, so nothing else changes).
+  System libraries are not in it (on Ubuntu 24.04: libcurl, libssl, libxml2, libfontconfig,
+  libharfbuzz, libfribidi, libfreetype, libpng, libtiff, libjpeg, libwebp, libcairo2, libglpk,
+  libgmp, libicu, libuv, libnlopt, libgit2, ImageMagick and pandoc, as `-dev` packages). On a
+  machine that had an older R, keep the old R's packages off the library path (on Ubuntu,
+  packages in `/usr/lib/R/site-library` built for R 4.3 fail to load in R 4.6), for example
+  `R_LIBS_SITE=/nonexistent R_LIBS=<library>` when installing and running, and upgrade R's
+  recommended packages with R (CRAN's Ubuntu repository builds them for 4.6).
 - **Not run by the pipeline:** `03_blast/` steps 01-03 and `04_sequence-alignment` step 01
   (HPC, inputs not in the repository), `03_blast` step 04 (the 2024 hits with UniProt 2026_03
   records; it runs offline from committed files, and `online: true` fetches the records again,

@@ -1,11 +1,11 @@
-generated            : 2026-10-03 18:38:21
+generated            : 2026-10-03 20:20:45
 GO release           : 2026-01-23 (GO.db 3.23.1)
 DEG                  : padj < 0.05 in the 05 apeglm table; up and down tested separately
 universe             : genes with a non-missing padj in the contrast's apeglm table
 terms tested         : 10 or more annotated universe genes (topGO nodeSize); 10 to 500 for goseq and clusterProfiler
 families             : TC, FG
 genes                : 11942 in any contrast's table; with GO BP 6808, MF 6505, CC 7401
-code commit          : 998205607d85
+code commit          : edee965df2de
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : topGO 2.64.0, goseq 1.64.0, clusterProfiler 4.20.0, enrichplot 1.32.1, rrvgo 1.24.0, GOSemSim 2.38.3, GO.db 3.23.1, AnnotationDbi 1.74.0, GSEABase 1.74.0, org.Hs.eg.db 3.23.1

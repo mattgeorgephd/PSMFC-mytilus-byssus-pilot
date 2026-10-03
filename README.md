@@ -12,8 +12,9 @@ from the committed data: thread strength (02), the count matrices (04), differen
 (05), the Iso-Seq sensitivity analysis (06, from its committed gene counts), GO enrichment (07),
 GO slims (08) and the gene-mechanics associations (09). About 35 minutes. Reports and logs go
 to each folder's `03_analyses/knit_html/` and, one per stage, to
-`knit_html/` at the root (all git-ignored). See `AGENTS.md` for the conventions and `tasks.md`
-for what is done and open.
+`knit_html/` at the root (all git-ignored). It needs R 4.6.1 and the Bioconductor 3.23 packages
+recorded in `renv.lock` (`renv::restore(lockfile = "renv.lock")`; see `AGENTS.md`, How to run).
+See `AGENTS.md` for the conventions and `tasks.md` for what is done and open.
 
 # Analysis folders
 
