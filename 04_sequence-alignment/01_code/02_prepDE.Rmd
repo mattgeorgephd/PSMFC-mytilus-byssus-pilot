@@ -1,0 +1,100 @@
+---
+title: "02 - Gene and transcript count matrices from StringTie (R port of prepDE.py)"
+output: html_document
+params:
+  read_length: 75     # prepDE.py's default, which the original run used (verified below)
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# What this does
+
+Turns the per-sample StringTie output of `01_hisat_stringtie.Rmd` into the gene and transcript
+count matrices of the previous record (the count matrices of record until 2026-10-02, when
+step 07's featureCounts matrix replaced them), with `prepde()` in
+`_prepde.R`, an R port of StringTie's `prepDE.py3`:
+
+    count = ceiling(cov * transcript length / read length)
+
+summed over a gene's transcripts. The port reproduces `prepDE.py3` byte for byte (tested on
+synthetic GTFs with edge cases, both input modes and three read lengths, and on this genome's
+full transcript set rebuilt from the committed Ballgown tables).
+
+Two ways to run, chosen automatically:
+
+1. **From StringTie GTFs** (`03_analyses/hisat/sample_list.txt` exists; written by script 01):
+   runs `prepde()` and writes both matrices.
+2. **From the committed transcript matrix** (no GTFs; the original ones are lost). The
+   transcript matrix `03_analyses/prepDE/transcript_count_matrix.csv` is the original prepDE
+   output, so the gene matrix is rebuilt by summing transcripts into genes. The transcript-to-
+   gene map comes from the reference transcript table `03_analyses/hisat/t_data.ctab`, plus
+   `02_data/strg_gene_ids.csv` for the 284 transcripts StringTie gave its own gene IDs (see
+   `_derive_strg_gene_ids.R`).
+
+Files are written with LF line ends, as everything in this repository (prepDE.py3 writes
+CRLF; the values are identical). Either way the output is `03_analyses/prepDE/gene_count_matrix.csv`,
+which steps 06 and 07 (comparisons), `05_differential-expression` step 13 and
+`06_iso-seq-transcriptome` step 04 read as the previous record.
+
+```{r paths}
+source(here::here("01_code", "_prepde.R"))
+out_dir     <- here::here("03_analyses", "prepDE")
+gene_csv    <- file.path(out_dir, "gene_count_matrix.csv")
+tx_csv      <- file.path(out_dir, "transcript_count_matrix.csv")
+sample_list <- here::here("03_analyses", "hisat", "sample_list.txt")
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+mode <- if (file.exists(sample_list)) "gtf" else "transcript_matrix"
+cat("mode:", mode, "\n")
+```
+
+# 1. From StringTie GTFs
+
+```{r from-gtf, eval = (mode == "gtf")}
+prepde(sample_list, gene_out = gene_csv, transcript_out = tx_csv,
+       read_length = params$read_length, verbose = TRUE, eol = "\n")
+```
+
+# 2. From the committed transcript matrix
+
+```{r from-transcripts, eval = (mode == "transcript_matrix")}
+stopifnot(file.exists(tx_csv))
+td <- read.delim(here::here("03_analyses", "hisat", "t_data.ctab"))
+
+## prepDE's gene ID: gene_id|gene_name, else gene_id, else the transcript ID
+gid <- ifelse(td$gene_name != ".", paste0(td$gene_id, "|", td$gene_name), td$gene_id)
+no_gene <- td$gene_id == "."
+gid[no_gene] <- td$t_name[no_gene]
+tx_to_gene <- setNames(gid, td$t_name)
+
+## the 284 transcripts StringTie gave its own gene IDs (STRG.<n>|LOC<n>)
+strg <- read.csv(here::here("02_data", "strg_gene_ids.csv"))
+stopifnot(all(strg$transcript_id %in% td$t_name[no_gene]))
+tx_to_gene[strg$transcript_id] <- strg$gene_id
+
+prepde_genes_from_transcripts(tx_csv, tx_to_gene, gene_csv, eol = "\n")
+```
+
+# Checks
+
+```{r checks}
+g  <- read.csv(gene_csv, check.names = FALSE)
+tx <- read.csv(tx_csv, check.names = FALSE)
+cat("genes:", nrow(g), "| transcripts:", nrow(tx), "| samples:", ncol(g) - 1, "\n")
+stopifnot(identical(names(g)[-1], names(tx)[-1]),
+          !anyDuplicated(g$gene_id),
+          sum(g[, -1]) == sum(tx[, -1]))                  # every transcript count lands in one gene
+
+## The read length: in the committed Ballgown tables (one sample, H9-T014F_S171, the last one
+## StringTie wrote before the per-sample folders fix), ceiling(cov * length / 75) reproduces
+## that sample's column of the transcript matrix exactly; other read lengths do not.
+td <- read.delim(here::here("03_analyses", "hisat", "t_data.ctab"))
+if ("H9-T014F_S171" %in% names(tx)) {
+  pred <- as.integer(ceiling(td$cov * td$length / params$read_length))
+  obs  <- tx[["H9-T014F_S171"]][match(td$t_name, tx$transcript_id)]
+  cat("read length", params$read_length, ": H9-T014F_S171 transcripts reproduced",
+      sum(pred == obs, na.rm = TRUE), "of", nrow(td), "\n")
+  stopifnot(all(pred == obs))
+}
+```

@@ -192,16 +192,16 @@ sapply(load.lib, require, character = TRUE)
 find_repo_root <- function(start = here::here()) {
   d <- normalizePath(start, winslash = "/")
   for (i in 1:6) {
-    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("05_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+  stop("Repo root not found: need a parent containing 05_differential-expression/ and 02_thread-strength/.")
 }
 repo_root   <- find_repo_root()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance
 source(file.path(repo_root, "tools", "plot_style.R"))        # shared colours, short_name()
 source(file.path(repo_root, "tools", "gene_ids.R"))          # gene_key()
-DE_DIR      <- file.path(repo_root, "06_differential-expression")          # expression-side inputs
+DE_DIR      <- file.path(repo_root, "05_differential-expression")          # expression-side inputs
 COUNT_FILE  <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_matrix_clean.csv")
 TI_FILE     <- file.path(DE_DIR, "03_analyses", "count_matrix", "treatmentinfo_clean.csv")
 ## The thread summary written by 02_thread-strength script 03, and the per-animal response
@@ -284,7 +284,7 @@ for mean force, area and adhesion (the mean on the log scale the model uses) and
 thread peak force for max force; the same summary of its pre-exposure threads is its
 baseline. The
 Tag-seq treatment assignment (the authoritative one) comes from the sample table written by
-`06_differential-expression` (`03_analyses/count_matrix/treatmentinfo_clean.csv`). With `INCLUDE_CONTROL_ARM = TRUE` the day-3 control animals enter as their own
+`05_differential-expression` (`03_analyses/count_matrix/treatmentinfo_clean.csv`). With `INCLUDE_CONTROL_ARM = TRUE` the day-3 control animals enter as their own
 treatment level; the day-0 lab-reference animals never do (they have no day-3 threads).
 
 ```{r paired}
@@ -321,7 +321,7 @@ baseline <- thr_raw %>% filter(phase == "pre") %>% summarise_animal(prefix = "ba
 ## the foot; the day-0 libraries of the rest of the foot (IDs ending FX) are dropped here.
 read_treatmentinfo <- function(tissue) {
   if (!file.exists(TI_FILE)) stop("Sample table not found: ", TI_FILE,
-                                  "\nRun 06_differential-expression/01_code/01_clean_count_matrix.Rmd.")
+                                  "\nRun 05_differential-expression/01_code/01_clean_count_matrix.Rmd.")
   read.csv(TI_FILE, colClasses = "character") %>%
     filter(tissue == .env$tissue, region != "foot (without phenol gland)") %>%   # .env: the file has a `tissue` column
     transmute(sample_id = sample.1,
@@ -350,7 +350,7 @@ arm_clash <- post_stress %>%
   dplyr::filter(treatment != rna_treatment)
 if (nrow(arm_clash) > 0) print(arm_clash)
 warn_unless(nrow(arm_clash) == 0, nrow(arm_clash), " animal(s) carry different arms in ",
-              "thread-summary and the 06 sample table (", TISSUE, ") and are excluded: ",
+              "thread-summary and the 05 sample table (", TISSUE, ") and are excluded: ",
               paste(arm_clash$mussel, collapse = ", "))
 
 ## ---- per-animal response classification from 02_thread-strength script 05 ------------
@@ -445,7 +445,7 @@ if (all(file.exists(TS_ANIMALS))) {
 Variance-stabilising transformation is estimated across **all** samples of the chosen
 tissue (more stable dispersion estimates), then we subset to the paired animals. Gene IDs
 in the matrix look like `gene-LOC134696364|LOC134696364`; we key on the `LOC######` id
-(`gene_key()`, `tools/gene_ids.R`, shared with 06 and 07).
+(`gene_key()`, `tools/gene_ids.R`, shared with 05 and 07).
 
 ```{r counts}
 cm <- read.csv(COUNT_FILE, row.names = 1, check.names = FALSE)
@@ -481,7 +481,7 @@ counts_p <- counts(dds)[, paired$sample, drop = FALSE]   # identical row order t
 keep <- rowSums(counts_p > MIN_COUNT) >= ceiling(nrow(paired) / 3)
 vp <- vp[keep, , drop = FALSE]
 ## the mitochondrial genome's genes and their copies on unplaced scaffolds are analysed on their
-## own (06_differential-expression step 13; script 05 here tests their summed signal), so they
+## own (05_differential-expression step 13; script 05 here tests their summed signal), so they
 ## enter neither gene universe
 MT_FILE <- file.path(DE_DIR, "03_analyses", "count_matrix", "mitochondrial_loci.csv")
 mt_loci <- read.csv(MT_FILE, stringsAsFactors = FALSE)$LOC_ID

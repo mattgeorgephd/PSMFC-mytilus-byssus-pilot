@@ -32,7 +32,7 @@ with `run_log.csv`.
 
 Every output is tissue-suffixed (`_F` / `_G`) except `annotation_map.csv`, a
 tissue-independent LOC-to-protein map. Run after `02_thread-strength`,
-`06_differential-expression` and `07_enrichment` (step 05 reads its topGO results); the repository-level `00_run_pipeline.Rmd` runs them in order.
+`05_differential-expression` and `07_enrichment` (step 05 reads its topGO results); the repository-level `00_run_pipeline.Rmd` runs them in order.
 If a step fails, that tissue's chain stops (later steps read its outputs), the other tissue
 still runs, and the runner fails after writing `run_log.csv`.
 
@@ -42,10 +42,10 @@ still runs, and the runner fails after writing `run_log.csv`.
 find_repo_root <- function(start = getwd()) {
   d <- normalizePath(start, winslash = "/", mustWork = FALSE)
   for (i in 1:8) {
-    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("05_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+  stop("Repo root not found: need a parent containing 05_differential-expression/ and 02_thread-strength/.")
 }
 repo_root <- find_repo_root()
 source(file.path(repo_root, "tools", "run_steps.R"))
@@ -69,11 +69,11 @@ Nothing in the code. What differs is the data:
 
 - The gill count matrix has 59 libraries against 58 for foot. T047 has a gill library but no
   foot library, so T047 can enter the gill paired set but not the foot one. T051F and T051G
-  were removed at QC (`06_differential-expression/01_code/01_clean_count_matrix.Rmd`).
+  were removed at QC (`05_differential-expression/01_code/01_clean_count_matrix.Rmd`).
 - Foot means the phenol gland to the tip of the foot, the region sampled in every animal. The
   twelve day-0 animals also have a library of the rest of the foot (IDs ending `FX`); no
   script here uses them.
 - The DEG union is built from the tissue's own `<T><X>_TC_siggene.csv` lists, written by
-  `06_differential-expression/01_code/04_shrinkage_filtration.Rmd`.
+  `05_differential-expression/01_code/04_shrinkage_filtration.Rmd`.
 - The foot is the byssus-producing organ. A gill association is a systemic-state readout,
   not a mechanism at the site of thread production, and should be framed that way.

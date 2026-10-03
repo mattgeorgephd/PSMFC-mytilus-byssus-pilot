@@ -1,6 +1,6 @@
 # 01_go-inputs
 
-Written by `../../01_code/01_go_inputs.Rmd`; read by every later step.
+Written by `../../01_code/01_go_inputs.Rmd`; `gene_annotation.tsv` is read by steps 02, 03 and 04.
 
 | File | Contents |
 |---|---|
@@ -8,5 +8,5 @@ Written by `../../01_code/01_go_inputs.Rmd`; read by every later step.
 | `gene_sets_summary.csv` | per contrast and direction: universe size, genes with BP annotation and with a length, DEGs, DEGs with BP annotation |
 | `RUN_provenance.txt` | the GO release in `GO.db`, the thresholds, the code commit, R and package versions for every method in this folder, and an MD5 checksum of each input |
 
-The mitochondrial loci are not in any universe (`06_differential-expression` leaves them out
+The mitochondrial loci are not in any universe (`05_differential-expression` leaves them out
 of its fits); step 01 stops if one appears.

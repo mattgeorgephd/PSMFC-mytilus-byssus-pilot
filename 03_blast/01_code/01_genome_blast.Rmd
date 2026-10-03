@@ -1,106 +1,209 @@
 ---
-title: "genome_blast"
+title: "01 - Genome CDS against Swiss-Prot and the Mytilus foot proteins (BLAST annotation)"
 output: html_document
-date: "2024-06-30"
+params:
+  run: false              # true: build the database, run blastx and rebuild the tables (lab server)
+  work_dir: "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis"   # holds data/ and output/
+  blast_bin: "/home/shared/ncbi-blast-2.15.0+/bin"
+  threads: 20
+  sprot_release: "2024_04"  # the release the 2024 database held (see "The BLAST database")
+  as_2024: false          # true: keep the two quirks of the 2024 run (see "Reproducing the 2024 tables")
+  blastx_tab: ""          # an existing blastx table to rebuild the tables from ("" = the one this run writes)
 ---
 
-### Download swissprot database
-
-```{bash}
-curl -o uniprotkb_mytilus_foot.fasta "https://rest.uniprot.org/uniprotkb/stream?format=fasta&query=%28mytilus+foot%29"
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
+# What this does
 
-```{bash}
+Annotates the genome's coding sequences: every CDS of RefSeq `GCF_036588685.1`
+(`cds_from_genomic.fasta`) is searched with blastx (BLAST+ 2.15.0; Camacho et al. 2009,
+*BMC Bioinformatics* 10:421) against UniProtKB/Swiss-Prot (`sprot_release`; see below) plus the UniProt
+"mytilus foot" proteins (`02_data/uniprotkb_mytilus_foot.fasta`, the copy the 2024 run used),
+e-value at most 1e-20, one target sequence per query. Each hit is joined to its UniProt record
+(protein names, gene names, GO terms) and each CDS to its gene (`LOC` ID). Writes, in
+`03_analyses/genome-foot/`:
 
-cd ../data
-curl -O https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
-mv uniprot_sprot.fasta.gz uniprot_sprot_r2024_01.fasta.gz
-gunzip uniprot_sprot_r2024_01.fasta.gz
+- `LOC_GO_list.txt`: one row per blastx hit (HSP): the CDS (`transcript`), the hit split into
+  `sp`, `uniprot_accession`, `geneID` and `species`, the alignment columns, the UniProt record,
+  and from `g.spid.txt` the CDS's gene (`gene`), the e-value of its first hit (`V11`) and the
+  full subject ID (`V2.x`). Read by `04_sequence-alignment` steps 04 and 05 and
+  `05_differential-expression` step 01 (the mitochondrial loci, `tools/mt_encoded.R`),
+  `05_differential-expression` step 06, `06_iso-seq-transcriptome` step 04, `07_enrichment`
+  step 01 and `09_gene-mechanics-correlation` steps 01 and 04;
+- `g.spid.txt`: one row per gene and UniProt accession: the gene, the first hit's e-value, the
+  subject ID, the CDS and the accession.
 
+It ran on the lab server in June to August 2024; the committed tables are its outputs. Until
+2026-10-03 the script did not run as written (it joined an object, `masterID`, that it never
+made, used a misspelt name for the foot-protein table, read the UniProt downloads from a folder
+they were not saved in, and loaded no packages). It is fixed here so that it does, and it
+reproduces the committed tables (below). With `run: false` (the default) it only checks the
+committed tables against the 2024 blastx table, if one is given.
+
+```{r paths}
+suppressPackageStartupMessages({ library(dplyr); library(stringr); library(tidyr) })
+data_dir <- file.path(params$work_dir, "data")
+out_dir  <- file.path(params$work_dir, "output")
+cds_fa   <- file.path(data_dir, "ncbi_dataset", "data", "GCF_036588685.1", "cds_from_genomic.fasta")
+foot_fa  <- here::here("02_data", "uniprotkb_mytilus_foot.fasta")       # the copy the 2024 run used
+sprot_fa <- file.path(data_dir, paste0("uniprot_sprot_r", params$sprot_release, ".fasta"))
+db       <- file.path(data_dir, "swissprot_n_mytilusfoot_db")
+blastx   <- if (nzchar(params$blastx_tab)) params$blastx_tab else file.path(out_dir, "genome_n_foot_blastx.tab")
+sprot_info_tsv <- file.path(data_dir, "uniprot2024.tsv")                # reviewed UniProt records
+foot_info_tsv  <- file.path(data_dir, "trembl_foot_info.tsv")           # the "mytilus foot" records
+res_dir  <- here::here("03_analyses", "genome-foot")
+## the bash chunks read these from the environment (knitr does not evaluate inline R code in a
+## bash chunk)
+Sys.setenv(DATA_DIR = data_dir, REL = params$sprot_release, DB = db, SPROT_FA = sprot_fa, FOOT_FA = foot_fa,
+           CDS_FA = cds_fa, BLAST_BIN = params$blast_bin, BLASTX = blastx, THREADS = params$threads,
+           SPROT_INFO = sprot_info_tsv, FOOT_INFO = foot_info_tsv)
 ```
 
-### Combine fasta's
-```{bash}
-cat /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/uniprot_sprot_r2024_01.fasta /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/uniprotkb_mytilus_foot.fasta > swissprot_n_mytilusfoot.fasta
+# The BLAST database and the search (lab server)
 
+Swiss-Prot of the pinned release comes from UniProt's archive of previous releases
+(`previous_releases/release-<release>/knowledgebase/uniprot_sprot-only<release>.tar.gz`, which
+holds `uniprot_sprot.fasta.gz`; checked 2026-10-03). The 2024 script downloaded
+`current_release` and saved it as `uniprot_sprot_r2024_01.fasta`, but its hits match release
+2024_04 (UniProt release notes: 24 July 2024) and no other: of the releases from 2023_05 to
+2024_05, 2024_04 is the only one that holds all 10,740 subjects of the 2024 hits as written
+(`sp|accession|entry name`, with the foot proteins); 2024_03 lacks 3 of the accessions and
+2024_05 has renamed 15 entries, and every hit's alignment lies within its 2024_04 sequence. The
+default `sprot_release` is therefore 2024_04. The foot proteins are the committed copy, because
+the UniProt query returns other entries as UniProt changes (196 on 2026-10-03, against the 202
+of the 2024 copy).
+
+```{bash database, eval = params$run}
+set -euo pipefail
+cd "$DATA_DIR"
+rel="$REL"
+curl -sS -o "uniprot_sprot-only${rel}.tar.gz" \
+  "https://ftp.uniprot.org/pub/databases/uniprot/previous_releases/release-${rel}/knowledgebase/uniprot_sprot-only${rel}.tar.gz"
+tar -xzf "uniprot_sprot-only${rel}.tar.gz" uniprot_sprot.fasta.gz
+gunzip -c uniprot_sprot.fasta.gz > "$SPROT_FA"
+cat "$SPROT_FA" "$FOOT_FA" > swissprot_n_mytilusfoot.fasta
+"$BLAST_BIN/makeblastdb" -in swissprot_n_mytilusfoot.fasta -dbtype prot -out "$DB"
 ```
 
-
-
-### Make blastdb
-```{bash}
-/home/shared/ncbi-blast-2.15.0+/bin/makeblastdb \
--in /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/swissprot_n_mytilusfoot.fasta \
--dbtype prot \
--out /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/swissprot_n_mytilusfoot_db
-
-
+```{bash blastx, eval = params$run}
+"$BLAST_BIN/blastx" \
+  -query "$CDS_FA" \
+  -db "$DB" \
+  -out "$BLASTX" \
+  -evalue 1E-20 \
+  -num_threads $THREADS \
+  -max_target_seqs 1 \
+  -outfmt 6
 ```
 
-```{bash}
-/home/shared/ncbi-blast-2.15.0+/bin/blastx \
--query /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fasta \
--db /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/swissprot_n_mytilusfoot_db \
--out /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/genome_n_foot_blastx.tab \
--evalue 1E-20 \
--num_threads 20 \
--max_target_seqs 1 \
--outfmt 6
-```
-# Uniprot info download
-```{bash}
-curl -o uniprot2024.tsv -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgene_oln%2Ccc_interaction%2Ccc_induction%2Cgo_p%2Cgo_c%2Cgo_f%2Cgo_id%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway&format=tsv&query=%28*%29+AND+%28reviewed%3Atrue%29"
-```
-# Uniprot mytfoot download
-```{bash}
-# searched mytilus foot in uniprot kb, took Trembl results
-curl -o trembl_foot_info.tsv -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_id%2Cgo_p%2Cgo_f%2Cgo_c%2Cgo%2Cgene_oln%2Ccc_induction%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway%2Ccc_interaction&format=tsv&query=%28mytilus+foot%29"
+# The UniProt records of the hits (lab server)
+
+The two record tables of the 2024 run, with the same fields: the reviewed entries (Swiss-Prot)
+and the entries of the "mytilus foot" query. UniProt's REST service serves the current release
+only, so a new download differs from the 2024 one in its annotation: on 2026-10-03 (release
+2026_03) the GO terms of 13,667 of the 16,675 genes' best hits had changed (28,150 gene-GO
+pairs added, 31,946 removed). The column names are those of 2024 (checked the same day), so the
+tables the analysis reads keep their layout.
+
+```{bash uniprot, eval = params$run}
+set -euo pipefail
+cd "$DATA_DIR"
+curl -sS -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgene_oln%2Ccc_interaction%2Ccc_induction%2Cgo_p%2Cgo_c%2Cgo_f%2Cgo_id%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway&format=tsv&query=%28*%29+AND+%28reviewed%3Atrue%29" \
+  | gunzip -c > "$SPROT_INFO"
+curl -sS -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_id%2Cgo_p%2Cgo_f%2Cgo_c%2Cgo%2Cgene_oln%2Ccc_induction%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway%2Ccc_interaction&format=tsv&query=%28mytilus+foot%29" \
+  | gunzip -c > "$FOOT_INFO"
 ```
 
-```{r}
-mytfoot_uniprot_info <- read.delim("data/trembl_foot_info.tsv", sep= "\t", header = TRUE)
-uniprot_info <- read.delim("data/uniprot2024.tsv", sep= "\t", header = TRUE)
-```
+# The tables
 
-```{r}
-mytilus_foot_uniprot_info <- subset(mytilus_foot_uniprot_info, select = -Gene.Ontology..GO.)
-total_uniprot_info <- rbind(mytilus_foot_uniprot_info, uniprot_info)
-total_uniprot_info <- total_uniprot_info %>% rename(uniprot_accession = Entry)
+`masterID` is the blastx table with the subject ID (`sp|Q5RA75|F135A_PONAB`) split into the
+database (`sp`), the accession, and the entry name's two parts (`geneID`, `species`). The two
+record tables are stacked, the foot query's first, without its combined GO column, and joined to
+the hits by accession. `g.spid` gives each CDS its gene from the CDS FASTA's headers
+(`[gene=LOC...]`) and keeps one row per gene and accession; it is joined to the hits by CDS.
 
-full_blast <- left_join(masterID, total_uniprot_info, by = "uniprot_accession")
-```
+```{r tables, eval = params$run}
+read_blastx <- function(f) {
+  b <- read.delim(f, header = FALSE, stringsAsFactors = FALSE)
+  if (params$as_2024) b <- b[-1, ]                     # the 2024 run read the table with a header line
+  b
+}
+## CDS ID and header description, as the 2024 run's perl one-liner tabulated them
+h <- sub("^>", "", grep("^>", readLines(cds_fa), value = TRUE))
+cdsftab <- data.frame(V1 = sub(" .*$", "", h), V2 = sub("^[^ ]* ?", "", h), stringsAsFactors = FALSE)
 
-```{bash}
-perl -e '$count=0; $len=0; while(<>) {s/\r?\n//; s/\t/ /g; if (s/^>//) { if ($. != 1) {print "\n"} s/ |$/\t/; $count++; $_ .= "\t";} else {s/ //g; $len += length($_)} print $_;} print "\n"; warn "\nConverted $count FASTA records in $. lines to tabular format\nTotal sequence length: $len\n\n";' \
-/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.fasta > /home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.tab
-```
-
-```{r}
-cdsftab <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.tab", sep = '\t', header = FALSE, row.names=NULL)
-
-blast <- read.csv("/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/genome_n_foot_blastx.tab", sep = '\t', header = FALSE, row.names=NULL)
-```
-
-
-```{r}
+blast <- read.delim(blastx, header = FALSE, stringsAsFactors = FALSE)     # every hit, for g.spid
 g.spid <- left_join(blast, cdsftab, by = "V1") %>%
   mutate(gene = str_extract(V2.y, "(?<=\\[gene=)\\w+")) %>%
   select(gene, V11, V2.x, V1) %>%
   mutate(uniprot_accession = str_extract(V2.x, "(?<=\\|)[^\\|]*(?=\\|)")) %>%
   distinct(gene, uniprot_accession, .keep_all = TRUE)
-
 colnames(g.spid)[4] <- "transcript"
-```
 
+masterID <- read_blastx(blastx) %>%
+  separate(V2, into = c("sp", "uniprot_accession", "entry_name"), sep = "\\|") %>%
+  separate(entry_name, into = c("geneID", "species"), sep = "_", extra = "merge") %>%
+  rename(transcript = V1, pident = V3, length = V4, mismatch = V5, gapopen = V6, qstart = V7,
+         qend = V8, sstart = V9, send = V10, evalue = V11, bitscore = V12)
 
-```{r}
+mytilus_foot_uniprot_info <- read.delim(foot_info_tsv, sep = "\t", header = TRUE)
+uniprot_info <- read.delim(sprot_info_tsv, sep = "\t", header = TRUE)
+mytilus_foot_uniprot_info <- subset(mytilus_foot_uniprot_info, select = -Gene.Ontology..GO.)
+total_uniprot_info <- rbind(mytilus_foot_uniprot_info, uniprot_info) %>% rename(uniprot_accession = Entry)
+if (!params$as_2024)                                   # one record per accession: Swiss-Prot's where both tables have it
+  total_uniprot_info <- total_uniprot_info[!duplicated(total_uniprot_info$uniprot_accession, fromLast = TRUE), ]
+
+full_blast <- left_join(masterID, total_uniprot_info, by = "uniprot_accession")
 LOC_GO_blast <- left_join(full_blast, g.spid, by = "transcript")
 
-write.table(LOC_GO_blast, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/LOC_GO_list.txt",sep = "\t", row.names = FALSE, quote = TRUE)
-
-write.table(g.spid, file = "/home/shared/8TB_HDD_02/graceleuchtenberger/Github/byssus-exp-analysis/output/g.spid.txt",sep = "\t", row.names = FALSE, quote = TRUE)
+dir.create(res_dir, showWarnings = FALSE, recursive = TRUE)
+write.table(LOC_GO_blast, file = file.path(res_dir, "LOC_GO_list.txt"), sep = "\t", row.names = FALSE, quote = TRUE)
+write.table(g.spid, file = file.path(res_dir, "g.spid.txt"), sep = "\t", row.names = FALSE, quote = TRUE)
 ```
 
+# Reproducing the 2024 tables
 
+The 2024 blastx table is kept on gannet
+(`panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/output/genome_n_foot_blastx.tab`, 41,432
+hits, 2024-08-06), with the CDS FASTA (`.../data/ncbi_dataset/`). Rebuilt from them on
+2026-10-03:
 
+- the BLAST database was, by its hits, Swiss-Prot release 2024_04 plus the committed foot proteins
+  (above). The `database` and `blastx` chunks, run with BLAST+ 2.15.0 on that database for a
+  sample of 100 CDSs (the first of the table, 20 with several HSPs, 79 at random), reproduce the
+  2024 table's 176 lines for them byte for byte, e-values (which depend on the database size)
+  and order included. That sample took 4 minutes on 4 threads, so the whole search would take
+  about a day and a half on 4 threads;
+- `g.spid.txt` is byte-identical to the committed file (17,386 rows);
+- `LOC_GO_list.txt` is byte-identical to the committed file (41,464 rows) with `as_2024: true`,
+  when the two UniProt record tables are taken from the committed file itself (UniProt no longer
+  serves the 2024 records). Two quirks of the 2024 run explain its row count: the blastx table
+  was read with a header line, so its first hit (a second HSP of the same CDS and protein is
+  kept) is missing; and four reviewed foot proteins (O96064, Q25434, Q25464, Q27409) are in both
+  UniProt tables, so their 33 hits appear twice. Neither changes what the analysis uses, the
+  best hit per gene. With `as_2024: false` (the default) the first hit is kept and each
+  accession has one record.
+
+The committed `V11` column is the e-value of the gene's first hit from the same search, not of
+a second search.
+
+The check below matches every blastx hit (HSP) to the rows of `LOC_GO_list.txt` on all twelve
+blastx columns, which identify an HSP uniquely. On the committed tables and the 2024 blastx
+table it gives 41,432 hits and 41,464 rows: 1 hit missing (the first), 0 rows that are not hits
+and 33 rows repeated (the four accessions above). A run with `as_2024: false` gives 0, 0 and 0.
+
+```{r check, eval = nzchar(params$blastx_tab) || file.exists(blastx)}
+b <- read.delim(blastx, header = FALSE, stringsAsFactors = FALSE)
+b$V2 <- sub("^[^|]*[|]([^|]*)[|].*$", "\\1", b$V2)             # the accession, as LOC_GO_list keeps it
+loc <- read.delim(file.path(res_dir, "LOC_GO_list.txt"), stringsAsFactors = FALSE)
+cols <- c("transcript", "uniprot_accession.x", "pident", "length", "mismatch", "gapopen", "qstart",
+          "qend", "sstart", "send", "evalue", "bitscore")
+hits <- do.call(paste, b)
+rows <- do.call(paste, loc[, cols])
+knitr::kable(data.frame(
+  measure = c("blastx hits", "LOC_GO_list rows", "hits not in LOC_GO_list",
+              "LOC_GO_list rows that are not hits", "LOC_GO_list rows repeated"),
+  n = c(length(hits), length(rows), sum(!hits %in% rows), sum(!rows %in% hits), sum(duplicated(rows)))))
+```

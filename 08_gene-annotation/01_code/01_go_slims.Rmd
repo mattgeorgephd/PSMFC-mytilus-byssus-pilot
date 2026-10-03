@@ -14,8 +14,10 @@ Maps the annotated DEGs of the six treatment-control (TC) contrasts onto the gen
 
 Inputs:
 
-- `06_differential-expression/03_analyses/DEG_lists/GOterms_genome/<code>_sigs_ID.csv`: each
-  TC DEG with a UniProt hit, its log2 fold change and its GO IDs (06 script 06);
+- `05_differential-expression/03_analyses/DEG_lists/GOterms_genome/<code>_sigs_ID.csv`: each
+  TC DEG with a UniProt hit, its log2 fold change and its GO IDs (05 script 06);
+- `05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv`: the
+  mitochondrial loci (05 script 01), checked to be absent from the DEG lists;
 - `02_data/goslim_generic.obo`: the generic GO slim of GO release 2023-07-27 (see the file's
   header). The GO graph, the descendants of each slim term, comes from `GO.db`.
 
@@ -38,8 +40,8 @@ it takes the GO IDs of its best hit (highest bitscore, ties in table order), as 
 of the TC DEGs a different set of GO IDs from the one 07 tested.
 
 **Mitochondrial genes.** The mitochondrial genome's genes and their 293 nuclear copies (126
-protein-coding LOCs, 167 pseudogenes) are no longer in the genome DEG lists (06 step 03); they
-are analysed on their own in 06 step 13. The check below stops if any reaches a DEG table.
+protein-coding LOCs, 167 pseudogenes) are no longer in the genome DEG lists (05 step 03); they
+are analysed on their own in 05 step 13. The check below stops if any reaches a DEG table.
 
 **Correction to the earlier version.** `06-get_GOSlims.Rmd`, whose tables are kept in
 `03_analyses/_superseded/goslims_genome/`, lost most of the annotation in two places. The GO
@@ -59,7 +61,7 @@ suppressPackageStartupMessages({
 codes    <- c("FOA", "FOW", "FDO", "GOA", "GOW", "GDO")   # tissue + stressor, TC contrasts
 slim_obo <- file.path(dat, "goslim_generic.obo")
 stopifnot(file.exists(slim_obo))
-mt_loci  <- read.csv(file.path(repo_root, "06_differential-expression", "03_analyses", "count_matrix",
+mt_loci  <- read.csv(file.path(repo_root, "05_differential-expression", "03_analyses", "count_matrix",
                                "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
 ```
 
@@ -88,7 +90,7 @@ slim_one <- function(code) {
   sig <- read.csv(file.path(deg, "GOterms_genome", paste0(code, "_sigs_ID.csv")),
                   stringsAsFactors = FALSE)
   if (any(sig$gene %in% mt_loci$gene))
-    stop(code, ": mitochondrial loci in the DEG table; rerun 06_differential-expression")
+    stop(code, ": mitochondrial loci in the DEG table; rerun 05_differential-expression")
   genes <- sig %>% arrange(desc(bitscore)) %>% distinct(LOC_ID, .keep_all = TRUE) %>%   # best hit
     transmute(LOC_ID, geneID, log2FoldChange, GO_ID = ifelse(is.na(GO_ID), "", GO_ID))
   gene_go <- genes %>%
@@ -191,7 +193,7 @@ p <- ggplot(long, aes(contrast, Term)) +
          "a gene can count under several terms. ", nlevels(long$Term), " of the ", n_terms_hit,
          " slim terms with any DEG are shown (at least ", MIN_TOTAL, " DEGs over all contrasts). ",
          "Generic GO slim, GO release 2023-07-27. Mitochondrial genes and their nuclear copies are ",
-         "analysed separately (06 step 13)."), width = 120), collapse = "\n")) +
+         "analysed separately (05 step 13)."), width = 120), collapse = "\n")) +
   theme_psmfc(10) +
   theme(panel.grid = element_blank(), axis.ticks = element_blank(),
         axis.text.x.top = element_text(angle = 45, hjust = 0), plot.caption = element_text(hjust = 0),

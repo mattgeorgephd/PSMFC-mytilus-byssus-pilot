@@ -1,0 +1,57 @@
+---
+title: "00 - Run the sequence-alignment steps"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  online: false         # true: also steps 04 to 06 and step 08's alignment (they download the Iso-Seq transcriptome, the genome and the reads, and run the aligners)
+  minimap2: "minimap2"  # step 04
+  bin: ""               # steps 06 and 08: folder with hisat2, hisat2-build, samtools, stringtie and featureCounts ("" = PATH)
+  threads: 4
+  steps: "default"      # "default" (02, 03, 07, 08; with online: true, 02 to 08), "all" (01 to 08), or step numbers, e.g. [7]
+  stop_on_fail: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Runs the numbered scripts in `01_code/` in order, each in its own R process, with an HTML
+report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
+
+| step | script | what it does |
+|---|---|---|
+| 01 | `01_hisat_stringtie.Rmd` | HISAT2 alignment and StringTie quantification of the trimmed Tag-seq reads (HPC); writes `03_analyses/hisat/` and its `sample_list.txt` |
+| 02 | `02_prepDE.Rmd` | gene and transcript count matrices of the HPC alignment (`03_analyses/prepDE/`): the previous record, read by `06_iso-seq-transcriptome` step 04 for comparison |
+| 03 | `03_read_trimming.Rmd` | how the trimmed reads were made: read retention from the committed FastQC tables (`03_analyses/read_trimming/`); the recipe check runs only with the script's own `online: true` (knit by hand; it needs Perl, the FASTX-Toolkit and cutadapt) |
+| 04 | `04_isoform_gene_map.Rmd` | each Iso-Seq isoform's genome gene (`03_analyses/isoform-gene-map/`), from a minimap2 alignment of the transcriptome to the genome; online; about 1.5 hours and 9 GB of memory |
+| 05 | `05_augmented_annotation.Rmd` | the RefSeq annotation with Iso-Seq-extended 3' ends (`ext3`) and with the Iso-Seq models added (`full`) (`03_analyses/augmented-annotation/`); online (step 04's alignment and the genome); a few minutes |
+| 06 | `06_genome_recount.Rmd` | the reads realigned (HISAT2) and counted on the RefSeq, `ext3` and `full` annotations with StringTie + prepDE and featureCounts (`03_analyses/genome-recount/`); online; about 15 minutes for the index plus 4 minutes per library |
+| 07 | `07_count_matrix_of_record.Rmd` | the count matrix of record (`03_analyses/featurecounts/`): step 06's featureCounts counts on `ext3`, with prepDE's row names; read by `05_differential-expression` |
+| 08 | `08_mitogenome_counts.Rmd` | the mitochondrial genes counted on the mitochondrial genome alone (`03_analyses/mitogenome/`), read by `05_differential-expression` step 13; aligns with `online: true`, otherwise summarises the committed counts |
+
+By default steps 02, 03, 07 and 08 run, from committed files. Step 01 needs the trimmed reads,
+the genome and HISAT2 / StringTie on the HPC (see `../README.md`); with its outputs present,
+step 02 counts from the StringTie GTFs, and without them it rebuilds the gene matrix from the
+committed transcript matrix. Steps 04 to 06 download the Iso-Seq transcriptome (owl), the genome
+and its annotation (NCBI) and the trimmed reads (gannet); set `online: true`, with `minimap2`
+and `bin` pointing at the binaries (minimap2 2.31, HISAT2 2.2.1, StringTie 2.2.1, Subread
+2.1.1, samtools 1.24 were used, from bioconda), to rebuild them and step 08's counts. Their
+large intermediate files are git-ignored and reused when present. `steps: "all"` runs 01 to 08
+on a machine that has every input.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+source(file.path(here::here(), "..", "tools", "run_steps.R"))
+html_dir <- here::here("03_analyses", "knit_html")
+steps <- if (!identical(params$steps, "default")) params$steps else if (isTRUE(params$online)) 2:8 else c(2, 3, 7, 8)
+tool_params <- list("04" = list(minimap2 = params$minimap2, threads = params$threads),
+                    "05" = list(threads = params$threads),
+                    "06" = list(bin = params$bin, threads = params$threads),
+                    "08" = list(online = isTRUE(params$online), bin = params$bin, threads = params$threads))
+run_log <- run_steps(here::here("01_code"), html_dir, steps = steps, step_params = tool_params,
+                     stop_on_fail = isTRUE(params$stop_on_fail))
+finish_run(run_log, html_dir, "Sequence-alignment")
+```

@@ -13,9 +13,9 @@
 ## the next 543 were pseudogene copies).
 ##
 ## These loci, with the mitogenome's tRNAs and rRNAs (331 rows in the count matrix of record),
-## are kept out of the genome differential expression (06 steps 03 and 05), the GO enrichment
-## (07) and the gene-mechanics tests (09). 06 step 13 tests the 12 mitochondrial proteins on
-## reads counted on the mitochondrial genome alone (05_sequence-alignment step 05), where the
+## are kept out of the genome differential expression (05 steps 03 and 05), the GO enrichment
+## (07) and the gene-mechanics tests (09). 05 step 13 tests the 12 mitochondrial proteins on
+## reads counted on the mitochondrial genome alone (04_sequence-alignment step 08), where the
 ## copies cannot take them.
 
 MITOGENOME_SEQID <- "NC_007687.1"
@@ -45,9 +45,9 @@ mt_protein_symbol <- function(protein_name) {
 ##   gene_ids   : count-matrix row names, e.g. "gene-COX1|COX1", "STRG.10|LOC134702910",
 ##                "rna-NC_007687.1:10108..10170"
 ##   blast_file : 03_blast/03_analyses/genome-foot/LOC_GO_list.txt (best hit = highest bitscore)
-##   t_data_file: 05_sequence-alignment/03_analyses/hisat/t_data.ctab (sequence of each gene)
-##   annotation_file: 05_sequence-alignment/02_data/annotation_mt_like_loci.csv, the loci NCBI
-##                names after a mitochondrial protein (05/01_code/_derive_mt_like_loci.R)
+##   t_data_file: 04_sequence-alignment/03_analyses/hisat/t_data.ctab (sequence of each gene)
+##   annotation_file: 04_sequence-alignment/02_data/annotation_mt_like_loci.csv, the loci NCBI
+##                names after a mitochondrial protein (04/01_code/_derive_mt_like_loci.R)
 ## Returns one row per mitochondrial matrix row: gene, LOC_ID, source ("mitogenome" or
 ## "nuclear copy"), mt_protein (symbol, or "tRNA/rRNA"), protein_name (the BLAST hit, or NCBI's
 ## description), pident, seqid, evidence ("mitogenome", "BLAST and annotation", "annotation").

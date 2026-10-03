@@ -1,0 +1,19 @@
+[04_isoform_gene_map.Rmd]
+generated            : 2026-10-03 06:25:40
+minimap2             : 2.31-r1302 (-c -x splice:hq -uf --secondary=no)
+genome / annotation  : GCF_036588685.1_PNRI_Mtr1.1.1.hap1 (RefSeq annotation RS_2024_02), MD5s checked against NCBI
+assignment           : gap-compressed identity (1 - de) >= 0.9; most exonic bases shared with a gene, same strand, >= 50; ambiguous when mapq 0 or a second gene shares >= 0.98 of that
+isoforms             : 411251
+code commit          : 567210b18ad5
+uncommitted changes  : no
+R                    : R version 4.4.3 (2025-02-28)
+packages             : data.table 1.18.6.1, GenomicRanges 1.58.0, GenomicAlignments 1.42.0, rtracklayer 1.66.0
+inputs (md5, repo-relative path):
+  e71381f7b6970fd20ff6b0e72006c80a  04_sequence-alignment/02_data/Mtros-hq_transcripts.fasta
+  9982a092a77102e03ae5c3885bee94f6  04_sequence-alignment/02_data/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.fna.gz
+  9d2edc71bf94b51a6f42cde8a7a5eb6d  04_sequence-alignment/02_data/GCF_036588685.1_PNRI_Mtr1.1.1.hap1_genomic.gff.gz
+  6bd66a3af047ceb9a58a09bad9fdabdb  03_blast/03_analyses/genome-foot/LOC_GO_list.txt
+  e33b7cf82550972f690405f57033de67  04_sequence-alignment/03_analyses/hisat/t_data.ctab
+  95ab0d5ff5d607f21b0506c57bd96074  04_sequence-alignment/02_data/annotation_mt_like_loci.csv
+  c967e2b03b38e87082a0969ae1c87e2f  04_sequence-alignment/03_analyses/_superseded/02_isoform-gene-map_cds/isoform_gene_map.csv.gz
+  5f91a74657c3514e52e13241e0545960  04_sequence-alignment/01_code/04_isoform_gene_map.Rmd

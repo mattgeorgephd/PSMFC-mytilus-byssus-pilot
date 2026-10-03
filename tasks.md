@@ -1,8 +1,14 @@
 # tasks.md
 
 Current sprint: make the analysis run end to end, from thread strength and Tag-seq counts
-to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-02.
+to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-03.
 Conventions and how to run are in `AGENTS.md`.
+
+The analysis folders were renumbered on 2026-10-03 so that their numbers are the run order:
+`05_sequence-alignment` became `04_`, `06_differential-expression` became `05_` and
+`04_iso-seq-transcriptome` became `06_` (root `README.md`, "What the map shows about the
+order", maps the steps). Entries under Done written before then keep the numbers of their time;
+the other sections use the new ones.
 
 ## Done
 
@@ -122,23 +128,54 @@ Conventions and how to run are in `AGENTS.md`.
   proteins and their sum (1.41-fold); Foot OA raises ND2, ND3 and ND5, its sum 1.19-fold (p
   0.061); OW and DO none. The 21 mitochondrial tRNAs and rRNAs the previous matrix had named by
   StringTie number are now recognised (331 mitochondrial loci).
+- **Pull request merged** (2026-10-03): the work above is on `main`.
+- **Loop removed** (2026-10-03). `04` steps 02 and 05 found the mitochondrial loci in `06`'s
+  list, which `06` builds from the count matrix those steps lead to. They now find the
+  annotation's mitochondrial loci themselves with the same function (the same 331 loci);
+  rerun from their cached alignments, both gave identical outputs.
+- **Step map** (2026-10-03). The root `README.md` ("How the steps connect") maps what every step
+  reads and writes, traced from the code, with an overview diagram and one per folder. Folder
+  READMEs and comments that named the wrong readers or inputs were corrected (06's count matrix
+  source and readers, 07's step inputs, 08's annotation source, 02's ANCOVA metrics, 05's prepDE
+  readers, 03's download claims, 04's step 01, `tools/` users).
+- **Count-building steps moved** (2026-10-03, Matt's decision: option C, the folder numbers in
+  run order). The isoform-to-gene map, the augmented annotations and the genome recount
+  (`04` steps 02, 05, 06) are now `05_sequence-alignment` steps 04 to 06, with their outputs,
+  caches and the retired CDS map; `05`'s count matrix of record and mitogenome counts are steps
+  07 and 08; what stays in `04` is renumbered 01 to 04 (salmon 02, Iso-Seq DE 03, recount
+  comparison 04). Both runners rerun offline with identical outputs.
+- **Folders renumbered** (2026-10-03, option C). `05_sequence-alignment`,
+  `06_differential-expression` and `04_iso-seq-transcriptome` are now `04_sequence-alignment`,
+  `05_differential-expression` and `06_iso-seq-transcriptome`, with their caches; every path in
+  code, the runners (the pipeline's stages now run 02, 04, 05, 06, 07, 08, 09), `.gitignore`,
+  the READMEs, `AGENTS.md` and the step map follow. Every folder now reads only lower-numbered
+  folders; `03_blast` and `04` step 01 (HPC) stay a break in the chain.
+- **Online steps and the whole pipeline rerun under the new names** (2026-10-03).
+  `04_sequence-alignment` steps 04-06 and 08, step 03's recipe check and
+  `06_iso-seq-transcriptome` step 02 rerun from their caches, then `00_run_pipeline.Rmd` from a
+  clean commit: every step TRUE, `09` checks 0 failed, every output table byte-identical to
+  before the renumbering.
+- **Genome BLAST script fixed** (2026-10-03). `03_blast/01_code/01_genome_blast.Rmd` runs again
+  (the 2024 version is in `01_code/_superseded/`). From the 2024 blastx table it rebuilds
+  `g.spid.txt` and, in its `as_2024` mode, `LOC_GO_list.txt` byte for byte; its database was
+  Swiss-Prot release 2024_04 (not 2024_01), and its search reproduces the 2024 hits on a
+  100-CDS sample.
 
 ## In progress
 
-- Review and merge of the pull request carrying this work (branch `claude/jolly-clarke-7afl1v`).
 - Proofreading the regenerated figures before they go into the manuscript.
 
 ## Blocked or waiting on a decision
 
 | item | why it is blocked | who |
 |---|---|---|
+| UniProt annotation refresh | the UniProt records in `LOC_GO_list.txt` are those of 2024 (hits from Swiss-Prot 2024_04). Measured on 2026-10-03 with today's records (2026_03) and the pinned GO release: the mitochondrial loci and every DEG are unchanged, but 110 of the 296 TC GO terms of record drop out and 93 come in (of those dropping out, 34 sit just above p = 0.01, 52 further away and 24 are no longer tested), the Gill OA and Gill DO "response to endoplasmic reticulum stress" terms lose significance, 1 gene leaves each byssal list, and `09`'s two gene-level associations stay. A refresh would also need a newer GO.db (not reachable from the cloud environment) and the 05 step 06 entry-name check relaxed. Keep 2024 or refresh, as its own pull request | Matt |
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
-| Merge the pull request | branch `claude/jolly-clarke-7afl1v`; merging deletes untracked `.Rhistory` copies from local checkouts (see the PR) | Matt |
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,022 of 7,367 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
-| `03_blast/` and `05` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` would not run as written (`mytfoot_uniprot_info` read but `mytilus_foot_uniprot_info` used; `masterID` never defined) | HPC user |
+| `03_blast/` and `04` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` runs again since 2026-10-03 (the 2024 version is in `01_code/_superseded/`) but needs BLAST+ and hours of CPU for the search | HPC user |
 
 ## Known limitations (documented, not blocking)
 
@@ -147,22 +184,33 @@ Conventions and how to run are in `AGENTS.md`.
   or conda environment file, so a new machine has to assemble the packages by hand. System
   libraries matter too: after the cloud container was rebuilt on 2026-10-01, every figure
   re-rendered with different fonts (same data, different bytes).
-- **Annotation provenance.** `LOC_GO_list.txt` joins two BLAST runs (its second e-value column
-  comes from the run against Swiss-Prot release 2024_01 plus a UniProtKB "mytilus foot" query,
-  `03_blast/01_code/01_genome_blast.Rmd`) and dropped second transcripts of a gene that hit the
-  same protein (40% of rows carry no LOC key; each gene keeps its other transcripts' hits). The
-  CDS table on owl (`data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.tab`) maps every
-  CDS to its LOC and would let those rows be keyed. 42 of the 14,863 GO IDs are unknown to the
-  pinned GO release and dropped.
+- **Annotation provenance.** `LOC_GO_list.txt` comes from one blastx search
+  (`03_blast/01_code/01_genome_blast.Rmd`), whose hits match Swiss-Prot release 2024_04 plus the
+  committed "mytilus foot" proteins (not release 2024_01, as its file name said; and its `V11`
+  column is the e-value of the gene's first hit in that same search, not a second run, as this
+  file said until 2026-10-03). `g.spid.txt` keeps one transcript per gene and protein, so the
+  rows of a gene's other transcripts that hit the same protein carry no LOC key (16,796 of
+  41,464 rows); each gene keeps its first transcript's hits. The fixed script keeps that rule so
+  its tables match the committed ones; the CDS FASTA headers map every CDS to its LOC and would
+  let those rows be keyed. The UniProt records are those of 2024: on 2026-10-03 the GO terms of
+  13,667 of the 16,675 genes' best hits differed in the current release (2026_03). 42 of the
+  14,863 GO IDs are unknown to the pinned GO release and dropped.
 - **GO of record.** topGO `weight01` p < 0.01 is unadjusted; only three TC runs have terms
   under FDR control. Headline GO claims are safest from `consensus_terms_TC_<ont>.csv`.
 - **Repository size.** `.git` is about 765 MB, mostly committed superseded tables and BLAST
   outputs; `vst_paired_<T>.csv` (7 to 11 MB each) is rewritten on every 09 run.
 - **No continuous integration.** Nothing runs the pipeline on a push; the checks are the
   runners, the provenance files and the `09` checks.
+- **Numbers computed outside the pipeline.** The Iso-Seq vs genome correlation of the
+  mitochondrial share (Spearman 0.91; `06` README) is computed by hand from committed files;
+  no step writes it.
+- **Inputs no current step writes:** `LOC_GO_list.txt` (`03_blast`, HPC; the script no longer
+  runs as written), `04 .../hisat/t_data.ctab` (one sample's table from an older HPC run),
+  `04 .../prepDE/transcript_count_matrix.csv` (HPC `prepDE.py`) and `04 .../fastqc/` (the
+  earlier `byssus-exp-analysis` repository).
 
 ## Up next
 
-- Merge this pull request, then update the manuscript text.
+- Update the manuscript text.
 - Library QC sensitivity run (T025G, T035G, T040F).
 - Add an environment lockfile (renv or conda) for the R 4.4.3 / Bioconductor 3.20 set.

@@ -2,7 +2,7 @@
 title: "01 - GO enrichment inputs: annotation, gene lengths and gene sets"
 output: html_document
 params:
-  families: ["TC", "FG"]   # contrast families to summarise (see 06 contrasts.csv)
+  families: ["TC", "FG"]   # contrast families to summarise (see 05 contrasts.csv)
 ---
 
 ```{r setup, include=FALSE}
@@ -20,14 +20,14 @@ summarises the gene sets each contrast contributes.
    kept, the rule `09_gene-mechanics-correlation` uses. Its GO IDs are trimmed (the table
    separates them with "; "), kept only if this `GO.db` knows them, and split by ontology.
 2. **Length**, for goseq's length-bias correction: the median length of the gene's reference
-   transcripts in `05_sequence-alignment/03_analyses/hisat/t_data.ctab`.
+   transcripts in `04_sequence-alignment/03_analyses/hisat/t_data.ctab`.
 3. **No mitochondrial loci.** The mitochondrial genome's genes and their copies on unplaced
-   scaffolds (`06 .../count_matrix/mitochondrial_loci.csv`) are left out of the genome DE in
-   `06_differential-expression` and analysed there on their own (step 13). This script stops if
-   any of them reaches a universe, which would mean 06 was not rerun: one mitochondrial signal
+   scaffolds (`05 .../count_matrix/mitochondrial_loci.csv`) are left out of the genome DE in
+   `05_differential-expression` and analysed there on their own (step 13). This script stops if
+   any of them reaches a universe, which would mean 05 was not rerun: one mitochondrial signal
    counted many times dominated the GO results before (in Gill OA, 116 of 711 DEGs).
 4. **Gene sets.** For each contrast the universe is every gene with an adjusted p in its
-   apeglm table from `06_differential-expression` (independent filtering leaves the rest at
+   apeglm table from `05_differential-expression` (independent filtering leaves the rest at
    NA, so they could never be DEGs); up- and down-regulated DEGs (padj < 0.05) are tested
    separately against that universe.
 
@@ -76,11 +76,11 @@ len <- td %>% mutate(LOC_ID = gene_key(ifelse(gene_id != ".", gene_id, t_name)))
 
 ## every gene that appears in any contrast's table
 genes <- unique(unlist(lapply(contrasts$code, function(cd) gene_sets(cd)$universe)))
-mt_loci <- read.csv(file.path(repo_root, "06_differential-expression", "03_analyses", "count_matrix",
+mt_loci <- read.csv(file.path(repo_root, "05_differential-expression", "03_analyses", "count_matrix",
                                "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
 if (any(genes %in% mt_loci$gene))
-  stop(sum(genes %in% mt_loci$gene), " mitochondrial loci are in the 06 apeglm tables; rerun ",
-       "06_differential-expression (its step 03 leaves them out) before this folder.")
+  stop(sum(genes %in% mt_loci$gene), " mitochondrial loci are in the 05 apeglm tables; rerun ",
+       "05_differential-expression (its step 03 leaves them out) before this folder.")
 annot <- data.frame(gene = genes, LOC_ID = gene_key(genes)) %>%
   left_join(best %>% select(LOC_ID, protein_name), by = "LOC_ID") %>%
   left_join(len, by = "LOC_ID") %>%
@@ -123,7 +123,7 @@ settings <- c(
   paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
   paste0("GO release           : ", go_info$value[go_info$name == "GOSOURCEDATE"],
          " (GO.db ", as.character(utils::packageVersion("GO.db")), ")"),
-  paste0("DEG                  : padj < ", PADJ, " in the 06 apeglm table; up and down tested separately"),
+  paste0("DEG                  : padj < ", PADJ, " in the 05 apeglm table; up and down tested separately"),
   "universe             : genes with a non-missing padj in the contrast's apeglm table",
   paste0("terms tested         : ", MIN_GS, " or more annotated universe genes (topGO nodeSize); ",
          MIN_GS, " to ", MAX_GS, " for goseq and clusterProfiler"),
@@ -132,7 +132,7 @@ settings <- c(
          sum(nzchar(annot$GO_BP)), ", MF ", sum(nzchar(annot$GO_MF)), ", CC ", sum(nzchar(annot$GO_CC))))
 inputs <- c(file.path(blast_go, "LOC_GO_list.txt"), t_data, file.path(deg, "contrasts.csv"),
             file.path(deg, contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
-            file.path(repo_root, "06_differential-expression", "03_analyses", "count_matrix", "mitochondrial_loci.csv"),
+            file.path(repo_root, "05_differential-expression", "03_analyses", "count_matrix", "mitochondrial_loci.csv"),
             here::here("01_code", c("01_go_inputs.Rmd", "_paths.R", "_go_helpers.R")),
             file.path(repo_root, "tools", c("pipeline_checks.R", "gene_ids.R")))
 prov <- file.path(out_inputs, "RUN_provenance.txt")

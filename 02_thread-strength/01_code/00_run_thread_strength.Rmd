@@ -42,7 +42,7 @@ finish_run(run_log, html_dir, "Thread-strength")
 
 `03_analyses/04_analyze-thread-strength/STATS_ancova_vs_control.csv` holds each stressor arm's
 adhesion effect against the treatment control, and
-`03_analyses/05_decompose-adhesion/STATS_ancova_vs_control.csv` the same for peak force, plaque
-area and extension. `09_gene-mechanics-correlation` reads the thread summary, both
+`03_analyses/05_decompose-adhesion/STATS_ancova_vs_control.csv` the same for mean and maximum
+peak force and plaque area (extension is not analysed). `09_gene-mechanics-correlation` reads the thread summary, both
 `DATA_ancova_animals.csv` files, `mussel_response_classification.csv` and the extraction;
 run it after any change here.

@@ -45,14 +45,14 @@ USE_RAW_THREAD_SET <- TRUE         # FALSE = mussels in the thread summary; TRUE
 find_repo_root <- function(start = here::here()) {
   d <- normalizePath(start, winslash = "/")
   for (i in 1:6) {
-    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("05_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+  stop("Repo root not found: need a parent containing 05_differential-expression/ and 02_thread-strength/.")
 }
 repo_root   <- find_repo_root()
 source(file.path(repo_root, "tools", "gene_ids.R"))   # gene_key(): count-matrix name -> LOC key
-DE_DIR      <- file.path(repo_root, "06_differential-expression")
+DE_DIR      <- file.path(repo_root, "05_differential-expression")
 COUNT_FILE  <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_matrix_clean.csv")
 TI_FILE     <- file.path(DE_DIR, "03_analyses", "count_matrix", "treatmentinfo_clean.csv")
 THREAD_FILE <- file.path(repo_root, "02_thread-strength", "03_analyses", "03_assemble-thread-summary",
@@ -104,10 +104,10 @@ which lists every trace on disk with its phase. That replaces the old scan of th
 
 ```{r manifest}
 ## RNA libraries present, both tissues, from the sample table written by
-## 06_differential-expression (one row per library in the clean count matrix). The day-0
+## 05_differential-expression (one row per library in the clean count matrix). The day-0
 ## animals' second foot library (the rest of the foot, ID ending FX) counts as foot.
 if (!file.exists(TI_FILE)) stop("Sample table not found: ", TI_FILE,
-                                "\nRun 06_differential-expression/01_code/01_clean_count_matrix.Rmd.")
+                                "\nRun 05_differential-expression/01_code/01_clean_count_matrix.Rmd.")
 ti_all <- read.csv(TI_FILE, colClasses = "character")
 rna_tab <- ti_all %>%
   mutate(mussel = str_extract(sample.1, "^T\\d+")) %>%

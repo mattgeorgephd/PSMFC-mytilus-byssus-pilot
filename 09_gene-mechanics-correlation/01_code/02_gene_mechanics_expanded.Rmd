@@ -67,10 +67,10 @@ N_INFLUENCE_HITS <- 3     # candidate hits per metric that get the leave-one-ani
 find_repo_root <- function(start = here::here()) {
   d <- normalizePath(start, winslash = "/")
   for (i in 1:6) {
-    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("05_differential-expression", "02_thread-strength"))))) return(d)
     d <- dirname(d)
   }
-  stop("Repo root not found: need a parent containing 06_differential-expression/ and 02_thread-strength/.")
+  stop("Repo root not found: need a parent containing 05_differential-expression/ and 02_thread-strength/.")
 }
 repo_root <- find_repo_root()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance

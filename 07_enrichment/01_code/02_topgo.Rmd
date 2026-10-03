@@ -2,7 +2,7 @@
 title: "02 - GO enrichment with topGO (primary method)"
 output: html_document
 params:
-  families: ["TC", "FG"]            # contrast families (06 contrasts.csv)
+  families: ["TC", "FG"]            # contrast families (05 contrasts.csv)
   ontologies: ["BP", "MF", "CC"]
   p_cutoff: 0.01                    # weight01 Fisher p for an enriched term
   cores: 4                          # parallel runs; set to 1 on Windows (no forking)

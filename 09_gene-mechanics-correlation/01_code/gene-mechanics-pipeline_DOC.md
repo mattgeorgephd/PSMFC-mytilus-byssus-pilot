@@ -3,7 +3,7 @@
 Links foot or gill gene expression at day 3 to the same animal's byssal thread mechanics.
 Five chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
 session, parameterised by tissue. Run in order **01 → 02 → 03 → 04 → 05**, after the
-`02_thread-strength`, `06_differential-expression` and `07_enrichment` runners, or knit
+`02_thread-strength`, `05_differential-expression` and `07_enrichment` runners, or knit
 **00_run_gene_mechanics_by_tissue.Rmd**, which renders all five for foot and gill. Script 05
 (DEG sets, enriched GO terms and mitochondrial expression against mechanics) is described in
 its own header and in the folder README.
@@ -25,7 +25,7 @@ chunk outside a knit. Runner 00 renders each script **in its own R process** (ne
 
 Every output is tissue-suffixed (`_F` / `_G`) except `annotation_map.csv`, a tissue-independent
 LOC-to-protein map. Treatment, day and sampled region per library come from the sample table
-written by `06_differential-expression` (`treatmentinfo_clean.csv`), one row per library in the
+written by `05_differential-expression` (`treatmentinfo_clean.csv`), one row per library in the
 clean count matrix. Foot means the phenol gland to the tip of the foot; the day-0 libraries of
 the rest of the foot (IDs ending `FX`) are left out. An animal with a sample-table row but no
 count-matrix column is dropped with a message rather than a hard stop.
@@ -37,10 +37,10 @@ count-matrix column is dropped with a message rather than a hard stop.
     mussel_response_classification.csv                              per-animal response (script 05)
 02_thread-strength/03_analyses/02_extract-tensometer-data/
     thread-summary-raw-output.xlsx                                  every extracted trace (script 02)
-06_differential-expression/03_analyses/count_matrix/
+05_differential-expression/03_analyses/count_matrix/
     gene_count_matrix_clean.csv                                     counts (script 01)
     treatmentinfo_clean.csv                                         arm, day, region per library (script 01)
-06_differential-expression/03_analyses/DEG_lists/<Foot|Gill>/
+05_differential-expression/03_analyses/DEG_lists/<Foot|Gill>/
     <T><X>_TC_siggene.csv                                           TC DEG lists (script 04)
         |
         v
@@ -127,9 +127,9 @@ overlap in every table.
 ### Gene keys and the mitochondrial loci
 
 Count-matrix gene names (`gene-LOC134696364|LOC134696364`; `STRG.10|LOC...` in the previous matrix) become LOC keys
-through `gene_key()` in `tools/gene_ids.R`, the same function 06 and 07 use; script 01 stops
+through `gene_key()` in `tools/gene_ids.R`, the same function 05 and 07 use; script 01 stops
 if two tested genes share a key. The 331 mitochondrial loci of
-`06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` (the
+`05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` (the
 mitochondrial genome's genes and their copies on unplaced scaffolds) are removed after the
 expression filter, so they enter neither the candidate set nor the DEG union; script 05
 tests their summed share of the library as one score.
@@ -238,7 +238,7 @@ Script 01 checks, before any model is fitted:
   `animal_reconciliation_<T>.csv`;
 - each animal's day-3 and baseline values equal the ones 02_thread-strength's ANCOVA used
   (`DATA_ancova_animals.csv`), so the two pipelines cannot drift apart;
-- every expected 06_differential-expression input exists and reads (one `<T><X>_TC_siggene.csv`
+- every expected 05_differential-expression input exists and reads (one `<T><X>_TC_siggene.csv`
   file per stressor, six `*_sigs_ID.csv` files), and the arm in the thread key agrees with the
   Tag-seq sample table.
 

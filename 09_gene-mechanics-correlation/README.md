@@ -34,18 +34,18 @@ weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus prote
 
 Scripts 01 to 05 take a knit parameter `tissue` (`"F"` default, or `"G"`). Knit
 `00_run_gene_mechanics_by_tissue.Rmd` to run the whole chain for both tissues, after the
-`02_thread-strength`, `06_differential-expression` and `07_enrichment` runners (the
+`02_thread-strength`, `05_differential-expression` and `07_enrichment` runners (the
 repository-level `00_run_pipeline.Rmd` runs them in order). Each script reads the previous one's CSV
 handoffs; none shares an R session with another.
 
 Foot means the phenol gland to the tip of the foot, the region sampled in every animal. The
 twelve day-0 animals also have a library of the rest of the foot (IDs ending `FX`); no script
-here uses them (see `06_differential-expression/README.md`).
+here uses them (see `05_differential-expression/README.md`).
 
 ## Inputs (cross-folder)
 
 All paths resolve from a `repo_root` found by walking up from `here::here()` to the first
-folder that contains both `02_thread-strength/` and `06_differential-expression/`.
+folder that contains both `02_thread-strength/` and `05_differential-expression/`.
 
 | input | from | read by |
 |---|---|---|
@@ -53,12 +53,12 @@ folder that contains both `02_thread-strength/` and `06_differential-expression/
 | `02_thread-strength/03_analyses/05_decompose-adhesion/mussel_response_classification.csv` | per-animal response, 02 script 05 | 01 |
 | `02_thread-strength/03_analyses/0{4,5}_*/DATA_ancova_animals.csv` | per-animal ANCOVA rows, 02 scripts 04 and 05 | 01 (agreement check) |
 | `02_thread-strength/03_analyses/02_extract-tensometer-data/thread-summary-raw-output.xlsx` | every extracted trace, 02 script 02 | 03 |
-| `06_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv` | counts, 06 script 01 | 01, 03, 04 |
-| `06_differential-expression/03_analyses/count_matrix/treatmentinfo_clean.csv` | treatment, day and region per library, 06 script 01 | 01, 03 |
-| `06_differential-expression/03_analyses/DEG_lists/<Foot or Gill>/<T><X>_TC_siggene.csv` | TC DEG lists, 06 script 04 | 01, 03, 04 |
-| `06_differential-expression/03_analyses/DEG_lists/GOterms_genome/*_sigs_ID.csv` | annotated TC DEGs, 06 script 06 | 01 |
-| `06_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` | the mitochondrial loci, left out of every gene universe here | 01 |
-| `06_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv` | mitochondrial protein reads as a share of each library's nuclear reads, 06 script 13 | 05 |
+| `05_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv` | counts, 05 script 01 | 01, 03, 04 |
+| `05_differential-expression/03_analyses/count_matrix/treatmentinfo_clean.csv` | treatment, day and region per library, 05 script 01 | 01, 03 |
+| `05_differential-expression/03_analyses/DEG_lists/<Foot or Gill>/<T><X>_TC_siggene.csv` | TC DEG lists, 05 script 04 | 01, 03, 04 |
+| `05_differential-expression/03_analyses/DEG_lists/GOterms_genome/*_sigs_ID.csv` | annotated TC DEGs, 05 script 06 | 01 |
+| `05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` | the mitochondrial loci, left out of every gene universe here | 01 |
+| `05_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv` | mitochondrial protein reads as a share of each library's nuclear reads, 05 script 13 | 05 |
 | `07_enrichment/03_analyses/02_topgo/topgo_enriched.csv` | enriched GO terms of each TC run and the DEGs in each, 07 script 02 | 05 |
 | `07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_<ont>.csv` | terms an FDR-controlled method also enriched, 07 script 06 | 05 |
 | `03_blast/03_analyses/genome-foot/LOC_GO_list.txt` | genome-wide BLAST / UniProt / GO annotation | 01, 04 |
@@ -115,7 +115,7 @@ mitochondrial membrane protein complex" have smaller plaques (pad area, partial 
 0.001, q 0.16; "proton motive force-driven ATP synthesis" r -0.37, p 0.015), and animals with a
 higher mitochondrial share of reads make weaker threads (strongest thread, partial r -0.34, p
 0.028, q 0.19; mean peak force, r -0.33, p 0.034, q 0.24). The mitochondrial share is counted on
-the mitochondrial genome alone since 2026-10-02 (`06` step 13); with the previous genome count
+the mitochondrial genome alone since 2026-10-02 (`05` step 13); with the previous genome count
 the same two associations were r -0.33 and -0.35. Nothing in foot comes near (lowest q 0.59).
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

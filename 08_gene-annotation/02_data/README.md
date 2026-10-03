@@ -6,4 +6,4 @@
 | `Foot_proteins.txt` | FASTA of byssal foot-protein coding sequences from GenBank (nucleotide), a reference for annotation | no current script |
 
 The annotated DEG tables and the top-50 lists are read cross-folder from
-`../../06_differential-expression/03_analyses/` (see `../README.md`).
+`../../05_differential-expression/03_analyses/` (see `../README.md`).

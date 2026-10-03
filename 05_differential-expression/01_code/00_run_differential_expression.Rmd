@@ -1,0 +1,59 @@
+---
+title: "00 - Run the differential-expression analysis"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+  steps: "all"          # "all", or step numbers, e.g. [4, 6]
+  stop_on_fail: true    # stop at the first failed step
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+# Purpose
+
+Runs every numbered script in `01_code/` in order, each in its own R process, with an HTML
+report and a log per step in `03_analyses/knit_html/` (git-ignored) and a `run_log.csv`.
+Knit this file from inside `differential-expression.Rproj`, or let the repository-level
+`00_run_pipeline.Rmd` call it.
+
+| step | script | what it does |
+|---|---|---|
+| 01 | `01_clean_count_matrix.Rmd` | clean counts, sample table, isolation-log crosswalk and the list of mitochondrial loci |
+| 02 | `02_define_contrasts.Rmd` | the 7 contrasts (6 TC of record, foot vs gill in the day-3 controls) and their samples |
+| 03 | `03_deseq_contrasts.Rmd` | one DESeq2 fit per contrast on the nuclear genes, saved to `03_analyses/dds/`; PCA plots |
+| 04 | `04_shrinkage_filtration.Rmd` | apeglm shrinkage, full tables, DEG lists, MA plots, DEG counts |
+| 05 | `05_fourlevel_sensitivity.Rmd` | one four-level model per tissue vs the pairwise lists |
+| 06 | `06_join_annotation.Rmd` | TC DEG lists joined to the BLAST / UniProt / GO annotation |
+| 07 | `07_top_degs.Rmd` | top-50 DEGs per TC contrast |
+| 08-10 | `08_deg_venn.Rmd`, `09_volcano_plots.Rmd`, `10_number_degs.Rmd` | TC figures |
+| 11 | `11_deg_figures_all_contrasts.Rmd` | DEG counts and volcano plots for the TC and foot-vs-gill contrasts |
+| 12 | `12_deg_list_cleanup.Rmd` | DEG lists for Zenodo |
+| 13 | `13_mitochondrial_expression.Rmd` | the mitochondrial protein genes on their own: summed counts, DESeq2 per TC contrast, figure |
+
+Scripts 03 and 13 take a few minutes each; the rest a few minutes together. Step 08 installs
+`ggvenn` from CRAN if it is missing.
+
+```{r run}
+suppressPackageStartupMessages(library(here))
+source(file.path(here::here(), "..", "tools", "run_steps.R"))
+html_dir <- here::here("03_analyses", "knit_html")
+run_log <- run_steps(here::here("01_code"), html_dir, steps = params$steps,
+                     stop_on_fail = isTRUE(params$stop_on_fail))
+finish_run(run_log, html_dir, "Differential-expression")
+```
+
+# After a run
+
+`03_analyses/DEG_lists/DEG_counts.csv` holds the DEG counts per contrast (`n_DEG`, `n_up`,
+`n_down`); `DEG_join_summary.csv` the annotated / unannotated split for the TC contrasts;
+`mitochondrial/mt_de_TC.csv` the mitochondrial results. The
+contrast table, apeglm tables and `mitochondrial_loci.csv` feed `07_enrichment`;
+`GOterms_genome/`, `top_DEGs/` and `mitochondrial_loci.csv` feed `08_gene-annotation`; the count
+matrix, sample table, `mitochondrial_loci.csv`, TC DEG lists, `GOterms_genome/` and
+`mitochondrial/mt_share_by_sample.csv` feed `09_gene-mechanics-correlation`; the contrasts,
+sample table, `mitochondrial_loci.csv` and TC apeglm tables feed `06_iso-seq-transcriptome`
+steps 03 and 04. Run those after any change here (the repository-level `00_run_pipeline.Rmd`
+does it in order).

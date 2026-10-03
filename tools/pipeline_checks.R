@@ -24,12 +24,12 @@ warn_unless <- function(ok, ...) {
 psmfc_repo_root <- function(start = getwd()) {
   d <- normalizePath(start, winslash = "/", mustWork = FALSE)
   for (i in 1:8) {
-    if (all(dir.exists(file.path(d, c("06_differential-expression", "02_thread-strength"))))) return(d)
+    if (all(dir.exists(file.path(d, c("05_differential-expression", "02_thread-strength"))))) return(d)
     parent <- dirname(d)
     if (identical(parent, d)) break
     d <- parent
   }
-  stop("Repository root not found: need a parent folder containing 06_differential-expression/ ",
+  stop("Repository root not found: need a parent folder containing 05_differential-expression/ ",
        "and 02_thread-strength/.", call. = FALSE)
 }
 
