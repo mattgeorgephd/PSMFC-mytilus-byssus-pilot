@@ -54,6 +54,11 @@ blastx   <- if (nzchar(params$blastx_tab)) params$blastx_tab else file.path(out_
 sprot_info_tsv <- file.path(data_dir, "uniprot2024.tsv")                # reviewed UniProt records
 foot_info_tsv  <- file.path(data_dir, "trembl_foot_info.tsv")           # the "mytilus foot" records
 res_dir  <- here::here("03_analyses", "genome-foot")
+## the bash chunks read these from the environment (knitr does not evaluate inline R code in a
+## bash chunk)
+Sys.setenv(DATA_DIR = data_dir, REL = params$sprot_release, DB = db, SPROT_FA = sprot_fa, FOOT_FA = foot_fa,
+           CDS_FA = cds_fa, BLAST_BIN = params$blast_bin, BLASTX = blastx, THREADS = params$threads,
+           SPROT_INFO = sprot_info_tsv, FOOT_INFO = foot_info_tsv)
 ```
 
 # The BLAST database and the search (lab server)
@@ -72,23 +77,23 @@ of the 2024 copy).
 
 ```{bash database, eval = params$run}
 set -euo pipefail
-cd "`r data_dir`"
-rel="`r params$sprot_release`"
+cd "$DATA_DIR"
+rel="$REL"
 curl -sS -o "uniprot_sprot-only${rel}.tar.gz" \
   "https://ftp.uniprot.org/pub/databases/uniprot/previous_releases/release-${rel}/knowledgebase/uniprot_sprot-only${rel}.tar.gz"
 tar -xzf "uniprot_sprot-only${rel}.tar.gz" uniprot_sprot.fasta.gz
-gunzip -c uniprot_sprot.fasta.gz > "`r sprot_fa`"
-cat "`r sprot_fa`" "`r foot_fa`" > swissprot_n_mytilusfoot.fasta
-"`r params$blast_bin`/makeblastdb" -in swissprot_n_mytilusfoot.fasta -dbtype prot -out "`r db`"
+gunzip -c uniprot_sprot.fasta.gz > "$SPROT_FA"
+cat "$SPROT_FA" "$FOOT_FA" > swissprot_n_mytilusfoot.fasta
+"$BLAST_BIN/makeblastdb" -in swissprot_n_mytilusfoot.fasta -dbtype prot -out "$DB"
 ```
 
 ```{bash blastx, eval = params$run}
-"`r params$blast_bin`/blastx" \
-  -query "`r cds_fa`" \
-  -db "`r db`" \
-  -out "`r blastx`" \
+"$BLAST_BIN/blastx" \
+  -query "$CDS_FA" \
+  -db "$DB" \
+  -out "$BLASTX" \
   -evalue 1E-20 \
-  -num_threads `r params$threads` \
+  -num_threads $THREADS \
   -max_target_seqs 1 \
   -outfmt 6
 ```
@@ -104,11 +109,11 @@ tables the analysis reads keep their layout.
 
 ```{bash uniprot, eval = params$run}
 set -euo pipefail
-cd "`r data_dir`"
+cd "$DATA_DIR"
 curl -sS -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgene_oln%2Ccc_interaction%2Ccc_induction%2Cgo_p%2Cgo_c%2Cgo_f%2Cgo_id%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway&format=tsv&query=%28*%29+AND+%28reviewed%3Atrue%29" \
-  | gunzip -c > "`r sprot_info_tsv`"
+  | gunzip -c > "$SPROT_INFO"
 curl -sS -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength%2Cgo_id%2Cgo_p%2Cgo_f%2Cgo_c%2Cgo%2Cgene_oln%2Ccc_induction%2Cxref_pathwaycommons%2Cxref_reactome%2Cxref_unipathway%2Ccc_interaction&format=tsv&query=%28mytilus+foot%29" \
-  | gunzip -c > "`r foot_info_tsv`"
+  | gunzip -c > "$FOOT_INFO"
 ```
 
 # The tables
