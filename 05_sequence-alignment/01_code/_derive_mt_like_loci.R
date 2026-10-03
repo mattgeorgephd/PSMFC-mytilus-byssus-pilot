@@ -1,6 +1,6 @@
 ## One-off provenance record: the loci of the genome annotation that NCBI names after a
 ## mitochondrially encoded protein. Not part of the pipeline; it wrote
-## 02_data/annotation_mt_like_loci.csv, which tools/mt_encoded.R (06 step 01) reads.
+## 02_data/annotation_mt_like_loci.csv, which tools/mt_encoded.R reads (here in steps 04 and 05, and in 06 step 01).
 ##
 ## Why it is needed. 06 leaves the mitochondrial loci out of the differential expression and
 ## tests them per protein. It found the nuclear copies through each gene's best BLAST hit

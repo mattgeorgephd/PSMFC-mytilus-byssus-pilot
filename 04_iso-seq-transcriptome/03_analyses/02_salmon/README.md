@@ -1,9 +1,9 @@
-# 03_salmon
+# 02_salmon
 
-Written by `../../01_code/03_salmon_quant.Rmd`: the 131 trimmed Tag-seq read files quantified
+Written by `../../01_code/02_salmon_quant.Rmd`: the 131 trimmed Tag-seq read files quantified
 against the 411,251 Iso-Seq isoforms with salmon 1.10.3 (selective alignment, `-l A`,
-`--noLengthCorrection`, no decoys; index k = 31), and the isoforms summed per feature of step
-02's map with tximport (`countsFromAbundance = "no"`).
+`--noLengthCorrection`, no decoys; index k = 31), and the isoforms summed per feature of
+`05_sequence-alignment` step 04's map with tximport (`countsFromAbundance = "no"`).
 
 | File | Contents |
 |---|---|
@@ -18,7 +18,7 @@ against the 411,251 Iso-Seq isoforms with salmon 1.10.3 (selective alignment, `-
 - Every library was detected as stranded, sense (`SF`), as 3' Tag-seq should be.
 - salmon assigned a median 66.2% of each library's reads to the isoforms (53.6 to 77.8%;
   foot 70.3%, gill 62.3%), close to HISAT2's alignment rate to the genome for the same
-  libraries (foot 70.1%, gill 63.7%; `../04_isoseq-de/FIG_mapping_rates.png`).
+  libraries (foot 70.1%, gill 63.7%; `../03_isoseq-de/FIG_mapping_rates.png`).
 - The count matrix has 73,557 features, 65,041 of them with reads. salmon collapsed 27 isoforms
   that were exact duplicates of others.
 - Where the assigned reads go (median share per library): 52.3% to isoforms that end within

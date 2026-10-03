@@ -1,6 +1,6 @@
 # mitogenome
 
-Written by `../../01_code/05_mitogenome_counts.Rmd` (`online: true`): every library's trimmed
+Written by `../../01_code/08_mitogenome_counts.Rmd` (`online: true`): every library's trimmed
 reads aligned to the mitochondrial genome alone (NC_007687.1; `../../02_data/`) with HISAT2
 2.2.1, no spliced alignment, and counted per feature with featureCounts (Subread 2.1.1; sense
 strand, the few reads on two adjacent features or with two placements shared fractionally).

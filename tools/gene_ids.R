@@ -1,6 +1,6 @@
 ## Gene names in the count matrix, and the key that joins them to annotation. Base R.
 ##
-## The count matrix of record (05_sequence-alignment step 04: featureCounts, which names a gene
+## The count matrix of record (05_sequence-alignment step 07: featureCounts, which names a gene
 ## by its key) carries the names prepDE gives a gene: "gene_id|gene_name" when the reference
 ## has a gene name, else "gene_id", else the transcript name. Four forms:
 ##   gene-LOC134721619|LOC134721619   reference gene (41,271 rows)

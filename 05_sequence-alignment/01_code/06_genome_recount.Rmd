@@ -13,10 +13,11 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 # What this does
 
-The record's counts (`05_sequence-alignment`) come from HISAT2 alignments made on an HPC
+The previous record's counts (steps 01 and 02) came from HISAT2 alignments made on an HPC
 server and not kept, so option B realigns the reads here and counts them on each of step 05's
-annotations. Only the annotation should differ between the counts compared in step 07, so the
-alignment is shared and the RefSeq annotation is counted again as the control.
+annotations. Only the annotation should differ between the counts compared in
+`04_iso-seq-transcriptome` step 04, so the alignment is shared and the RefSeq annotation is
+counted again as the control.
 
 - **Reads:** the 131 trimmed, lane-merged files the record aligned
   (`*_L099_R1_cmb.trim.fastq.gz`, gannet `.../byssus-exp-analysis/data/raw-trimmed/`), each
@@ -31,27 +32,27 @@ alignment is shared and the RefSeq annotation is counted again as the control.
   identical to the record's; the control count measures how close.
 - **StringTie + prepDE:** StringTie 2.2.1 (Pertea et al. 2015, *Nature Biotechnology* 33:290)
   `-e -G <annotation>` as in the record, reduced at once to prepDE's gene counts (read length
-  75) by `_prepde_sample.R`, which is checked below against the port of `05` on one library.
+  75) by `_prepde_sample.R`, which is checked below against step 02's port (`_prepde.R`) on one library.
   Reference transcripts StringTie files under its own `STRG.N` gene IDs, which change between
   libraries, are named by their transcript (see `_prepde_sample.R`).
 - **featureCounts:** Subread's featureCounts (Liao, Smyth and Shi 2014, *Bioinformatics*
   30:923) on each annotation's exons (`.saf`), sense strand (`-s 1`, as 3' Tag-seq reads are),
   one count per uniquely aligned read; reads aligned to several places, or overlapping more
   than one gene, are left out (the defaults). This changes the counting method as well as the
-  annotation, so step 07 compares each counter with its own RefSeq control.
+  annotation, so `04_iso-seq-transcriptome` step 04 compares each counter with its own RefSeq control.
 
 Each library is processed by `_recount_library.sh` (alignment, the six counts, the alignment
-deleted at the end), into `03_analyses/06_genome-recount/libraries/<library>/` (git-ignored).
+deleted at the end), into `03_analyses/genome-recount/libraries/<library>/` (git-ignored).
 `max_libraries` lets the step run in batches; it combines the counts once all 131 are done.
 
-Writes, in `03_analyses/06_genome-recount/`:
+Writes, in `03_analyses/genome-recount/`:
 
 - `<stringtie|featurecounts>_<refseq|ext3|full>_gene_counts.csv.gz`: genes x libraries
   (column names as in `06`'s count matrix, `T001F`);
 - `mapping_summary.csv`: per library, reads, HISAT2's alignment (unique, multiple, overall
   rate) beside the record's rate, featureCounts's assigned reads and StringTie's total count on
   each annotation;
-- `checks.csv`: the per-library counter against the `05` port, and the control library against
+- `checks.csv`: the per-library counter against step 02's port, and the control library against
   the record's StringTie output for the same library;
 - `RUN_provenance.txt`: tool versions and settings, input MD5s.
 
@@ -156,7 +157,7 @@ hs <- rbindlist(lapply(libs, function(l) {
              aligned_multi = num("aligned >1 times"),
              overall_rate = as.numeric(sub("%.*$", "", grep("overall alignment rate", x, value = TRUE))))
 }))
-rec <- fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "multiqc_data", "multiqc_bowtie2.txt"))
+rec <- fread(here::here("03_analyses", "hisat", "multiqc_data", "multiqc_bowtie2.txt"))
 rec[, library := sub("^[A-H][0-9]+-", "", sub("_S[0-9]+_hisat$", "", Sample))]
 hs <- merge(hs, rec[, .(library, record_reads = total_reads, record_rate = overall_alignment_rate)], by = "library", all.x = TRUE)
 for (a in c("refseq", "ext3", "full")) {
@@ -177,7 +178,7 @@ knitr::kable(hs[, .(median_rate = median(overall_rate), median_record_rate = med
 # Checks
 
 On one library (T014F, whose StringTie table the record kept), the alignment is repeated and
-counted on the RefSeq annotation: the per-library counter against the port of `05` (prepDE's
+counted on the RefSeq annotation: the per-library counter against step 02's port (prepDE's
 exact names), and the control against the record's StringTie output for the same library
 (transcript by transcript) and the record's count matrix.
 
@@ -191,20 +192,20 @@ stopifnot(system(sprintf("%s -p %s --dta --known-splicesite-infile %s -x %s -U %
 stopifnot(system2(tool("stringtie"), c("-e", "-p", params$threads, "-G", shQuote(file.path(ann_dir, "annotation_refseq.gff")),
                                        "-o", shQuote(file.path(tmp, "st.gtf")), shQuote(file.path(tmp, "aln.bam")))) == 0)
 source(here::here("01_code", "_prepde_sample.R"))
-source(file.path(repo_root, "05_sequence-alignment", "01_code", "_prepde.R"))
+source(here::here("01_code", "_prepde.R"))
 fast <- prepde_sample(file.path(tmp, "st.gtf"), stable_strg = FALSE)
 writeLines(paste("S", file.path(tmp, "st.gtf")), file.path(tmp, "list.txt"))
 prepde(file.path(tmp, "list.txt"), gene_out = file.path(tmp, "g.csv"), transcript_out = file.path(tmp, "t.csv"))
 port <- fread(file.path(tmp, "g.csv"), sep = ",")
 fp <- merge(as.data.table(fast), port, by.x = "gene", by.y = "gene_id")
 ## the control against the record, transcript by transcript (the record's t_data.ctab is T014F's)
-ctab_rec <- fread(file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "t_data.ctab"))
+ctab_rec <- fread(here::here("03_analyses", "hisat", "t_data.ctab"))
 st <- fread(cmd = sprintf("grep -v '^#' %s | awk -F'\\t' '$3==\"transcript\"' | cut -f9", shQuote(file.path(tmp, "st.gtf"))),
             sep = "\t", header = FALSE, col.names = "attr")
 st[, `:=`(t_name = sub('.*transcript_id "([^"]+)".*', "\\1", attr), cov = as.numeric(sub('.*cov "([^"]+)".*', "\\1", attr)))]
 tc <- merge(ctab_rec[, .(t_name, cov_record = cov)], st[, .(t_name, cov)], by = "t_name")
 ## and gene by gene against the record's count matrix (both in prepDE's names)
-rec_csv <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "prepDE", "gene_count_matrix.csv")
+rec_csv <- here::here("03_analyses", "prepDE", "gene_count_matrix.csv")
 gm <- fread(rec_csv, sep = ",", select = c("gene_id", grep("T014F", names(fread(rec_csv, sep = ",", nrows = 0)), value = TRUE)))
 setnames(gm, c("gene", "record"))
 gg <- merge(gm, as.data.table(fast), by = "gene", all = TRUE)

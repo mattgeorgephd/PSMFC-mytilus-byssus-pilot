@@ -17,7 +17,7 @@ This script tests the mitochondrial protein genes on their own, for the six trea
 
 **What is counted.** Each protein's reads aligned to the mitochondrial genome alone
 (NC_007687.1, the female-type genome of *M. trossulus*), counted by
-`05_sequence-alignment` step 05 (`03_analyses/mitogenome/mitogenome_gene_counts.csv`): HISAT2
+`05_sequence-alignment` step 08 (`03_analyses/mitogenome/mitogenome_gene_counts.csv`): HISAT2
 with default scoring against the mitogenome, one featureCounts count per read; `all_12` is the
 sum over the 12 proteins. The genome alignment does not serve: there the mitochondrial reads
 compete with 293 annotated nuclear copies of the mitochondrial genes (126 protein-coding LOCs

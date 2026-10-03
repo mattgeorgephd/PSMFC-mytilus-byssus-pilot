@@ -1,5 +1,5 @@
 ---
-title: "04 - Differential expression on the Iso-Seq reference, compared with the genome"
+title: "03 - Differential expression on the Iso-Seq reference, compared with the genome"
 output: html_document
 params:
   padj_cutoff: 0.05
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 # What this does
 
-Fits the treatment-control (TC) contrasts of record to the Iso-Seq gene counts of step 03,
+Fits the treatment-control (TC) contrasts of record to the Iso-Seq gene counts of step 02,
 exactly as `06_differential-expression` fits them to the genome counts, and compares the two
 references gene by gene. It answers whether the DEG results depend on the reference.
 
@@ -19,18 +19,19 @@ references gene by gene. It answers whether the DEG results depend on the refere
   `06 .../DEG_lists/contrast_samples.csv`, `~ treatment` with the day-3 control as reference,
   fitted on every feature, then features kept with at least 10 counts in a third of the
   samples, apeglm shrinkage (Zhu, Ibrahim and Love 2019, *Bioinformatics* 35:2084), DEG at
-  padj < 0.05. Counts are summed read counts (step 03), rounded, with no length offset.
+  padj < 0.05. Counts are summed read counts (step 02), rounded, with no length offset.
 - **Mitochondrial genes** are left out, as in 06: the genes of
-  `06 .../count_matrix/mitochondrial_loci.csv`, the mitochondrial isoforms of step 02 (features
-  `mito:<isoform>`), and every feature outside annotated genes (novel locus or unassigned
-  isoform) holding an isoform with a mitochondrial segment (`mt_hit`).
-- **Comparison:** genes are matched by their key (`gene_key()`); step 02 placed the isoforms
-  on the same annotation the genome branch counts. For each contrast: DEGs in both, in one
+  `06 .../count_matrix/mitochondrial_loci.csv`, the mitochondrial isoforms of the isoform map
+  (features `mito:<isoform>`), and every feature outside annotated genes (novel locus or
+  unassigned isoform) holding an isoform with a mitochondrial segment (`mt_hit`).
+- **Comparison:** genes are matched by their key (`gene_key()`); the isoform map
+  (`05_sequence-alignment` step 04) placed the isoforms on the same annotation the genome
+  branch counts. For each contrast: DEGs in both, in one
   reference only, and genome DEGs whose gene received no Iso-Seq isoform; the correlation of
   log2 fold changes over genes tested in both; and the DEGs among features outside annotated
   genes (novel loci and unassigned isoforms).
 
-Writes, in `03_analyses/04_isoseq-de/`:
+Writes, in `03_analyses/03_isoseq-de/`:
 
 - `<code>_isoseq_apeglm.csv`: every tested feature with its apeglm log2 fold change, Wald p
   and padj (`feature` is a gene key, `novel:<locus>` or `isoseq:<isoform>`);
@@ -141,7 +142,7 @@ fwrite(deg_counts, file.path(de_dir, "isoseq_DEG_counts.csv"))
 
 Counts per gene: both references count reads. The genome counts of record are featureCounts
 counts of uniquely aligned reads on the RefSeq annotation with Iso-Seq-extended 3' ends
-(`05_sequence-alignment` step 04); salmon also counts reads, and shares those that fit several
+(`05_sequence-alignment` step 07); salmon also counts reads, and shares those that fit several
 isoforms or genes among them. (The previous genome counts, StringTie + prepDE, were coverage x
 transcript length / 75, about the aligned read bases / 75, while the reads average about 63
 bases, so they ran about 1.19 times below a read count.) What matters is how the ratio
@@ -239,7 +240,7 @@ p2
 # Provenance
 
 ```{r provenance}
-settings <- c("[04_isoseq_de_comparison.Rmd]",
+settings <- c("[03_isoseq_de_comparison.Rmd]",
               paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
               "model                : as 06: ~ treatment (day-3 control reference), >= 10 counts in a third of samples, apeglm, Wald padj",
               paste0("DEG                  : padj < ", params$padj_cutoff),
@@ -249,7 +250,7 @@ inputs <- c(file.path(salmon_dir, c("gene_counts.csv.gz", "salmon_mapping_summar
             file.path(de06, "DEG_lists", c("contrasts.csv", "contrast_samples.csv")),
             file.path(de06, "DEG_lists", contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
             file.path(de06, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv", "gene_count_matrix_clean.csv")), hisat_qc,
-            here::here("01_code", "04_isoseq_de_comparison.Rmd"))
+            here::here("01_code", "03_isoseq_de_comparison.Rmd"))
 writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "apeglm", "data.table")),
            file.path(de_dir, "RUN_provenance.txt"))
 ```

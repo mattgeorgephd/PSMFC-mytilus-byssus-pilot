@@ -1,5 +1,5 @@
 ## prepDE's gene counts for one StringTie sample, fast enough for the large annotations of
-## 04 step 06. Same rule as the port in 05_sequence-alignment/01_code/_prepde.R (StringTie's
+## step 06. Same rule as step 02's port in _prepde.R (StringTie's
 ## prepDE.py3): for each transcript, count = ceiling(cov * transcript length / read length),
 ## a gene's count is the sum of its transcripts', and the gene is named "gene_id|gene_name"
 ## (leftmost matches, so StringTie's ref_gene_name counts as the name), else gene_id. A

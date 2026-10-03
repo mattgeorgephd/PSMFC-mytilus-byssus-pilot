@@ -73,14 +73,14 @@ dispersion trend of every fit, which is why Foot OA, with no pseudogene DEG, cha
 **The count matrix changed on 2026-10-02.** Until then the counts were StringTie + prepDE
 estimates from the original HPC alignment; they are now featureCounts counts of uniquely
 aligned reads on the RefSeq annotation with its 3' ends extended by the Iso-Seq isoforms
-(`05_sequence-alignment` step 04, from `04_iso-seq-transcriptome` steps 05 and 06). The DEGs
+(`05_sequence-alignment` step 07, from that folder's steps 05 and 06). The DEGs
 went from 75 to 161 (Foot OA), 165 to 211 (Foot OW), 363 to 678 (Foot DO), 423 to 584 (Gill
 OA), 180 to 227 (Gill OW) and 310 to 404 (Gill DO). The new record keeps 70 to 90% of the
 previous DEGs per contrast, all shared ones but two with the same sign, and the genes added
 were mostly near misses before (median previous padj 0.09 to 0.11); the reasons (prepDE
 estimated read bases over 75 while the reads average 63 bases, its dispersions were higher,
 and the RefSeq models end before many Tag-seq 3' ends) and the gene-by-gene comparison are in
-`04_iso-seq-transcriptome/03_analyses/07_augmented-de/` (`record_change.csv`). The change also
+`04_iso-seq-transcriptome/03_analyses/04_augmented-de/` (`record_change.csv`). The change also
 named 21 mitochondrial tRNAs and rRNAs that the previous matrix had filed under StringTie's own
 `STRG` numbers, so script 01 now lists 331 mitochondrial loci (none of the 21 was a TC DEG).
 
@@ -117,7 +117,7 @@ tyrosinases and collagens over a thousand-fold), and there is no day-3 FX librar
   many times (116 of Gill OA's 711 DEGs in the first run, all up about 1.4-fold, and most of
   its top GO terms). Script 01 lists these loci (`count_matrix/mitochondrial_loci.csv`, 331
   rows), and scripts 03 and 05 leave them out. Script 13 tests the 12 proteins on reads
-  counted on the mitochondrial genome alone (`05_sequence-alignment` step 05), because the
+  counted on the mitochondrial genome alone (`05_sequence-alignment` step 08), because the
   genome alignment loses about half of the mitochondrial reads to the copies and to
   unannotated mitochondrial-like sequence (HISAT2 reports at most five placements of a read),
   and more in the 12 of the 59 animals whose mitochondrial haplotype differs from the
@@ -151,7 +151,7 @@ tyrosinases and collagens over a thousand-fold), and there is no day-3 FX librar
   near 0, when a few libraries hold most of the gene's reads. Foot protein 11 (LOC134706002),
   a DEG in Foot DO (padj 0.031, apeglm log2 fold change -0.05), is one: 3,760 and 1,688 reads
   in two control libraries and 1,680 in one DO library, under 70 in every other. Such genes are
-  not treatment effects; `04_iso-seq-transcriptome/03_analyses/07_augmented-de/README.md` lists
+  not treatment effects; `04_iso-seq-transcriptome/03_analyses/04_augmented-de/README.md` lists
   the byssal ones.
 - **Removed libraries.** T051F and T051G were removed at QC; T047 has no foot library.
 

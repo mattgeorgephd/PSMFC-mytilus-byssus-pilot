@@ -132,17 +132,26 @@ Conventions and how to run are in `AGENTS.md`.
   READMEs and comments that named the wrong readers or inputs were corrected (06's count matrix
   source and readers, 07's step inputs, 08's annotation source, 02's ANCOVA metrics, 05's prepDE
   readers, 03's download claims, 04's step 01, `tools/` users).
+- **Count-building steps moved** (2026-10-03, Matt's decision: option C, the folder numbers in
+  run order). The isoform-to-gene map, the augmented annotations and the genome recount
+  (`04` steps 02, 05, 06) are now `05_sequence-alignment` steps 04 to 06, with their outputs,
+  caches and the retired CDS map; `05`'s count matrix of record and mitogenome counts are steps
+  07 and 08; what stays in `04` is renumbered 01 to 04 (salmon 02, Iso-Seq DE 03, recount
+  comparison 04). Both runners rerun offline with identical outputs.
 
 ## In progress
 
 - Proofreading the regenerated figures before they go into the manuscript.
+- **Folder numbers in run order** (option C, this pull request). Left: rename the folders
+  (`05` to `04`, `06` to `05`, `04` to `06`) and every reference, rerun the online steps from
+  their caches and the whole pipeline, and make `03_blast/01_code/01_genome_blast.Rmd` run as
+  written.
 
 ## Blocked or waiting on a decision
 
 | item | why it is blocked | who |
 |---|---|---|
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
-| Folder numbering | the numbers are not a run order: `04_iso-seq-transcriptome` builds the count matrix of record (steps 02, 05, 06) upstream of `05` and `06` and compares with `06` downstream (steps 04, 07). Keep the numbers and rely on the step map, move the count-building steps into `05`, or renumber the folders (root `README.md`, "How the steps connect") | Matt |
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |

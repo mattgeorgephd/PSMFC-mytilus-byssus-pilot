@@ -11,13 +11,14 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 # What this does
 
-Steps 02 to 04 showed that the RefSeq gene models often end before the 3' ends that Tag-seq
-reads (18% of the reads salmon assigned fell on isoforms running more than 100 bases past
+The Iso-Seq sensitivity analysis (`04_iso-seq-transcriptome` steps 02 and 03, on step 04's
+map) showed that the RefSeq gene models often end before the 3' ends that Tag-seq reads (18%
+of the reads salmon assigned fell on isoforms running more than 100 bases past
 their gene's last annotated exon, and 14.5% on loci with no annotation). Option B, run here as
 a parallel analysis beside the method of record, recounts the Tag-seq reads on the genome
 with the RefSeq annotation augmented by the Iso-Seq isoforms. This step builds the
-annotations; step 06 realigns the reads and counts them on each; step 07 repeats `06`'s
-contrasts on every count matrix and compares them with the record.
+annotations; step 06 realigns the reads and counts them on each; `04_iso-seq-transcriptome`
+step 04 repeats `06`'s contrasts on every count matrix and compares them with the record.
 
 Three annotations, all on GCF_036588685.1 (RefSeq annotation release RS_2024_02):
 
@@ -32,29 +33,30 @@ Three annotations, all on GCF_036588685.1 (RefSeq annotation release RS_2024_02)
    transcript's last exon (an extra exon, or an alignment across a long intron) extends
    nothing, so `ext3` only lengthens 3' untranslated regions in place.
 3. **`full`**: the RefSeq annotation plus every such isoform as an extra transcript of its gene
-   (its aligned blocks as exons), plus the novel loci of step 02 as new genes
+   (its aligned blocks as exons), plus the novel loci of step 04 as new genes
    (`novel:<sequence>:<start>-<end>:<strand>`, each isoform a transcript). A novel locus that
    overlaps the exons of exactly one gene on the same strand, counting that gene's added
    isoforms, joins that gene; one overlapping several genes or a mitochondrial locus is left
    out (below).
 
-Which isoforms are used: those step 02 `assigned` to a gene with no exon overlap with a second
+Which isoforms are used: those step 04 `assigned` to a gene with no exon overlap with a second
 gene (readthrough isoforms, which would merge two genes, are left out, as are `ambiguous`
 placements), and the isoforms of novel loci. Mitochondrial isoforms are never added, and a
-novel locus holding an isoform with a mitochondrial segment (`mt_hit`) is left out, as step 04
-leaves those features out; the 331 mitochondrial loci stay in every annotation exactly as
-RefSeq has them, and step 07 leaves them out of the fits as `06` does. The mitochondrial loci
-are the annotation's, found as step 02 finds them (`mitochondrial_loci()`, `tools/mt_encoded.R`);
-this step does not read `06`'s list.
+novel locus holding an isoform with a mitochondrial segment (`mt_hit`) is left out, as
+`04_iso-seq-transcriptome` step 03 leaves those features out; the 331 mitochondrial loci stay
+in every annotation exactly as RefSeq has them, and `04_iso-seq-transcriptome` step 04 leaves
+them out of the fits as `06` does. The mitochondrial loci are the annotation's, found as step
+04 finds them (`mitochondrial_loci()`, `tools/mt_encoded.R`); this step does not read `06`'s
+list.
 
-Writes, in `03_analyses/05_augmented-annotation/`:
+Writes, in `03_analyses/augmented-annotation/`:
 
 - `ext3_extensions.csv.gz`: every extended transcript: `transcript_id`, `gene` (gene key),
   `seqid`, `strand`, the old and new 3' end, `extension_bp`, `isoforms` (how many isoforms
   overlap the last exon), `capped` (stopped before another gene);
 - `full_added_transcripts.bed.gz`: the transcripts `full` adds, as BED12 (name =
-  `<gene>|<isoform>`), so `full` can be rebuilt without step 02's alignment;
-- `novel_loci_fate.csv`: how many of step 02's novel loci joined a gene, were left out, or
+  `<gene>|<isoform>`), so `full` can be rebuilt without step 04's alignment;
+- `novel_loci_fate.csv`: how many of step 04's novel loci joined a gene, were left out, or
   stay novel loci in `full`;
 - `annotation_summary.csv`: per annotation, genes, transcripts, exonic bases (exons of each
   gene merged) and genes changed;
@@ -64,7 +66,7 @@ and, git-ignored (rebuilt here in a few minutes): `annotation_<refseq|ext3|full>
 (StringTie's input) and `annotation_<refseq|ext3|full>.saf` (featureCounts's input: the
 exons of each gene, keyed by `gene_key()`).
 
-Needs step 02's genome alignment of the isoforms (`02_isoform-gene-map/minimap2_isoforms_vs_genome.paf.gz`,
+Needs step 04's genome alignment of the isoforms (`isoform-gene-map/minimap2_isoforms_vs_genome.paf.gz`,
 git-ignored) and the RefSeq GFF in `02_data/`.
 
 ```{r paths}
@@ -103,7 +105,7 @@ attr_of <- function(key, x) {                                   # value of one G
 body[, ID := attr_of("ID", attr)]
 body[, Parent := sub(",.*$", "", attr_of("Parent", attr))]
 
-## each feature's top-level gene, following Parent upwards (as step 02)
+## each feature's top-level gene, following Parent upwards (as step 04)
 ids <- body[!is.na(ID) & !duplicated(ID) & !ID %in% ID[duplicated(ID)]]
 up <- setNames(ids$Parent, ids$ID)
 ex <- body[type == "exon"]
@@ -125,7 +127,7 @@ mt_loci <- unique(map[status == "novel_locus" & mt_hit == TRUE, gene])
 use <- use[!(status == "novel_locus" & gene %in% mt_loci)]
 stopifnot(all(use[status == "assigned", gene] %in% top_of$gene))
 
-## the alignment of each isoform (the best one, as step 02 kept)
+## the alignment of each isoform (the best one, as step 04 kept)
 awk_prog <- tempfile(fileext = ".awk")
 writeLines('BEGIN{FS=OFS="\\t"} {cg=""; for (i=13; i<=NF; i++) if ($i ~ /^cg:Z:/) cg=substr($i,6); print $1,$5,$6,$8,$9,$10,cg}', awk_prog)
 aln <- fread(cmd = sprintf("zcat %s | awk -f %s", shQuote(paf), shQuote(awk_prog)), sep = "\t", header = FALSE,
@@ -133,7 +135,7 @@ aln <- fread(cmd = sprintf("zcat %s | awk -f %s", shQuote(paf), shQuote(awk_prog
 setorder(aln, isoform, -matches)
 aln <- aln[!duplicated(isoform)][isoform %in% use$isoform]
 aln <- merge(aln, use[, .(isoform, gene, status, m_seqid = seqid, m_strand = strand, m_start = start, m_end = end)], by = "isoform")
-## the same alignment step 02 used
+## the same alignment step 04 used
 stopifnot(nrow(aln) == nrow(use), all(aln$seqid == aln$m_seqid), all(aln$strand == aln$m_strand),
           all(aln$tstart + 1L == aln$m_start), all(aln$tend == aln$m_end))
 blocks <- extractAlignmentRangesOnReference(aln$cigar, pos = aln$tstart + 1L)
@@ -155,7 +157,7 @@ cat(uniqueN(blk[status == "assigned", isoform]), "assigned isoforms on", uniqueN
 
 # Novel loci against the augmented genes
 
-Step 02 called a locus novel when its isoforms share fewer than 50 exonic bases with the
+Step 04 called a locus novel when its isoforms share fewer than 50 exonic bases with the
 RefSeq exons. Many such loci lie where a gene's own isoforms add exons (an extended 3' end,
 for instance), so in `full` they would overlap that gene and their reads would be split
 between the two or, for featureCounts, dropped as ambiguous. A novel locus whose exons overlap
@@ -273,7 +275,7 @@ saf <- list(refseq = saf_of(ex), ext3 = saf_of(ex_ext),
             full = rbind(saf_of(ex), blk[, .(GeneID = gene, Chr = seqid, Start = start, End = end, Strand = strand)]))
 for (a in names(saf)) fwrite(unique(saf[[a]]), file.path(ann_dir, paste0("annotation_", a, ".saf")), sep = "\t")
 
-## BED12 of the transcripts full adds, so full can be rebuilt without step 02's alignment
+## BED12 of the transcripts full adds, so full can be rebuilt without step 04's alignment
 bed <- blk[order(isoform, start), .(seqid = seqid[1], start0 = min(start) - 1L, end = max(end), strand = strand[1], gene = gene[1],
                                     n = .N, sizes = paste0(paste(end - start + 1L, collapse = ","), ","),
                                     starts = paste0(paste(start - min(start), collapse = ","), ",")), by = isoform]
@@ -299,7 +301,7 @@ knitr::kable(summ)
 settings <- c("[05_augmented_annotation.Rmd]",
               paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
               paste0("genome / annotation  : ", ASSEMBLY, " (RefSeq annotation RS_2024_02)"),
-              "isoforms used        : step 02 'assigned' with no exon overlap with a second gene; novel loci without an mt_hit isoform",
+              "isoforms used        : step 04 'assigned' with no exon overlap with a second gene; novel loci without an mt_hit isoform",
               "ext3                 : last exon of each transcript extended to the furthest 3' end of a same-gene isoform whose last block overlaps it; stops before any other gene on the same strand",
               "full                 : RefSeq plus the isoforms as transcripts of their gene, plus novel loci as genes; a locus overlapping one gene's exons (RefSeq or added) on its strand joins it, one overlapping several genes or a mitochondrial locus is left out",
               paste0("novel loci           : ", paste(paste(loci_fate$fate, loci_fate$loci), collapse = "; ")),

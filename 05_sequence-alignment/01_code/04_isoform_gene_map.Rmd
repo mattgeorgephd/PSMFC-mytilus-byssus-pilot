@@ -1,5 +1,5 @@
 ---
-title: "02 - Iso-Seq isoforms to genome genes"
+title: "04 - Iso-Seq isoforms to genome genes"
 output: html_document
 params:
   minimap2: "minimap2"     # path to the minimap2 binary (2.31 used here)
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 The Iso-Seq transcriptome (`Mtros-hq_transcripts.fasta`, 411,251 high-quality isoforms named
 `MT_Pool_HQ_transcript/N`) was clustered but never collapsed to genes, so its isoforms carry
 no gene. This step places each isoform on the genome (RefSeq GCF_036588685.1, annotation
-release RS_2024_02, the annotation the genome branch `05`/`06` counts against) and gives it
+release RS_2024_02, the annotation the count matrices of record are counted on) and gives it
 the gene whose exons it overlaps, so the two branches can be compared gene by gene.
 
 1. **Align.** minimap2 spliced alignment of each isoform to the genome (`-x splice:hq -uf`:
@@ -41,30 +41,30 @@ the gene whose exons it overlaps, so the two branches can be compared gene by ge
    named `novel:<sequence>:<start>-<end>:<strand>`. Unaligned isoforms and those below
    `min_identity` stay `unassigned`, each its own feature, `isoseq:<isoform>`.
 5. **Mitochondrial transcripts.** An isoform is `mitochondrial` (its own feature,
-   `mito:<isoform>`, which step 04 leaves out as 06 leaves out the mitochondrial loci) when its
-   genome alignment lies on the mitogenome or shares most exonic bases with a mitochondrial
-   locus, or when at least
-   `mt_min_cov` of it aligns to the mitogenome sequence itself (minimap2 `-x asm20`, any
-   identity, either strand). The last test catches mitochondrial transcripts that the genome
-   alignment placed on unannotated copies of mitochondrial sequence on unplaced scaffolds, or
-   on a nuclear gene. This is decided before novel loci are formed, so those loci hold no
-   mitochondrial isoforms. `mt_hit` also marks isoforms with a smaller mitochondrial segment
-   (at least `mt_min_aln` bases aligned to the mitogenome, or any exonic overlap with a
-   mitochondrial locus); they keep their gene, and step 04 leaves out any feature outside
-   annotated genes that holds one. The mitochondrial loci are the annotation's: the
-   mitogenome's genes and the nuclear-scaffold copies of its protein genes, found with
-   `mitochondrial_loci()` (`tools/mt_encoded.R`) from the annotation's genes, the BLAST table
-   (`03_blast`) and `05_sequence-alignment`'s list of loci the annotation names after a
-   mitochondrial protein. `06` step 01 finds the same 331 loci in the count matrix with the same
-   function; this step does not read them from `06`, so the count matrix, which this step leads
-   to, does not depend on itself.
+   `mito:<isoform>`, which `04_iso-seq-transcriptome` step 03 leaves out as 06 leaves out the
+   mitochondrial loci) when its genome alignment lies on the mitogenome or shares most exonic
+   bases with a mitochondrial locus, or when at least `mt_min_cov` of it aligns to the
+   mitogenome sequence itself (minimap2 `-x asm20`, any identity, either strand). The last test
+   catches mitochondrial transcripts that the genome alignment placed on unannotated copies of
+   mitochondrial sequence on unplaced scaffolds, or on a nuclear gene. This is decided before
+   novel loci are formed, so those loci hold no mitochondrial isoforms. `mt_hit` also marks
+   isoforms with a smaller mitochondrial segment (at least `mt_min_aln` bases aligned to the
+   mitogenome, or any exonic overlap with a mitochondrial locus); they keep their gene, and
+   `04_iso-seq-transcriptome` step 03 leaves out any feature outside annotated genes that holds
+   one. The mitochondrial loci are the annotation's: the mitogenome's genes and the
+   nuclear-scaffold copies of its protein genes, found with `mitochondrial_loci()`
+   (`tools/mt_encoded.R`) from the annotation's genes, the BLAST table (`03_blast`) and this
+   folder's list of loci the annotation names after a mitochondrial protein
+   (`02_data/annotation_mt_like_loci.csv`). `06` step 01 finds the same 331 loci in the count
+   matrix with the same function; this step does not read them from `06`, so the count matrix,
+   which this step leads to, does not depend on itself.
 
 An earlier version of this step, written while the genome was not reachable, assigned isoforms
 through their alignment to the annotation's CDS (`_superseded/02_isoform_gene_map_cds.Rmd`).
 That route reaches coding genes only and misses isoforms that end before the CDS. Its map is
 kept (`03_analyses/_superseded/02_isoform-gene-map_cds/`) and compared with this one below.
 
-Writes, in `03_analyses/02_isoform-gene-map/`:
+Writes, in `03_analyses/isoform-gene-map/`:
 
 - `isoform_gene_map.csv.gz`: one row per isoform: `isoform`, `gene` (a gene key via
   `gene_key()`, `novel:...`, `mito:<isoform>` or `isoseq:<isoform>`), `status` (`assigned`,
@@ -291,7 +291,7 @@ knitr::kable(agree)
 # Provenance
 
 ```{r provenance}
-settings <- c("[02_isoform_gene_map.Rmd]",
+settings <- c("[04_isoform_gene_map.Rmd]",
               paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
               paste0("minimap2             : ", mm2_version, " (", mm2_args, ")"),
               paste0("genome / annotation  : ", ASSEMBLY, " (RefSeq annotation RS_2024_02), MD5s checked against NCBI"),
@@ -299,7 +299,7 @@ settings <- c("[02_isoform_gene_map.Rmd]",
                      params$min_overlap, "; ambiguous when mapq 0 or a second gene shares >= ", params$ambiguous_ratio, " of that"),
               paste0("isoforms             : ", nrow(map)))
 writeLines(provenance_lines(settings, c(isoseq_fa, genome_fa, gff_gz, blast_go, t_data, mt_annot, cds_map,
-                                        here::here("01_code", "02_isoform_gene_map.Rmd")),
+                                        here::here("01_code", "04_isoform_gene_map.Rmd")),
                             repo_root, packages = c("data.table", "GenomicRanges", "GenomicAlignments", "rtracklayer")),
            file.path(map_dir, "RUN_provenance.txt"))
 ```

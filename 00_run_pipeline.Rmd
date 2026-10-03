@@ -25,7 +25,7 @@ its folder's `03_analyses/knit_html/`; this file leaves one per stage, and `run_
 | stage | runner | needs | about |
 |---|---|---|---|
 | 02 | `02_thread-strength/01_code/00_run_thread_strength.Rmd` | `01_mussel-measurements/` | 1 min |
-| 05 | `05_sequence-alignment/01_code/00_run_sequence_alignment.Rmd` | committed StringTie and FastQC tables, `04`'s committed featureCounts matrix | 1 min |
+| 05 | `05_sequence-alignment/01_code/00_run_sequence_alignment.Rmd` | committed StringTie and FastQC tables, its committed featureCounts and mitogenome counts | 1 min |
 | 06 | `06_differential-expression/01_code/00_run_differential_expression.Rmd` | 05 | 10 min |
 | 04 | `04_iso-seq-transcriptome/01_code/00_run_isoseq.Rmd` | 06, committed Iso-Seq and recount gene counts | 12 min |
 | 07 | `07_enrichment/01_code/00_run_enrichment.Rmd` | 06, 05, `03_blast/` | 8 min |
@@ -33,18 +33,22 @@ its folder's `03_analyses/knit_html/`; this file leaves one per stage, and `run_
 | 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 06, 07, `03_blast/` | 4 min |
 
 The count matrix of record (featureCounts on the RefSeq annotation with Iso-Seq-extended 3'
-ends) comes from `04_iso-seq-transcriptome` step 06, which is not run here; stage 05 takes its
-committed matrix (05 step 04). Stage 04 runs after 06 because it repeats 06's contrasts on the
-Iso-Seq reference (step 04) and on the six recounts of the genome (step 07), compares them with
+ends) is built by `05_sequence-alignment` steps 04 to 06, which download the Iso-Seq
+transcriptome, the genome and the reads, and so are not run here; stage 05 takes step 06's
+committed counts (05 step 07). Stage 04 runs after 06 because it repeats 06's contrasts on the
+Iso-Seq reference (step 03) and on the six recounts of the genome (step 04), compares them with
 06 and with the previous record, and checks that its fit of the record reproduces 06's; both
 read committed gene counts, so only those two steps run here.
 
 Not run here, because they need data or machines outside this repository: the BLAST
-annotation (`03_blast/`, HPC), the Iso-Seq steps 01-03 and 05-06 (`04_iso-seq-transcriptome/`,
-which download the transcriptome, the genome and the reads and run minimap2, salmon, HISAT2,
-StringTie and featureCounts; set that runner's `online: true`), HISAT2 + StringTie (`05_sequence-alignment` step 01, HPC), 05 step 03's
-recipe check, the mitochondrial alignment of 05 step 05 (its own `online: true`; offline it summarises the committed counts) and, unless `online_annotation` is true, 08's NCBI and OrthoDB queries. Their
-committed outputs are what the stages above read.
+annotation (`03_blast/`, HPC); HISAT2 + StringTie (`05_sequence-alignment` step 01, HPC);
+`05_sequence-alignment` steps 04 to 06 and the mitochondrial alignment of its step 08 (they
+download the transcriptome, the genome and the reads and run minimap2, HISAT2, StringTie and
+featureCounts; set that runner's `online: true`; offline, step 08 summarises the committed
+counts); 05 step 03's recipe check (its own `online: true`); the Iso-Seq steps 01 and 02
+(`04_iso-seq-transcriptome/`, salmon; set that runner's `online: true`); and, unless
+`online_annotation` is true, 08's NCBI and OrthoDB queries. Their committed outputs are what the
+stages above read.
 
 Knit this file from the repository root (`PSMFC-mytilus-byssus-pilot.Rproj`). The packages
 each stage needs are listed in its folder's README.
@@ -93,9 +97,9 @@ finish_run(run_log, html_dir, "Pipeline")
   `05_decompose-adhesion/`.
 - Differential expression: `06_differential-expression/03_analyses/DEG_lists/DEG_counts.csv`
   and `figures/`.
-- Iso-Seq reference (sensitivity): `04_iso-seq-transcriptome/03_analyses/04_isoseq-de/`
+- Iso-Seq reference (sensitivity): `04_iso-seq-transcriptome/03_analyses/03_isoseq-de/`
   (`reference_agreement.csv`); option B, the genome recounted on Iso-Seq-augmented
-  annotations (parallel analysis): `04_iso-seq-transcriptome/03_analyses/07_augmented-de/`
+  annotations (parallel analysis): `04_iso-seq-transcriptome/03_analyses/04_augmented-de/`
   (`deg_summary.csv`).
 - GO enrichment: `07_enrichment/03_analyses/02_topgo/` (of record) and
   `06_method-comparison/consensus_terms_TC_BP.csv`.

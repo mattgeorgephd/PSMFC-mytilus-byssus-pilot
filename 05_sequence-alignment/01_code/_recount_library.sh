@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-## One library of 04 step 06 (option B): align the trimmed Tag-seq reads to the genome and
+## One library of step 06 (option B): align the trimmed Tag-seq reads to the genome and
 ## count them on the three annotations of step 05 with StringTie + prepDE and featureCounts.
 ## Called by 06_genome_recount.Rmd (and by any batch driver) with the same arguments, so every
 ## library is processed the same way. Writes into OUT, and OUT/done last; the alignment itself
@@ -21,7 +21,7 @@ mkdir -p "$OUT"
 TMP=$(mktemp -d "$OUT/tmp.XXXX")
 trap 'rm -rf "$TMP"' EXIT
 
-## HISAT2 as in the record (05 step 01: default settings and --dta), with the RefSeq splice
+## HISAT2 as in the previous record (step 01: default settings and --dta), with the RefSeq splice
 ## sites given at alignment time instead of built into the index
 "$BIN/hisat2" -p "$T" --dta --known-splicesite-infile "$SS" -x "$INDEX" -U "$READS" 2> "$OUT/hisat2.log" \
   | "$BIN/samtools" sort -@ 2 -m 1G -T "$TMP/sort" -o "$TMP/aln.bam" -

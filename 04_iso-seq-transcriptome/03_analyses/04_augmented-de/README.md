@@ -1,9 +1,9 @@
-# 07_augmented-de
+# 04_augmented-de
 
-Written by `../../01_code/07_augmented_de_comparison.Rmd` (option B). Option B was adopted on
+Written by `../../01_code/04_augmented_de_comparison.Rmd` (option B). Option B was adopted on
 2026-10-02: the count matrix of record is now featureCounts on the `ext3` annotation (taken
-by `05_sequence-alignment` step 04). This step keeps the evidence for that choice: the six
-treatment-control contrasts of `06` fitted on each of step 06's six count matrices (two
+by `05_sequence-alignment` step 07). This step keeps the evidence for that choice: the six
+treatment-control contrasts of `06` fitted on each of `05_sequence-alignment` step 06's six count matrices (two
 counters x three annotations) and on the previous record (StringTie + prepDE on the original
 HPC alignment, `05_sequence-alignment/03_analyses/prepDE/`), all with `06`'s rules (same
 samples, `~ treatment`, fit on every gene, at least 10 counts in a third of the samples,
@@ -92,5 +92,5 @@ DEGs per contrast (apeglm padj < 0.05); the record is featureCounts on `ext3`:
   on every featureCounts matrix, the record included, with an apeglm fold change of -0.05: its
   reads come from three animals (3,760 and 1,688 in two controls, 1,680 in one DO animal; under
   70 in every other library), the pattern of a gene expressed in a few animals, not a treatment
-  effect (as foot proteins 4, 10 and 11 on the Iso-Seq reference, step 04). Foot protein 13 is a
+  effect (as foot proteins 4, 10 and 11 on the Iso-Seq reference, step 03). Foot protein 13 is a
   DEG in Foot DO on featureCounts `full` only.

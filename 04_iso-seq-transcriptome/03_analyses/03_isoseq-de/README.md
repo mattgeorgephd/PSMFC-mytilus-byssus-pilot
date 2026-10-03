@@ -1,7 +1,7 @@
-# 04_isoseq-de
+# 03_isoseq-de
 
-Written by `../../01_code/04_isoseq_de_comparison.Rmd`: the six TC contrasts of
-`06_differential-expression` fitted on the Iso-Seq gene counts (`../03_salmon/`) exactly as 06
+Written by `../../01_code/03_isoseq_de_comparison.Rmd`: the six TC contrasts of
+`06_differential-expression` fitted on the Iso-Seq gene counts (`../02_salmon/`) exactly as 06
 fits them on the genome counts (same samples, `~ treatment`, fit on all features, then at least
 10 counts in a third of the samples, apeglm, DEG at padj < 0.05), with the mitochondrial
 features left out, and compared gene by gene with the genome results.
@@ -49,11 +49,11 @@ annotation, since 2026-10-02):
 - **Against the previous genome counts** (StringTie + prepDE, until 2026-10-02) the Iso-Seq
   reference had found about twice as many DEGs (194 to 884 against 75 to 423) and a median 1.59
   times the counts, of which a factor of about 1.19 was prepDE's estimate of read bases over 75
-  for reads averaging 63 bases. Option B (steps 05 to 07) showed that the counter accounted for
-  more of that gap than the 3' ends did (`../07_augmented-de/README.md`).
-- **Where the extra reads come from.** In `../03_salmon/read_classes_by_library.csv`, 18% of
+  for reads averaging 63 bases. Option B (`05_sequence-alignment` steps 05 and 06, and step 04 here) showed that the
+  counter accounted for more of that gap than the 3' ends did (`../04_augmented-de/README.md`).
+- **Where the extra reads come from.** In `../02_salmon/read_classes_by_library.csv`, 18% of
   assigned reads are on isoforms that run past their gene's annotated 3' end and 14.5% on novel
   loci. The genome counts of record already include the 3' extensions (`ext3`); the rest of the
   difference lies in the reads on novel loci and on the isoforms' other exons, which only the
-  `full` annotation of step 05 counts, and in reads with several placements, which salmon
+  `full` annotation of `05_sequence-alignment` step 05 counts, and in reads with several placements, which salmon
   shares among isoforms and featureCounts leaves out.

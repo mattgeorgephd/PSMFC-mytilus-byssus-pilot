@@ -2,9 +2,9 @@
 
 The count matrices of the original HPC alignment (HISAT2 + StringTie + prepDE): the count
 matrices of record until 2026-10-02, when `../featurecounts/` replaced them. They are still
-written: `04_iso-seq-transcriptome` step 07 refits the gene matrix with `06`'s rules as the
-previous record it compares with, `04_iso-seq-transcriptome` step 06 checks its recount against
-it, `06_differential-expression` step 13 compares the mitochondrial counts with it, and step 04
+written: `04_iso-seq-transcriptome` step 04 refits the gene matrix with `06`'s rules as the
+previous record it compares with, step 06 here checks its recount against it,
+`06_differential-expression` step 13 compares the mitochondrial counts with it, and step 07
 here compares gene names with it.
 
 | File | Produced by | Contents |

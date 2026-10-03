@@ -1,5 +1,5 @@
 ---
-title: "07 - Differential expression on the recounted genome, compared with the previous record (option B)"
+title: "04 - Differential expression on the recounted genome, compared with the previous record (option B)"
 output: html_document
 params:
   padj_cutoff: 0.05
@@ -13,15 +13,17 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 # What this does
 
 Option B, adopted on 2026-10-02: the count matrix of record is now featureCounts on the `ext3`
-annotation (`05_sequence-alignment` step 04 takes it from step 06 here). This step keeps the
-evidence for that choice. It fits the six treatment-control (TC) contrasts to each of step 06's
-six count matrices (two counters x three annotations), and to the previous record (StringTie +
+annotation (`05_sequence-alignment` step 07 takes it from that folder's step 06). This step keeps
+the evidence for that choice. It fits the six treatment-control (TC) contrasts to each of
+`05_sequence-alignment` step 06's six count matrices (two counters x three annotations), and to
+the previous record (StringTie +
 prepDE on the original HPC alignment, `05_sequence-alignment/03_analyses/prepDE/`), exactly as
 `06_differential-expression` fits them, and compares the results three ways:
 
 1. **Control against the previous record.** StringTie + prepDE on the unchanged RefSeq
-   annotation differs from the previous record only in the alignment (step 06). How close its
-   DEGs come to the previous record's is the yardstick for every other difference below.
+   annotation differs from the previous record only in the alignment (`05_sequence-alignment`
+   step 06). How close its DEGs come to the previous record's is the yardstick for every other
+   difference below.
 2. **Annotation effect.** Within each counter, `ext3` and `full` against that counter's RefSeq
    control: the same alignment and counter, so the differences come from the annotation alone.
 3. **Each matrix against the previous record**, which is what adopting it changes; for
@@ -30,17 +32,17 @@ prepDE on the original HPC alignment, `05_sequence-alignment/03_analyses/prepDE/
 It also checks that its fit of featureCounts `ext3` is `06`'s: same genes tested, same DEGs,
 the same fold changes (the record's DEG lists in `06 .../DEG_lists/`).
 
-Same samples, model, order and thresholds as `06` (and step 04): the samples of each contrast
+Same samples, model, order and thresholds as `06` (and step 03): the samples of each contrast
 in `06 .../DEG_lists/contrast_samples.csv`, `~ treatment` with the day-3 control as reference,
 fitted on every gene, then genes kept with at least 10 counts in a third of the samples, apeglm
 shrinkage (Zhu, Ibrahim and Love 2019, *Bioinformatics* 35:2084), DEG at padj < 0.05. The 331
 mitochondrial loci (`06 .../count_matrix/mitochondrial_loci.csv`) are left out of every fit;
-step 05 kept them unchanged in every annotation. (The previous matrix filed 21 mitochondrial
-tRNAs and rRNAs under StringTie's own `STRG` numbers, so they stayed in its fits; they stay in
-the refit here too, which therefore reproduces the previous record.) Genes are matched by
+`05_sequence-alignment` step 05 kept them unchanged in every annotation. (The previous matrix
+filed 21 mitochondrial tRNAs and rRNAs under StringTie's own `STRG` numbers, so they stayed in
+its fits; they stay in the refit here too, which therefore reproduces the previous record.) Genes are matched by
 `gene_key()`; the novel loci of `full` (`novel:...`) exist only there.
 
-Writes, in `03_analyses/07_augmented-de/`:
+Writes, in `03_analyses/04_augmented-de/`:
 
 - `<counter>_<annotation>_apeglm.csv.gz` and `previous_record_apeglm.csv.gz`: every tested
   gene of every contrast (`code`, `feature`, `baseMean`, apeglm `log2FoldChange`, `lfcSE`, Wald
@@ -83,7 +85,7 @@ counters <- c(stringtie = "StringTie + prepDE", featurecounts = "featureCounts")
 anns <- c(refseq = "RefSeq (control)", ext3 = "3' extension", full = "full models")
 RECORD <- "featurecounts ext3"                                   # the matrix of record since 2026-10-02
 ## one row per gene key. StringTie files a few hundred unnamed RefSeq genes under its own
-## STRG IDs in some libraries and not in others, so step 06 names them two ways
+## STRG IDs in some libraries and not in others, so 05_sequence-alignment step 06 names them two ways
 ## (gene-LOC... and gene-LOC...|LOC...); no library has counts under both, so the rows are summed.
 by_key <- function(d) { m <- as.matrix(d[, -1]); rowsum(m, gene_key(d$gene), reorder = FALSE) }
 mats <- list(); mt_share <- list()
@@ -108,7 +110,7 @@ sapply(mats, nrow)
 # Fit each TC contrast on each matrix
 
 ```{r fit}
-## as 04 step 04 and 06 steps 03-04: fit every gene of the contrast's samples, keep genes with
+## as step 03 and 06 steps 03-04: fit every gene of the contrast's samples, keep genes with
 ## >= 10 counts in a third of them, apeglm on those (pvalue and padj from results())
 fit_one <- function(counts, row) {
   smp <- cs[code == row$code, sample.1]
@@ -357,7 +359,7 @@ p2
 # Provenance
 
 ```{r provenance}
-settings <- c("[07_augmented_de_comparison.Rmd]",
+settings <- c("[04_augmented_de_comparison.Rmd]",
               paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
               "model                : as 06: ~ treatment (day-3 control reference), >= 10 counts in a third of samples, apeglm, Wald padj",
               paste0("DEG                  : padj < ", params$padj_cutoff),
@@ -370,7 +372,7 @@ inputs <- c(file.path(recount_dir, sprintf("%s_gene_counts.csv.gz", sub(" ", "_"
             file.path(de06, "DEG_lists", contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
             file.path(de06, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv")),
             file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt"),
-            here::here("01_code", "07_augmented_de_comparison.Rmd"))
+            here::here("01_code", "04_augmented_de_comparison.Rmd"))
 writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "apeglm", "data.table")),
            file.path(aug_de_dir, "RUN_provenance.txt"))
 ```

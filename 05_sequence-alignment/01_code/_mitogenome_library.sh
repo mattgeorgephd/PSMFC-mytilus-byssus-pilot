@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-## One library of step 05: the trimmed Tag-seq reads aligned to the mitochondrial genome alone
-## and counted per mitochondrial gene. Called by 05_mitogenome_counts.Rmd (and by any batch
+## One library of step 08: the trimmed Tag-seq reads aligned to the mitochondrial genome alone
+## and counted per mitochondrial gene. Called by 08_mitogenome_counts.Rmd (and by any batch
 ## driver) with the same arguments, so every library is processed the same way. Writes into OUT,
 ## and OUT/done last; the alignments are deleted at the end.
 ##

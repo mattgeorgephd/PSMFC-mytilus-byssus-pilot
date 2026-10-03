@@ -36,7 +36,7 @@ record:
    `06_method-comparison/consensus_terms_TC_<ontology>.csv`); outside those, topGO's lists
    are exploratory;
 3. **mitochondrial expression**: the reads of the 12 mitochondrial protein genes (counted on
-   the mitochondrial genome alone, `05_sequence-alignment` step 05) as a share of the library's
+   the mitochondrial genome alone, `05_sequence-alignment` step 08) as a share of the library's
    nuclear reads, on the log scale, from `06 .../mitochondrial/mt_share_by_sample.csv`.
    These loci are left out of every gene set above.
 

@@ -31,8 +31,8 @@ own folder's `03_analyses/`; later folders read earlier ones.
 | `01_mussel-measurements/` | mussel size, condition and thread-production workbooks | input: `mussel-size-measurements.xlsx` feeds `02_thread-strength` script 01 |
 | `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, mean and maximum peak force and plaque area | `01_code/00_run_thread_strength.Rmd` |
 | `03_blast/` | BLAST annotation of the genome CDS and the Iso-Seq transcriptome; the `genome-foot/` GO mapping used downstream | HPC method record; outputs committed |
-| `04_iso-seq-transcriptome/` | sensitivity branch: the TC contrasts repeated with the reads quantified against the Iso-Seq transcriptome (isoforms mapped to genome genes, salmon, tximport) and compared with `06`; and option B, adopted 2026-10-02: the reads realigned to the genome and counted with featureCounts on the RefSeq annotation with Iso-Seq-extended 3' ends, which is **the count matrix of record** | runner `01_code/00_run_isoseq.Rmd` (steps 04 and 07 by default; steps 02-07 with `online: true`) |
-| `05_sequence-alignment/` | read QC and trimming record, the count matrix of record (from `04`), the mitochondrial genes counted on the mitochondrial genome alone, and the previous HISAT2 + StringTie count matrices (HPC record) | `01_code/00_run_sequence_alignment.Rmd` |
+| `04_iso-seq-transcriptome/` | sensitivity branch: the TC contrasts repeated with the reads quantified against the Iso-Seq transcriptome (salmon, tximport, on `05`'s isoform-to-gene map) and compared with `06`; and the comparison of `05`'s genome recounts with the previous record, the evidence for the count matrix of record | runner `01_code/00_run_isoseq.Rmd` (steps 03 and 04 by default; steps 02-04 with `online: true`) |
+| `05_sequence-alignment/` | read QC and trimming record, the previous HISAT2 + StringTie count matrices (HPC record), the Iso-Seq isoforms placed on the genome, the RefSeq annotation with Iso-Seq-extended 3' ends, the reads realigned and counted with featureCounts on it (**the count matrix of record**), and the mitochondrial genes counted on the mitochondrial genome alone | `01_code/00_run_sequence_alignment.Rmd` (steps 02, 03, 07 and 08 by default; 02-08 with `online: true`) |
 | `06_differential-expression/` | DESeq2 for 7 contrasts (each stressor vs the day-3 treatment control, and foot vs gill), DEG annotation, figures; the mitochondrial proteins on their own (with the mitochondrial haplotype groups) | `01_code/00_run_differential_expression.Rmd` |
 | `07_enrichment/` | GO enrichment: topGO (of record), goseq, clusterProfiler, rrvgo, method comparison | `01_code/00_run_enrichment.Rmd` |
 | `08_gene-annotation/` | GO slims of the TC DEGs; NCBI summaries and orthologs for the top DEGs (network) | `01_code/00_run_gene_annotation.Rmd` |
@@ -42,8 +42,8 @@ Run order: `02_thread-strength` and `05` -> `06` (independent of each other), th
 `04_iso-seq-transcriptome` (it repeats `06`'s contrasts on the Iso-Seq reference),
 `07_enrichment` and `08_gene-annotation` (they read `06`), and
 `09_gene-mechanics-correlation` last (it reads `02`, `03`, `06` and `07`). `00_run_pipeline.Rmd`
-follows this order. The folder numbers are not the run order: `04` holds steps on both sides of
-`05` and `06`. "How the steps connect", below, maps what every step reads and writes.
+follows this order. The folder numbers are not yet the run order: `04` runs after `05` and
+`06`. "How the steps connect", below, maps what every step reads and writes.
 
 Other folders:
 
@@ -104,14 +104,14 @@ flowchart TB
     direction LR
     blast["03 BLAST annotation (HPC)"]
     hpc["05 step 01: HISAT2 + StringTie (HPC);<br>05 step 02 turns it into the previous matrix"]
-    build["04 steps 02, 05, 06 (online):<br>isoform map, ext3 annotation,<br>realignment + featureCounts"]
+    build["05 steps 04 to 06 (online):<br>isoform map, ext3 annotation,<br>realignment + featureCounts"]
   end
   subgraph RUN["Pipeline stages (run order 02, 05, 06, 04, 07, 08, 09)"]
     direction TB
     s02["stage 02: thread strength"]
-    s05["stage 05: count matrix of record (05 step 04),<br>mitochondrial genome counts (05 step 05)"]
+    s05["stage 05: count matrix of record (05 step 07),<br>mitochondrial genome counts (05 step 08)"]
     s06["stage 06: differential expression"]
-    s04["stage 04: Iso-Seq and recount comparisons<br>(04 steps 04, 07)"]
+    s04["stage 04: Iso-Seq and recount comparisons<br>(04 steps 03, 04)"]
     s07["stage 07: GO enrichment"]
     s08["stage 08: GO slims"]
     s09["stage 09: gene mechanics"]
@@ -150,16 +150,17 @@ flowchart TB
 ## What the map shows about the order
 
 - **The stage order is a valid order for what the pipeline runs.** Stage 04 runs only
-  `04·04` and `04·07`, and both read `06`'s contrasts, sample table, mitochondrial list and
+  `04·03` and `04·04`, and both read `06`'s contrasts, sample table, mitochondrial list and
   DEG tables, so they come after stage 06. Stage 07 reads stage 06 and committed `03` and `05` files; stage 08
   reads only stage 06; neither reads the other. Stage 09 reads `02`, `06` and `07`.
-- **The folder numbers are not a run order.** `04_iso-seq-transcriptome` holds work on both
-  sides of `05` and `06`: `04·02`, `04·05` and `04·06` build the count matrix of record that
-  `05·04` passes to `06`, while `04·03`, `04·04` and `04·07` are the Iso-Seq sensitivity
-  analysis and the comparisons with `06`. `05` and `04` also read each other: `04·06` reads
-  `05·01`'s read QC and transcript table and `05·02`'s previous matrix, and `05·04` reads
-  `04·06`'s featureCounts matrix.
-- **No loop through the mitochondrial list.** `04·02` and `04·05` need the mitochondrial loci
+- **The folder numbers are not yet a run order.** Since 2026-10-03 the steps that build the
+  count matrix of record (`05·04` to `05·06`, until then `04·02`, `04·05` and `04·06`) are in
+  `05_sequence-alignment`, so every step of `05` reads only earlier steps of `05` and committed
+  files of `03`, and `05` and `04` no longer read each other both ways.
+  `04_iso-seq-transcriptome` now holds only the Iso-Seq sensitivity analysis and the
+  comparisons with `06`, which read `05` and `06` and so run after them; its number is the one
+  left out of order.
+- **No loop through the mitochondrial list.** `05·04` and `05·05` need the mitochondrial loci
   (an isoform assigned to one becomes `mitochondrial`, so no mitochondrial gene is extended;
   novel loci that overlap one are left out of `full`). Until 2026-10-03 they read
   `06·01`'s `mitochondrial_loci.csv`, built from the count matrix they lead to; they now find
@@ -221,7 +222,7 @@ flowchart LR
   uni --> b2
   iso --> b3
   ncbi --> b3
-  b1 -- "genome-foot/LOC_GO_list.txt" --> out(["04·07, 06·01, 06·06,<br>07·01, 09·01, 09·04"])
+  b1 -- "genome-foot/LOC_GO_list.txt" --> out(["04·04, 06·01, 06·06,<br>07·01, 09·01, 09·04"])
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef off fill:#f6f1e6,stroke:#a08a5a,stroke-dasharray:5 3,color:#1b2730
   class ncbi,uni,iso,out ext
@@ -240,101 +241,106 @@ flowchart LR
 ```mermaid
 flowchart LR
   iso(["Iso-Seq transcripts (owl)"])
-  ncbi(["RefSeq genome, GFF (NCBI)"])
   reads(["Tag-seq reads (gannet)"])
-  f05(["05·01 read QC, t_data.ctab;<br>05·02 previous matrix"])
-  mt(["mitochondrial loci of the annotation:<br>03·01 LOC_GO_list.txt, 05·01 t_data.ctab,<br>05/02_data mt-like loci"])
+  m4(["05·04 isoform-gene map"])
+  m56(["05·05 extensions;<br>05·06 six recounts"])
+  f05(["05·01 MultiQC;<br>05·02 previous matrix"])
   d06(["06·01, 06·02, 06·04<br>samples, contrasts, DEG tables"])
   b1(["03·01 LOC_GO_list.txt"])
-  i2["02 isoform-gene map"]
-  i3["03 salmon"]
-  i4["04 Iso-Seq DE vs 06"]
-  i5["05 augmented annotation"]
-  i6["06 realign + recount"]
-  i7["07 recounts vs 06"]
+  i2["02 salmon"]
+  i3["03 Iso-Seq DE vs 06"]
+  i4["04 recounts vs 06"]
   iso --> i2
-  ncbi --> i2
-  mt --> i2
-  mt --> i5
-  i2 --> i3 --> i4
-  i2 --> i4
-  i2 -- "PAF, map" --> i5 -- "ext3, full GFF/SAF" --> i6 --> i7
-  i5 --> i7
-  reads --> i3
-  reads --> i6
-  ncbi --> i6
-  f05 --> i6
+  reads --> i2
+  m4 --> i2 --> i3
+  m4 --> i3
+  f05 --> i3
   f05 --> i4
-  f05 --> i7
+  m56 --> i4
+  d06 --> i3
   d06 --> i4
-  d06 --> i7
-  b1 --> i7
-  i6 -- "featurecounts_ext3_gene_counts.csv.gz" --> a4(["05·04"])
+  b1 --> i4
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef off fill:#f6f1e6,stroke:#a08a5a,stroke-dasharray:5 3,color:#1b2730
   classDef run fill:#e8f4ec,stroke:#2f7a4a,color:#1b2730
-  class iso,ncbi,reads,f05,mt,d06,b1,a4 ext
-  class i2,i3,i5,i6 off
-  class i4,i7 run
+  class iso,reads,m4,m56,f05,d06,b1 ext
+  class i2 off
+  class i3,i4 run
 ```
 
 | step | in pipeline | reads | writes (`03_analyses/`) |
 |---|---|---|---|
 | 01 `01_isoseq_transcriptome_check.Rmd` | no (knit by hand) | the Iso-Seq FASTA (owl) | a length QC in `01_code/01_isoseq_transcriptome_check.md` |
-| 02 `02_isoform_gene_map.Rmd` | no (`online: true`) | Iso-Seq FASTA (owl); RefSeq genome and GFF (NCBI, MD5-checked); for the annotation's mitochondrial loci (`tools/mt_encoded.R`), `03·01` `LOC_GO_list.txt`, `05·01` `hisat/t_data.ctab` and `05_sequence-alignment/02_data/annotation_mt_like_loci.csv`; the retired CDS map in `_superseded/` (a cross-check) | `02_isoform-gene-map/`: `isoform_gene_map.csv.gz`, `isoform_gene_map_summary.csv`, `cds_map_agreement.csv`, `RUN_provenance.txt` (PAF alignments git-ignored) |
-| 03 `03_salmon_quant.Rmd` | no (`online: true`) | the 131 trimmed libraries (gannet); the Iso-Seq FASTA; `04·02` map | `03_salmon/`: `gene_counts.csv.gz`, `salmon_mapping_summary.csv`, `read_classes_by_library.csv`, `RUN_provenance.txt` |
-| 04 `04_isoseq_de_comparison.Rmd` | yes | `04·03` counts and mapping summary; `04·02` map; `06·01` sample table, mitochondrial list and count matrix; `06·02` contrasts; `06·04` TC apeglm tables; `05·01` MultiQC | `04_isoseq-de/`: `*_TC_isoseq_apeglm.csv`, `reference_agreement.csv`, `isoseq_DEG_counts.csv`, `isoseq_only_DEGs.csv`, `counts_per_gene_both_references.csv`, `FIG_*`, `RUN_provenance.txt` |
-| 05 `05_augmented_annotation.Rmd` | no (needs `04·02`'s git-ignored PAF and the GFF) | RefSeq GFF; `04·02` PAF and map; the same three files as `04·02` for the mitochondrial loci | `05_augmented-annotation/`: `ext3_extensions.csv.gz`, `full_added_transcripts.bed.gz`, `novel_loci_fate.csv`, `annotation_summary.csv`, `RUN_provenance.txt` (the GFF/SAF annotations are git-ignored) |
-| 06 `06_genome_recount.Rmd` | no (`online: true`) | `04·05` GFF/SAF; RefSeq genome and GTF (NCBI); the 131 trimmed libraries (gannet); `05·01` MultiQC and `t_data.ctab`, `05·02` matrix, `05/_prepde.R` (checks against the previous record) | `06_genome-recount/`: `{stringtie,featurecounts}_{refseq,ext3,full}_gene_counts.csv.gz`, `mapping_summary.csv`, `checks.csv`, `RUN_provenance.txt` |
-| 07 `07_augmented_de_comparison.Rmd` | yes | `04·06` six recounts; `04·05` extensions; `05·02` previous matrix; `06·01` sample table and mitochondrial list; `06·02` contrasts; `06·04` TC apeglm tables; `03·01` `LOC_GO_list.txt` | `07_augmented-de/`: the apeglm tables of every recount, `deg_summary.csv`, `record_change.csv`, `annotation_effect.csv`, `control_vs_previous.csv`, `mitochondrial_share.csv`, `new_DEGs.csv`, `byssal_genes.csv`, `FIG_*`, `RUN_provenance.txt` |
+| 02 `02_salmon_quant.Rmd` | no (`online: true`) | the 131 trimmed libraries (gannet); the Iso-Seq FASTA (`05_sequence-alignment/02_data/`'s copy, else its own download); `05·04` map | `02_salmon/`: `gene_counts.csv.gz`, `salmon_mapping_summary.csv`, `read_classes_by_library.csv`, `RUN_provenance.txt` |
+| 03 `03_isoseq_de_comparison.Rmd` | yes | `04·02` counts and mapping summary; `05·04` map; `06·01` sample table, mitochondrial list and count matrix; `06·02` contrasts; `06·04` TC apeglm tables; `05·01` MultiQC | `03_isoseq-de/`: `*_TC_isoseq_apeglm.csv`, `reference_agreement.csv`, `isoseq_DEG_counts.csv`, `isoseq_only_DEGs.csv`, `counts_per_gene_both_references.csv`, `FIG_*`, `RUN_provenance.txt` |
+| 04 `04_augmented_de_comparison.Rmd` | yes | `05·06` six recounts; `05·05` extensions; `05·02` previous matrix; `06·01` sample table and mitochondrial list; `06·02` contrasts; `06·04` TC apeglm tables; `03·01` `LOC_GO_list.txt` | `04_augmented-de/`: the apeglm tables of every recount, `deg_summary.csv`, `record_change.csv`, `annotation_effect.csv`, `control_vs_previous.csv`, `mitochondrial_share.csv`, `new_DEGs.csv`, `byssal_genes.csv`, `FIG_*`, `RUN_provenance.txt` |
 
 ## 05_sequence-alignment
 
 ```mermaid
 flowchart LR
   reads(["Tag-seq reads (gannet)"])
-  ncbi(["RefSeq genome (NCBI)"])
-  i6(["04·06 featureCounts ext3"])
+  ncbi(["RefSeq genome, GFF, GTF (NCBI)"])
+  iso(["Iso-Seq transcripts (owl)"])
+  mt(["for the mitochondrial loci:<br>03·01 LOC_GO_list.txt;<br>02_data mt-like loci"])
   a1["01 HISAT2 + StringTie"]
   a2["02 prepDE: previous matrix"]
   a3["03 read trimming record"]
-  a4["04 count matrix of record"]
-  a5["05 mitogenome counts"]
+  a4["04 isoform-gene map"]
+  a5["05 augmented annotation"]
+  a6["06 realign + recount"]
+  a7["07 count matrix of record"]
+  a8["08 mitogenome counts"]
   reads --> a1
   ncbi --> a1
   a1 -- "transcript matrix, t_data.ctab" --> a2
   reads --> a3
-  i6 --> a4
-  a2 -- "for comparison" --> a4
-  reads --> a5
-  a4 -- "featurecounts/gene_count_matrix.csv" --> d1(["06·01"])
+  iso --> a4
+  ncbi --> a4
+  mt --> a4
+  mt --> a5
+  a1 -- "t_data.ctab" --> a4
+  a4 -- "PAF, map" --> a5 -- "ext3, full GFF/SAF" --> a6
+  reads --> a6
+  ncbi --> a6
+  a1 -- "read QC, t_data.ctab" --> a6
+  a2 -- "checks" --> a6
+  a6 -- "featurecounts_ext3_gene_counts.csv.gz" --> a7
+  a2 -- "for comparison" --> a7
+  reads --> a8
+  a7 -- "featurecounts/gene_count_matrix.csv" --> d1(["06·01"])
   a1 -- "t_data.ctab" --> d1
   a1 -- "t_data.ctab" --> g1(["07·01"])
-  a1 -- "read QC, t_data.ctab" --> i(["04·04, 04·06"])
-  a2 --> i67(["04·06, 04·07, 06·13"])
-  a5 -- "mitogenome/*.csv" --> d13(["06·13"])
+  a4 -- "map" --> o4(["04·02, 04·03"])
+  a1 -- "read QC" --> o4
+  a6 -- "six recounts" --> o44(["04·04"])
+  a2 --> o2(["04·04, 06·13"])
+  a8 -- "mitogenome/*.csv" --> d13(["06·13"])
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef off fill:#f6f1e6,stroke:#a08a5a,stroke-dasharray:5 3,color:#1b2730
   classDef run fill:#e8f4ec,stroke:#2f7a4a,color:#1b2730
-  class reads,ncbi,i6,d1,g1,i,i67,d13 ext
-  class a1 off
-  class a2,a3,a4,a5 run
+  class reads,ncbi,iso,mt,d1,g1,o4,o44,o2,d13 ext
+  class a1,a4,a5,a6 off
+  class a2,a3,a7,a8 run
 ```
 
 | step | in pipeline | reads | writes (`03_analyses/`) |
 |---|---|---|---|
 | 01 `01_hisat_stringtie.Rmd` | no (HPC) | the 131 trimmed libraries; RefSeq genome and GTF (NCBI) | `hisat/`: MultiQC report and data, alignment logs (BAMs and per-sample tables are git-ignored) |
 | 02 `02_prepDE.Rmd` | yes | `prepDE/transcript_count_matrix.csv` and `hisat/t_data.ctab` (HPC); `02_data/strg_gene_ids.csv`; `_prepde.R` | `prepDE/gene_count_matrix.csv` (the previous matrix) |
-| 03 `03_read_trimming.Rmd` | yes (retention table); the recipe check needs `online: true` | `fastqc/*/multiqc_data/multiqc_fastqc.txt`; online: the first reads of one raw and one trimmed library (gannet) and the clipping script (GitHub) | `read_trimming/read_retention.csv`; online: `recipe_check.csv`, `RUN_provenance_recipe_check.txt` |
-| 04 `04_count_matrix_of_record.Rmd` | yes | `04·06` `06_genome-recount/featurecounts_ext3_gene_counts.csv.gz`; `hisat/t_data.ctab` (gene names); `05·02` matrix (comparison) | `featurecounts/gene_count_matrix.csv`, `featurecounts/RUN_provenance.txt` |
-| 05 `05_mitogenome_counts.Rmd` | yes (summary); alignment and counting need `online: true` | `02_data/mitogenome_genes.saf`; online: `02_data/mitogenome_NC_007687.1.fa` and the 131 trimmed libraries (gannet), `_mitogenome_library.sh` | online: `mitogenome/mitogenome_gene_counts.csv`, `mitogenome_gene_counts_permissive.csv`, `mapping_summary.csv`, `RUN_provenance.txt` (per-library files git-ignored) |
+| 03 `03_read_trimming.Rmd` | yes (retention table); the recipe check needs the script's own `online: true` | `fastqc/*/multiqc_data/multiqc_fastqc.txt`; online: the first reads of one raw and one trimmed library (gannet) and the clipping script (GitHub) | `read_trimming/read_retention.csv`; online: `recipe_check.csv`, `RUN_provenance_recipe_check.txt` |
+| 04 `04_isoform_gene_map.Rmd` | no (`online: true`) | Iso-Seq FASTA (owl); RefSeq genome and GFF (NCBI, MD5-checked); for the annotation's mitochondrial loci (`tools/mt_encoded.R`), `03·01` `LOC_GO_list.txt`, `hisat/t_data.ctab` and `02_data/annotation_mt_like_loci.csv`; the retired CDS map in `_superseded/` (a cross-check) | `isoform-gene-map/`: `isoform_gene_map.csv.gz`, `isoform_gene_map_summary.csv`, `cds_map_agreement.csv`, `RUN_provenance.txt` (PAF alignments git-ignored) |
+| 05 `05_augmented_annotation.Rmd` | no (`online: true`; needs `05·04`'s git-ignored PAF and the GFF) | RefSeq GFF; `05·04` PAF and map; the same three files as `05·04` for the mitochondrial loci | `augmented-annotation/`: `ext3_extensions.csv.gz`, `full_added_transcripts.bed.gz`, `novel_loci_fate.csv`, `annotation_summary.csv`, `RUN_provenance.txt` (the GFF/SAF annotations are git-ignored) |
+| 06 `06_genome_recount.Rmd` | no (`online: true`) | `05·05` GFF/SAF; RefSeq genome and GTF (NCBI); the 131 trimmed libraries (gannet); `hisat/` MultiQC and `t_data.ctab`, `05·02` matrix, `_prepde.R` and `_prepde_sample.R` (checks against the previous record) | `genome-recount/`: `{stringtie,featurecounts}_{refseq,ext3,full}_gene_counts.csv.gz`, `mapping_summary.csv`, `checks.csv`, `RUN_provenance.txt` |
+| 07 `07_count_matrix_of_record.Rmd` | yes | `05·06` `genome-recount/featurecounts_ext3_gene_counts.csv.gz`; `hisat/t_data.ctab` (gene names); `05·02` matrix (comparison) | `featurecounts/gene_count_matrix.csv`, `featurecounts/RUN_provenance.txt` |
+| 08 `08_mitogenome_counts.Rmd` | yes (summary); alignment and counting need `online: true` | `02_data/mitogenome_genes.saf`; online: `02_data/mitogenome_NC_007687.1.fa` and the 131 trimmed libraries (gannet), `_mitogenome_library.sh` | online: `mitogenome/mitogenome_gene_counts.csv`, `mitogenome_gene_counts_permissive.csv`, `mapping_summary.csv`, `RUN_provenance.txt` (per-library files git-ignored) |
 
 ## 06_differential-expression
 
 ```mermaid
 flowchart LR
   sh(["02_data sample sheets"])
-  a4(["05·04 count matrix of record"])
+  a4(["05·07 count matrix of record"])
   a1(["05·01 t_data.ctab;<br>05/02_data mt-like loci"])
   b1(["03·01 LOC_GO_list.txt"])
   d1["01 clean counts, mitochondrial list"]
@@ -348,7 +354,7 @@ flowchart LR
   d11["11 all-contrast figures"]
   d12["12 Zenodo lists"]
   d13["13 mitochondrial proteins"]
-  a5(["05·05 mitogenome counts;<br>05·02 previous matrix"])
+  a5(["05·08 mitogenome counts;<br>05·02 previous matrix"])
   sh --> d1
   a4 --> d1
   a1 --> d1
@@ -363,8 +369,8 @@ flowchart LR
   d4 --> d11
   d2 --> d13
   a5 --> d13
-  d1 --> r1(["04·04, 04·07, 07, 08·01, 09"])
-  d4 --> r2(["04·04, 04·07, 07, 09"])
+  d1 --> r1(["04·03, 04·04, 07, 08·01, 09"])
+  d4 --> r2(["04·03, 04·04, 07, 09"])
   d6 --> r3(["08·01, 09·01"])
   d7 --> r4(["08·02"])
   d13 -- "mt_share_by_sample.csv" --> r5(["09·05"])
@@ -378,7 +384,7 @@ All 13 steps run in the pipeline.
 
 | step | reads | writes (`03_analyses/`) |
 |---|---|---|
-| 01 `01_clean_count_matrix.Rmd` | `05·04` `featurecounts/gene_count_matrix.csv`; `02_data/` sample sheet and RNA summary; for the mitochondrial list, `03·01` `LOC_GO_list.txt`, `05·01` `hisat/t_data.ctab` and `05_sequence-alignment/02_data/annotation_mt_like_loci.csv` (`tools/mt_encoded.R`) | `count_matrix/`: `gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`, `library_crosswalk.csv`, `mitochondrial_loci.csv` |
+| 01 `01_clean_count_matrix.Rmd` | `05·07` `featurecounts/gene_count_matrix.csv`; `02_data/` sample sheet and RNA summary; for the mitochondrial list, `03·01` `LOC_GO_list.txt`, `05·01` `hisat/t_data.ctab` and `05_sequence-alignment/02_data/annotation_mt_like_loci.csv` (`tools/mt_encoded.R`) | `count_matrix/`: `gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`, `library_crosswalk.csv`, `mitochondrial_loci.csv` |
 | 02 `02_define_contrasts.Rmd` | `06·01` sample table | `DEG_lists/contrasts.csv`, `contrast_samples.csv` |
 | 03 `03_deseq_contrasts.Rmd` | `06·01` counts, sample table, mitochondrial list; `06·02` contrasts | `dds/*.rds` (git-ignored), `DEG_lists/filter_summary.csv`, `figures/PCA_*.png` |
 | 04 `04_shrinkage_filtration.Rmd` | `06·02` contrasts; `06·03` fits and filter summary | `DEG_lists/{Foot,Gill,Foot_vs_Gill}/<code>_{apeglm,siggene,filter_counts}.csv` and MA plots; `DEG_lists/DEG_counts.csv` |
@@ -390,7 +396,7 @@ All 13 steps run in the pipeline.
 | 10 `10_number_degs.Rmd` | `06·06` `*_sigs_merged.csv` | `figures/TC_DEG_numbers.png` |
 | 11 `11_deg_figures_all_contrasts.Rmd` | `06·02` contrasts; `06·04` apeglm tables and DEG counts | `figures/DEG_counts_all_contrasts.png`, `volcano_TC.png`, `volcano_FG.png` |
 | 12 `12_deg_list_cleanup.Rmd` | `06·06` `*_sigs_merged.csv` | `DEG_lists/GOterms_genome/clean_zenodo_files/` |
-| 13 `13_mitochondrial_expression.Rmd` | `06·01` counts, sample table, mitochondrial list; `06·02` contrasts; `05·05` mitogenome counts (default and permissive); `05·02` previous matrix (comparison) | `mitochondrial/*.csv`, `figures/MT_mitochondrial_expression.png`, `MT_haplotypes.png` |
+| 13 `13_mitochondrial_expression.Rmd` | `06·01` counts, sample table, mitochondrial list; `06·02` contrasts; `05·08` mitogenome counts (default and permissive); `05·02` previous matrix (comparison) | `mitochondrial/*.csv`, `figures/MT_mitochondrial_expression.png`, `MT_haplotypes.png` |
 
 ## 07_enrichment
 

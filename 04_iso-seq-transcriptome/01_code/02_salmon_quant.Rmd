@@ -1,5 +1,5 @@
 ---
-title: "03 - Quantify the Tag-seq reads against the Iso-Seq transcriptome (salmon)"
+title: "02 - Quantify the Tag-seq reads against the Iso-Seq transcriptome (salmon)"
 output: html_document
 params:
   salmon: "salmon"          # path to the salmon binary (1.10.3 used here)
@@ -16,7 +16,8 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 Pseudo-aligns each library's trimmed reads to the Iso-Seq isoforms with salmon (selective
 alignment; Patro et al. 2017, *Nature Methods* 14:417) and sums the isoforms of each gene
-(step 02's map) with tximport (Soneson, Love and Robinson 2015, *F1000Research* 4:1521).
+(`05_sequence-alignment` step 04's map) with tximport (Soneson, Love and Robinson 2015,
+*F1000Research* 4:1521).
 
 - **Reads:** the 131 trimmed, lane-merged files the genome branch aligned with HISAT2
   (`*_L099_R1_cmb.trim.fastq.gz`, gannet `panopea/PSMFC-mytilus-byssus-pilot/byssus-exp-analysis/data/raw-trimmed/`;
@@ -30,11 +31,11 @@ alignment; Patro et al. 2017, *Nature Methods* 14:417) and sums the isoforms of 
 - **No decoys.** Selective alignment can use the genome as decoy sequence to absorb reads from
   unannotated loci; the genome FASTA is not available here, so none is used.
 
-Writes, in `03_analyses/03_salmon/`:
+Writes, in `03_analyses/02_salmon/`:
 
 - `salmon_mapping_summary.csv`: per library, reads processed, mapped, the mapping rate and the
   detected library type;
-- `gene_counts.csv.gz`: genes (step 02's `gene`) x libraries, summed read counts; column
+- `gene_counts.csv.gz`: genes (the map's `gene`) x libraries, summed read counts; column
   names are library IDs as in `06`'s count matrix (`T001F`);
 - `read_classes_by_library.csv`: per library, the assigned reads by what their isoforms are
   (annotated gene within or beyond its annotated 3' end, novel locus, unassigned isoform,
@@ -119,7 +120,7 @@ fwrite(data.table(gene = rownames(counts), round(counts, 3)), file.path(salmon_d
 
 # Where the reads go
 
-Per library, the reads salmon assigned, split by what step 02 made of their isoforms: an
+Per library, the reads salmon assigned, split by what the map made of their isoforms: an
 annotated gene, with the isoform ending within `ext_bp` of the gene's annotated 3' end or
 further out (Tag-seq reads sit at the 3' end, so reads of an extended isoform probably fall
 partly beyond the annotation, where the genome branch, which counts annotated exons, does not
@@ -154,14 +155,14 @@ knitr::kable(rc[, lapply(.SD, function(x) round(median(x), 1)), .SDcols = paste0
 # Provenance
 
 ```{r provenance}
-settings <- c("[03_salmon_quant.Rmd]",
+settings <- c("[02_salmon_quant.Rmd]",
               paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
               paste0("salmon               : ", salmon_version, " (index -k ", params$k,
                      "; quant -l A --noLengthCorrection, no decoys)"),
               paste0("reads                : ", READS_URL, " (", length(files), " files)"),
-              "gene counts          : tximport countsFromAbundance = \"no\" over step 02's isoform-to-gene map")
+              "gene counts          : tximport countsFromAbundance = \"no\" over 05_sequence-alignment step 04's isoform-to-gene map")
 writeLines(provenance_lines(settings, c(isoseq_fa, file.path(map_dir, "isoform_gene_map.csv.gz"),
-                                        here::here("01_code", "03_salmon_quant.Rmd")),
+                                        here::here("01_code", "02_salmon_quant.Rmd")),
                             repo_root, packages = c("tximport", "data.table")),
            file.path(salmon_dir, "RUN_provenance.txt"))
 ```

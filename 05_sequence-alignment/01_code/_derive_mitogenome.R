@@ -1,4 +1,4 @@
-## One-off provenance record: the mitochondrial genome and its genes, the reference of step 05
+## One-off provenance record: the mitochondrial genome and its genes, the reference of step 08
 ## (the mitochondrial reads counted on the mitogenome alone). Not part of the pipeline; it wrote
 ## 02_data/mitogenome_NC_007687.1.fa and 02_data/mitogenome_genes.saf.
 ##

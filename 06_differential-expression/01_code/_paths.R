@@ -1,7 +1,7 @@
 # Shared paths for the differential-expression analysis.
 # Sourced by each script in 01_code/; anchored to differential-expression.Rproj via here::here().
 # This folder writes only to its own 03_analyses/; it reads earlier folders (03_blast,
-# 05_sequence-alignment) and is read by 04_iso-seq-transcriptome (steps 04, 07), 07, 08 and 09.
+# 05_sequence-alignment) and is read by 04_iso-seq-transcriptome (steps 03, 04), 07, 08 and 09.
 
 library(here)
 

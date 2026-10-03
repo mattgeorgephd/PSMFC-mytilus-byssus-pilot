@@ -1,5 +1,5 @@
 ---
-title: "05 - Mitochondrial reads counted on the mitochondrial genome alone"
+title: "08 - Mitochondrial reads counted on the mitochondrial genome alone"
 output: html_document
 params:
   online: false            # true: download the 131 trimmed libraries, align and count (about 1 hour); false: summarise the committed counts
@@ -137,12 +137,12 @@ hv <- system2(tool("hisat2"), "--version", stdout = TRUE)[1]
 fv <- system2(tool("featureCounts"), "-v", stdout = TRUE, stderr = TRUE)
 fv <- trimws(grep("featureCounts v", fv, value = TRUE)[1])
 writeLines(provenance_lines(
-  c("05 step 05: mitochondrial reads on the mitogenome alone",
+  c("05 step 08: mitochondrial reads on the mitogenome alone",
     paste0("run                  : ", format(Sys.time(), "%Y-%m-%d %H:%M %Z")),
     paste0("hisat2               : ", sub("^.*version ", "", hv), "; --no-spliced-alignment; default score (of record) and --score-min L,0,-0.6"),
     paste0("featureCounts        : ", fv, "; -s 1 -M -O --fraction -F SAF"),
     paste0("reads                : ", READS_URL, " (131 libraries)")),
-  c(here::here("01_code", "05_mitogenome_counts.Rmd"), here::here("01_code", "_mitogenome_library.sh"), mito_fa, mito_saf),
+  c(here::here("01_code", "08_mitogenome_counts.Rmd"), here::here("01_code", "_mitogenome_library.sh"), mito_fa, mito_saf),
   repo_root, packages = "data.table"), file.path(out_dir, "RUN_provenance.txt"))
 ```
 

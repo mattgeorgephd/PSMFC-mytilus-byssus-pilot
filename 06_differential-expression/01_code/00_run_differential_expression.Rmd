@@ -55,5 +55,5 @@ contrast table, apeglm tables and `mitochondrial_loci.csv` feed `07_enrichment`;
 matrix, sample table, `mitochondrial_loci.csv`, TC DEG lists, `GOterms_genome/` and
 `mitochondrial/mt_share_by_sample.csv` feed `09_gene-mechanics-correlation`; the contrasts,
 sample table, `mitochondrial_loci.csv` and TC apeglm tables feed `04_iso-seq-transcriptome`
-steps 04 and 07. Run those after any change here (the repository-level `00_run_pipeline.Rmd`
+steps 03 and 04. Run those after any change here (the repository-level `00_run_pipeline.Rmd`
 does it in order).

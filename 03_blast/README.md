@@ -6,7 +6,7 @@ transcriptome to the genome. Two lines of work:
 - Genome CDS vs SwissProt + Mytilus-foot proteins (`01_genome_blast.Rmd`), producing the
   gene-to-GO mapping (`LOC_GO_list.txt`, `g.spid.txt`). `LOC_GO_list.txt` is read by
   `06_differential-expression` steps 01 and 06, `07_enrichment` step 01,
-  `09_gene-mechanics-correlation` steps 01 and 04 and `04_iso-seq-transcriptome` step 07. The
+  `09_gene-mechanics-correlation` steps 01 and 04 and `04_iso-seq-transcriptome` step 04. The
   script wrote it to an HPC path and the committed copy in `03_analyses/genome-foot/` was put
   there by hand; the script no longer runs as written (it uses an object, `masterID`, that it
   never defines), so the committed file is the record.

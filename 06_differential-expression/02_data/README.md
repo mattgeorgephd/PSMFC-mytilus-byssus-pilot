@@ -8,6 +8,6 @@ Raw sample sheets; nothing here is written by a script.
 | `psmfc_mussel_rna_summary.csv` | RNA isolation log: sample (`T01-F_PG`, `T01-F`, `T01-G`), concentration, volume, yield, tissue label, isolation date | `01_clean_count_matrix.Rmd` (crosswalk check) |
 
 The gene count matrix comes from `../../05_sequence-alignment/03_analyses/featurecounts/`
-(`05` step 04, the count matrix of record); the clean
+(`05` step 07, the count matrix of record); the clean
 matrix and the sample table built from these sheets are written to
 `../03_analyses/count_matrix/`.

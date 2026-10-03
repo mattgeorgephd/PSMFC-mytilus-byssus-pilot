@@ -15,9 +15,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   across treatments (`07`, `08`) and the per-animal associations of thread mechanics with
   genes, DEG sets, enriched GO terms and mitochondrial expression (`09`). The counts of record
   are featureCounts counts on the RefSeq annotation with Iso-Seq-extended 3' ends (made by
-  `04_iso-seq-transcriptome` steps 05-06, taken by `05` step 04; adopted 2026-10-02). The
-  Iso-Seq branch (`04` steps 01-04) repeats `06`'s contrasts on the Iso-Seq transcriptome as a
-  sensitivity analysis.
+  `05_sequence-alignment` steps 04-06, taken by its step 07; adopted 2026-10-02). The
+  Iso-Seq branch (`04` steps 01-03) repeats `06`'s contrasts on the Iso-Seq transcriptome as a
+  sensitivity analysis, and `04` step 04 keeps the comparison the counts of record rest on.
 - **Manuscript.** Linked from `README.md`. The contrasts of record are stressor vs day-3
   treatment control (TC). The mitochondrial genes have their own analysis and figure
   (`06` step 13, `figures/MT_mitochondrial_expression.png`).
@@ -40,11 +40,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   `GO.db`, so `07` records it with the package versions in
   `03_analyses/01_go-inputs/RUN_provenance.txt`.
 - **Not run by the pipeline:** `03_blast/` and `05_sequence-alignment` step 01 (HPC, inputs
-  not in the repository), `05` step 03's recipe check and step 05's mitochondrial alignment
-  (set `online: true`),
-  `04_iso-seq-transcriptome` steps 01-03 and 05-06 (download the transcriptome, genome and
-  reads and run minimap2, salmon, HISAT2, StringTie and featureCounts; set `online: true`;
-  steps 05-06 make the count matrix of record; steps 04 and 07 run as pipeline stage 04) and
+  not in the repository), `05` steps 04-06 and step 08's mitochondrial alignment (download the
+  transcriptome, genome and reads and run minimap2, HISAT2, StringTie and featureCounts; set
+  the `05` runner's `online: true`; steps 04-06 make the count matrix of record, which step 07
+  takes), `05` step 03's recipe check (its own `online: true`), `04_iso-seq-transcriptome`
+  steps 01-02 (salmon; set `online: true`; steps 03 and 04 run as pipeline stage 04) and
   `08_gene-annotation` steps 02-03 (NCBI and OrthoDB; set `online: true`). Their committed
   outputs are what the pipeline reads.
 - **After a run:** check that every `run_log.csv` row is `TRUE`; that the `RUN_provenance*.txt`
@@ -93,7 +93,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     its Iso-Seq isoforms (`ext3`), from HISAT2 2.2.1 alignments
     (`05_sequence-alignment/03_analyses/featurecounts/gene_count_matrix.csv`). The previous
     counts (StringTie + prepDE on the HPC alignment, `05 .../prepDE/`) are kept for comparison
-    (`04` step 07).
+    (`04` step 04).
   - DEGs: apeglm-shrunk DESeq2 (Wald p from DESeq2's outlier-replaced refit, the standard
     workflow), padj < 0.05, after keeping genes with at least 10 counts in a third of the
     contrast's samples; one model per contrast, defined in
@@ -102,7 +102,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     tRNAs, and 293 nuclear-scaffold copies of the protein genes) are left out of these fits and
     of 07 to 09's gene universes.
   - Mitochondrial proteins: counted on the mitochondrial genome alone (`05_sequence-alignment`
-    step 05: HISAT2 default scoring against NC_007687.1, featureCounts per gene) and tested per
+    step 08: HISAT2 default scoring against NC_007687.1, featureCounts per gene) and tested per
     protein in `06` step 13 with the nuclear genes' size factors; the haplotype covariate and
     a permissive alignment score are sensitivity checks there.
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
