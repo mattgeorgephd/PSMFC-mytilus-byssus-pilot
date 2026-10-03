@@ -167,7 +167,7 @@ the other sections use the new ones.
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,022 of 7,367 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
-| `03_blast/` and `04` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` would not run as written (`mytfoot_uniprot_info` read but `mytilus_foot_uniprot_info` used; `masterID` never defined) | HPC user |
+| `03_blast/` and `04` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` runs again since 2026-10-03 (the 2024 version is in `01_code/_superseded/`) but needs BLAST+ and hours of CPU for the search | HPC user |
 
 ## Known limitations (documented, not blocking)
 
@@ -176,13 +176,17 @@ the other sections use the new ones.
   or conda environment file, so a new machine has to assemble the packages by hand. System
   libraries matter too: after the cloud container was rebuilt on 2026-10-01, every figure
   re-rendered with different fonts (same data, different bytes).
-- **Annotation provenance.** `LOC_GO_list.txt` joins two BLAST runs (its second e-value column
-  comes from the run against Swiss-Prot release 2024_01 plus a UniProtKB "mytilus foot" query,
-  `03_blast/01_code/01_genome_blast.Rmd`) and dropped second transcripts of a gene that hit the
-  same protein (40% of rows carry no LOC key; each gene keeps its other transcripts' hits). The
-  CDS table on owl (`data/ncbi_dataset/data/GCF_036588685.1/cds_from_genomic.tab`) maps every
-  CDS to its LOC and would let those rows be keyed. 42 of the 14,863 GO IDs are unknown to the
-  pinned GO release and dropped.
+- **Annotation provenance.** `LOC_GO_list.txt` comes from one blastx search
+  (`03_blast/01_code/01_genome_blast.Rmd`), whose hits match Swiss-Prot release 2024_04 plus the
+  committed "mytilus foot" proteins (not release 2024_01, as its file name said; and its `V11`
+  column is the e-value of the gene's first hit in that same search, not a second run, as this
+  file said until 2026-10-03). `g.spid.txt` keeps one transcript per gene and protein, so the
+  rows of a gene's other transcripts that hit the same protein carry no LOC key (16,796 of
+  41,464 rows); each gene keeps its first transcript's hits. The fixed script keeps that rule so
+  its tables match the committed ones; the CDS FASTA headers map every CDS to its LOC and would
+  let those rows be keyed. The UniProt records are those of 2024: on 2026-10-03 the GO terms of
+  13,667 of the 16,675 genes' best hits differed in the current release (2026_03). 42 of the
+  14,863 GO IDs are unknown to the pinned GO release and dropped.
 - **GO of record.** topGO `weight01` p < 0.01 is unadjusted; only three TC runs have terms
   under FDR control. Headline GO claims are safest from `consensus_terms_TC_<ont>.csv`.
 - **Repository size.** `.git` is about 765 MB, mostly committed superseded tables and BLAST

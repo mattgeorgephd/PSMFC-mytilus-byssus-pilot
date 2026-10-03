@@ -180,7 +180,8 @@ flowchart TB
   the annotation's mitochondrial loci themselves with the same function
   (`tools/mt_encoded.R`), the same 331 loci.
 - **Committed inputs that no current step writes:** `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`
-  (`03·01` wrote it on the HPC; the script no longer runs as written),
+  (`03·01` wrote it on the HPC; the script, fixed on 2026-10-03, rebuilds it from the 2024
+  blastx table),
   `04_sequence-alignment/03_analyses/hisat/t_data.ctab` (an older HPC run's copy, one
   sample's table; read for gene names and transcript lengths, which come from the reference
   annotation), `04 .../prepDE/transcript_count_matrix.csv` (HPC `prepDE.py`) and
@@ -244,7 +245,7 @@ flowchart LR
 
 | step | in pipeline | reads | writes |
 |---|---|---|---|
-| 01 `01_genome_blast.Rmd` | no (HPC) | RefSeq CDS (NCBI); UniProt Swiss-Prot 2024_01 and the UniProt Mytilus foot proteins (record copy in `02_data/`) | on the HPC: the blastx table, `LOC_GO_list.txt`, `g.spid.txt`; committed copies in `03_analyses/genome-foot/` |
+| 01 `01_genome_blast.Rmd` | no (HPC; `run: true`) | RefSeq CDS (NCBI); UniProt Swiss-Prot release 2024_04 (archive) and the UniProt Mytilus foot proteins (record copy in `02_data/`); the UniProt records of both (REST) | the blastx table (on the HPC), `03_analyses/genome-foot/LOC_GO_list.txt` and `g.spid.txt`; with `run: false` it only checks the committed tables against a blastx table |
 | 02 `02_genome_blast_uniprot_check.Rmd` | no (HPC) | an HPC blastx table and UniProt annotation | HPC intermediates only |
 | 03 `03_isoseq_vs_genome_blast.Rmd` | no (HPC) | Iso-Seq transcripts (owl), RefSeq CDS, foot proteins | HPC working files only |
 | `_uniprot_retrieval.py` | no (by hand) | an accession list; rest.uniprot.org | `uniprot-retrieval.tsv`, committed in `03_analyses/transcriptome-uniprot/` |
