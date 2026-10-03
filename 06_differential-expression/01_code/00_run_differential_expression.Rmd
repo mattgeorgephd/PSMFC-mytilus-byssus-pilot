@@ -56,6 +56,4 @@ matrix, sample table, `mitochondrial_loci.csv`, TC DEG lists, `GOterms_genome/` 
 `mitochondrial/mt_share_by_sample.csv` feed `09_gene-mechanics-correlation`; the contrasts,
 sample table, `mitochondrial_loci.csv` and TC apeglm tables feed `04_iso-seq-transcriptome`
 steps 04 and 07. Run those after any change here (the repository-level `00_run_pipeline.Rmd`
-does it in order). A change to `mitochondrial_loci.csv` also reaches `04_iso-seq-transcriptome`
-steps 02 and 05, which are not rerun by the pipeline (root `README.md`, "How the steps
-connect").
+does it in order).

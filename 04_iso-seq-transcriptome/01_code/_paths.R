@@ -34,4 +34,8 @@ for (d in c(map_dir, salmon_dir, de_dir, ann_dir, recount_dir, aug_de_dir))
   dir.create(d, recursive = TRUE, showWarnings = FALSE)
 
 # Cross-folder reads
-de06 <- file.path(repo_root, "06_differential-expression", "03_analyses")
+de06 <- file.path(repo_root, "06_differential-expression", "03_analyses")   # steps 04 and 07 only
+## the annotation's mitochondrial loci (steps 02 and 05, through tools/mt_encoded.R)
+blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
+t_data   <- file.path(repo_root, "05_sequence-alignment", "03_analyses", "hisat", "t_data.ctab")
+mt_annot <- file.path(repo_root, "05_sequence-alignment", "02_data", "annotation_mt_like_loci.csv")

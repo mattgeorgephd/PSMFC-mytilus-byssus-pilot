@@ -43,7 +43,7 @@ the gene whose exons it overlaps, so the two branches can be compared gene by ge
 5. **Mitochondrial transcripts.** An isoform is `mitochondrial` (its own feature,
    `mito:<isoform>`, which step 04 leaves out as 06 leaves out the mitochondrial loci) when its
    genome alignment lies on the mitogenome or shares most exonic bases with a mitochondrial
-   locus (the genes of `06 .../count_matrix/mitochondrial_loci.csv`), or when at least
+   locus, or when at least
    `mt_min_cov` of it aligns to the mitogenome sequence itself (minimap2 `-x asm20`, any
    identity, either strand). The last test catches mitochondrial transcripts that the genome
    alignment placed on unannotated copies of mitochondrial sequence on unplaced scaffolds, or
@@ -51,7 +51,13 @@ the gene whose exons it overlaps, so the two branches can be compared gene by ge
    mitochondrial isoforms. `mt_hit` also marks isoforms with a smaller mitochondrial segment
    (at least `mt_min_aln` bases aligned to the mitogenome, or any exonic overlap with a
    mitochondrial locus); they keep their gene, and step 04 leaves out any feature outside
-   annotated genes that holds one.
+   annotated genes that holds one. The mitochondrial loci are the annotation's: the
+   mitogenome's genes and the nuclear-scaffold copies of its protein genes, found with
+   `mitochondrial_loci()` (`tools/mt_encoded.R`) from the annotation's genes, the BLAST table
+   (`03_blast`) and `05_sequence-alignment`'s list of loci the annotation names after a
+   mitochondrial protein. `06` step 01 finds the same 331 loci in the count matrix with the same
+   function; this step does not read them from `06`, so the count matrix, which this step leads
+   to, does not depend on itself.
 
 An earlier version of this step, written while the genome was not reachable, assigned isoforms
 through their alignment to the annotation's CDS (`_superseded/02_isoform_gene_map_cds.Rmd`).
@@ -81,6 +87,7 @@ memory for the genome index).
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
 source(file.path(repo_root, "tools", "gene_ids.R"))         # gene_key()
+source(file.path(repo_root, "tools", "mt_encoded.R"))       # mitochondrial_loci(), MITOGENOME_SEQID
 source(file.path(repo_root, "tools", "pipeline_checks.R"))  # provenance_lines()
 suppressPackageStartupMessages({
   library(data.table); library(GenomicRanges); library(GenomicAlignments); library(rtracklayer)
@@ -97,10 +104,7 @@ ncbi_md5 <- fread(cmd = paste("curl -sS", shQuote(paste0(NCBI_DIR, "md5checksums
                   col.names = c("md5", "file"))[, file := basename(file)]
 stopifnot(all(unname(tools::md5sum(c(genome_fa, gff_gz))) == ncbi_md5[match(basename(c(genome_fa, gff_gz)), file), md5]))
 
-mt <- fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))
-mt_genes <- unique(mt$LOC_ID)
-mt_seqids <- unique(mt[source == "mitogenome", seqid])
-stopifnot(length(mt_genes) == nrow(mt), length(mt_seqids) == 1)
+mt_seqids <- MITOGENOME_SEQID                                 # NC_007687.1
 ```
 
 # Genes: exons of every annotated gene
@@ -125,12 +129,15 @@ gene_span <- unlist(range(split(granges(ex), ex$gene)))
 gene_span <- data.table(gene = names(gene_span), g_start = start(gene_span), g_end = end(gene_span),
                         g_strand = as.character(strand(gene_span)))[!duplicated(gene)]
 
-## the genome branch's genes are all here
-g06 <- gene_key(fread(file.path(de06, "count_matrix", "gene_count_matrix_clean.csv"), select = 1)[[1]])
-stopifnot(!anyDuplicated(g06))
-cat(length(unique(ex$gene)), "annotated genes with exons;", sum(g06 %in% ex$gene), "of the", length(g06),
-    "genome-branch genes among them\n")
-stopifnot(all(mt_genes %in% ex$gene))
+ann_genes <- unique(ex$gene)
+stopifnot(!anyDuplicated(unique(top)), length(ann_genes) == length(unique(top)))   # one key per gene
+cat(length(ann_genes), "annotated genes with exons\n")
+
+## the annotation's mitochondrial loci (as 06 step 01 finds them in the count matrix)
+mt <- mitochondrial_loci(unique(top), blast_go, t_data, mt_annot)
+mt_genes <- unique(mt$LOC_ID)
+stopifnot(length(mt_genes) == nrow(mt), all(mt_genes %in% ann_genes))
+cat(nrow(mt), "mitochondrial loci:", paste(names(table(mt$source)), table(mt$source), collapse = ", "), "\n")
 ```
 
 # Align
@@ -251,8 +258,8 @@ summ <- rbind(map[, .(isoforms = .N, features = uniqueN(gene)), by = status],
               data.table(status = "all", isoforms = nrow(map), features = uniqueN(map$gene)),
               data.table(status = "unaligned (within unassigned)", isoforms = map[n_alignments == 0, .N], features = NA),
               data.table(status = "flagged mt_hit (mitochondrial, or with a mitochondrial segment)", isoforms = map[mt_hit == TRUE, .N], features = NA),
-              data.table(status = "genome-branch genes that received an isoform", isoforms = NA,
-                         features = sum(g06 %in% map[status %in% c("assigned", "ambiguous"), gene])))
+              data.table(status = "annotated genes that received an isoform", isoforms = NA,
+                         features = sum(ann_genes %in% map[status %in% c("assigned", "ambiguous"), gene])))
 fwrite(summ, file.path(map_dir, "isoform_gene_map_summary.csv"))
 knitr::kable(summ)
 ```
@@ -291,8 +298,7 @@ settings <- c("[02_isoform_gene_map.Rmd]",
               paste0("assignment           : gap-compressed identity (1 - de) >= ", params$min_identity, "; most exonic bases shared with a gene, same strand, >= ",
                      params$min_overlap, "; ambiguous when mapq 0 or a second gene shares >= ", params$ambiguous_ratio, " of that"),
               paste0("isoforms             : ", nrow(map)))
-writeLines(provenance_lines(settings, c(isoseq_fa, genome_fa, gff_gz, file.path(de06, "count_matrix", "mitochondrial_loci.csv"),
-                                        file.path(de06, "count_matrix", "gene_count_matrix_clean.csv"), cds_map,
+writeLines(provenance_lines(settings, c(isoseq_fa, genome_fa, gff_gz, blast_go, t_data, mt_annot, cds_map,
                                         here::here("01_code", "02_isoform_gene_map.Rmd")),
                             repo_root, packages = c("data.table", "GenomicRanges", "GenomicAlignments", "rtracklayer")),
            file.path(map_dir, "RUN_provenance.txt"))

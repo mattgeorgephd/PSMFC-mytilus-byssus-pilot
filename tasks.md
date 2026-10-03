@@ -123,6 +123,10 @@ Conventions and how to run are in `AGENTS.md`.
   0.061); OW and DO none. The 21 mitochondrial tRNAs and rRNAs the previous matrix had named by
   StringTie number are now recognised (331 mitochondrial loci).
 - **Pull request merged** (2026-10-03): the work above is on `main`.
+- **Loop removed** (2026-10-03). `04` steps 02 and 05 found the mitochondrial loci in `06`'s
+  list, which `06` builds from the count matrix those steps lead to. They now find the
+  annotation's mitochondrial loci themselves with the same function (the same 331 loci);
+  rerun from their cached alignments, both gave identical outputs.
 - **Step map** (2026-10-03). The root `README.md` ("How the steps connect") maps what every step
   reads and writes, traced from the code, with an overview diagram and one per folder. Folder
   READMEs and comments that named the wrong readers or inputs were corrected (06's count matrix
@@ -165,12 +169,6 @@ Conventions and how to run are in `AGENTS.md`.
   outputs; `vst_paired_<T>.csv` (7 to 11 MB each) is rewritten on every 09 run.
 - **No continuous integration.** Nothing runs the pipeline on a push; the checks are the
   runners, the provenance files and the `09` checks.
-- **A loop through the mitochondrial list.** `04` steps 02 and 05 read `06`'s
-  `mitochondrial_loci.csv`, which `06` step 01 builds from the count matrix that `04` step 06
-  makes. It is at a fixed point (the 21 loci added since those steps ran have no isoforms), but
-  a change to the list would need `04` steps 02, 05, 06, then `05` and `06` rerun. Deriving the
-  list in `04` from the annotation would remove the loop. Step 05's provenance does not record
-  the list it read, and step 02's records the previous one (its README explains).
 - **Numbers computed outside the pipeline.** The Iso-Seq vs genome correlation of the
   mitochondrial share (Spearman 0.91; `04` README) is computed by hand from committed files;
   no step writes it.

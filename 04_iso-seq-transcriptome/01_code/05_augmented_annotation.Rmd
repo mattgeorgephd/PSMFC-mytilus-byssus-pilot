@@ -42,8 +42,10 @@ Which isoforms are used: those step 02 `assigned` to a gene with no exon overlap
 gene (readthrough isoforms, which would merge two genes, are left out, as are `ambiguous`
 placements), and the isoforms of novel loci. Mitochondrial isoforms are never added, and a
 novel locus holding an isoform with a mitochondrial segment (`mt_hit`) is left out, as step 04
-leaves those features out; the 310 mitochondrial loci stay in every annotation exactly as
-RefSeq has them, and step 07 leaves them out of the fits as `06` does.
+leaves those features out; the 331 mitochondrial loci stay in every annotation exactly as
+RefSeq has them, and step 07 leaves them out of the fits as `06` does. The mitochondrial loci
+are the annotation's, found as step 02 finds them (`mitochondrial_loci()`, `tools/mt_encoded.R`);
+this step does not read `06`'s list.
 
 Writes, in `03_analyses/05_augmented-annotation/`:
 
@@ -68,6 +70,7 @@ git-ignored) and the RefSeq GFF in `02_data/`.
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
 source(file.path(repo_root, "tools", "gene_ids.R"))         # gene_key()
+source(file.path(repo_root, "tools", "mt_encoded.R"))       # mitochondrial_loci()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))  # provenance_lines()
 suppressPackageStartupMessages({
   library(data.table); library(GenomicRanges); library(GenomicAlignments)
@@ -160,7 +163,7 @@ the exons of exactly one gene on the same strand (its RefSeq exons or its added 
 that gene; one that overlaps more than one gene, or a mitochondrial locus, is left out.
 
 ```{r loci}
-mt_genes <- unique(fread(file.path(de06, "count_matrix", "mitochondrial_loci.csv"))$LOC_ID)
+mt_genes <- unique(mitochondrial_loci(unique(ex$top), blast_go, t_data, mt_annot)$LOC_ID)
 stopifnot(all(mt_genes %in% ex$gene))
 gene_ex <- rbind(ex[, .(gene, seqid, strand, start, end)], blk[status == "assigned", .(gene, seqid, strand, start, end)])
 nb <- blk[status == "novel_locus"]
@@ -302,7 +305,8 @@ settings <- c("[05_augmented_annotation.Rmd]",
               paste0("novel loci           : ", paste(paste(loci_fate$fate, loci_fate$loci), collapse = "; ")),
               paste0("transcripts extended : ", nrow(ext), " (", uniqueN(ext$gene), " genes)"),
               paste0("transcripts added    : ", nrow(tx), " (", nrow(loci), " novel loci)"))
-writeLines(provenance_lines(settings, c(gff_gz, map_file, paf, here::here("01_code", "05_augmented_annotation.Rmd")),
+writeLines(provenance_lines(settings, c(gff_gz, map_file, paf, blast_go, t_data, mt_annot,
+                                        here::here("01_code", "05_augmented_annotation.Rmd")),
                             repo_root, packages = c("data.table", "GenomicRanges", "GenomicAlignments")),
            file.path(ann_dir, "RUN_provenance.txt"))
 ```
