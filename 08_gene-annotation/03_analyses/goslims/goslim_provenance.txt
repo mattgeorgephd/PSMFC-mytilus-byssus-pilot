@@ -1,4 +1,4 @@
-generated : 2026-10-02 22:26:12
+generated : 2026-10-03 07:36:43
 slim      : go/releases/2023-07-27 (goslim_generic subset, derived)
 GO.db     : 3.18.0 (GO source date 2023-07-27)
 GSEABase  : 1.68.0

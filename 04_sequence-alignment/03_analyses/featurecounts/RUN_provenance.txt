@@ -1,8 +1,8 @@
 04 step 07: count matrix of record
-run                  : 2026-10-03 06:34 UTC
+run                  : 2026-10-03 07:02 UTC
 counts               : featureCounts (unique, sense strand) on the ext3 annotation, step 06
 row names            : prepDE's gene_id|gene_name from t_data.ctab
-code commit          : 567210b18ad5
+code commit          : 469246a2bdf4
 uncommitted changes  : no
 R                    : R version 4.4.3 (2025-02-28)
 packages             : data.table 1.18.6.1
