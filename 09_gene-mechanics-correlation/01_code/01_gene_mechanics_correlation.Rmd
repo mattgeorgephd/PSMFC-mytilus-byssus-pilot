@@ -140,8 +140,9 @@ CANDIDATE_KEYWORDS <- paste(
   # byssal structural / adhesive proteins (plaque proteins, thread core, cuticle)
   "byss", "foot protein", "Mefp", "adhesive plaque", "polyphenolic",
   "byssal protein-", "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
-  "thread matrix protein", "nongradient byssal",
+  "thread matrix protein", "nongradient byssal", "YGH-rich protein",
   "byssal peroxidase", "byssal HSP", "byssal calumenin", "byssal protease inhibitor",
+  "protease inhibitor-like protein-1",
   # collagens / preCols (byssal thread core)
   "collagen",
   # plaque-curing / cross-linking enzymes
@@ -235,7 +236,7 @@ CANDIDATE_MIN_PIDENT <- 0
 MASTER_ANNOT_FILE <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03", "LOC_GO_list.txt")
 BYSSAL_STRUCTURAL_REGEX <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-",
                                  "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
-                                 "thread matrix protein", "nongradient byssal",
+                                 "thread matrix protein", "nongradient byssal", "YGH-rich protein",
                                  sep = "|")
 
 if (!file.exists(THREAD_FILE))

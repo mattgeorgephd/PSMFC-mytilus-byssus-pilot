@@ -286,11 +286,13 @@ knitr::kable(nd[, .(new_DEGs = .N, novel_loci = sum(novel_locus), extended_genes
 
 The byssal structural genes are named as in `09` (`BYSSAL_STRUCTURAL_REGEX`): the best BLAST hit
 (highest bitscore) of the genome-wide table names a foot protein, plaque, precollagen, ACDC,
-byssal tyrosinase, a thread matrix protein or preCOL-NG (UniProt's "Nongradient byssal").
+byssal tyrosinase, a thread matrix protein, preCOL-NG (UniProt's "Nongradient byssal") or a YGH-rich
+protein (the *M. coruscus* byssus proteins whose genes had Foot protein 12 as best hit in 2024).
 
 ```{r byssal}
 byssal_rx <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-", "preCol", "precollagen",
-                   "byssal EP", "ACDC", "byssal tyrosinase", "thread matrix protein", "nongradient byssal", sep = "|")
+                   "byssal EP", "ACDC", "byssal tyrosinase", "thread matrix protein", "nongradient byssal",
+                   "YGH-rich protein", sep = "|")
 bl <- fread(file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03", "LOC_GO_list.txt"), sep = "\t",
             select = c("gene", "bitscore", "Protein.names"))
 bl[, `:=`(gene = gene_key(trimws(gene)), bitscore = suppressWarnings(as.numeric(bitscore)))]

@@ -164,8 +164,8 @@ modules <- list(
   oxidative_detox   = "superoxide|glutathione|catalase|peroxiredoxin|dual oxidase|peroxidase",
   HSP_proteostasis  = "heat shock|Hsp|stress-70|chaperone|BiP|peptidyl-prolyl",
   tRNA_translation  = "--tRNA|tRNA ligase|aminoacyl",
-  byssal_collagen   = "collagen|byss|foot protein|adhesive plaque|polyphenolic|thread matrix protein",
-  byssal_structural = "foot protein|adhesive plaque|polyphenolic|byssal protein-|preCol|precollagen|byssal EP|ACDC|thread matrix protein|nongradient byssal"
+  byssal_collagen   = "collagen|byss|foot protein|adhesive plaque|polyphenolic|thread matrix protein|YGH-rich protein|protease inhibitor-like protein-1",
+  byssal_structural = "foot protein|adhesive plaque|polyphenolic|byssal protein-|preCol|precollagen|byssal EP|ACDC|thread matrix protein|nongradient byssal|YGH-rich protein"
 )
 
 if (!"blast_ok" %in% names(annot)) annot$blast_ok <- TRUE   # older script-20 handoff

@@ -154,7 +154,9 @@ Every model it fits is that same per-animal ANCOVA. It adds:
   higher score is higher expression, through the same ANCOVA (`p_lm`, `q_lm` across the six
   modules within a metric, `q_family` within a tier).
   `byssal_structural` is a sixth module (foot proteins, preCols including preCOL-NG, named
-  "Nongradient byssal" in UniProt, the thread matrix proteins, byssal EP/ACDC, the
+  "Nongradient byssal" in UniProt, the thread matrix proteins, the *M. coruscus* YGH-rich
+  proteins (Qin et al. 2016; the best hits, in the search of 2026, of the genes whose 2024 best
+  hit was Foot protein 12), byssal EP/ACDC, the
   plaque-curing tyrosinase: the structural proteins of the plaque and thread), separate from the broad `byssal_collagen` regex, so the test "these genes track
   thread building, not strength" has its own row (`BYSSAL_STRUCTURAL_REGEX` in script 01
   flags the same genes in the candidate table).

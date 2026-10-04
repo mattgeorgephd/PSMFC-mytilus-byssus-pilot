@@ -81,12 +81,12 @@ PN <- replace_na(ann$`Protein.names`, "")
 g  <- function(rx, x = PN) grepl(rx, x, ignore.case = TRUE, perl = TRUE)
 
 category <- dplyr::case_when(
-  g("foot protein|adhesive plaque|polyphenolic|byssal protein-?\\d|\\bMGFP|\\bMCFP|Mefp|byssal EP|\\bACDC\\b|mussel byssus|mussel adhesive|preCol|thread matrix protein|nongradient byssal") ~ "byssal_structural",
+  g("foot protein|adhesive plaque|polyphenolic|byssal protein-?\\d|\\bMGFP|\\bMCFP|Mefp|byssal EP|\\bACDC\\b|mussel byssus|mussel adhesive|preCol|thread matrix protein|nongradient byssal|YGH-rich protein") ~ "byssal_structural",
   g("byssal peroxidase|peroxidasin|\\btyrosinase|catechol oxidase|lysyl oxidase|transglutaminase|gamma-glutamyltransferase|DOPA decarboxylase|aromatic-L-amino-acid decarboxylase|tyrosine decarboxylase") &
     !g("glutathione|thioredoxin|peroxiredoxin|monoamine|diamine|polyamine|spermine|histone demethylase|renalase|chloride intracellular|lysine-specific") ~ "crosslink_curing",
   g("prolyl 4-hydroxylase|prolyl 3-hydroxylase|lysyl hydroxylase|procollagen-lysine|procollagen-proline|protein disulfide-isomerase") ~ "collagen_biosynth",
   g("\\bcollagen\\b|procollagen") ~ "collagen",
-  g("byssal|byssus") ~ "byssal_accessory",
+  g("byssal|byssus|protease inhibitor-like protein-1") ~ "byssal_accessory",
   g("\\bADAMTS|thrombospondin|fibrillin|\\blaminin|von Willebrand factor|fibronectin|matrilin|tenascin|nidogen|perlecan|basement membrane-specific") ~ "ecm_adhesion",
   TRUE ~ NA_character_)
 
