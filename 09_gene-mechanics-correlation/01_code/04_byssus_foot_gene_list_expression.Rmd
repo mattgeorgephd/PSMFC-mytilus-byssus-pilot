@@ -86,7 +86,7 @@ category <- dplyr::case_when(
     !g("glutathione|thioredoxin|peroxiredoxin|monoamine|diamine|polyamine|spermine|histone demethylase|renalase|chloride intracellular|lysine-specific") ~ "crosslink_curing",
   g("prolyl 4-hydroxylase|prolyl 3-hydroxylase|lysyl hydroxylase|procollagen-lysine|procollagen-proline|protein disulfide-isomerase") ~ "collagen_biosynth",
   g("\\bcollagen\\b|procollagen") ~ "collagen",
-  g("byssal|byssus|protease inhibitor-like protein-1") ~ "byssal_accessory",
+  g("byssal|byssus|protease inhibitor-like protein-1|C1q-domain-containing protein-1|TSP_1 domain containing protein-1") ~ "byssal_accessory",
   g("\\bADAMTS|thrombospondin|fibrillin|\\blaminin|von Willebrand factor|fibronectin|matrilin|tenascin|nidogen|perlecan|basement membrane-specific") ~ "ecm_adhesion",
   TRUE ~ NA_character_)
 

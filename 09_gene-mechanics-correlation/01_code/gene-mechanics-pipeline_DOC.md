@@ -124,6 +124,14 @@ to genes named in the treatment-vs-control DEG tables plus the byssal structural
 made "already a DEG in some contrast" a hidden entry condition and is kept only for comparison. `in_TC_DEG_annotation` marks the
 overlap in every table.
 
+Several best hits of the BLAST search of 2026 are *M. coruscus* byssus proteins (Qin et al.
+2016, J Proteomics 144:87-98) whose names carry no byssal word. The keywords name them
+explicitly: "YGH-rich protein" as byssal structural (the genes whose 2024 best hit was Foot
+protein 12), and "protease inhibitor-like protein-1", "C1q-domain-containing protein-1" and
+"TSP_1 domain containing protein-1" as byssal accessory (candidates in script 01, the
+`byssal_collagen` module in script 02, `byssal_accessory` in script 04). These names occur
+only on *M. coruscus* entries in the BLAST tables.
+
 ### Gene keys and the mitochondrial loci
 
 Count-matrix gene names (`gene-LOC134696364|LOC134696364`; `STRG.10|LOC...` in the previous matrix) become LOC keys

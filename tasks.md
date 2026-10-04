@@ -168,7 +168,9 @@ the other sections use the new ones.
   `genome-foot-sprot2026_03/LOC_GO_list.txt`; `03_blast` step 04 (the 2024 hits with the 2026
   records) is kept as a comparison. The byssal rules gained "thread matrix protein",
   "nongradient byssal", "YGH-rich protein" and "protease inhibitor-like protein-1" so that no
-  gene leaves the byssal sets for a change of name. Whole pipeline rerun from a clean commit:
+  gene leaves the byssal sets for a change of name, and (Matt's decision, 2026-10-04) the
+  *M. coruscus* byssus proteins "C1q-domain-containing protein-1" and "TSP_1 domain containing
+  protein-1" count as byssal accessory genes in `09`. Whole pipeline rerun from a clean commit:
   every step TRUE, `09` checks 0 failed; mitochondrial loci and DEGs unchanged; 177 of the 296
   TC GO terms of record remain among 285 (most of the change from the new UniProt records).
 
@@ -180,7 +182,6 @@ the other sections use the new ones.
 
 | item | why it is blocked | who |
 |---|---|---|
-| Byssal gene rules | the byssal sets of `06` step 04 and `09` are defined by keywords in the best hit's protein name. The search of 2026 gives best hits among the *M. coruscus* byssus proteome proteins (Qin et al. 2016) whose names carry no byssal keyword: C1q-domain-containing protein-1 (9 genes; 4 of them had *M. coruscus* "Thread protein-1" as best hit in 2024, which the rules also missed), TSP_1 domain containing protein-1 (9 genes, none with a hit before) and Leu-rich protein-1 (none). YGH-rich protein (fp-12 homologs) and Protease inhibitor-like protein-1 are already counted (2026-10-04). Add the others as byssal accessory, mark the 45 additions by accession (`02_data/byssal_additions_2026_03.tsv`) instead of by name, or leave as is | Matt |
 | Merge GO-db-2026 | the annotation of 2026 (Swiss-Prot 2026_03 search plus 45 byssal proteins, UniProt 2026_03 records, GO release 2026-01-23) and R 4.6.1 / Bioconductor 3.23 are on the stacked pull request; the DEGs are unchanged, 177 of the 296 TC GO terms of record remain among 285, and the ER stress terms weaken (`07` README). Merge, or keep the 2024 annotation | Matt |
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |

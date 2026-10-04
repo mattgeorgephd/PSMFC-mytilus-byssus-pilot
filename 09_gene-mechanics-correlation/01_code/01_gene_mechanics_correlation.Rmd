@@ -142,7 +142,8 @@ CANDIDATE_KEYWORDS <- paste(
   "byssal protein-", "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
   "thread matrix protein", "nongradient byssal", "YGH-rich protein",
   "byssal peroxidase", "byssal HSP", "byssal calumenin", "byssal protease inhibitor",
-  "protease inhibitor-like protein-1",
+  "protease inhibitor-like protein-1", "C1q-domain-containing protein-1",
+  "TSP_1 domain containing protein-1",
   # collagens / preCols (byssal thread core)
   "collagen",
   # plaque-curing / cross-linking enzymes

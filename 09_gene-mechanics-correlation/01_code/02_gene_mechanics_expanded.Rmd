@@ -164,7 +164,7 @@ modules <- list(
   oxidative_detox   = "superoxide|glutathione|catalase|peroxiredoxin|dual oxidase|peroxidase",
   HSP_proteostasis  = "heat shock|Hsp|stress-70|chaperone|BiP|peptidyl-prolyl",
   tRNA_translation  = "--tRNA|tRNA ligase|aminoacyl",
-  byssal_collagen   = "collagen|byss|foot protein|adhesive plaque|polyphenolic|thread matrix protein|YGH-rich protein|protease inhibitor-like protein-1",
+  byssal_collagen   = "collagen|byss|foot protein|adhesive plaque|polyphenolic|thread matrix protein|YGH-rich protein|protease inhibitor-like protein-1|C1q-domain-containing protein-1|TSP_1 domain containing protein-1",
   byssal_structural = "foot protein|adhesive plaque|polyphenolic|byssal protein-|preCol|precollagen|byssal EP|ACDC|thread matrix protein|nongradient byssal|YGH-rich protein"
 )
 
