@@ -115,7 +115,7 @@ also absorbs any between-animal baseline differences the arm assignment did not 
 ### Annotation map and candidate universe
 
 `CANDIDATE_ANNOTATION = "genome"`: every gene in the count matrix is annotated with its best
-UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt`, with
+UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt`, with
 `blast_pident` and `blast_evalue` carried along, and any expressed gene whose name matches
 `CANDIDATE_KEYWORDS` (byssal / collagen / plaque-curing / HSP / hypoxia / tRNA-synthetase /
 oxidative-stress terms) and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-10`,
@@ -153,7 +153,8 @@ Every model it fits is that same per-animal ANCOVA. It adds:
   PC1 of each module's members (genes passing the BLAST floor, `blast_ok`), oriented so a
   higher score is higher expression, through the same ANCOVA (`p_lm`, `q_lm` across the six
   modules within a metric, `q_family` within a tier).
-  `byssal_structural` is a sixth module (foot proteins, preCols, byssal EP/ACDC, the
+  `byssal_structural` is a sixth module (foot proteins, preCols including preCOL-NG, named
+  "Nongradient byssal" in UniProt, the thread matrix proteins, byssal EP/ACDC, the
   plaque-curing tyrosinase: the structural proteins of the plaque and thread), separate from the broad `byssal_collagen` regex, so the test "these genes track
   thread building, not strength" has its own row (`BYSSAL_STRUCTURAL_REGEX` in script 01
   flags the same genes in the candidate table).

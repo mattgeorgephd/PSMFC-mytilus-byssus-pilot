@@ -26,7 +26,7 @@ About fifteen minutes, six of them in script 03 and four in script 13.
 | 03 | `03_deseq_contrasts.Rmd` | counts (without the mitochondrial loci), contrasts | `dds/` (fitted objects, git-ignored), `DEG_lists/filter_summary.csv`, PCA plots in `figures/` |
 | 04 | `04_shrinkage_filtration.Rmd` | `dds/` | `DEG_lists/<Foot,Gill,Foot_vs_Gill>/`: apeglm tables, DEG lists, MA plots; `DEG_lists/DEG_counts.csv` |
 | 05 | `05_fourlevel_sensitivity.Rmd` | counts, sample table, `mitochondrial_loci.csv`, TC DEG lists | `DEG_lists/sensitivity_fourlevel/` |
-| 06 | `06_join_annotation.Rmd` | TC DEG lists, `03_blast/03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt` (2024 hits, UniProt 2026_03 records) | `DEG_lists/GOterms_genome/`, `DEG_lists/DEG_join_summary.csv` |
+| 06 | `06_join_annotation.Rmd` | TC DEG lists, `03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt` (genome blast of 2026, UniProt 2026_03 records) | `DEG_lists/GOterms_genome/`, `DEG_lists/DEG_join_summary.csv` |
 | 07 | `07_top_degs.Rmd` | annotated TC DEGs | `top_DEGs/Top_50_genes/`: the top-50 tables and bar plots labelled by gene symbol |
 | 08-10 | `08_deg_venn.Rmd`, `09_volcano_plots.Rmd`, `10_number_degs.Rmd` | annotated TC DEGs | the manuscript TC figures in `figures/` (`TC_venn_*`, `TC_volcano_*`, `TC_DEG_numbers.png`) |
 | 11 | `11_deg_figures_all_contrasts.Rmd` | every contrast's tables | `figures/DEG_counts_all_contrasts.png`, `volcano_TC.png`, `volcano_FG.png` |

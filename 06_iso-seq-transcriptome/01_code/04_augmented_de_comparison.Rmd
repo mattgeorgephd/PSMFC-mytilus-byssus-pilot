@@ -285,13 +285,13 @@ knitr::kable(nd[, .(new_DEGs = .N, novel_loci = sum(novel_locus), extended_genes
 # Byssal genes
 
 The byssal structural genes are named as in `09` (`BYSSAL_STRUCTURAL_REGEX`): the best BLAST hit
-(highest bitscore) of the genome-wide table names a foot protein, plaque, precollagen, ACDC or
-byssal tyrosinase.
+(highest bitscore) of the genome-wide table names a foot protein, plaque, precollagen, ACDC,
+byssal tyrosinase, a thread matrix protein or preCOL-NG (UniProt's "Nongradient byssal").
 
 ```{r byssal}
 byssal_rx <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-", "preCol", "precollagen",
-                   "byssal EP", "ACDC", "byssal tyrosinase", sep = "|")
-bl <- fread(file.path(repo_root, "03_blast", "03_analyses", "genome-foot-uniprot2026_03", "LOC_GO_list.txt"), sep = "\t",
+                   "byssal EP", "ACDC", "byssal tyrosinase", "thread matrix protein", "nongradient byssal", sep = "|")
+bl <- fread(file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03", "LOC_GO_list.txt"), sep = "\t",
             select = c("gene", "bitscore", "Protein.names"))
 bl[, `:=`(gene = gene_key(trimws(gene)), bitscore = suppressWarnings(as.numeric(bitscore)))]
 bl <- bl[!is.na(gene) & nzchar(gene)][order(-bitscore)][!duplicated(gene)]
@@ -371,7 +371,7 @@ inputs <- c(file.path(recount_dir, sprintf("%s_gene_counts.csv.gz", sub(" ", "_"
             file.path(de05, "DEG_lists", c("contrasts.csv", "contrast_samples.csv")),
             file.path(de05, "DEG_lists", contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
             file.path(de05, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv")),
-            file.path(repo_root, "03_blast", "03_analyses", "genome-foot-uniprot2026_03", "LOC_GO_list.txt"),
+            file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03", "LOC_GO_list.txt"),
             here::here("01_code", "04_augmented_de_comparison.Rmd"))
 writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "apeglm", "data.table")),
            file.path(aug_de_dir, "RUN_provenance.txt"))

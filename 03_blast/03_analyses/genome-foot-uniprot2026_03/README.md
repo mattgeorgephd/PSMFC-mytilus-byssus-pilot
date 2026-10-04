@@ -3,7 +3,10 @@
 Written by `../../01_code/04_refresh_uniprot_records.Rmd`: the genome BLAST hits of 2024 (every
 CDS of RefSeq GCF_036588685.1 against Swiss-Prot release 2024_04 plus the UniProt "mytilus
 foot" proteins, `../genome-foot/genome_n_foot_blastx.tab`) with the UniProt records of release
-2026_03. This is the BLAST/UniProt/GO table the analysis reads.
+2026_03. A comparison, read by nothing downstream: it holds the 2024 hits fixed and so
+separates what the new records changed from what the search of 2026
+(`../genome-foot-sprot2026_03/`, the table the analysis reads since 2026-10-04) changed. The
+analysis read this table from 2026-10-03 to 04.
 
 | File | Contents |
 |---|---|

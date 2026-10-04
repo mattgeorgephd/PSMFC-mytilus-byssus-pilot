@@ -140,6 +140,7 @@ CANDIDATE_KEYWORDS <- paste(
   # byssal structural / adhesive proteins (plaque proteins, thread core, cuticle)
   "byss", "foot protein", "Mefp", "adhesive plaque", "polyphenolic",
   "byssal protein-", "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
+  "thread matrix protein", "nongradient byssal",
   "byssal peroxidase", "byssal HSP", "byssal calumenin", "byssal protease inhibitor",
   # collagens / preCols (byssal thread core)
   "collagen",
@@ -231,9 +232,10 @@ dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 CANDIDATE_ANNOTATION <- "genome"
 CANDIDATE_MAX_EVALUE <- 1e-10
 CANDIDATE_MIN_PIDENT <- 0
-MASTER_ANNOT_FILE <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-uniprot2026_03", "LOC_GO_list.txt")
+MASTER_ANNOT_FILE <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03", "LOC_GO_list.txt")
 BYSSAL_STRUCTURAL_REGEX <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-",
                                  "preCol", "precollagen", "byssal EP", "ACDC", "byssal tyrosinase",
+                                 "thread matrix protein", "nongradient byssal",
                                  sep = "|")
 
 if (!file.exists(THREAD_FILE))

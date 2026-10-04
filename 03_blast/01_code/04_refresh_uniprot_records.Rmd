@@ -18,7 +18,7 @@ later release, without searching again. The hits keep their 2024 alignments; the
 names, gene names, GO terms and the other record fields are those of `release`. Writes, in
 `03_analyses/genome-foot-uniprot<release>/`:
 
-- `LOC_GO_list.txt`: the table the analysis reads, with the columns of step 01's (same names,
+- `LOC_GO_list.txt`: the 2024 hits with the newer records, with the columns of step 01's (same names,
   same order): one row per blastx hit (HSP) of `../genome-foot/genome_n_foot_blastx.tab`
   (41,432; step 01's 2024 table lost the first hit and repeated 33, see its "Reproducing the
   2024 tables"), joined to the record of its protein and, through `../genome-foot/g.spid.txt`,
@@ -28,10 +28,11 @@ names, gene names, GO terms and the other record fields are those of `release`. 
   service returned them (`online: true`), with the fields step 01 requested;
 - `RUN_provenance.txt`: the release, the input MD5s and the record counts.
 
-Read by `04_sequence-alignment` steps 04 and 05 and `05_differential-expression` step 01 (the
-mitochondrial loci, `tools/mt_encoded.R`), `05_differential-expression` step 06,
-`06_iso-seq-transcriptome` step 04, `07_enrichment` step 01 and
-`09_gene-mechanics-correlation` steps 01 and 04.
+A comparison, read by nothing downstream: the analysis reads step 01's search of 2026
+(Swiss-Prot 2026_03 plus 241 foot and byssal proteins, with the records of 2026_03,
+`03_analyses/genome-foot-sprot2026_03/`). Against that table, this one shows what the new
+records changed with the 2024 hits held fixed, and so separates the effect of the new search
+from that of the new records. Until 2026-10-04 the analysis read this table.
 
 With `online: false` (the default) it rebuilds the table from the committed records. UniProt's
 REST service serves only the current release, so `online: true` stops unless the release it

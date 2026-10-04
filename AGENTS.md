@@ -60,9 +60,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   is the setup script of the Claude Code cloud environment (environment settings, Setup
   script).
 - **Not run by the pipeline:** `03_blast/` steps 01-03 and `04_sequence-alignment` step 01
-  (HPC, inputs not in the repository), `03_blast` step 04 (the 2024 hits with UniProt 2026_03
-  records; it runs offline from committed files, and `online: true` fetches the records again,
-  which works only while UniProt serves release 2026_03), `04` steps 04-06 and step 08's mitochondrial alignment (download the
+  (HPC or long searches, inputs not in the repository; `03_blast` step 01 ran its 2026 search in
+  the cloud environment in about 31 hours on 4 threads, in resumable parts), `03_blast` step 04
+  (the 2024 hits with UniProt 2026_03 records, a comparison; it runs offline from committed
+  files, and `online: true` fetches the records again, which works only while UniProt serves
+  release 2026_03), `04` steps 04-06 and step 08's mitochondrial alignment (download the
   transcriptome, genome and reads and run minimap2, HISAT2, StringTie and featureCounts; set
   the `04` runner's `online: true`; steps 04-06 make the count matrix of record, which step 07
   takes), `04` step 03's recipe check (its own `online: true`), `06_iso-seq-transcriptome`
@@ -127,12 +129,14 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     step 08: HISAT2 default scoring against NC_007687.1, featureCounts per gene) and tested per
     protein in `05` step 13 with the nuclear genes' size factors; the haplotype covariate and
     a permissive alignment score are sensitivity checks there.
-  - Annotation: each gene's best hit (highest bitscore) in the genome blastx of 2024
-    (Swiss-Prot release 2024_04 plus the Mytilus foot proteins, `03_blast` step 01), with the
-    UniProt records of release 2026_03 (`03_blast` step 04,
-    `03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt`); GO release 2026-01-23
+  - Annotation: each gene's best hit (highest bitscore) in the genome blastx of 2026
+    (Swiss-Prot release 2026_03 plus the 196 proteins of the UniProt query "(mytilus foot)"
+    and 45 byssal proteins it misses, `03_blast/02_data/byssal_additions_2026_03.tsv`;
+    `03_blast` step 01), with the UniProt records of release 2026_03
+    (`03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt`); GO release 2026-01-23
     (`GO.db` 3.23.1) and its generic GO slim (`08_gene-annotation/02_data/goslim_generic.obo`).
-    The 2024 records (`genome-foot/LOC_GO_list.txt`) are kept for comparison.
+    Kept for comparison: the search of 2024 (`genome-foot/`) and its hits with the 2026_03
+    records (`genome-foot-uniprot2026_03/`, `03_blast` step 04).
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.

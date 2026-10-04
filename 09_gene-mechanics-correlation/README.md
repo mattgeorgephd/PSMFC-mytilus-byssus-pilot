@@ -61,7 +61,7 @@ folder that contains both `02_thread-strength/` and `05_differential-expression/
 | `05_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv` | mitochondrial protein reads as a share of each library's nuclear reads, 05 script 13 | 05 |
 | `07_enrichment/03_analyses/02_topgo/topgo_enriched.csv` | enriched GO terms of each TC run and the DEGs in each, 07 script 02 | 05 |
 | `07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_<ont>.csv` | terms an FDR-controlled method also enriched, 07 script 06 | 05 |
-| `03_blast/03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt` | genome-wide BLAST (2024 hits) / UniProt (release 2026_03 records) / GO annotation | 01, 04 |
+| `03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt` | genome-wide BLAST (Swiss-Prot 2026_03 plus 241 foot and byssal proteins) / UniProt (release 2026_03 records) / GO annotation | 01, 04 |
 | `tools/pipeline_checks.R` | `warn_unless()` checks and `RUN_provenance_<T>.txt` | 01, 02, 05 |
 | `tools/gene_ids.R` | `gene_key()`: count-matrix gene name to LOC key | 01, 03, 04, 05 |
 
