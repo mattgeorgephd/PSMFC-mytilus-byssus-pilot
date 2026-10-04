@@ -199,7 +199,7 @@ p <- ggplot(long, aes(contrast, Term)) +
          "Numbers are DEGs (apeglm padj < 0.05) with a UniProt GO annotation under the slim term; ",
          "a gene can count under several terms. ", nlevels(long$Term), " of the ", n_terms_hit,
          " slim terms with any DEG are shown (at least ", MIN_TOTAL, " DEGs over all contrasts). ",
-         "Generic GO slim, GO release 2023-07-27. Mitochondrial genes and their nuclear copies are ",
+         "Generic GO slim, GO release ", slim_release, ". Mitochondrial genes and their nuclear copies are ",
          "analysed separately (05 step 13)."), width = 120), collapse = "\n")) +
   theme_psmfc(10) +
   theme(panel.grid = element_blank(), axis.ticks = element_blank(),
