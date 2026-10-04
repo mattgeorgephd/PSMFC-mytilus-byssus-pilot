@@ -210,6 +210,7 @@ byssal_collagen,LOC134711497,YGH-rich protein-1,85.943,0,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134706748,Byssal HSP-like protein 1,98.116,0,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134686938,Byssal tyrosinase-like protein-1,79.513,0,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134697300,Byssal HSP-like protein 1,81.517,0,genome_blast,TRUE,TRUE
+byssal_collagen,LOC134710563,TSP_1 domain containing protein-1,81.538,0,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134711495,Foot protein 12,85.852,0,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134693434,"Multifunctional procollagen lysine hydroxylase and glycosyltransferase LH3 [Includes: Procollagen-lysine,2-oxoglutarate 5-dioxygenase 3 (EC 1.14.11.4) (Lysyl hydroxylase 3) (LH3); Procollagen glycosyltransferase (EC 2.4.1.50) (EC 2.4.1.66) (Galactosylhydroxylysine-glucosyltransferase) (Procollagen galactosyltransferase) (Procollagen glucosyltransferase)]",50.98,0,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134711517,Collagen alpha-1(IV) chain,42.595,0,genome_blast,FALSE,TRUE
@@ -229,6 +230,7 @@ byssal_collagen,LOC134699268,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1
 byssal_collagen,LOC134716385,Byssal EP-like protein 1 (EP-protein-1),87.712,4.86e-139,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134680752,"Prolyl 4-hydroxylase subunit alpha-1 (4-PH alpha-1) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-1)",41.843,1.1899999999999999e-129,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134718731,Collagen-like protein-6,92.884,1.0699999999999999e-124,genome_blast,FALSE,TRUE
+byssal_collagen,LOC134710538,TSP_1 domain containing protein-1,41.745,2.4599999999999994e-104,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134720932,Byssal peroxidase-like protein 2,35.518,8.569999999999999e-107,genome_blast,TRUE,TRUE
 byssal_collagen,LOC134709805,Foot protein-4 variant-1,62.032,2.2599999999999996e-106,genome_blast,FALSE,TRUE
 byssal_collagen,LOC134719452,Foot protein 15,73.93,3.1399999999999996e-112,genome_blast,FALSE,TRUE

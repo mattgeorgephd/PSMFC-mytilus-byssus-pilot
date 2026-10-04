@@ -1,11 +1,11 @@
 [04_augmented_de_comparison.Rmd]
-generated            : 2026-10-04 14:32:29
+generated            : 2026-10-04 16:41:45
 model                : as 05: ~ treatment (day-3 control reference), >= 10 counts in a third of samples, apeglm, Wald padj
 DEG                  : padj < 0.05
 matrices             : stringtie refseq, stringtie ext3, stringtie full, featurecounts refseq, featurecounts ext3, featurecounts full, previous record
 record               : featurecounts ext3 (05's DEG lists reproduced)
 contrasts            : FOA_TC, FOW_TC, FDO_TC, GOA_TC, GOW_TC, GDO_TC
-code commit          : 0944a43f9ae9
+code commit          : cc48b588740f
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : DESeq2 1.52.0, apeglm 1.34.0, data.table 1.18.6.1

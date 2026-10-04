@@ -27,6 +27,7 @@ LOC134681019,2'-5'-oligoadenylate synthase 2 ((2-5')oligo(A) synthase 2) (2-5A s
 LOC134690915,NA,DEG_union,46,7,0.152,ok,TRUE
 LOC134693655,Eukaryotic translation initiation factor 5A-2 (eIF-5A-2) (eIF-5A2) (Eukaryotic initiation factor 5A isoform 2) (eIF-4D),DEG_union,46,7,0.152,ok,TRUE
 LOC134708528,"Probable glutathione S-transferase DHAR2, chloroplastic (EC 2.5.1.18) (GSH-dependent dehydroascorbate reductase 2) (OsDHAR2) (EC 1.8.5.1) (Glutathione-dependent dehydroascorbate reductase 2)",candidate,46,7,0.152,ok,TRUE
+LOC134710538,TSP_1 domain containing protein-1,candidate,46,7,0.152,ok,TRUE
 LOC134721509,NA,DEG_union,46,7,0.152,ok,TRUE
 LOC134680969,Collagen alpha-4(VI) chain,candidate,46,6,0.13,ok,TRUE
 LOC134681874,Byssal metalloproteinase inhibitor-like protein 1,candidate,46,6,0.13,ok,TRUE
@@ -117,6 +118,7 @@ LOC134707598,"Serine--tRNA ligase, mitochondrial (EC 6.1.1.11) (SerRSmt) (Seryl-
 LOC134708000,Foot protein 13,candidate,46,1,0.022,ok,TRUE
 LOC134708209,Protein LZIC (Leucine zipper and CTNNBIP1 domain-containing protein) (Leucine zipper and ICAT homologous domain-containing protein),candidate,46,1,0.022,ok,TRUE
 LOC134709193,NA,DEG_union,46,1,0.022,ok,TRUE
+LOC134710563,TSP_1 domain containing protein-1,candidate,46,1,0.022,ok,TRUE
 LOC134710785,YGH-rich protein-3,candidate,46,1,0.022,ok,TRUE
 LOC134711265,NA,DEG_union,46,1,0.022,ok,TRUE
 LOC134711495,Foot protein 12,candidate,46,1,0.022,ok,TRUE

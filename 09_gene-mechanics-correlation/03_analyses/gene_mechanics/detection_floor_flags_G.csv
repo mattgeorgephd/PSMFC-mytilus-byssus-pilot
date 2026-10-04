@@ -10,8 +10,11 @@ LOC134713960,Ficolin-2 (Collagen/fibrinogen domain-containing protein 2) (Ficoli
 LOC134726267,Heat shock 70 kDa protein 12A,candidate,47,16,0.34,caution,TRUE
 LOC134693421,NA,DEG_union,47,15,0.319,caution,TRUE
 LOC134716805,NA,DEG_union,47,15,0.319,caution,TRUE
+LOC134694992,C1q-domain-containing protein-1,candidate,47,14,0.298,caution,TRUE
 LOC134705179,NA,DEG_union,47,14,0.298,caution,TRUE
+LOC134714119,C1q-domain-containing protein-1,candidate,47,14,0.298,caution,TRUE
 LOC134722896,Fibrinogen C domain-containing protein 1,DEG_union,47,12,0.255,caution,TRUE
+LOC134685996,C1q-domain-containing protein-1,candidate,47,11,0.234,caution,TRUE
 LOC134693309,Ryncolin-4,DEG_union,47,11,0.234,caution,TRUE
 LOC134694154,Byssal peroxidase-like protein 1,candidate,47,11,0.234,caution,TRUE
 LOC134696936,NA,DEG_union,47,11,0.234,caution,TRUE
@@ -108,6 +111,7 @@ LOC134728297,P2X purinoceptor 4 (P2X4) (ATP receptor) (Purinergic receptor),DEG_
 LOC134685333,NA,DEG_union,47,2,0.043,ok,TRUE
 LOC134686131,Mussel byssus collagen-like protein 3,candidate,47,2,0.043,ok,TRUE
 LOC134686497,NA,DEG_union,47,2,0.043,ok,TRUE
+LOC134686523,TSP_1 domain containing protein-1,candidate,47,2,0.043,ok,TRUE
 LOC134686782,Peroxiredoxin-4 (EC 1.11.1.24) (Antioxidant enzyme AOE372) (AOE37-2) (Peroxiredoxin IV) (Prx-IV) (Thioredoxin peroxidase AO372) (Thioredoxin-dependent peroxide reductase A0372) (Thioredoxin-dependent peroxiredoxin 4),candidate,47,2,0.043,ok,TRUE
 LOC134686815,Catalase (EC 1.11.1.6),candidate,47,2,0.043,ok,TRUE
 LOC134687272,Carboxypeptidase A2 (EC 3.4.17.15),DEG_union,47,2,0.043,ok,TRUE
@@ -188,6 +192,7 @@ LOC134707158,Chitin synthase chs-2 (EC 2.4.1.16) (Chitin-UDP acetyl-glucosaminyl
 LOC134707827,Ceramide synthase 4 (CerS4) (EC 2.3.1.-) (LAG1 longevity assurance homolog 4) (Sphingosine N-acyltransferase CERS4) (EC 2.3.1.24) (Translocating chain-associating membrane protein homolog 1) (TRAM homolog 1),DEG_union,47,1,0.021,ok,TRUE
 LOC134709486,Cdc42 homolog (EC 3.6.5.2) (25 kDa GTP-binding protein),DEG_union,47,1,0.021,ok,TRUE
 LOC134710055,NA,DEG_union,47,1,0.021,ok,TRUE
+LOC134710563,TSP_1 domain containing protein-1,candidate,47,1,0.021,ok,TRUE
 LOC134710855,NA,DEG_union,47,1,0.021,ok,TRUE
 LOC134710979,Caveolin-1,DEG_union,47,1,0.021,ok,TRUE
 LOC134711220,Interferon-induced protein 44-like,DEG_union,47,1,0.021,ok,TRUE
