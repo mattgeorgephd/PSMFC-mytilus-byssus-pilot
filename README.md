@@ -13,7 +13,8 @@ from the committed data: thread strength (02), the count matrices (04), differen
 GO slims (08) and the gene-mechanics associations (09). About 35 minutes. Reports and logs go
 to each folder's `03_analyses/knit_html/` and, one per stage, to
 `knit_html/` at the root (all git-ignored). It needs R 4.6.1 and the Bioconductor 3.23 packages
-recorded in `renv.lock` (`renv::restore(lockfile = "renv.lock")`; see `AGENTS.md`, How to run).
+recorded in `renv.lock` (`renv::restore(lockfile = "renv.lock")`; on Ubuntu 24.04,
+`tools/cloud_setup.sh` installs all of it; see `AGENTS.md`, How to run).
 See `AGENTS.md` for the conventions and `tasks.md` for what is done and open.
 
 # Analysis folders
@@ -57,8 +58,9 @@ Other folders:
 - `tools/`: shared helpers (README inside): `run_steps.R` (the runners), `plot_style.R` (the
   one set of figure colours: control grey, OA green, OW orange, DO purple; red up, blue
   down), `gene_ids.R` (`gene_key()`, the one way gene names are joined to annotation),
-  `mt_encoded.R` (the mitochondrial loci of the count matrix) and `pipeline_checks.R` (run
-  checks and `RUN_provenance*.txt`).
+  `mt_encoded.R` (the mitochondrial loci of the count matrix), `pipeline_checks.R` (run
+  checks, `RUN_provenance*.txt` and the GO release check) and `cloud_setup.sh` (sets up R
+  4.6.1, the system libraries, BLAST+ 2.15.0 and the packages of `renv.lock` on Ubuntu 24.04).
 - `instrument-reference/`: tensometer manual, LabVIEW logger and wiring notes.
 - `template-oyster-pipeline/`: Tag-seq code from the triploid oyster heatwave project, kept as
   a template; not part of this analysis.

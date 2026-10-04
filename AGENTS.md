@@ -55,6 +55,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   packages in `/usr/lib/R/site-library` built for R 4.3 fail to load in R 4.6), for example
   `R_LIBS_SITE=/nonexistent R_LIBS=<library>` when installing and running, and upgrade R's
   recommended packages with R (CRAN's Ubuntu repository builds them for 4.6).
+  `tools/cloud_setup.sh` does all of this on Ubuntu 24.04 (R 4.6.1, the recommended packages,
+  the system libraries, BLAST+ 2.15.0 and `renv::restore()` into `/opt/R/site-library-4.6`); it
+  is the setup script of the Claude Code cloud environment (environment settings, Setup
+  script).
 - **Not run by the pipeline:** `03_blast/` steps 01-03 and `04_sequence-alignment` step 01
   (HPC, inputs not in the repository), `03_blast` step 04 (the 2024 hits with UniProt 2026_03
   records; it runs offline from committed files, and `online: true` fetches the records again,
