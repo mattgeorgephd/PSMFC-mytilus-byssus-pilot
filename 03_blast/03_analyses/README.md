@@ -4,6 +4,7 @@
 |-----------|-------------|----------|
 | `transcriptome-uniprot/` | `01_code/_uniprot_retrieval.py` (+ blastx) | isoseq-transcriptome vs UniProt blastx (`Mtros-hq-uniprot_blastx.tab`), GO and SPID tables, UniProt id-mapping |
 | `genome-foot/` | `01_code/01_genome_blast.Rmd` (HPC, 2024) | `LOC_GO_list.txt`, `g.spid.txt`: gene-to-GO / SwissProt-ID mapping from the genome blast, with the UniProt records of 2024; `genome_n_foot_blastx.tab`: the blastx table of that search (41,432 hits; the gannet copy, `byssus-exp-analysis/output/`, dated 2024-08-06, MD5 521f4d6729cfc433f63875909413b640) |
+| `genome-foot-sprot2026_03/` | `01_code/01_genome_blast.Rmd` (`run: true`, cloud environment, 2026-10-04) | the genome blast of 2026: Swiss-Prot 2026_03 plus 241 foot and byssal proteins, with the UniProt records of 2026_03: `LOC_GO_list.txt`, `g.spid.txt`, `genome_n_foot_blastx.tab` (41,588 hits), `RUN_provenance.txt` (README inside) |
 | `genome-foot-uniprot2026_03/` | `01_code/04_refresh_uniprot_records.Rmd` | the same hits with the UniProt records of release 2026_03: `LOC_GO_list.txt` (the table the analysis reads), `uniprot_records_2026_03.tsv`, `RUN_provenance.txt` (README inside) |
 
 The genome-foot tables are the bridge from blast hits to GO terms. The analysis reads
