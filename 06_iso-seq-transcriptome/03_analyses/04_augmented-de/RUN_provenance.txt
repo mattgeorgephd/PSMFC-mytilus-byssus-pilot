@@ -1,11 +1,11 @@
 [04_augmented_de_comparison.Rmd]
-generated            : 2026-10-03 20:20:30
+generated            : 2026-10-04 14:32:29
 model                : as 05: ~ treatment (day-3 control reference), >= 10 counts in a third of samples, apeglm, Wald padj
 DEG                  : padj < 0.05
 matrices             : stringtie refseq, stringtie ext3, stringtie full, featurecounts refseq, featurecounts ext3, featurecounts full, previous record
 record               : featurecounts ext3 (05's DEG lists reproduced)
 contrasts            : FOA_TC, FOW_TC, FDO_TC, GOA_TC, GOW_TC, GDO_TC
-code commit          : edee965df2de
+code commit          : 0944a43f9ae9
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : DESeq2 1.52.0, apeglm 1.34.0, data.table 1.18.6.1
@@ -28,5 +28,5 @@ inputs (md5, repo-relative path):
   c25d90b80e2880c4b2b8187ed561fcbb  05_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_apeglm.csv
   e12c6deb0c305a3f220e15d8af3409b3  05_differential-expression/03_analyses/count_matrix/treatmentinfo_clean.csv
   296679a4a82e85a9cd79f3d6570ed33a  05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
-  dd09efa6ab6d9603ba5ce10e3bad5ac0  03_blast/03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt
-  c0ed111cbefb1333e30a440a357b634d  06_iso-seq-transcriptome/01_code/04_augmented_de_comparison.Rmd
+  a7289ee612dbf7bfea16b65938398de5  03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt
+  c3e529dd3bf8ca9929f2ef802ef0239f  06_iso-seq-transcriptome/01_code/04_augmented_de_comparison.Rmd

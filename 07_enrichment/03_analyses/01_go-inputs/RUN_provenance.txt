@@ -1,16 +1,16 @@
-generated            : 2026-10-03 20:20:45
+generated            : 2026-10-04 14:32:44
 GO release           : 2026-01-23 (GO.db 3.23.1)
 DEG                  : padj < 0.05 in the 05 apeglm table; up and down tested separately
 universe             : genes with a non-missing padj in the contrast's apeglm table
 terms tested         : 10 or more annotated universe genes (topGO nodeSize); 10 to 500 for goseq and clusterProfiler
 families             : TC, FG
-genes                : 11942 in any contrast's table; with GO BP 6808, MF 6505, CC 7401
-code commit          : edee965df2de
+genes                : 11942 in any contrast's table; with GO BP 6815, MF 6504, CC 7402
+code commit          : 0944a43f9ae9
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : topGO 2.64.0, goseq 1.64.0, clusterProfiler 4.20.0, enrichplot 1.32.1, rrvgo 1.24.0, GOSemSim 2.38.3, GO.db 3.23.1, AnnotationDbi 1.74.0, GSEABase 1.74.0, org.Hs.eg.db 3.23.1
 inputs (md5, repo-relative path):
-  dd09efa6ab6d9603ba5ce10e3bad5ac0  03_blast/03_analyses/genome-foot-uniprot2026_03/LOC_GO_list.txt
+  a7289ee612dbf7bfea16b65938398de5  03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt
   e33b7cf82550972f690405f57033de67  04_sequence-alignment/03_analyses/hisat/t_data.ctab
   bf6987d93a921e9040202a0b8925b56a  05_differential-expression/03_analyses/DEG_lists/contrasts.csv
   981d5f0b2112100eff816ccd1ada51cb  05_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_apeglm.csv
@@ -21,8 +21,8 @@ inputs (md5, repo-relative path):
   c25d90b80e2880c4b2b8187ed561fcbb  05_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_apeglm.csv
   11aaebf09c5d6ebb19b966595f5fafe3  05_differential-expression/03_analyses/DEG_lists/Foot_vs_Gill/FG_TC_apeglm.csv
   296679a4a82e85a9cd79f3d6570ed33a  05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
-  e92244e5e24fbf86d8802d9870b1519d  07_enrichment/01_code/01_go_inputs.Rmd
-  27fa66bbcf0b8fb8d94095c761d960b6  07_enrichment/01_code/_paths.R
+  1a9e72b1ead1758da40a5265eb7535cc  07_enrichment/01_code/01_go_inputs.Rmd
+  21a6c675929599f9a5bff5c73337c8bc  07_enrichment/01_code/_paths.R
   959f9d2ad52f31fa48483d1ec7317494  07_enrichment/01_code/_go_helpers.R
   a0591028d5c3be67cb4d0daaa8562161  tools/pipeline_checks.R
-  500ec328f22e43b9fa78d9013425fbfa  tools/gene_ids.R
+  9ca04deaac38400449550bdbdb27d2e1  tools/gene_ids.R

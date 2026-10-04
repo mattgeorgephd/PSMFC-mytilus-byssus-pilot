@@ -1,6 +1,6 @@
 code,tissue,n_DEG_genes,n_merged_rows,n_ID_rows,n_unID_rows,n_genes_annotated,n_genes_unannotated,n_mito_DEGs,mito_DEGs
-FDO,Foot,678,852,665,187,491,187,0,
-GDO,Gill,404,533,378,155,249,155,0,
+FDO,Foot,678,853,666,187,491,187,0,
+GDO,Gill,404,534,379,155,249,155,0,
 FOA,Foot,161,190,151,39,122,39,0,
 GOA,Gill,584,710,501,209,375,209,0,
 FOW,Foot,211,287,225,62,149,62,0,

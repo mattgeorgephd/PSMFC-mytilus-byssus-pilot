@@ -20,7 +20,11 @@ genes have a best hit (highest bitscore) instead of 16,675; 188 have a different
 have a hit for the first time and 1 has none. For 53 of the 226 changed or new best hits the
 protein is one of the 45 byssal additions (`../../02_data/byssal_additions_2026_03.tsv`), among
 them precollagen-P for LOC134718846 and preCOL-NG ("Nongradient byssal") for LOC134718847, two
-TC DEGs that had no hit, and proximal thread matrix protein 1 for LOC134717947 (before:
-collagen alpha-5(VI)). The rest follow from Swiss-Prot's 4,675 entries new or changed since
-2024_04: a search of every CDS against those entries alone, with the database size of 2026_03,
-had predicted 147 changed best proteins and 15 first hits, and 142 and 15 of them happened.
+genes that had no hit (DEGs in foot vs gill, `FG_TC`, padj 0.042 and 0.0005, and in no stressor
+contrast), and proximal thread matrix protein 1 for LOC134717947 (before: collagen alpha-5(VI);
+too few reads to be tested). The other changes follow from Swiss-Prot's 4,675 entries new or
+changed since 2024_04: a search of every CDS against those entries alone, with the database size
+of 2026_03, had predicted 147 changed best proteins and 15 first hits, and 142 and 15 of them
+happened. Of the genes that are DEGs in a stressor contrast, 12 change best protein (none to a
+byssal addition, none from no hit); of the foot-vs-gill DEGs, 40, 10 of them to a byssal
+addition.

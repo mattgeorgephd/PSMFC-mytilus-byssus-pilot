@@ -1,14 +1,14 @@
 [05_go_term_mechanics.Rmd]
-generated            : 2026-10-03 20:30:37
+generated            : 2026-10-04 14:40:38
 tissue               : F
 reported test        : ANCOVA level_day3 ~ score + treatment + level_baseline (script 01's metrics, scales and animals)
 metrics [tier]       : mean_force [primary], pad_area [primary], max_force [exploratory], adhesion_kpa [exploratory]
 ontologies           : BP, MF, CC
 MIN_GENES / FDR_ALPHA: 3 / 0.1
-sets scored          : DEG set 6, GO term 138, mitochondrial 1 (of 156 sets)
+sets scored          : DEG set 6, GO term 138, mitochondrial 1 (of 155 sets)
 animals in the fits  : 45
 checks               : 5 run, 0 failed
-code commit          : edee965df2de
+code commit          : 0944a43f9ae9
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : dplyr 1.2.1, readr 2.2.0
@@ -19,12 +19,12 @@ inputs (md5, repo-relative path):
   cbe1308c89e5cbcfb8ccb9ee8d1235e0  05_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_siggene.csv
   e56aa9b3aa3b9d6b55f49288f4c315c1  05_differential-expression/03_analyses/DEG_lists/Foot/FOW_TC_siggene.csv
   afaaf1e3b9d28ff71b0f9de02a46b772  05_differential-expression/03_analyses/DEG_lists/Foot/FDO_TC_siggene.csv
-  c6c999087b36c235d59f6cc01acef487  07_enrichment/03_analyses/02_topgo/topgo_enriched.csv
-  bc0e1ee24697835bdcdf8b6974c4fc80  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_BP.csv
-  3e64ac6856d3b76e1f9398988257d180  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_MF.csv
-  45116272a5d0548ef6a0c5df45ef7c9a  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_CC.csv
+  76a55932efad3b29fd40858bfab9fd1f  07_enrichment/03_analyses/02_topgo/topgo_enriched.csv
+  8ada039d8139d3c1810eb1fbc8658ded  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_BP.csv
+  2722dca80f03a4895c064f940d4c7657  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_MF.csv
+  7ffcd22d3d1e520cc461d11ffb33c066  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_CC.csv
   89eccfdfe8d264d8ec9097ec332f8448  05_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv
   6cdbf404a31c715b34bcf8ad503dcb0c  09_gene-mechanics-correlation/01_code/05_go_term_mechanics.Rmd
   a0591028d5c3be67cb4d0daaa8562161  tools/pipeline_checks.R
   c05a89ae4df7045cca11ac68c7a94657  tools/plot_style.R
-  500ec328f22e43b9fa78d9013425fbfa  tools/gene_ids.R
+  9ca04deaac38400449550bdbdb27d2e1  tools/gene_ids.R

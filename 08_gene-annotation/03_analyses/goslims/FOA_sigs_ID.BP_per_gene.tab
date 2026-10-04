@@ -62,6 +62,7 @@ LOC134712368	SLC31	0.742024269465004	GO:0005975;GO:0055085	carbohydrate metaboli
 LOC134712883	IPO5	0.486065325140165	GO:0002376;GO:0006886;GO:0006913;GO:0023052;GO:0098542	immune system process;intracellular protein transport;nucleocytoplasmic transport;signaling;defense response to other organism
 LOC134714392	SYFA	0.70546720723015	GO:0006399;GO:0006520;GO:0065003	tRNA metabolic process;amino acid metabolic process;protein-containing complex assembly
 LOC134714516	LONM	0.688967841690024	GO:0006457;GO:0007005;GO:0030163;GO:0051604;GO:0065003	protein folding;mitochondrion organization;protein catabolic process;protein maturation;protein-containing complex assembly
+LOC134714625	RG454	-0.955187704927257	GO:0006629;GO:0023052	lipid metabolic process;signaling
 LOC134714750	NAMPT	-0.621684781583209	GO:0055086	nucleobase-containing small molecule metabolic process
 LOC134714775	MPP10	0.38506608586058	GO:0042254	ribosome biogenesis
 LOC134714791	SYNC	0.757393906184706	GO:0006399;GO:0006520	tRNA metabolic process;amino acid metabolic process

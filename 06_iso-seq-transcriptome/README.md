@@ -121,7 +121,7 @@ record (featureCounts on the 3'-extended RefSeq annotation, since 2026-10-02):
   day-3 gill 0.836).
 - **Byssal genes.** Named as `09` names the byssal structural genes (best BLAST hit a foot
   protein, plaque protein, precollagen, ACDC, byssal tyrosinase, thread matrix protein,
-  preCOL-NG or YGH-rich protein; 72 genes on the 2024 search), the genome
+  preCOL-NG or YGH-rich protein; 74 genes, 72 on the 2024 search), the genome
   analysis has the three ACDC genes down about two- to four-fold in both Gill OA and Gill DO,
   DEGs on the Iso-Seq reference too with the same fold changes, and foot protein 11 in Foot DO,
   whose reads come from three animals and whose shrunk fold change is near 0. The Iso-Seq

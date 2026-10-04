@@ -53,37 +53,50 @@ release 2026-01-23, Bioconductor 3.23): `01_code/_paths.R` stops otherwise
 - **Length bias.** goseq weights by median reference-transcript length. In 3' Tag-seq, one
   tag per transcript, there is little to correct: `03_goseq/goseq_pwf_TC_BP.png` shows no
   consistent trend, and goseq and clusterProfiler p-values agree almost perfectly (Spearman
-  0.94 to 1.00 per run, median 0.99).
+  0.95 to 1.00 per run, median 0.99).
 
 ## Results in brief (TC contrasts, biological process)
 
 On the count matrix of record (featureCounts on the Iso-Seq-extended annotation, since
-2026-10-02):
+2026-10-02), with the genome BLAST of 2026, the UniProt records of release 2026_03 and GO
+release 2026-01-23 (since 2026-10-04):
 
 | run | topGO `weight01` | goseq | clusterProfiler |
 |---|---|---|---|
-| Foot OA up | 5 (tRNA aminoacylation, ER unfolded protein response, regulation of translational initiation) | 26 | 28 (tRNA aminoacylation, amino-acid activation) |
-| Foot DO down | 38 (cilium movement, axoneme and dynein arm assembly) | 46 | 59 (cilium movement, cilium assembly) |
-| Gill OA up | 17 (glutathione metabolism, TCA cycle, protein folding, response to unfolded protein, proton-motive-force-driven ATP synthesis, cellular detoxification) | 2 | 3 (glutathione metabolism, response to ER stress, protein folding) |
-| Gill DO up | 15 (ERAD pathway, glycine transport) | 2 | 3 (response to ER stress, protein N-linked glycosylation, ERAD) |
-| Gill DO down | 11 (neuroblast division, adaptive immune response) | 2 | 2 (adaptive immune response, neuroblast division) |
-| Foot OW down | 8 | 2 | 10 (protein glycosylation) |
-| Gill OA down | 16 | 1 (extracellular structure organization) | 0 |
-| the other five runs | 4-13 each | 0 | 0 |
+| Foot OA up | 4 (tRNA aminoacylation, regulation of translational initiation, protein folding) | 11 | 11 (tRNA aminoacylation, amino-acid activation) |
+| Foot DO down | 30 (sperm motility, outer and inner dynein arm assembly, cilium movement, axoneme assembly) | 43 | 56 (cilium movement, microtubule-based movement) |
+| Gill OA up | 20 (glutathione metabolism, carboxylic acid metabolism, protein folding, NADPH regeneration) | 6 | 6 (glutathione metabolism, sulfur compound metabolism, carboxylic acid metabolism) |
+| Foot OW down | 9 (positive regulation of the ERK1 and ERK2 cascade, intracellular calcium homeostasis) | 5 | 10 (cellular homeostasis, positive regulation of the ERK1 and ERK2 cascade) |
+| Gill DO up | 15 (protein folding, glycine transport, quality control of misfolded proteins) | 0 | 2 (protein transport) |
+| the other seven runs | 3-12 each | 0 | 0 |
 
 topGO reports terms in all 12 runs. Where an FDR-controlled method also finds terms, topGO's
-terms agree in part (median Jaccard 0.12 with goseq, 0.18 with clusterProfiler), as expected
-from `weight01` preferring specific terms over their parents. In the runs where neither goseq
-nor clusterProfiler finds anything, read topGO's list as exploratory.
+terms agree in part (median Jaccard 0.12 with goseq, 0.08 with clusterProfiler), as expected
+from `weight01` preferring specific terms over their parents. goseq and clusterProfiler
+p-values agree almost perfectly (Spearman 0.95 to 1.00 per run, median 0.99). In the runs where
+neither goseq nor clusterProfiler finds anything, read topGO's list as exploratory.
 `06_method-comparison/consensus_terms_TC_<ontology>.csv` lists the terms topGO and at least one
-FDR-controlled method call: 34 in BP, 27 in MF and 46 in CC.
+FDR-controlled method call: 24 in BP, 28 in MF and 49 in CC.
 
-**What the count matrix of record changed** (2026-10-02, against StringTie + prepDE): the three
-FDR-supported runs of before remain (Foot OA up, Foot DO down, Gill OA up), Foot DO down with
-more terms (46 and 59 against 26 and 53), and Foot OW down and both Gill DO runs gain a few.
-Gill OA up keeps glutathione metabolism and adds the ER stress response under FDR control, but
-its nuclear ATP synthase and detoxification terms are now topGO only (FDR-supported before with
-8 and 9 terms, now 2 and 3); 11 of its 19 previous topGO terms remain.
+**What the annotation and GO release of 2026 changed** (2026-10-04, against the 2024 BLAST
+hits with their 2024 UniProt records and GO release 2023-07-27; the DEGs are the same). Of the
+296 TC terms of record (all ontologies) before, 177 remain among 285; in BP the consensus terms
+go from 34 to 24, 20 of them kept. Most of the change comes from UniProt's re-annotation of the
+hit proteins (8,991 of their 10,740 GO ID sets changed since 2024): the new records alone keep
+186 of the 296 terms, the new GO release alone 271 (17 of the 25 it loses are terms GO made
+obsolete), and the new search, with the records and GO release held at 2026, 275 of 285. The
+FDR-supported runs of Foot OA up, Foot DO down, Gill OA up and Foot OW down remain, with the same
+themes; Foot OW down gains "positive regulation of the ERK1 and ERK2 cascade". The ER stress
+signal weakens: under FDR control, Foot OA up loses the ER unfolded protein response (topGO p
+0.00016 before, 0.060 now), Gill OA up "response to endoplasmic reticulum stress" (0.0016,
+0.083) and protein folding (still in topGO), Gill DO up its ER stress, ERAD and N-linked
+glycosylation terms (ER stress 0.0078, 0.32; N-linked glycosylation and protein folding still
+in topGO), and Gill DO down its two terms (adaptive immune response, neuroblast division).
+
+On the count matrix of record against the previous one (StringTie + prepDE, 2026-10-02): the
+FDR-supported runs of before remained (Foot OA up, Foot DO down, Gill OA up), and Foot OW down
+and both Gill DO runs gained a few terms; Gill OA up's nuclear ATP synthase and detoxification
+terms became topGO only.
 
 Before the mitochondrial loci were separated, Gill OA up was dominated by mitochondrial
 electron transport (87 of the 88 DEGs in "ATP synthesis coupled electron transport" were

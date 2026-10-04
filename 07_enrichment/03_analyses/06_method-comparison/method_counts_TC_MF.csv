@@ -4,10 +4,10 @@
 "FOW_TC","up",0,0,0,3
 "FOW_TC","down",0,0,0,1
 "FDO_TC","up",0,0,0,8
-"FDO_TC","down",40,24,15,18
-"GOA_TC","up",12,12,12,12
-"GOA_TC","down",0,3,0,5
+"FDO_TC","down",39,24,15,18
+"GOA_TC","up",12,12,12,13
+"GOA_TC","down",0,8,0,4
 "GOW_TC","up",0,0,0,4
 "GOW_TC","down",0,0,0,2
 "GDO_TC","up",0,0,0,9
-"GDO_TC","down",0,0,0,4
+"GDO_TC","down",0,0,0,5

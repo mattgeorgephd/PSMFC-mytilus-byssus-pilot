@@ -1,5 +1,5 @@
-generated : 2026-10-03 20:03:39
-code commit          : edee965df2de
+generated : 2026-10-04 14:19:08
+code commit          : 0944a43f9ae9
 uncommitted changes  : no
 design    : ~ treatment, levels control, OA, OW, DO (one fit per tissue, day-3 samples)
 filter    : >= 10 counts in >= 1/3 of the tissue's day-3 samples

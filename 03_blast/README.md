@@ -24,7 +24,9 @@ transcriptome to the genome. Two lines of work:
   (`_blastx_parts.sh`), with the UniProt records of 2026_03; its tables are in
   `03_analyses/genome-foot-sprot2026_03/` (41,588 hits; README inside). Against the 2024 hits,
   16,712 genes have a best hit instead of 16,675, and 226 have a new or different one, 53 of them
-  a byssal addition (precollagen-P and preCOL-NG for two TC DEGs that had no hit, PTMP1).
+  a byssal addition (among them precollagen-P and preCOL-NG for two genes that had no hit, DEGs
+  in foot vs gill, and PTMP1). Of the genes that are DEGs in a stressor contrast, 12 change best
+  protein and none to a byssal addition.
   `04_refresh_uniprot_records.Rmd` keeps the comparison that separates the new search from the
   new records: the 2024 blastx table (committed) joined to the records of UniProt release
   2026_03 for its 10,740 hit proteins, in `03_analyses/genome-foot-uniprot2026_03/` (every

@@ -6,6 +6,7 @@ LOC134680973	CO6A6	-1.11850914121064	GO:0030198	extracellular matrix organizatio
 LOC134681010	ERP29	0.61313298748292	GO:0012501;GO:0016192;GO:0023052	programmed cell death;vesicle-mediated transport;signaling
 LOC134681023	ATC1	0.238710469138701	GO:0055085	transmembrane transport
 LOC134681027	CLH1	0.28302467013636	GO:0000278;GO:0005975;GO:0006886;GO:0007010;GO:0007059;GO:0016192;GO:0065003;GO:0072659;GO:0140014;GO:1901135	mitotic cell cycle;carbohydrate metabolic process;intracellular protein transport;cytoskeleton organization;chromosome segregation;vesicle-mediated transport;protein-containing complex assembly;protein localization to plasma membrane;mitotic nuclear division;carbohydrate derivative metabolic process
+LOC134681433	CAHD1	0.955855021433834	GO:0048856	anatomical structure development
 LOC134682488	CO6A5	-0.892769512467924	GO:0030198	extracellular matrix organization
 LOC134682955	ENPL	0.843604988919346	GO:0002376;GO:0006457;GO:0006886;GO:0007010;GO:0012501;GO:0023052;GO:0030163;GO:0051604;GO:0072659;GO:0098542	immune system process;protein folding;intracellular protein transport;cytoskeleton organization;programmed cell death;signaling;protein catabolic process;protein maturation;protein localization to plasma membrane;defense response to other organism
 LOC134683122	TRAF6	0.640616028247703	GO:0002376;GO:0012501;GO:0023052;GO:0098542	immune system process;programmed cell death;signaling;defense response to other organism
@@ -61,6 +62,7 @@ LOC134696238	HGV2	-0.559831290772303	GO:0006325;GO:0065003	chromatin organizatio
 LOC134696497	SC6A5	0.738911608987828	GO:0023052;GO:0055085	signaling;transmembrane transport
 LOC134696622	IF2P	0.501453245487727	GO:0042254	ribosome biogenesis
 LOC134696700	GAK	0.440911863790959	GO:0006457;GO:0016192;GO:0030154;GO:0048856;GO:0051604;GO:0065003;GO:0072659	protein folding;vesicle-mediated transport;cell differentiation;anatomical structure development;protein maturation;protein-containing complex assembly;protein localization to plasma membrane
+LOC134696728	IRG1	-0.60176997809025	GO:0002376;GO:0098542	immune system process;defense response to other organism
 LOC134696906	RB3GP	-0.361287654665263	GO:0006914;GO:0016192;GO:0023052;GO:0048856;GO:0050877	autophagy;vesicle-mediated transport;signaling;anatomical structure development;nervous system process
 LOC134697084	TERA	0.437399758050893	GO:0000278;GO:0006260;GO:0006281;GO:0006886;GO:0006914;GO:0007010;GO:0016192;GO:0030163	mitotic cell cycle;DNA replication;DNA repair;intracellular protein transport;autophagy;cytoskeleton organization;vesicle-mediated transport;protein catabolic process
 LOC134697183	ALG13	0.631106370800102	GO:0009101;GO:1901135	glycoprotein biosynthetic process;carbohydrate derivative metabolic process

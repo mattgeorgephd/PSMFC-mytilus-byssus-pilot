@@ -262,9 +262,9 @@ after writing `run_log.csv`, if any step failed.
   LOC134711106, foot protein-4 variant-1, and LOC134692428, byssal peroxidase-like 4: zero
   counts in 28 and 27 of the 46 day-3 foot libraries, against medians of 159 and 215 counts in
   the 12 day-0 ones), so the detection-floor filter removes part of the byssal structural
-  family: in the foot run 2 of the 18 `byssal_structural` candidates are excluded and 5 more
-  are flagged `caution` (`candidate_genes_F.csv`; with the previous StringTie + prepDE counts,
-  6 of 16 and 5). A null result for those genes is not evidence of no association.
+  family: in the foot run 2 of the 20 `byssal_structural` candidates are excluded and 5 more
+  are flagged `caution` (`candidate_genes_F.csv`; 2 of 18 and 5 with the 2024 BLAST search;
+  with the previous StringTie + prepDE counts, 6 of 16 and 5). A null result for those genes is not evidence of no association.
 - The candidate keywords are regexes on UniProt names; `Hsp` and `chaperone` in particular
   pull in co-chaperones and assembly factors, so the `HSP_proteostasis` module is broad.
   Tighten `CANDIDATE_KEYWORDS` or raise `CANDIDATE_MIN_PIDENT` if a narrower family is

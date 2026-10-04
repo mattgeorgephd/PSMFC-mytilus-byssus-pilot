@@ -84,8 +84,8 @@ In the current run two genes pass q < 0.1 within their metric, and one of them w
 family too (`best_hits_<T>.csv`):
 
 - **Gill, candidate, plaque area (primary).** Animals that express LOC134718612 more strongly
-  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.034
-  over the 311 candidates, 0.069 over the primary family). It is annotated as heat shock 70 kDa
+  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.036
+  over the 321 candidates, 0.071 over the primary family). It is annotated as heat shock 70 kDa
   protein 12A, but only from a 32% identity BLAST hit, so it is a distant HSP70-family gene
   rather than a confident ortholog; it is expressed at a low level in gill (DESeq2 base mean
   about 10) and is not a TC DEG. Leaving out its most influential animal (T136) gives p 1.6e-5.
@@ -99,7 +99,7 @@ family too (`best_hits_<T>.csv`):
   the animals with less of it make weaker threads. Robust to leaving out one animal.
 
 The next candidates are glutathione peroxidase 7 with the strongest thread in gill
-(exploratory, q 0.12); the lowest foot candidate q is 0.46, and no module comes near (lowest q 0.59).
+(exploratory, q 0.12); the lowest foot candidate q is 0.48, and no module comes near (lowest q 0.65).
 
 Script 05 puts the sets the expression analysis found through the same ANCOVA: the up- and
 the down-regulated DEGs of each stressor, the genes behind every enriched topGO term of
@@ -109,13 +109,17 @@ component of its genes, as for script 02's modules. BH runs in two families, the
 response-level scores (DEG sets and mitochondrial share) and the GO terms. The sets were
 chosen because they differ between arms and the model removes the arm differences, so a
 slope is an association among animals of the same arm; with 10 to 12 animals per arm it is
-exploratory. In the current run no set passes q < 0.1 (the lowest q is 0.16). The strongest
-signals are in gill: animals scoring higher on the Gill OA up-regulated term "inner
-mitochondrial membrane protein complex" have smaller plaques (pad area, partial r -0.48, p
-0.001, q 0.16; "proton motive force-driven ATP synthesis" r -0.37, p 0.015), and animals with a
-higher mitochondrial share of reads make weaker threads (strongest thread, partial r -0.34, p
-0.028, q 0.19; mean peak force, r -0.33, p 0.034, q 0.24). The mitochondrial share is counted on
+exploratory. In the current run no set passes q < 0.1 (the lowest q is 0.19). The strongest
+signals are in gill: animals with a higher mitochondrial share of reads make weaker threads
+(strongest thread, partial r -0.34, p 0.028, q 0.19; mean peak force, r -0.33, p 0.034, q 0.24),
+and animals scoring higher on the Gill OA up-regulated terms "respiratory chain complex" and
+"proton motive force-driven ATP synthesis" have smaller plaques (pad area, partial r -0.38, p
+0.012, and r -0.37, p 0.015; q 0.94 among the GO terms). Before the annotation and GO release
+of 2026 (2026-10-04), the Gill OA up term "inner mitochondrial membrane protein complex" was
+enriched and gave the lowest q (pad area, r -0.48, p 0.001, q 0.16); with the new records it is
+no longer enriched, and five of its seven DEGs are among the six of "respiratory chain
+complex". The mitochondrial share is counted on
 the mitochondrial genome alone since 2026-10-02 (`05` step 13); with the previous genome count
-the same two associations were r -0.33 and -0.35. Nothing in foot comes near (lowest q 0.59).
+the same two associations were r -0.33 and -0.35. Nothing in foot comes near (lowest q 0.58).
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

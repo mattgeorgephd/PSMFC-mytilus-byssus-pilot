@@ -72,6 +72,7 @@ LOC134712843	ERO1A	-0.493624378631722	GO:0006457;GO:0012501;GO:0023052;GO:005160
 LOC134712883	IPO5	0.520617358418764	GO:0002376;GO:0006886;GO:0006913;GO:0023052;GO:0098542	immune system process;intracellular protein transport;nucleocytoplasmic transport;signaling;defense response to other organism
 LOC134713661	KLF1	-0.528342858722728	GO:0002376;GO:0006351;GO:0006355;GO:0022414;GO:0030154;GO:0030163;GO:0048856	immune system process;DNA-templated transcription;regulation of DNA-templated transcription;reproductive process;cell differentiation;protein catabolic process;anatomical structure development
 LOC134714500	YNS9	1.66641190457885	GO:0002181	cytoplasmic translation
+LOC134714625	RG454	1.38118337938981	GO:0006629;GO:0023052	lipid metabolic process;signaling
 LOC134714648	LST2	0.520475615593844	GO:0023052	signaling
 LOC134714716	BTG1	0.734419477330664	GO:0012501;GO:0022414;GO:0030154;GO:0048856	programmed cell death;reproductive process;cell differentiation;anatomical structure development
 LOC134714760	ELL2	0.640092729842749	GO:0006351;GO:0006355;GO:0016073	DNA-templated transcription;regulation of DNA-templated transcription;snRNA metabolic process

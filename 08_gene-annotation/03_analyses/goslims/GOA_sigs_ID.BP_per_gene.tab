@@ -115,7 +115,7 @@ LOC134706239	CANA	-1.0261282440892	GO:0030154;GO:0048856;GO:0051604	cell differe
 LOC134706291	UBR3	0.531709759102449	GO:0030163;GO:0048856	protein catabolic process;anatomical structure development
 LOC134706365	ARF2	0.231355312966998	GO:0006886	intracellular protein transport
 LOC134706394	PDIA4	0.911536356885951	GO:0006457;GO:0051604	protein folding;protein maturation
-LOC134706506	PLMN	-1.05015806739955	GO:0002376;GO:0007155;GO:0022414;GO:0023052;GO:0030154;GO:0030163;GO:0030198;GO:0042060;GO:0048856;GO:0048870;GO:0051604	immune system process;cell adhesion;reproductive process;signaling;cell differentiation;protein catabolic process;extracellular matrix organization;wound healing;anatomical structure development;cell motility;protein maturation
+LOC134706506	PLMN	-1.05015806739955	GO:0042060	wound healing
 LOC134706535	CISY	0.426870711211706	GO:0005975;GO:0006091	carbohydrate metabolic process;generation of precursor metabolites and energy
 LOC134706576	CH60	0.488417111682078	GO:0002376;GO:0006310;GO:0006457;GO:0007005;GO:0007155;GO:0012501;GO:0023052;GO:0048856;GO:0051604;GO:0055085;GO:0098542	immune system process;DNA recombination;protein folding;mitochondrion organization;cell adhesion;programmed cell death;signaling;anatomical structure development;protein maturation;transmembrane transport;defense response to other organism
 LOC134706584	PCNT	0.281825190680162	GO:0000278;GO:0006886;GO:0007010;GO:0023052;GO:0044782;GO:0065003	mitotic cell cycle;intracellular protein transport;cytoskeleton organization;signaling;cilium organization;protein-containing complex assembly
@@ -193,6 +193,7 @@ LOC134714174	CERK1	-0.962932084850194	GO:0006629;GO:1901135	lipid metabolic proc
 LOC134714268	FGL1	-1.17467218714653	GO:0002376;GO:0007155;GO:0042060	immune system process;cell adhesion;wound healing
 LOC134714461	FUCT1	0.464144668629034	GO:0055085	transmembrane transport
 LOC134714558	HEPH	-0.789126986662238	GO:0022600;GO:0055085	digestive system process;transmembrane transport
+LOC134714625	RG454	-1.67355179026208	GO:0006629;GO:0023052	lipid metabolic process;signaling
 LOC134714716	BTG1	-0.323414763721689	GO:0012501;GO:0022414;GO:0030154;GO:0048856	programmed cell death;reproductive process;cell differentiation;anatomical structure development
 LOC134714817	DHB4	0.748669784162079	GO:0006629;GO:0006790;GO:0030154;GO:0055086	lipid metabolic process;sulfur compound metabolic process;cell differentiation;nucleobase-containing small molecule metabolic process
 LOC134714838	LMAN2	0.390381937611615	GO:0016192	vesicle-mediated transport

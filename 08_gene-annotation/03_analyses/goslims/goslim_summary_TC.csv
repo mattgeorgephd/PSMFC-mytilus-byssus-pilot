@@ -1,148 +1,148 @@
 "code","tissue","stressor","GOslim.BP","Term","n_genes","n_up","n_down","in_a_BP_slim_term"
-"FOA","Foot","OA","GO:0000278","mitotic cell cycle",6,3,3,97
-"FOA","Foot","OA","GO:0000910","cytokinesis",0,0,0,97
-"FOA","Foot","OA","GO:0002181","cytoplasmic translation",7,7,0,97
-"FOA","Foot","OA","GO:0002376","immune system process",10,9,1,97
-"FOA","Foot","OA","GO:0003012","muscle system process",0,0,0,97
-"FOA","Foot","OA","GO:0003013","circulatory system process",1,1,0,97
-"FOA","Foot","OA","GO:0003014","renal system process",1,1,0,97
-"FOA","Foot","OA","GO:0003016","respiratory system process",0,0,0,97
-"FOA","Foot","OA","GO:0005975","carbohydrate metabolic process",5,3,2,97
-"FOA","Foot","OA","GO:0006091","generation of precursor metabolites and energy",1,1,0,97
-"FOA","Foot","OA","GO:0006260","DNA replication",4,4,0,97
-"FOA","Foot","OA","GO:0006281","DNA repair",0,0,0,97
-"FOA","Foot","OA","GO:0006310","DNA recombination",1,1,0,97
-"FOA","Foot","OA","GO:0006325","chromatin organization",3,3,0,97
-"FOA","Foot","OA","GO:0006351","DNA-templated transcription",17,15,2,97
-"FOA","Foot","OA","GO:0006355","regulation of DNA-templated transcription",16,14,2,97
-"FOA","Foot","OA","GO:0006399","tRNA metabolic process",14,14,0,97
-"FOA","Foot","OA","GO:0006457","protein folding",6,6,0,97
-"FOA","Foot","OA","GO:0006520","amino acid metabolic process",18,16,2,97
-"FOA","Foot","OA","GO:0006575","modified amino acid metabolic process",0,0,0,97
-"FOA","Foot","OA","GO:0006629","lipid metabolic process",6,5,1,97
-"FOA","Foot","OA","GO:0006766","vitamin metabolic process",0,0,0,97
-"FOA","Foot","OA","GO:0006790","sulfur compound metabolic process",0,0,0,97
-"FOA","Foot","OA","GO:0006886","intracellular protein transport",7,6,1,97
-"FOA","Foot","OA","GO:0006913","nucleocytoplasmic transport",5,4,1,97
-"FOA","Foot","OA","GO:0006914","autophagy",2,1,1,97
-"FOA","Foot","OA","GO:0006954","inflammatory response",1,1,0,97
-"FOA","Foot","OA","GO:0007005","mitochondrion organization",5,4,1,97
-"FOA","Foot","OA","GO:0007010","cytoskeleton organization",7,3,4,97
-"FOA","Foot","OA","GO:0007018","microtubule-based movement",2,0,2,97
-"FOA","Foot","OA","GO:0007031","peroxisome organization",0,0,0,97
-"FOA","Foot","OA","GO:0007040","lysosome organization",1,0,1,97
-"FOA","Foot","OA","GO:0007059","chromosome segregation",3,2,1,97
-"FOA","Foot","OA","GO:0007155","cell adhesion",6,4,2,97
-"FOA","Foot","OA","GO:0007163","establishment or maintenance of cell polarity",1,0,1,97
-"FOA","Foot","OA","GO:0009101","glycoprotein biosynthetic process",3,3,0,97
-"FOA","Foot","OA","GO:0012501","programmed cell death",6,6,0,97
-"FOA","Foot","OA","GO:0015979","photosynthesis",0,0,0,97
-"FOA","Foot","OA","GO:0016071","mRNA metabolic process",6,6,0,97
-"FOA","Foot","OA","GO:0016073","snRNA metabolic process",1,1,0,97
-"FOA","Foot","OA","GO:0016192","vesicle-mediated transport",6,5,1,97
-"FOA","Foot","OA","GO:0022414","reproductive process",9,5,4,97
-"FOA","Foot","OA","GO:0022600","digestive system process",1,1,0,97
-"FOA","Foot","OA","GO:0023052","signaling",27,15,12,97
-"FOA","Foot","OA","GO:0030154","cell differentiation",17,13,4,97
-"FOA","Foot","OA","GO:0030163","protein catabolic process",5,4,1,97
-"FOA","Foot","OA","GO:0030198","extracellular matrix organization",0,0,0,97
-"FOA","Foot","OA","GO:0031047","regulatory ncRNA-mediated gene silencing",1,1,0,97
-"FOA","Foot","OA","GO:0032200","telomere organization",0,0,0,97
-"FOA","Foot","OA","GO:0034330","cell junction organization",2,1,1,97
-"FOA","Foot","OA","GO:0042060","wound healing",1,1,0,97
-"FOA","Foot","OA","GO:0042254","ribosome biogenesis",8,8,0,97
-"FOA","Foot","OA","GO:0044782","cilium organization",3,0,3,97
-"FOA","Foot","OA","GO:0048856","anatomical structure development",27,21,6,97
-"FOA","Foot","OA","GO:0048870","cell motility",7,5,2,97
-"FOA","Foot","OA","GO:0050877","nervous system process",3,3,0,97
-"FOA","Foot","OA","GO:0050886","endocrine process",1,0,1,97
-"FOA","Foot","OA","GO:0051604","protein maturation",9,9,0,97
-"FOA","Foot","OA","GO:0055085","transmembrane transport",14,9,5,97
-"FOA","Foot","OA","GO:0055086","nucleobase-containing small molecule metabolic process",5,4,1,97
-"FOA","Foot","OA","GO:0061007","hepaticobiliary system process",0,0,0,97
-"FOA","Foot","OA","GO:0061024","membrane organization",3,2,1,97
-"FOA","Foot","OA","GO:0065003","protein-containing complex assembly",15,9,6,97
-"FOA","Foot","OA","GO:0071554","cell wall organization or biogenesis",0,0,0,97
-"FOA","Foot","OA","GO:0071941","nitrogen cycle metabolic process",2,0,2,97
-"FOA","Foot","OA","GO:0072659","protein localization to plasma membrane",3,3,0,97
-"FOA","Foot","OA","GO:0098542","defense response to other organism",6,5,1,97
-"FOA","Foot","OA","GO:0098754","detoxification",1,0,1,97
-"FOA","Foot","OA","GO:0140013","meiotic nuclear division",0,0,0,97
-"FOA","Foot","OA","GO:0140014","mitotic nuclear division",2,1,1,97
-"FOA","Foot","OA","GO:0140053","mitochondrial gene expression",1,1,0,97
-"FOA","Foot","OA","GO:1901135","carbohydrate derivative metabolic process",7,6,1,97
-"FOW","Foot","OW","GO:0000278","mitotic cell cycle",8,5,3,116
-"FOW","Foot","OW","GO:0000910","cytokinesis",0,0,0,116
-"FOW","Foot","OW","GO:0002181","cytoplasmic translation",6,6,0,116
-"FOW","Foot","OW","GO:0002376","immune system process",13,9,4,116
-"FOW","Foot","OW","GO:0003012","muscle system process",3,1,2,116
-"FOW","Foot","OW","GO:0003013","circulatory system process",3,1,2,116
-"FOW","Foot","OW","GO:0003014","renal system process",0,0,0,116
-"FOW","Foot","OW","GO:0003016","respiratory system process",0,0,0,116
-"FOW","Foot","OW","GO:0005975","carbohydrate metabolic process",1,0,1,116
-"FOW","Foot","OW","GO:0006091","generation of precursor metabolites and energy",3,2,1,116
-"FOW","Foot","OW","GO:0006260","DNA replication",1,1,0,116
-"FOW","Foot","OW","GO:0006281","DNA repair",4,3,1,116
-"FOW","Foot","OW","GO:0006310","DNA recombination",3,2,1,116
-"FOW","Foot","OW","GO:0006325","chromatin organization",12,9,3,116
-"FOW","Foot","OW","GO:0006351","DNA-templated transcription",20,16,4,116
-"FOW","Foot","OW","GO:0006355","regulation of DNA-templated transcription",19,15,4,116
-"FOW","Foot","OW","GO:0006399","tRNA metabolic process",0,0,0,116
-"FOW","Foot","OW","GO:0006457","protein folding",4,2,2,116
-"FOW","Foot","OW","GO:0006520","amino acid metabolic process",2,2,0,116
-"FOW","Foot","OW","GO:0006575","modified amino acid metabolic process",0,0,0,116
-"FOW","Foot","OW","GO:0006629","lipid metabolic process",5,4,1,116
-"FOW","Foot","OW","GO:0006766","vitamin metabolic process",0,0,0,116
-"FOW","Foot","OW","GO:0006790","sulfur compound metabolic process",0,0,0,116
-"FOW","Foot","OW","GO:0006886","intracellular protein transport",9,5,4,116
-"FOW","Foot","OW","GO:0006913","nucleocytoplasmic transport",4,4,0,116
-"FOW","Foot","OW","GO:0006914","autophagy",3,2,1,116
-"FOW","Foot","OW","GO:0006954","inflammatory response",0,0,0,116
-"FOW","Foot","OW","GO:0007005","mitochondrion organization",4,4,0,116
-"FOW","Foot","OW","GO:0007010","cytoskeleton organization",9,3,6,116
-"FOW","Foot","OW","GO:0007018","microtubule-based movement",5,2,3,116
-"FOW","Foot","OW","GO:0007031","peroxisome organization",0,0,0,116
-"FOW","Foot","OW","GO:0007040","lysosome organization",1,0,1,116
-"FOW","Foot","OW","GO:0007059","chromosome segregation",2,2,0,116
-"FOW","Foot","OW","GO:0007155","cell adhesion",4,1,3,116
-"FOW","Foot","OW","GO:0007163","establishment or maintenance of cell polarity",3,1,2,116
-"FOW","Foot","OW","GO:0009101","glycoprotein biosynthetic process",6,0,6,116
-"FOW","Foot","OW","GO:0012501","programmed cell death",17,13,4,116
-"FOW","Foot","OW","GO:0015979","photosynthesis",0,0,0,116
-"FOW","Foot","OW","GO:0016071","mRNA metabolic process",13,9,4,116
-"FOW","Foot","OW","GO:0016073","snRNA metabolic process",1,1,0,116
-"FOW","Foot","OW","GO:0016192","vesicle-mediated transport",12,2,10,116
-"FOW","Foot","OW","GO:0022414","reproductive process",11,6,5,116
-"FOW","Foot","OW","GO:0022600","digestive system process",0,0,0,116
-"FOW","Foot","OW","GO:0023052","signaling",37,18,19,116
-"FOW","Foot","OW","GO:0030154","cell differentiation",27,12,15,116
-"FOW","Foot","OW","GO:0030163","protein catabolic process",9,4,5,116
-"FOW","Foot","OW","GO:0030198","extracellular matrix organization",3,0,3,116
-"FOW","Foot","OW","GO:0031047","regulatory ncRNA-mediated gene silencing",0,0,0,116
-"FOW","Foot","OW","GO:0032200","telomere organization",4,4,0,116
-"FOW","Foot","OW","GO:0034330","cell junction organization",10,2,8,116
-"FOW","Foot","OW","GO:0042060","wound healing",3,0,3,116
-"FOW","Foot","OW","GO:0042254","ribosome biogenesis",3,3,0,116
-"FOW","Foot","OW","GO:0044782","cilium organization",1,0,1,116
-"FOW","Foot","OW","GO:0048856","anatomical structure development",37,14,23,116
-"FOW","Foot","OW","GO:0048870","cell motility",8,3,5,116
-"FOW","Foot","OW","GO:0050877","nervous system process",4,0,4,116
-"FOW","Foot","OW","GO:0050886","endocrine process",0,0,0,116
-"FOW","Foot","OW","GO:0051604","protein maturation",5,3,2,116
-"FOW","Foot","OW","GO:0055085","transmembrane transport",12,4,8,116
-"FOW","Foot","OW","GO:0055086","nucleobase-containing small molecule metabolic process",2,1,1,116
-"FOW","Foot","OW","GO:0061007","hepaticobiliary system process",0,0,0,116
-"FOW","Foot","OW","GO:0061024","membrane organization",7,1,6,116
-"FOW","Foot","OW","GO:0065003","protein-containing complex assembly",12,6,6,116
-"FOW","Foot","OW","GO:0071554","cell wall organization or biogenesis",0,0,0,116
-"FOW","Foot","OW","GO:0071941","nitrogen cycle metabolic process",0,0,0,116
-"FOW","Foot","OW","GO:0072659","protein localization to plasma membrane",2,0,2,116
-"FOW","Foot","OW","GO:0098542","defense response to other organism",7,5,2,116
-"FOW","Foot","OW","GO:0098754","detoxification",1,0,1,116
-"FOW","Foot","OW","GO:0140013","meiotic nuclear division",0,0,0,116
-"FOW","Foot","OW","GO:0140014","mitotic nuclear division",1,1,0,116
-"FOW","Foot","OW","GO:0140053","mitochondrial gene expression",1,1,0,116
-"FOW","Foot","OW","GO:1901135","carbohydrate derivative metabolic process",9,1,8,116
+"FOA","Foot","OA","GO:0000278","mitotic cell cycle",6,3,3,98
+"FOA","Foot","OA","GO:0000910","cytokinesis",0,0,0,98
+"FOA","Foot","OA","GO:0002181","cytoplasmic translation",7,7,0,98
+"FOA","Foot","OA","GO:0002376","immune system process",10,9,1,98
+"FOA","Foot","OA","GO:0003012","muscle system process",0,0,0,98
+"FOA","Foot","OA","GO:0003013","circulatory system process",1,1,0,98
+"FOA","Foot","OA","GO:0003014","renal system process",1,1,0,98
+"FOA","Foot","OA","GO:0003016","respiratory system process",0,0,0,98
+"FOA","Foot","OA","GO:0005975","carbohydrate metabolic process",5,3,2,98
+"FOA","Foot","OA","GO:0006091","generation of precursor metabolites and energy",1,1,0,98
+"FOA","Foot","OA","GO:0006260","DNA replication",4,4,0,98
+"FOA","Foot","OA","GO:0006281","DNA repair",0,0,0,98
+"FOA","Foot","OA","GO:0006310","DNA recombination",1,1,0,98
+"FOA","Foot","OA","GO:0006325","chromatin organization",3,3,0,98
+"FOA","Foot","OA","GO:0006351","DNA-templated transcription",17,15,2,98
+"FOA","Foot","OA","GO:0006355","regulation of DNA-templated transcription",16,14,2,98
+"FOA","Foot","OA","GO:0006399","tRNA metabolic process",14,14,0,98
+"FOA","Foot","OA","GO:0006457","protein folding",6,6,0,98
+"FOA","Foot","OA","GO:0006520","amino acid metabolic process",18,16,2,98
+"FOA","Foot","OA","GO:0006575","modified amino acid metabolic process",0,0,0,98
+"FOA","Foot","OA","GO:0006629","lipid metabolic process",7,5,2,98
+"FOA","Foot","OA","GO:0006766","vitamin metabolic process",0,0,0,98
+"FOA","Foot","OA","GO:0006790","sulfur compound metabolic process",0,0,0,98
+"FOA","Foot","OA","GO:0006886","intracellular protein transport",7,6,1,98
+"FOA","Foot","OA","GO:0006913","nucleocytoplasmic transport",5,4,1,98
+"FOA","Foot","OA","GO:0006914","autophagy",2,1,1,98
+"FOA","Foot","OA","GO:0006954","inflammatory response",1,1,0,98
+"FOA","Foot","OA","GO:0007005","mitochondrion organization",5,4,1,98
+"FOA","Foot","OA","GO:0007010","cytoskeleton organization",7,3,4,98
+"FOA","Foot","OA","GO:0007018","microtubule-based movement",2,0,2,98
+"FOA","Foot","OA","GO:0007031","peroxisome organization",0,0,0,98
+"FOA","Foot","OA","GO:0007040","lysosome organization",1,0,1,98
+"FOA","Foot","OA","GO:0007059","chromosome segregation",3,2,1,98
+"FOA","Foot","OA","GO:0007155","cell adhesion",6,4,2,98
+"FOA","Foot","OA","GO:0007163","establishment or maintenance of cell polarity",1,0,1,98
+"FOA","Foot","OA","GO:0009101","glycoprotein biosynthetic process",3,3,0,98
+"FOA","Foot","OA","GO:0012501","programmed cell death",6,6,0,98
+"FOA","Foot","OA","GO:0015979","photosynthesis",0,0,0,98
+"FOA","Foot","OA","GO:0016071","mRNA metabolic process",6,6,0,98
+"FOA","Foot","OA","GO:0016073","snRNA metabolic process",1,1,0,98
+"FOA","Foot","OA","GO:0016192","vesicle-mediated transport",6,5,1,98
+"FOA","Foot","OA","GO:0022414","reproductive process",9,5,4,98
+"FOA","Foot","OA","GO:0022600","digestive system process",1,1,0,98
+"FOA","Foot","OA","GO:0023052","signaling",28,15,13,98
+"FOA","Foot","OA","GO:0030154","cell differentiation",17,13,4,98
+"FOA","Foot","OA","GO:0030163","protein catabolic process",5,4,1,98
+"FOA","Foot","OA","GO:0030198","extracellular matrix organization",0,0,0,98
+"FOA","Foot","OA","GO:0031047","regulatory ncRNA-mediated gene silencing",1,1,0,98
+"FOA","Foot","OA","GO:0032200","telomere organization",0,0,0,98
+"FOA","Foot","OA","GO:0034330","cell junction organization",2,1,1,98
+"FOA","Foot","OA","GO:0042060","wound healing",1,1,0,98
+"FOA","Foot","OA","GO:0042254","ribosome biogenesis",8,8,0,98
+"FOA","Foot","OA","GO:0044782","cilium organization",3,0,3,98
+"FOA","Foot","OA","GO:0048856","anatomical structure development",27,21,6,98
+"FOA","Foot","OA","GO:0048870","cell motility",7,5,2,98
+"FOA","Foot","OA","GO:0050877","nervous system process",3,3,0,98
+"FOA","Foot","OA","GO:0050886","endocrine process",1,0,1,98
+"FOA","Foot","OA","GO:0051604","protein maturation",9,9,0,98
+"FOA","Foot","OA","GO:0055085","transmembrane transport",14,9,5,98
+"FOA","Foot","OA","GO:0055086","nucleobase-containing small molecule metabolic process",5,4,1,98
+"FOA","Foot","OA","GO:0061007","hepaticobiliary system process",0,0,0,98
+"FOA","Foot","OA","GO:0061024","membrane organization",3,2,1,98
+"FOA","Foot","OA","GO:0065003","protein-containing complex assembly",15,9,6,98
+"FOA","Foot","OA","GO:0071554","cell wall organization or biogenesis",0,0,0,98
+"FOA","Foot","OA","GO:0071941","nitrogen cycle metabolic process",2,0,2,98
+"FOA","Foot","OA","GO:0072659","protein localization to plasma membrane",3,3,0,98
+"FOA","Foot","OA","GO:0098542","defense response to other organism",6,5,1,98
+"FOA","Foot","OA","GO:0098754","detoxification",1,0,1,98
+"FOA","Foot","OA","GO:0140013","meiotic nuclear division",0,0,0,98
+"FOA","Foot","OA","GO:0140014","mitotic nuclear division",2,1,1,98
+"FOA","Foot","OA","GO:0140053","mitochondrial gene expression",1,1,0,98
+"FOA","Foot","OA","GO:1901135","carbohydrate derivative metabolic process",7,6,1,98
+"FOW","Foot","OW","GO:0000278","mitotic cell cycle",8,5,3,117
+"FOW","Foot","OW","GO:0000910","cytokinesis",0,0,0,117
+"FOW","Foot","OW","GO:0002181","cytoplasmic translation",6,6,0,117
+"FOW","Foot","OW","GO:0002376","immune system process",13,9,4,117
+"FOW","Foot","OW","GO:0003012","muscle system process",3,1,2,117
+"FOW","Foot","OW","GO:0003013","circulatory system process",3,1,2,117
+"FOW","Foot","OW","GO:0003014","renal system process",0,0,0,117
+"FOW","Foot","OW","GO:0003016","respiratory system process",0,0,0,117
+"FOW","Foot","OW","GO:0005975","carbohydrate metabolic process",1,0,1,117
+"FOW","Foot","OW","GO:0006091","generation of precursor metabolites and energy",3,2,1,117
+"FOW","Foot","OW","GO:0006260","DNA replication",1,1,0,117
+"FOW","Foot","OW","GO:0006281","DNA repair",4,3,1,117
+"FOW","Foot","OW","GO:0006310","DNA recombination",3,2,1,117
+"FOW","Foot","OW","GO:0006325","chromatin organization",12,9,3,117
+"FOW","Foot","OW","GO:0006351","DNA-templated transcription",20,16,4,117
+"FOW","Foot","OW","GO:0006355","regulation of DNA-templated transcription",19,15,4,117
+"FOW","Foot","OW","GO:0006399","tRNA metabolic process",0,0,0,117
+"FOW","Foot","OW","GO:0006457","protein folding",4,2,2,117
+"FOW","Foot","OW","GO:0006520","amino acid metabolic process",2,2,0,117
+"FOW","Foot","OW","GO:0006575","modified amino acid metabolic process",0,0,0,117
+"FOW","Foot","OW","GO:0006629","lipid metabolic process",6,5,1,117
+"FOW","Foot","OW","GO:0006766","vitamin metabolic process",0,0,0,117
+"FOW","Foot","OW","GO:0006790","sulfur compound metabolic process",0,0,0,117
+"FOW","Foot","OW","GO:0006886","intracellular protein transport",9,5,4,117
+"FOW","Foot","OW","GO:0006913","nucleocytoplasmic transport",4,4,0,117
+"FOW","Foot","OW","GO:0006914","autophagy",3,2,1,117
+"FOW","Foot","OW","GO:0006954","inflammatory response",0,0,0,117
+"FOW","Foot","OW","GO:0007005","mitochondrion organization",4,4,0,117
+"FOW","Foot","OW","GO:0007010","cytoskeleton organization",9,3,6,117
+"FOW","Foot","OW","GO:0007018","microtubule-based movement",5,2,3,117
+"FOW","Foot","OW","GO:0007031","peroxisome organization",0,0,0,117
+"FOW","Foot","OW","GO:0007040","lysosome organization",1,0,1,117
+"FOW","Foot","OW","GO:0007059","chromosome segregation",2,2,0,117
+"FOW","Foot","OW","GO:0007155","cell adhesion",4,1,3,117
+"FOW","Foot","OW","GO:0007163","establishment or maintenance of cell polarity",3,1,2,117
+"FOW","Foot","OW","GO:0009101","glycoprotein biosynthetic process",6,0,6,117
+"FOW","Foot","OW","GO:0012501","programmed cell death",17,13,4,117
+"FOW","Foot","OW","GO:0015979","photosynthesis",0,0,0,117
+"FOW","Foot","OW","GO:0016071","mRNA metabolic process",13,9,4,117
+"FOW","Foot","OW","GO:0016073","snRNA metabolic process",1,1,0,117
+"FOW","Foot","OW","GO:0016192","vesicle-mediated transport",12,2,10,117
+"FOW","Foot","OW","GO:0022414","reproductive process",11,6,5,117
+"FOW","Foot","OW","GO:0022600","digestive system process",0,0,0,117
+"FOW","Foot","OW","GO:0023052","signaling",38,19,19,117
+"FOW","Foot","OW","GO:0030154","cell differentiation",27,12,15,117
+"FOW","Foot","OW","GO:0030163","protein catabolic process",9,4,5,117
+"FOW","Foot","OW","GO:0030198","extracellular matrix organization",3,0,3,117
+"FOW","Foot","OW","GO:0031047","regulatory ncRNA-mediated gene silencing",0,0,0,117
+"FOW","Foot","OW","GO:0032200","telomere organization",4,4,0,117
+"FOW","Foot","OW","GO:0034330","cell junction organization",10,2,8,117
+"FOW","Foot","OW","GO:0042060","wound healing",3,0,3,117
+"FOW","Foot","OW","GO:0042254","ribosome biogenesis",3,3,0,117
+"FOW","Foot","OW","GO:0044782","cilium organization",1,0,1,117
+"FOW","Foot","OW","GO:0048856","anatomical structure development",37,14,23,117
+"FOW","Foot","OW","GO:0048870","cell motility",8,3,5,117
+"FOW","Foot","OW","GO:0050877","nervous system process",4,0,4,117
+"FOW","Foot","OW","GO:0050886","endocrine process",0,0,0,117
+"FOW","Foot","OW","GO:0051604","protein maturation",5,3,2,117
+"FOW","Foot","OW","GO:0055085","transmembrane transport",12,4,8,117
+"FOW","Foot","OW","GO:0055086","nucleobase-containing small molecule metabolic process",2,1,1,117
+"FOW","Foot","OW","GO:0061007","hepaticobiliary system process",0,0,0,117
+"FOW","Foot","OW","GO:0061024","membrane organization",7,1,6,117
+"FOW","Foot","OW","GO:0065003","protein-containing complex assembly",12,6,6,117
+"FOW","Foot","OW","GO:0071554","cell wall organization or biogenesis",0,0,0,117
+"FOW","Foot","OW","GO:0071941","nitrogen cycle metabolic process",0,0,0,117
+"FOW","Foot","OW","GO:0072659","protein localization to plasma membrane",2,0,2,117
+"FOW","Foot","OW","GO:0098542","defense response to other organism",7,5,2,117
+"FOW","Foot","OW","GO:0098754","detoxification",1,0,1,117
+"FOW","Foot","OW","GO:0140013","meiotic nuclear division",0,0,0,117
+"FOW","Foot","OW","GO:0140014","mitotic nuclear division",1,1,0,117
+"FOW","Foot","OW","GO:0140053","mitochondrial gene expression",1,1,0,117
+"FOW","Foot","OW","GO:1901135","carbohydrate derivative metabolic process",9,1,8,117
 "FDO","Foot","DO","GO:0000278","mitotic cell cycle",22,14,8,385
 "FDO","Foot","DO","GO:0000910","cytokinesis",6,2,4,385
 "FDO","Foot","DO","GO:0002181","cytoplasmic translation",5,5,0,385
@@ -215,219 +215,219 @@
 "FDO","Foot","DO","GO:0140014","mitotic nuclear division",3,2,1,385
 "FDO","Foot","DO","GO:0140053","mitochondrial gene expression",3,3,0,385
 "FDO","Foot","DO","GO:1901135","carbohydrate derivative metabolic process",19,14,5,385
-"GOA","Gill","OA","GO:0000278","mitotic cell cycle",15,7,8,293
-"GOA","Gill","OA","GO:0000910","cytokinesis",2,1,1,293
-"GOA","Gill","OA","GO:0002181","cytoplasmic translation",5,5,0,293
-"GOA","Gill","OA","GO:0002376","immune system process",35,19,16,293
-"GOA","Gill","OA","GO:0003012","muscle system process",6,2,4,293
-"GOA","Gill","OA","GO:0003013","circulatory system process",8,3,5,293
-"GOA","Gill","OA","GO:0003014","renal system process",1,1,0,293
-"GOA","Gill","OA","GO:0003016","respiratory system process",0,0,0,293
-"GOA","Gill","OA","GO:0005975","carbohydrate metabolic process",9,5,4,293
-"GOA","Gill","OA","GO:0006091","generation of precursor metabolites and energy",16,12,4,293
-"GOA","Gill","OA","GO:0006260","DNA replication",1,1,0,293
-"GOA","Gill","OA","GO:0006281","DNA repair",8,5,3,293
-"GOA","Gill","OA","GO:0006310","DNA recombination",5,4,1,293
-"GOA","Gill","OA","GO:0006325","chromatin organization",11,7,4,293
-"GOA","Gill","OA","GO:0006351","DNA-templated transcription",46,28,18,293
-"GOA","Gill","OA","GO:0006355","regulation of DNA-templated transcription",40,25,15,293
-"GOA","Gill","OA","GO:0006399","tRNA metabolic process",4,2,2,293
-"GOA","Gill","OA","GO:0006457","protein folding",13,9,4,293
-"GOA","Gill","OA","GO:0006520","amino acid metabolic process",10,7,3,293
-"GOA","Gill","OA","GO:0006575","modified amino acid metabolic process",13,12,1,293
-"GOA","Gill","OA","GO:0006629","lipid metabolic process",31,22,9,293
-"GOA","Gill","OA","GO:0006766","vitamin metabolic process",1,1,0,293
-"GOA","Gill","OA","GO:0006790","sulfur compound metabolic process",16,14,2,293
-"GOA","Gill","OA","GO:0006886","intracellular protein transport",13,10,3,293
-"GOA","Gill","OA","GO:0006913","nucleocytoplasmic transport",4,3,1,293
-"GOA","Gill","OA","GO:0006914","autophagy",7,4,3,293
-"GOA","Gill","OA","GO:0006954","inflammatory response",2,2,0,293
-"GOA","Gill","OA","GO:0007005","mitochondrion organization",5,4,1,293
-"GOA","Gill","OA","GO:0007010","cytoskeleton organization",31,12,19,293
-"GOA","Gill","OA","GO:0007018","microtubule-based movement",5,2,3,293
-"GOA","Gill","OA","GO:0007031","peroxisome organization",1,1,0,293
-"GOA","Gill","OA","GO:0007040","lysosome organization",1,1,0,293
-"GOA","Gill","OA","GO:0007059","chromosome segregation",6,2,4,293
-"GOA","Gill","OA","GO:0007155","cell adhesion",25,11,14,293
-"GOA","Gill","OA","GO:0007163","establishment or maintenance of cell polarity",3,1,2,293
-"GOA","Gill","OA","GO:0009101","glycoprotein biosynthetic process",5,5,0,293
-"GOA","Gill","OA","GO:0012501","programmed cell death",22,14,8,293
-"GOA","Gill","OA","GO:0015979","photosynthesis",0,0,0,293
-"GOA","Gill","OA","GO:0016071","mRNA metabolic process",16,8,8,293
-"GOA","Gill","OA","GO:0016073","snRNA metabolic process",2,0,2,293
-"GOA","Gill","OA","GO:0016192","vesicle-mediated transport",28,15,13,293
-"GOA","Gill","OA","GO:0022414","reproductive process",18,7,11,293
-"GOA","Gill","OA","GO:0022600","digestive system process",2,1,1,293
-"GOA","Gill","OA","GO:0023052","signaling",57,28,29,293
-"GOA","Gill","OA","GO:0030154","cell differentiation",67,33,34,293
-"GOA","Gill","OA","GO:0030163","protein catabolic process",28,18,10,293
-"GOA","Gill","OA","GO:0030198","extracellular matrix organization",12,3,9,293
-"GOA","Gill","OA","GO:0031047","regulatory ncRNA-mediated gene silencing",3,3,0,293
-"GOA","Gill","OA","GO:0032200","telomere organization",3,1,2,293
-"GOA","Gill","OA","GO:0034330","cell junction organization",10,4,6,293
-"GOA","Gill","OA","GO:0042060","wound healing",11,2,9,293
-"GOA","Gill","OA","GO:0042254","ribosome biogenesis",8,2,6,293
-"GOA","Gill","OA","GO:0044782","cilium organization",7,4,3,293
-"GOA","Gill","OA","GO:0048856","anatomical structure development",100,51,49,293
-"GOA","Gill","OA","GO:0048870","cell motility",22,8,14,293
-"GOA","Gill","OA","GO:0050877","nervous system process",10,6,4,293
-"GOA","Gill","OA","GO:0050886","endocrine process",1,0,1,293
-"GOA","Gill","OA","GO:0051604","protein maturation",23,14,9,293
-"GOA","Gill","OA","GO:0055085","transmembrane transport",26,15,11,293
-"GOA","Gill","OA","GO:0055086","nucleobase-containing small molecule metabolic process",14,12,2,293
-"GOA","Gill","OA","GO:0061007","hepaticobiliary system process",0,0,0,293
-"GOA","Gill","OA","GO:0061024","membrane organization",11,5,6,293
-"GOA","Gill","OA","GO:0065003","protein-containing complex assembly",29,14,15,293
-"GOA","Gill","OA","GO:0071554","cell wall organization or biogenesis",0,0,0,293
-"GOA","Gill","OA","GO:0071941","nitrogen cycle metabolic process",2,1,1,293
-"GOA","Gill","OA","GO:0072659","protein localization to plasma membrane",6,4,2,293
-"GOA","Gill","OA","GO:0098542","defense response to other organism",16,9,7,293
-"GOA","Gill","OA","GO:0098754","detoxification",4,3,1,293
-"GOA","Gill","OA","GO:0140013","meiotic nuclear division",2,1,1,293
-"GOA","Gill","OA","GO:0140014","mitotic nuclear division",5,1,4,293
-"GOA","Gill","OA","GO:0140053","mitochondrial gene expression",1,1,0,293
-"GOA","Gill","OA","GO:1901135","carbohydrate derivative metabolic process",23,15,8,293
-"GOW","Gill","OW","GO:0000278","mitotic cell cycle",8,3,5,128
-"GOW","Gill","OW","GO:0000910","cytokinesis",2,2,0,128
-"GOW","Gill","OW","GO:0002181","cytoplasmic translation",6,6,0,128
-"GOW","Gill","OW","GO:0002376","immune system process",21,12,9,128
-"GOW","Gill","OW","GO:0003012","muscle system process",2,1,1,128
-"GOW","Gill","OW","GO:0003013","circulatory system process",5,2,3,128
-"GOW","Gill","OW","GO:0003014","renal system process",2,1,1,128
-"GOW","Gill","OW","GO:0003016","respiratory system process",0,0,0,128
-"GOW","Gill","OW","GO:0005975","carbohydrate metabolic process",4,2,2,128
-"GOW","Gill","OW","GO:0006091","generation of precursor metabolites and energy",1,0,1,128
-"GOW","Gill","OW","GO:0006260","DNA replication",3,2,1,128
-"GOW","Gill","OW","GO:0006281","DNA repair",0,0,0,128
-"GOW","Gill","OW","GO:0006310","DNA recombination",0,0,0,128
-"GOW","Gill","OW","GO:0006325","chromatin organization",8,5,3,128
-"GOW","Gill","OW","GO:0006351","DNA-templated transcription",27,14,13,128
-"GOW","Gill","OW","GO:0006355","regulation of DNA-templated transcription",24,13,11,128
-"GOW","Gill","OW","GO:0006399","tRNA metabolic process",4,3,1,128
-"GOW","Gill","OW","GO:0006457","protein folding",3,2,1,128
-"GOW","Gill","OW","GO:0006520","amino acid metabolic process",3,3,0,128
-"GOW","Gill","OW","GO:0006575","modified amino acid metabolic process",1,0,1,128
-"GOW","Gill","OW","GO:0006629","lipid metabolic process",13,3,10,128
-"GOW","Gill","OW","GO:0006766","vitamin metabolic process",0,0,0,128
-"GOW","Gill","OW","GO:0006790","sulfur compound metabolic process",1,0,1,128
-"GOW","Gill","OW","GO:0006886","intracellular protein transport",8,7,1,128
-"GOW","Gill","OW","GO:0006913","nucleocytoplasmic transport",7,5,2,128
-"GOW","Gill","OW","GO:0006914","autophagy",3,3,0,128
-"GOW","Gill","OW","GO:0006954","inflammatory response",4,3,1,128
-"GOW","Gill","OW","GO:0007005","mitochondrion organization",1,1,0,128
-"GOW","Gill","OW","GO:0007010","cytoskeleton organization",12,4,8,128
-"GOW","Gill","OW","GO:0007018","microtubule-based movement",3,3,0,128
-"GOW","Gill","OW","GO:0007031","peroxisome organization",0,0,0,128
-"GOW","Gill","OW","GO:0007040","lysosome organization",0,0,0,128
-"GOW","Gill","OW","GO:0007059","chromosome segregation",1,1,0,128
-"GOW","Gill","OW","GO:0007155","cell adhesion",12,6,6,128
-"GOW","Gill","OW","GO:0007163","establishment or maintenance of cell polarity",3,1,2,128
-"GOW","Gill","OW","GO:0009101","glycoprotein biosynthetic process",1,1,0,128
-"GOW","Gill","OW","GO:0012501","programmed cell death",8,7,1,128
-"GOW","Gill","OW","GO:0015979","photosynthesis",1,1,0,128
-"GOW","Gill","OW","GO:0016071","mRNA metabolic process",15,8,7,128
-"GOW","Gill","OW","GO:0016073","snRNA metabolic process",2,1,1,128
-"GOW","Gill","OW","GO:0016192","vesicle-mediated transport",16,10,6,128
-"GOW","Gill","OW","GO:0022414","reproductive process",10,5,5,128
-"GOW","Gill","OW","GO:0022600","digestive system process",1,0,1,128
-"GOW","Gill","OW","GO:0023052","signaling",39,21,18,128
-"GOW","Gill","OW","GO:0030154","cell differentiation",40,21,19,128
-"GOW","Gill","OW","GO:0030163","protein catabolic process",11,8,3,128
-"GOW","Gill","OW","GO:0030198","extracellular matrix organization",5,2,3,128
-"GOW","Gill","OW","GO:0031047","regulatory ncRNA-mediated gene silencing",1,1,0,128
-"GOW","Gill","OW","GO:0032200","telomere organization",2,1,1,128
-"GOW","Gill","OW","GO:0034330","cell junction organization",6,1,5,128
-"GOW","Gill","OW","GO:0042060","wound healing",1,1,0,128
-"GOW","Gill","OW","GO:0042254","ribosome biogenesis",4,1,3,128
-"GOW","Gill","OW","GO:0044782","cilium organization",3,3,0,128
-"GOW","Gill","OW","GO:0048856","anatomical structure development",48,24,24,128
-"GOW","Gill","OW","GO:0048870","cell motility",10,6,4,128
-"GOW","Gill","OW","GO:0050877","nervous system process",7,3,4,128
-"GOW","Gill","OW","GO:0050886","endocrine process",1,0,1,128
-"GOW","Gill","OW","GO:0051604","protein maturation",5,4,1,128
-"GOW","Gill","OW","GO:0055085","transmembrane transport",9,4,5,128
-"GOW","Gill","OW","GO:0055086","nucleobase-containing small molecule metabolic process",2,1,1,128
-"GOW","Gill","OW","GO:0061007","hepaticobiliary system process",0,0,0,128
-"GOW","Gill","OW","GO:0061024","membrane organization",6,4,2,128
-"GOW","Gill","OW","GO:0065003","protein-containing complex assembly",16,8,8,128
-"GOW","Gill","OW","GO:0071554","cell wall organization or biogenesis",1,1,0,128
-"GOW","Gill","OW","GO:0071941","nitrogen cycle metabolic process",0,0,0,128
-"GOW","Gill","OW","GO:0072659","protein localization to plasma membrane",3,2,1,128
-"GOW","Gill","OW","GO:0098542","defense response to other organism",8,5,3,128
-"GOW","Gill","OW","GO:0098754","detoxification",1,0,1,128
-"GOW","Gill","OW","GO:0140013","meiotic nuclear division",1,0,1,128
-"GOW","Gill","OW","GO:0140014","mitotic nuclear division",0,0,0,128
-"GOW","Gill","OW","GO:0140053","mitochondrial gene expression",0,0,0,128
-"GOW","Gill","OW","GO:1901135","carbohydrate derivative metabolic process",4,2,2,128
-"GDO","Gill","DO","GO:0000278","mitotic cell cycle",12,5,7,190
-"GDO","Gill","DO","GO:0000910","cytokinesis",0,0,0,190
-"GDO","Gill","DO","GO:0002181","cytoplasmic translation",8,8,0,190
-"GDO","Gill","DO","GO:0002376","immune system process",28,15,13,190
-"GDO","Gill","DO","GO:0003012","muscle system process",1,0,1,190
-"GDO","Gill","DO","GO:0003013","circulatory system process",1,1,0,190
-"GDO","Gill","DO","GO:0003014","renal system process",1,0,1,190
-"GDO","Gill","DO","GO:0003016","respiratory system process",0,0,0,190
-"GDO","Gill","DO","GO:0005975","carbohydrate metabolic process",8,4,4,190
-"GDO","Gill","DO","GO:0006091","generation of precursor metabolites and energy",4,3,1,190
-"GDO","Gill","DO","GO:0006260","DNA replication",5,3,2,190
-"GDO","Gill","DO","GO:0006281","DNA repair",4,2,2,190
-"GDO","Gill","DO","GO:0006310","DNA recombination",2,0,2,190
-"GDO","Gill","DO","GO:0006325","chromatin organization",11,2,9,190
-"GDO","Gill","DO","GO:0006351","DNA-templated transcription",23,8,15,190
-"GDO","Gill","DO","GO:0006355","regulation of DNA-templated transcription",22,8,14,190
-"GDO","Gill","DO","GO:0006399","tRNA metabolic process",5,4,1,190
-"GDO","Gill","DO","GO:0006457","protein folding",11,8,3,190
-"GDO","Gill","DO","GO:0006520","amino acid metabolic process",6,5,1,190
-"GDO","Gill","DO","GO:0006575","modified amino acid metabolic process",4,3,1,190
-"GDO","Gill","DO","GO:0006629","lipid metabolic process",19,12,7,190
-"GDO","Gill","DO","GO:0006766","vitamin metabolic process",0,0,0,190
-"GDO","Gill","DO","GO:0006790","sulfur compound metabolic process",6,4,2,190
-"GDO","Gill","DO","GO:0006886","intracellular protein transport",17,14,3,190
-"GDO","Gill","DO","GO:0006913","nucleocytoplasmic transport",5,3,2,190
-"GDO","Gill","DO","GO:0006914","autophagy",6,4,2,190
-"GDO","Gill","DO","GO:0006954","inflammatory response",5,3,2,190
-"GDO","Gill","DO","GO:0007005","mitochondrion organization",4,4,0,190
-"GDO","Gill","DO","GO:0007010","cytoskeleton organization",22,8,14,190
-"GDO","Gill","DO","GO:0007018","microtubule-based movement",7,4,3,190
-"GDO","Gill","DO","GO:0007031","peroxisome organization",0,0,0,190
-"GDO","Gill","DO","GO:0007040","lysosome organization",0,0,0,190
-"GDO","Gill","DO","GO:0007059","chromosome segregation",5,1,4,190
-"GDO","Gill","DO","GO:0007155","cell adhesion",17,7,10,190
-"GDO","Gill","DO","GO:0007163","establishment or maintenance of cell polarity",6,2,4,190
-"GDO","Gill","DO","GO:0009101","glycoprotein biosynthetic process",8,8,0,190
-"GDO","Gill","DO","GO:0012501","programmed cell death",11,5,6,190
-"GDO","Gill","DO","GO:0015979","photosynthesis",0,0,0,190
-"GDO","Gill","DO","GO:0016071","mRNA metabolic process",5,2,3,190
-"GDO","Gill","DO","GO:0016073","snRNA metabolic process",0,0,0,190
-"GDO","Gill","DO","GO:0016192","vesicle-mediated transport",32,23,9,190
-"GDO","Gill","DO","GO:0022414","reproductive process",15,6,9,190
-"GDO","Gill","DO","GO:0022600","digestive system process",2,1,1,190
-"GDO","Gill","DO","GO:0023052","signaling",51,30,21,190
-"GDO","Gill","DO","GO:0030154","cell differentiation",46,19,27,190
-"GDO","Gill","DO","GO:0030163","protein catabolic process",17,14,3,190
-"GDO","Gill","DO","GO:0030198","extracellular matrix organization",7,2,5,190
-"GDO","Gill","DO","GO:0031047","regulatory ncRNA-mediated gene silencing",2,1,1,190
-"GDO","Gill","DO","GO:0032200","telomere organization",2,2,0,190
-"GDO","Gill","DO","GO:0034330","cell junction organization",7,3,4,190
-"GDO","Gill","DO","GO:0042060","wound healing",8,2,6,190
-"GDO","Gill","DO","GO:0042254","ribosome biogenesis",3,2,1,190
-"GDO","Gill","DO","GO:0044782","cilium organization",4,2,2,190
-"GDO","Gill","DO","GO:0048856","anatomical structure development",68,32,36,190
-"GDO","Gill","DO","GO:0048870","cell motility",14,6,8,190
-"GDO","Gill","DO","GO:0050877","nervous system process",12,4,8,190
-"GDO","Gill","DO","GO:0050886","endocrine process",0,0,0,190
-"GDO","Gill","DO","GO:0051604","protein maturation",13,9,4,190
-"GDO","Gill","DO","GO:0055085","transmembrane transport",14,12,2,190
-"GDO","Gill","DO","GO:0055086","nucleobase-containing small molecule metabolic process",11,8,3,190
-"GDO","Gill","DO","GO:0061007","hepaticobiliary system process",0,0,0,190
-"GDO","Gill","DO","GO:0061024","membrane organization",10,6,4,190
-"GDO","Gill","DO","GO:0065003","protein-containing complex assembly",21,12,9,190
-"GDO","Gill","DO","GO:0071554","cell wall organization or biogenesis",0,0,0,190
-"GDO","Gill","DO","GO:0071941","nitrogen cycle metabolic process",1,1,0,190
-"GDO","Gill","DO","GO:0072659","protein localization to plasma membrane",11,6,5,190
-"GDO","Gill","DO","GO:0098542","defense response to other organism",13,8,5,190
-"GDO","Gill","DO","GO:0098754","detoxification",2,1,1,190
-"GDO","Gill","DO","GO:0140013","meiotic nuclear division",1,1,0,190
-"GDO","Gill","DO","GO:0140014","mitotic nuclear division",4,1,3,190
-"GDO","Gill","DO","GO:0140053","mitochondrial gene expression",0,0,0,190
-"GDO","Gill","DO","GO:1901135","carbohydrate derivative metabolic process",19,14,5,190
+"GOA","Gill","OA","GO:0000278","mitotic cell cycle",15,7,8,294
+"GOA","Gill","OA","GO:0000910","cytokinesis",2,1,1,294
+"GOA","Gill","OA","GO:0002181","cytoplasmic translation",5,5,0,294
+"GOA","Gill","OA","GO:0002376","immune system process",34,19,15,294
+"GOA","Gill","OA","GO:0003012","muscle system process",6,2,4,294
+"GOA","Gill","OA","GO:0003013","circulatory system process",8,3,5,294
+"GOA","Gill","OA","GO:0003014","renal system process",1,1,0,294
+"GOA","Gill","OA","GO:0003016","respiratory system process",0,0,0,294
+"GOA","Gill","OA","GO:0005975","carbohydrate metabolic process",9,5,4,294
+"GOA","Gill","OA","GO:0006091","generation of precursor metabolites and energy",16,12,4,294
+"GOA","Gill","OA","GO:0006260","DNA replication",1,1,0,294
+"GOA","Gill","OA","GO:0006281","DNA repair",8,5,3,294
+"GOA","Gill","OA","GO:0006310","DNA recombination",5,4,1,294
+"GOA","Gill","OA","GO:0006325","chromatin organization",11,7,4,294
+"GOA","Gill","OA","GO:0006351","DNA-templated transcription",46,28,18,294
+"GOA","Gill","OA","GO:0006355","regulation of DNA-templated transcription",40,25,15,294
+"GOA","Gill","OA","GO:0006399","tRNA metabolic process",4,2,2,294
+"GOA","Gill","OA","GO:0006457","protein folding",13,9,4,294
+"GOA","Gill","OA","GO:0006520","amino acid metabolic process",10,7,3,294
+"GOA","Gill","OA","GO:0006575","modified amino acid metabolic process",13,12,1,294
+"GOA","Gill","OA","GO:0006629","lipid metabolic process",32,22,10,294
+"GOA","Gill","OA","GO:0006766","vitamin metabolic process",1,1,0,294
+"GOA","Gill","OA","GO:0006790","sulfur compound metabolic process",16,14,2,294
+"GOA","Gill","OA","GO:0006886","intracellular protein transport",13,10,3,294
+"GOA","Gill","OA","GO:0006913","nucleocytoplasmic transport",4,3,1,294
+"GOA","Gill","OA","GO:0006914","autophagy",7,4,3,294
+"GOA","Gill","OA","GO:0006954","inflammatory response",2,2,0,294
+"GOA","Gill","OA","GO:0007005","mitochondrion organization",5,4,1,294
+"GOA","Gill","OA","GO:0007010","cytoskeleton organization",31,12,19,294
+"GOA","Gill","OA","GO:0007018","microtubule-based movement",5,2,3,294
+"GOA","Gill","OA","GO:0007031","peroxisome organization",1,1,0,294
+"GOA","Gill","OA","GO:0007040","lysosome organization",1,1,0,294
+"GOA","Gill","OA","GO:0007059","chromosome segregation",6,2,4,294
+"GOA","Gill","OA","GO:0007155","cell adhesion",24,11,13,294
+"GOA","Gill","OA","GO:0007163","establishment or maintenance of cell polarity",3,1,2,294
+"GOA","Gill","OA","GO:0009101","glycoprotein biosynthetic process",5,5,0,294
+"GOA","Gill","OA","GO:0012501","programmed cell death",22,14,8,294
+"GOA","Gill","OA","GO:0015979","photosynthesis",0,0,0,294
+"GOA","Gill","OA","GO:0016071","mRNA metabolic process",16,8,8,294
+"GOA","Gill","OA","GO:0016073","snRNA metabolic process",2,0,2,294
+"GOA","Gill","OA","GO:0016192","vesicle-mediated transport",28,15,13,294
+"GOA","Gill","OA","GO:0022414","reproductive process",17,7,10,294
+"GOA","Gill","OA","GO:0022600","digestive system process",2,1,1,294
+"GOA","Gill","OA","GO:0023052","signaling",57,28,29,294
+"GOA","Gill","OA","GO:0030154","cell differentiation",66,33,33,294
+"GOA","Gill","OA","GO:0030163","protein catabolic process",27,18,9,294
+"GOA","Gill","OA","GO:0030198","extracellular matrix organization",11,3,8,294
+"GOA","Gill","OA","GO:0031047","regulatory ncRNA-mediated gene silencing",3,3,0,294
+"GOA","Gill","OA","GO:0032200","telomere organization",3,1,2,294
+"GOA","Gill","OA","GO:0034330","cell junction organization",10,4,6,294
+"GOA","Gill","OA","GO:0042060","wound healing",11,2,9,294
+"GOA","Gill","OA","GO:0042254","ribosome biogenesis",8,2,6,294
+"GOA","Gill","OA","GO:0044782","cilium organization",7,4,3,294
+"GOA","Gill","OA","GO:0048856","anatomical structure development",99,51,48,294
+"GOA","Gill","OA","GO:0048870","cell motility",21,8,13,294
+"GOA","Gill","OA","GO:0050877","nervous system process",10,6,4,294
+"GOA","Gill","OA","GO:0050886","endocrine process",1,0,1,294
+"GOA","Gill","OA","GO:0051604","protein maturation",22,14,8,294
+"GOA","Gill","OA","GO:0055085","transmembrane transport",26,15,11,294
+"GOA","Gill","OA","GO:0055086","nucleobase-containing small molecule metabolic process",14,12,2,294
+"GOA","Gill","OA","GO:0061007","hepaticobiliary system process",0,0,0,294
+"GOA","Gill","OA","GO:0061024","membrane organization",11,5,6,294
+"GOA","Gill","OA","GO:0065003","protein-containing complex assembly",29,14,15,294
+"GOA","Gill","OA","GO:0071554","cell wall organization or biogenesis",0,0,0,294
+"GOA","Gill","OA","GO:0071941","nitrogen cycle metabolic process",2,1,1,294
+"GOA","Gill","OA","GO:0072659","protein localization to plasma membrane",6,4,2,294
+"GOA","Gill","OA","GO:0098542","defense response to other organism",16,9,7,294
+"GOA","Gill","OA","GO:0098754","detoxification",4,3,1,294
+"GOA","Gill","OA","GO:0140013","meiotic nuclear division",2,1,1,294
+"GOA","Gill","OA","GO:0140014","mitotic nuclear division",5,1,4,294
+"GOA","Gill","OA","GO:0140053","mitochondrial gene expression",1,1,0,294
+"GOA","Gill","OA","GO:1901135","carbohydrate derivative metabolic process",23,15,8,294
+"GOW","Gill","OW","GO:0000278","mitotic cell cycle",9,3,6,129
+"GOW","Gill","OW","GO:0000910","cytokinesis",2,2,0,129
+"GOW","Gill","OW","GO:0002181","cytoplasmic translation",6,6,0,129
+"GOW","Gill","OW","GO:0002376","immune system process",21,12,9,129
+"GOW","Gill","OW","GO:0003012","muscle system process",3,1,2,129
+"GOW","Gill","OW","GO:0003013","circulatory system process",6,2,4,129
+"GOW","Gill","OW","GO:0003014","renal system process",2,1,1,129
+"GOW","Gill","OW","GO:0003016","respiratory system process",0,0,0,129
+"GOW","Gill","OW","GO:0005975","carbohydrate metabolic process",4,2,2,129
+"GOW","Gill","OW","GO:0006091","generation of precursor metabolites and energy",1,0,1,129
+"GOW","Gill","OW","GO:0006260","DNA replication",3,2,1,129
+"GOW","Gill","OW","GO:0006281","DNA repair",0,0,0,129
+"GOW","Gill","OW","GO:0006310","DNA recombination",0,0,0,129
+"GOW","Gill","OW","GO:0006325","chromatin organization",8,5,3,129
+"GOW","Gill","OW","GO:0006351","DNA-templated transcription",28,14,14,129
+"GOW","Gill","OW","GO:0006355","regulation of DNA-templated transcription",25,13,12,129
+"GOW","Gill","OW","GO:0006399","tRNA metabolic process",4,3,1,129
+"GOW","Gill","OW","GO:0006457","protein folding",3,2,1,129
+"GOW","Gill","OW","GO:0006520","amino acid metabolic process",3,3,0,129
+"GOW","Gill","OW","GO:0006575","modified amino acid metabolic process",1,0,1,129
+"GOW","Gill","OW","GO:0006629","lipid metabolic process",13,3,10,129
+"GOW","Gill","OW","GO:0006766","vitamin metabolic process",0,0,0,129
+"GOW","Gill","OW","GO:0006790","sulfur compound metabolic process",1,0,1,129
+"GOW","Gill","OW","GO:0006886","intracellular protein transport",8,7,1,129
+"GOW","Gill","OW","GO:0006913","nucleocytoplasmic transport",7,5,2,129
+"GOW","Gill","OW","GO:0006914","autophagy",3,3,0,129
+"GOW","Gill","OW","GO:0006954","inflammatory response",4,3,1,129
+"GOW","Gill","OW","GO:0007005","mitochondrion organization",1,1,0,129
+"GOW","Gill","OW","GO:0007010","cytoskeleton organization",13,4,9,129
+"GOW","Gill","OW","GO:0007018","microtubule-based movement",3,3,0,129
+"GOW","Gill","OW","GO:0007031","peroxisome organization",0,0,0,129
+"GOW","Gill","OW","GO:0007040","lysosome organization",0,0,0,129
+"GOW","Gill","OW","GO:0007059","chromosome segregation",1,1,0,129
+"GOW","Gill","OW","GO:0007155","cell adhesion",12,6,6,129
+"GOW","Gill","OW","GO:0007163","establishment or maintenance of cell polarity",2,1,1,129
+"GOW","Gill","OW","GO:0009101","glycoprotein biosynthetic process",1,1,0,129
+"GOW","Gill","OW","GO:0012501","programmed cell death",8,7,1,129
+"GOW","Gill","OW","GO:0015979","photosynthesis",1,1,0,129
+"GOW","Gill","OW","GO:0016071","mRNA metabolic process",15,8,7,129
+"GOW","Gill","OW","GO:0016073","snRNA metabolic process",2,1,1,129
+"GOW","Gill","OW","GO:0016192","vesicle-mediated transport",16,10,6,129
+"GOW","Gill","OW","GO:0022414","reproductive process",10,5,5,129
+"GOW","Gill","OW","GO:0022600","digestive system process",1,0,1,129
+"GOW","Gill","OW","GO:0023052","signaling",39,21,18,129
+"GOW","Gill","OW","GO:0030154","cell differentiation",40,21,19,129
+"GOW","Gill","OW","GO:0030163","protein catabolic process",11,8,3,129
+"GOW","Gill","OW","GO:0030198","extracellular matrix organization",5,2,3,129
+"GOW","Gill","OW","GO:0031047","regulatory ncRNA-mediated gene silencing",1,1,0,129
+"GOW","Gill","OW","GO:0032200","telomere organization",2,1,1,129
+"GOW","Gill","OW","GO:0034330","cell junction organization",6,1,5,129
+"GOW","Gill","OW","GO:0042060","wound healing",1,1,0,129
+"GOW","Gill","OW","GO:0042254","ribosome biogenesis",4,1,3,129
+"GOW","Gill","OW","GO:0044782","cilium organization",3,3,0,129
+"GOW","Gill","OW","GO:0048856","anatomical structure development",49,25,24,129
+"GOW","Gill","OW","GO:0048870","cell motility",10,6,4,129
+"GOW","Gill","OW","GO:0050877","nervous system process",7,3,4,129
+"GOW","Gill","OW","GO:0050886","endocrine process",1,0,1,129
+"GOW","Gill","OW","GO:0051604","protein maturation",5,4,1,129
+"GOW","Gill","OW","GO:0055085","transmembrane transport",10,4,6,129
+"GOW","Gill","OW","GO:0055086","nucleobase-containing small molecule metabolic process",2,1,1,129
+"GOW","Gill","OW","GO:0061007","hepaticobiliary system process",0,0,0,129
+"GOW","Gill","OW","GO:0061024","membrane organization",6,4,2,129
+"GOW","Gill","OW","GO:0065003","protein-containing complex assembly",16,8,8,129
+"GOW","Gill","OW","GO:0071554","cell wall organization or biogenesis",1,1,0,129
+"GOW","Gill","OW","GO:0071941","nitrogen cycle metabolic process",0,0,0,129
+"GOW","Gill","OW","GO:0072659","protein localization to plasma membrane",4,2,2,129
+"GOW","Gill","OW","GO:0098542","defense response to other organism",8,5,3,129
+"GOW","Gill","OW","GO:0098754","detoxification",1,0,1,129
+"GOW","Gill","OW","GO:0140013","meiotic nuclear division",1,0,1,129
+"GOW","Gill","OW","GO:0140014","mitotic nuclear division",0,0,0,129
+"GOW","Gill","OW","GO:0140053","mitochondrial gene expression",0,0,0,129
+"GOW","Gill","OW","GO:1901135","carbohydrate derivative metabolic process",4,2,2,129
+"GDO","Gill","DO","GO:0000278","mitotic cell cycle",12,5,7,192
+"GDO","Gill","DO","GO:0000910","cytokinesis",0,0,0,192
+"GDO","Gill","DO","GO:0002181","cytoplasmic translation",8,8,0,192
+"GDO","Gill","DO","GO:0002376","immune system process",29,15,14,192
+"GDO","Gill","DO","GO:0003012","muscle system process",1,0,1,192
+"GDO","Gill","DO","GO:0003013","circulatory system process",1,1,0,192
+"GDO","Gill","DO","GO:0003014","renal system process",1,0,1,192
+"GDO","Gill","DO","GO:0003016","respiratory system process",0,0,0,192
+"GDO","Gill","DO","GO:0005975","carbohydrate metabolic process",8,4,4,192
+"GDO","Gill","DO","GO:0006091","generation of precursor metabolites and energy",4,3,1,192
+"GDO","Gill","DO","GO:0006260","DNA replication",5,3,2,192
+"GDO","Gill","DO","GO:0006281","DNA repair",4,2,2,192
+"GDO","Gill","DO","GO:0006310","DNA recombination",2,0,2,192
+"GDO","Gill","DO","GO:0006325","chromatin organization",11,2,9,192
+"GDO","Gill","DO","GO:0006351","DNA-templated transcription",23,8,15,192
+"GDO","Gill","DO","GO:0006355","regulation of DNA-templated transcription",22,8,14,192
+"GDO","Gill","DO","GO:0006399","tRNA metabolic process",5,4,1,192
+"GDO","Gill","DO","GO:0006457","protein folding",11,8,3,192
+"GDO","Gill","DO","GO:0006520","amino acid metabolic process",6,5,1,192
+"GDO","Gill","DO","GO:0006575","modified amino acid metabolic process",4,3,1,192
+"GDO","Gill","DO","GO:0006629","lipid metabolic process",19,12,7,192
+"GDO","Gill","DO","GO:0006766","vitamin metabolic process",0,0,0,192
+"GDO","Gill","DO","GO:0006790","sulfur compound metabolic process",6,4,2,192
+"GDO","Gill","DO","GO:0006886","intracellular protein transport",17,14,3,192
+"GDO","Gill","DO","GO:0006913","nucleocytoplasmic transport",5,3,2,192
+"GDO","Gill","DO","GO:0006914","autophagy",6,4,2,192
+"GDO","Gill","DO","GO:0006954","inflammatory response",5,3,2,192
+"GDO","Gill","DO","GO:0007005","mitochondrion organization",4,4,0,192
+"GDO","Gill","DO","GO:0007010","cytoskeleton organization",22,8,14,192
+"GDO","Gill","DO","GO:0007018","microtubule-based movement",7,4,3,192
+"GDO","Gill","DO","GO:0007031","peroxisome organization",0,0,0,192
+"GDO","Gill","DO","GO:0007040","lysosome organization",0,0,0,192
+"GDO","Gill","DO","GO:0007059","chromosome segregation",5,1,4,192
+"GDO","Gill","DO","GO:0007155","cell adhesion",17,7,10,192
+"GDO","Gill","DO","GO:0007163","establishment or maintenance of cell polarity",6,2,4,192
+"GDO","Gill","DO","GO:0009101","glycoprotein biosynthetic process",8,8,0,192
+"GDO","Gill","DO","GO:0012501","programmed cell death",11,5,6,192
+"GDO","Gill","DO","GO:0015979","photosynthesis",0,0,0,192
+"GDO","Gill","DO","GO:0016071","mRNA metabolic process",5,2,3,192
+"GDO","Gill","DO","GO:0016073","snRNA metabolic process",0,0,0,192
+"GDO","Gill","DO","GO:0016192","vesicle-mediated transport",32,23,9,192
+"GDO","Gill","DO","GO:0022414","reproductive process",15,6,9,192
+"GDO","Gill","DO","GO:0022600","digestive system process",2,1,1,192
+"GDO","Gill","DO","GO:0023052","signaling",51,30,21,192
+"GDO","Gill","DO","GO:0030154","cell differentiation",46,19,27,192
+"GDO","Gill","DO","GO:0030163","protein catabolic process",17,14,3,192
+"GDO","Gill","DO","GO:0030198","extracellular matrix organization",7,2,5,192
+"GDO","Gill","DO","GO:0031047","regulatory ncRNA-mediated gene silencing",2,1,1,192
+"GDO","Gill","DO","GO:0032200","telomere organization",2,2,0,192
+"GDO","Gill","DO","GO:0034330","cell junction organization",7,3,4,192
+"GDO","Gill","DO","GO:0042060","wound healing",8,2,6,192
+"GDO","Gill","DO","GO:0042254","ribosome biogenesis",3,2,1,192
+"GDO","Gill","DO","GO:0044782","cilium organization",4,2,2,192
+"GDO","Gill","DO","GO:0048856","anatomical structure development",69,33,36,192
+"GDO","Gill","DO","GO:0048870","cell motility",14,6,8,192
+"GDO","Gill","DO","GO:0050877","nervous system process",12,4,8,192
+"GDO","Gill","DO","GO:0050886","endocrine process",0,0,0,192
+"GDO","Gill","DO","GO:0051604","protein maturation",13,9,4,192
+"GDO","Gill","DO","GO:0055085","transmembrane transport",14,12,2,192
+"GDO","Gill","DO","GO:0055086","nucleobase-containing small molecule metabolic process",11,8,3,192
+"GDO","Gill","DO","GO:0061007","hepaticobiliary system process",0,0,0,192
+"GDO","Gill","DO","GO:0061024","membrane organization",10,6,4,192
+"GDO","Gill","DO","GO:0065003","protein-containing complex assembly",21,12,9,192
+"GDO","Gill","DO","GO:0071554","cell wall organization or biogenesis",0,0,0,192
+"GDO","Gill","DO","GO:0071941","nitrogen cycle metabolic process",1,1,0,192
+"GDO","Gill","DO","GO:0072659","protein localization to plasma membrane",11,6,5,192
+"GDO","Gill","DO","GO:0098542","defense response to other organism",14,8,6,192
+"GDO","Gill","DO","GO:0098754","detoxification",2,1,1,192
+"GDO","Gill","DO","GO:0140013","meiotic nuclear division",1,1,0,192
+"GDO","Gill","DO","GO:0140014","mitotic nuclear division",4,1,3,192
+"GDO","Gill","DO","GO:0140053","mitochondrial gene expression",0,0,0,192
+"GDO","Gill","DO","GO:1901135","carbohydrate derivative metabolic process",19,14,5,192

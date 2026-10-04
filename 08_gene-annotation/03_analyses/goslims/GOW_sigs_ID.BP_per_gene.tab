@@ -3,6 +3,7 @@ LOC134680615	ARC3A	-0.412985367383284	GO:0007010	cytoskeleton organization
 LOC134680970	CO6A6	-1.53572080251853	GO:0030198	extracellular matrix organization
 LOC134681276	RNF10	-0.481119880519329	GO:0006351;GO:0006355;GO:0030154;GO:0030163;GO:0048856;GO:0050877	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;protein catabolic process;anatomical structure development;nervous system process
 LOC134681291	MOR2A	0.248326849249226	GO:0006325	chromatin organization
+LOC134681433	CAHD1	0.829711671877114	GO:0048856	anatomical structure development
 LOC134681436	AAAD	-0.850583987000903	GO:0006629	lipid metabolic process
 LOC134682520	TBB2	-1.47294496998703	GO:0000278;GO:0007010;GO:0030154;GO:0048856;GO:0048870;GO:0065003	mitotic cell cycle;cytoskeleton organization;cell differentiation;anatomical structure development;cell motility;protein-containing complex assembly
 LOC134683122	TRAF6	0.972975946842813	GO:0002376;GO:0012501;GO:0023052;GO:0098542	immune system process;programmed cell death;signaling;defense response to other organism
@@ -75,7 +76,7 @@ LOC134712204	SC23A	0.827084607518113	GO:0006886;GO:0016192;GO:0048856;GO:0061024
 LOC134712325	TBL1X	-0.560889802205521	GO:0006351;GO:0006355;GO:0030154;GO:0030163	DNA-templated transcription;regulation of DNA-templated transcription;cell differentiation;protein catabolic process
 LOC134712411	DDX3	0.271861147254646	GO:0012501;GO:0022414;GO:0023052;GO:0030154	programmed cell death;reproductive process;signaling;cell differentiation
 LOC134712429	PPIB	-2.17158118980437	GO:0006457;GO:0030198;GO:0051604	protein folding;extracellular matrix organization;protein maturation
-LOC134712491	DLG2	-0.283049904083653	GO:0007155;GO:0007163;GO:0023052;GO:0034330;GO:0048856	cell adhesion;establishment or maintenance of cell polarity;signaling;cell junction organization;anatomical structure development
+LOC134712491	DLG1	-0.283049904083653	GO:0000278;GO:0003012;GO:0003013;GO:0006351;GO:0006355;GO:0007010;GO:0007155;GO:0023052;GO:0034330;GO:0048856;GO:0055085;GO:0072659	mitotic cell cycle;muscle system process;circulatory system process;DNA-templated transcription;regulation of DNA-templated transcription;cytoskeleton organization;cell adhesion;signaling;cell junction organization;anatomical structure development;transmembrane transport;protein localization to plasma membrane
 LOC134712521	LRP4	-0.991805705478741	GO:0023052;GO:0030154;GO:0034330;GO:0048856;GO:0061024	signaling;cell differentiation;cell junction organization;anatomical structure development;membrane organization
 LOC134712581	ZN318	-0.241432162422124	GO:0006351;GO:0006355	DNA-templated transcription;regulation of DNA-templated transcription
 LOC134713745	ACT2	0.732259751866977	GO:0000278;GO:0000910;GO:0007010;GO:0022414;GO:0048856	mitotic cell cycle;cytokinesis;cytoskeleton organization;reproductive process;anatomical structure development
