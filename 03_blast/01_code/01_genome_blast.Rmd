@@ -42,7 +42,11 @@ and `RUN_provenance.txt`). Writes, in `03_analyses/<res_folder>/`:
   `05_differential-expression` step 06, `06_iso-seq-transcriptome` step 04, `07_enrichment`
   step 01 and `09_gene-mechanics-correlation` steps 01 and 04;
 - `g.spid.txt`: one row per gene and UniProt accession: the gene, the first hit's e-value, the
-  subject ID, the CDS and the accession.
+  subject ID, the CDS and the accession;
+- `genome_n_foot_blastx.tab`: the blastx table the two are built from (copied there by a run
+  that searched, so that the tables can be rebuilt and checked without the HPC or a new search);
+- `RUN_provenance.txt` (a run with `run: true`): the release, the database, the BLAST+ version
+  and settings, and the MD5 of every input.
 
 It ran on the lab server in June to August 2024; the committed tables are its outputs. Until
 2026-10-03 the script did not run as written (it joined an object, `masterID`, that it never
@@ -201,6 +205,9 @@ LOC_GO_blast <- left_join(full_blast, g.spid, by = "transcript")
 dir.create(res_dir, showWarnings = FALSE, recursive = TRUE)
 write.table(LOC_GO_blast, file = file.path(res_dir, "LOC_GO_list.txt"), sep = "\t", row.names = FALSE, quote = TRUE)
 write.table(g.spid, file = file.path(res_dir, "g.spid.txt"), sep = "\t", row.names = FALSE, quote = TRUE)
+## the blastx table beside the tables built from it (the 2024 one is genome-foot/genome_n_foot_blastx.tab)
+if (!nzchar(params$blastx_tab))
+  stopifnot(file.copy(blastx, file.path(res_dir, "genome_n_foot_blastx.tab"), overwrite = TRUE))
 ```
 
 # Reproducing the 2024 tables
