@@ -40,7 +40,8 @@ It produces:
 3. Two gene universes: a biologically motivated **candidate set** (byssal / collagen /
    HSP / HIF / peroxidase / aminoacyl-tRNA-synthetase genes) and the **data-driven DEG
    union** (genes already found to respond to any stressor).
-4. Diagnostic plots (added-variable plots of the top hits, candidate-gene heatmap).
+4. Diagnostic plots (added-variable plots of the top hits, candidate-gene heatmap, and one
+   added-variable figure per heatmap gene in `candidate_scatter_<T>/`).
 
 > **READ THIS FIRST - power.** The paired set is small, even with the full thread dataset and
 > the day-3 control arm included; the baseline-adjusted test uses only the animals with a
@@ -869,6 +870,57 @@ ggplot(best_df, aes(x_res, y_res)) +
   theme_bw(base_size = 10) + theme(strip.text = element_text(size = 7.5))
 ggsave(file.path(OUT_DIR, sprintf("best_hit_per_metric_scatter_%s.png", TISSUE)),
        width = 9, height = 8.5, dpi = 150, bg = "white")
+```
+
+## 6.4 Every heatmap gene, one figure each
+
+Each of the genes in the heatmap (6.1) drawn on its own, with one added-variable panel per
+metric as in 6.2 and 6.3, in `candidate_scatter_<T>/`. The files are numbered in the heatmap's
+row order (`01_` is its top row), so the folder reads like the heatmap. Each panel gives the
+partial r with its 95% interval, p, q within the metric and q within the tier. The folder is
+emptied of figures before it is written, so it never keeps a gene that has left the heatmap.
+These genes were selected by smallest p over the four metrics: their effects are biased away
+from zero.
+
+```{r scatter_each}
+SCATTER_DIR <- file.path(OUT_DIR, sprintf("candidate_scatter_%s", TISSUE))
+dir.create(SCATTER_DIR, showWarnings = FALSE)
+unlink(list.files(SCATTER_DIR, pattern = "[.]png$", full.names = TRUE))
+file_slug <- function(x) gsub("^_+|_+$", "", gsub("[^A-Za-z0-9]+", "_", x))
+
+hm_genes <- tibble(label = hm$label, rank = seq_along(hm$label)) %>%
+  mutate(LOC_ID = sub("^.* \\((LOC[0-9]+)\\)$", "\\1", label))
+warn_unless(all(grepl("^LOC[0-9]+$", hm_genes$LOC_ID)) && nrow(hm_genes) == length(hm_keep),
+            "every heatmap row maps to one LOC_ID for its scatter figure")
+
+for (i in seq_len(nrow(hm_genes))) {
+  loc  <- hm_genes$LOC_ID[i]
+  name <- annot$protein_name[match(loc, annot$LOC_ID)]
+  stats_i <- res_cand %>% filter(LOC_ID == loc) %>% mutate(metric = factor(metric, levels = metrics))
+  df_i <- map_dfr(metrics, function(m) {
+    s <- stats_i %>% filter(metric == m)
+    av_data(loc, m) %>%
+      mutate(metric = m, slope = s$slope,
+             panel = sprintf("%s (%s)\npartial r = %.2f [%.2f, %.2f]\np = %s, q = %s, q_family = %s",
+                             av_label(m), tier_of(m), s$partial_r, s$partial_r_lo, s$partial_r_hi,
+                             signif(s$p_lm, 2), signif(s$q_lm, 2), signif(s$q_family, 2)))
+  }) %>% mutate(panel = factor(panel, levels = unique(panel)))
+  p_i <- ggplot(df_i, aes(x_res, y_res)) +
+    geom_hline(yintercept = 0, color = "grey85") + geom_vline(xintercept = 0, color = "grey85") +
+    geom_abline(aes(intercept = 0, slope = slope), color = "grey30", linewidth = 0.7) +
+    geom_point(aes(fill = treatment), shape = 21, size = 2.4, stroke = 0.5, color = "black") +
+    facet_wrap(~ panel, scales = "free", ncol = 2) +
+    scale_fill_manual(values = arm_cols, name = "Arm") +
+    labs(x = "VST expression | arm, baseline", y = "Day-3 level | arm, baseline (model scale)",
+         title = sprintf("%s (%s), %s", short_name(name, 60), loc, ifelse(TISSUE == "F", "foot", "gill")),
+         subtitle = sprintf("Heatmap row %d of %d; n = %d animals; line = tested ANCOVA slope; selected by smallest p over the metrics",
+                            i, nrow(hm_genes), max(stats_i$n))) +
+    theme_bw(base_size = 10) +
+    theme(strip.text = element_text(size = 7.5), plot.title.position = "plot")
+  ggsave(file.path(SCATTER_DIR, sprintf("%02d_%s_%s.png", i, loc, file_slug(short_name(name, 34)))),
+         p_i, width = 8, height = 7, dpi = 110, bg = "white")
+}
+cat(nrow(hm_genes), "scatter figures written to", SCATTER_DIR, "\n")
 ```
 
 ---

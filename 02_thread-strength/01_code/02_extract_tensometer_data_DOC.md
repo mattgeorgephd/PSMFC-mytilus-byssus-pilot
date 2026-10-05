@@ -118,7 +118,8 @@ mean from a random-intercept model unreliable, so the count belongs next to the 
 ### QC plots
 
 `03_analyses/02_extract-tensometer-data/QC_plots/<source_folder>/<file>.jpg`, one per trace:
-raw force against time in blue with a loess smoother in red. Named after the source file, so
+raw force against time in blue with a loess smoother in red. They are written on every run and
+are git-ignored (they come out byte-different on every machine); run the step to see them. Named after the source file, so
 retries and flukes that share a mussel and thread never overwrite each other. The graphics
 device is closed in a `finally` block, so a plotting failure cannot leave it open and corrupt
 every later plot.

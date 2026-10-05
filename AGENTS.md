@@ -30,9 +30,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails,
   and its error quotes the failed step's own error from that step's log. Before the first
   stage it compares this R with `renv.lock` (`check_stack()`, `tools/run_steps.R`) and stops
-  within seconds if R's minor version or Bioconductor's differs or, when `07` or `08` is to
-  run, `GO.db` does not hold GO release 2026-01-23; its `check_versions: false` skips that
-  check (outputs are then not of record).
+  within seconds if R's minor version or Bioconductor's differs, if a package the pipeline
+  loads (`PIPELINE_PACKAGES`) is not on R's library path (put the `renv::restore()` library
+  there with `R_LIBS=<library>` in `.Renviron`), or, when `07` or `08` is to run, if `GO.db`
+  does not hold GO release 2026-01-23; its `check_versions: false` skips that check (outputs
+  are then not of record).
 - **One folder:** open the folder's own `.Rproj` and knit `01_code/00_run_*.Rmd`. Its
   `steps` parameter runs a subset; reports and logs go to `03_analyses/knit_html/`.
 - **One script:** open the folder's `.Rproj` first, so `here::here()` resolves to the folder,
@@ -192,6 +194,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **`_superseded/` folders:** records; do not edit, run or delete them.
 - **`template-oyster-pipeline/`:** reference code from another project, not part of this
   analysis.
-- **Git-ignored files** (`knit_html/`, `dds/*.rds`, BAM/SAM files, the genome and the Iso-Seq
-  FASTA): never force-add them.
+- **Git-ignored files** (`knit_html/`, `dds/*.rds`, BAM/SAM files, the genome, the Iso-Seq
+  FASTA and the tensometer QC plots in `02_thread-strength/03_analyses/02_extract-tensometer-data/QC_plots/`):
+  never force-add them.
 - **Generated tables and figures:** never hand-edit; change the code and rerun.

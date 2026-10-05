@@ -57,8 +57,9 @@ Knit this file from the repository root (`PSMFC-mytilus-byssus-pilot.Rproj`). Th
 each stage needs are listed in its folder's README; `renv.lock` records the library of the
 runs of record. Before the first stage, `check_stack()` (`tools/run_steps.R`) compares this R
 with `renv.lock` and stops within seconds, listing what differs, if R's minor version or
-Bioconductor's is another, or, when stage 07 or 08 is to run, if `GO.db` does not hold GO
-release 2026-01-23; without it a run on another R would stop only at stage 07, after half an
+Bioconductor's is another, if a package the pipeline loads is not installed in any library on
+R's path (it then prints `.libPaths()`), or, when stage 07 or 08 is to run, if `GO.db` does not
+hold GO release 2026-01-23; without it a run on another R would stop only at stage 07, after half an
 hour. It also reports `renv.lock` packages that are missing or at another version, without
 stopping. `check_versions: false` skips it (outputs are then not of record). When a stage
 fails, the error quotes the failed step's own error from its log.

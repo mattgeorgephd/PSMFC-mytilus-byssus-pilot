@@ -25,6 +25,7 @@ weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus prote
 │   └── _superseded/           gene-family count matrices written by the legacy script; not read
 └── 03_analyses/
     ├── gene_mechanics/     scripts 01 and 02, tissue-suffixed
+    │   └── candidate_scatter_F/, candidate_scatter_G/   script 01: one figure per heatmap gene
     ├── expr_tables/        script 03
     ├── byssus_genes/       script 04
     ├── go_mechanics/       script 05

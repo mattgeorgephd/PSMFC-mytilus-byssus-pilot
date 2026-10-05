@@ -89,16 +89,27 @@ finish_run <- function(run_log, html_dir, what) {
   invisible(run_log)
 }
 
+## The packages the pipeline's scripts load (library(), require(), requireNamespace() or
+## pkg::), from a scan of 02 to 09 and tools/ on 2026-10-05. Add a package here when a script
+## starts using one; check_stack() stops when any of them is missing.
+PIPELINE_PACKAGES <- c(
+  "AnnotationDbi", "BiocManager", "Biostrings", "DESeq2", "DT", "EnvStats", "GO.db", "GOSemSim",
+  "GSEABase", "GenomicAlignments", "GenomicRanges", "RColorBrewer", "apeglm", "ashr", "broom",
+  "clusterProfiler", "colorspace", "data.table", "dplyr", "emmeans", "enrichplot", "forcats",
+  "ggplot2", "ggvenn", "goseq", "gridExtra", "here", "httr", "jsonlite", "kableExtra", "knitr",
+  "openxlsx", "org.Hs.eg.db", "patchwork", "pheatmap", "purrr", "readr", "readxl", "rentrez",
+  "rmarkdown", "rrvgo", "rtracklayer", "scales", "stringr", "tibble", "tidyr", "tidyverse", "tm",
+  "topGO", "tximport")
+
 ## Before a run: does this R match the one the analysis is recorded with (renv.lock)?
 ## Stops, listing every mismatch, when R's minor version or Bioconductor's differs from
-## renv.lock or, with `need_go`, when GO.db does not hold the GO release of record
-## (GO_RELEASE_OF_RECORD, from pipeline_checks.R); 07 and 08 stop on that anyway, but only
-## after the stages before them have run. Packages of renv.lock that are missing or at another
-## version are reported, not stopped on: the lock records the whole library the pipeline ran
-## with, not only what it loads.
-check_stack <- function(lockfile, need_go = TRUE,
-                        key = c("DESeq2", "apeglm", "topGO", "goseq", "clusterProfiler",
-                                "rrvgo", "GOSemSim", "GO.db", "emmeans")) {
+## renv.lock, when a package the pipeline loads (`key`, PIPELINE_PACKAGES) is not installed in
+## any library on R's path, or, with `need_go`, when GO.db does not hold the GO release of
+## record (GO_RELEASE_OF_RECORD, from pipeline_checks.R); 07 and 08 stop on that anyway, but
+## only after the stages before them have run. Other renv.lock packages that are missing, and
+## packages at another version, are reported, not stopped on: the lock records the whole
+## library the pipeline ran with, not only what it loads.
+check_stack <- function(lockfile, need_go = TRUE, key = PIPELINE_PACKAGES) {
   txt <- paste(readLines(lockfile, warn = FALSE), collapse = "\n")
   section_version <- function(name) {
     rx <- sprintf('(?s).*?"%s"\\s*:\\s*\\{\\s*"Version"\\s*:\\s*"([^"]+)".*', name)
@@ -132,17 +143,22 @@ check_stack <- function(lockfile, need_go = TRUE,
   missing <- names(rec)[!vapply(names(rec), have, logical(1))]
   present <- setdiff(names(rec), missing)
   differ  <- present[vapply(present, function(p) utils::packageVersion(p) != package_version(rec[[p]]), logical(1))]
+  key_missing <- key[!vapply(key, have, logical(1))]
+  if (length(key_missing))
+    problems <- c(problems, sprintf(
+      "%d of the %d packages the pipeline loads are not installed in any library on R's path: %s. R's library path (.libPaths()) is %s; if they are in another library (for example the one renv::restore() filled), add it with R_LIBS=<library> in .Renviron and restart R",
+      length(key_missing), length(key), paste(key_missing, collapse = ", "),
+      paste(.libPaths(), collapse = "; ")))
 
   message("R ", r_now, " (renv.lock: ", rec_r, "); Bioconductor ", bioc_now, " (renv.lock: ", rec_bioc, "); ", go_now)
   message(length(present), " of ", length(rec), " renv.lock packages installed, ", length(differ),
           " of them at another version",
           if (length(missing)) paste0("; missing: ", paste(utils::head(missing, 15), collapse = ", "),
                                       if (length(missing) > 15) ", ..." else "") else "")
-  key_differ <- intersect(key, c(differ, missing))
+  key_differ <- intersect(intersect(key, names(rec)), differ)
   if (length(key_differ))
-    message("Not at the recorded version: ", paste(sprintf("%s %s (renv.lock %s)", key_differ,
-      vapply(key_differ, function(p) if (have(p)) as.character(utils::packageVersion(p)) else "missing", ""),
-      rec[key_differ]), collapse = ", "))
+    message("Pipeline packages not at the recorded version: ", paste(sprintf("%s %s (renv.lock %s)", key_differ,
+      vapply(key_differ, function(p) as.character(utils::packageVersion(p)), ""), rec[key_differ]), collapse = ", "))
   if (length(problems)) {
     op <- options(warning.length = 8170)
     on.exit(options(op))

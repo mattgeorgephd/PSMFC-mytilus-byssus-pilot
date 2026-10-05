@@ -178,7 +178,10 @@ the other sections use the new ones.
   `00_run_pipeline.Rmd` now checks R, Bioconductor and the GO release against `renv.lock`
   before the first stage (`check_stack()`, parameter `check_versions`), and every runner's
   error quotes the failed step's own error (`finish_run()`). Runner code only: no output
-  changes.
+  changes. Then (2026-10-05) the check also stops when a package the pipeline loads is not on
+  R's library path (a fresh R 4.6.1 whose `renv::restore()` library was not in `R_LIBS`), and the
+  tensometer QC plots are no longer committed (383 JPEGs rewritten by every run; about 8 MB of
+  history per run from another machine).
 
 ## In progress
 

@@ -230,6 +230,7 @@ score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 | `RUN_provenance_<T>.txt` | settings of scripts 01 and 02 (arms, covariates, model, metrics with scale and tier, modules, family sizes), the code commit that ran and whether tracked files differed from it, R and package versions, and an MD5 of every input, all with repository-relative paths |
 | `animal_reconciliation_<T>.csv` | animals whose presence in the fits differs from `02_data/expected_animals.csv` (empty when they agree) |
 | `candidate_heatmap_<T>.png`, `top_candidate_scatter_<T>.png`, `best_hit_per_metric_scatter_<T>.png` | figures of genes selected by smallest p (effects biased away from zero). The two scatter files are added-variable plots: day-3 level and expression each residualised on arm and baseline, with the tested slope drawn through the origin, points coloured by arm |
+| `candidate_scatter_<T>/NN_<LOC>_<name>.png` | one figure per heatmap gene (60 per tissue), numbered in the heatmap's row order: an added-variable panel per metric, each with partial r and its 95% interval, p, `q_lm` and `q_family`. Rewritten on every run (the folder's figures are removed first) |
 
 ### `03_analyses/expr_tables/` (script 03) and `03_analyses/byssus_genes/` (script 04)
 
