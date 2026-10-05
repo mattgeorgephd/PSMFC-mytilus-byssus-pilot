@@ -27,7 +27,12 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **Everything:** knit `00_run_pipeline.Rmd` at the repository root (open
   `PSMFC-mytilus-byssus-pilot.Rproj`). About 35 minutes on four cores; on Windows the GO steps
   in `07` run on one core (R cannot fork there), so allow longer. It knits each folder's
-  runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails.
+  runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails,
+  and its error quotes the failed step's own error from that step's log. Before the first
+  stage it compares this R with `renv.lock` (`check_stack()`, `tools/run_steps.R`) and stops
+  within seconds if R's minor version or Bioconductor's differs or, when `07` or `08` is to
+  run, `GO.db` does not hold GO release 2026-01-23; its `check_versions: false` skips that
+  check (outputs are then not of record).
 - **One folder:** open the folder's own `.Rproj` and knit `01_code/00_run_*.Rmd`. Its
   `steps` parameter runs a subset; reports and logs go to `03_analyses/knit_html/`.
 - **One script:** open the folder's `.Rproj` first, so `here::here()` resolves to the folder,

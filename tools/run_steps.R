@@ -51,18 +51,108 @@ run_steps <- function(code_dir, html_dir, steps = "all", step_params = list(),
     log[[length(log) + 1]] <- data.frame(
       step = substr(s, 1, 2), script = s, run = sub("^_", "", suffix), ok = ok,
       minutes = round(as.numeric(difftime(Sys.time(), t0, units = "mins")), 1),
-      html = if (ok) out else NA_character_)
+      html = if (ok) out else NA_character_, log = sub("[.]html$", ".log", out))
     if (!ok && isTRUE(stop_on_fail)) { message("Stopping (stop_on_fail = TRUE)."); break }
   }
   do.call(rbind, log)
 }
 
-## Write the run log and fail the runner if any step failed.
+## The error of a failed step, from its log: the lines from the first error line among the
+## last 80, at most `n` of them (the last `n` lines if no line starts with "Error").
+log_tail <- function(log_file, n = 40) {
+  if (!file.exists(log_file)) return("(no log)")
+  x <- readLines(log_file, warn = FALSE)
+  x <- x[nzchar(trimws(x))]
+  if (!length(x)) return("(empty log)")
+  last <- utils::tail(seq_along(x), 80)
+  from <- last[startsWith(x[last], "Error")][1]
+  if (is.na(from)) return(utils::tail(x, n))
+  x[from:min(length(x), from + n - 1)]
+}
+
+## Write the run log and fail the runner if any step failed. The error quotes each failed
+## step's error from its log (`log` column, in html_dir), so the stage log and the knit
+## console show the cause, not only where to look for it. Knitting captures message() output
+## into the report, which is not written when the knit fails, so the error message carries it.
 finish_run <- function(run_log, html_dir, what) {
   print(run_log)
   utils::write.csv(run_log, file.path(html_dir, "run_log.csv"), row.names = FALSE)
-  if (!all(run_log$ok))
-    stop(what, " step(s) failed: ", paste(run_log$script[!run_log$ok], collapse = ", "),
-         ". See the .log files in ", html_dir, ".", call. = FALSE)
+  if (!all(run_log$ok)) {
+    failed <- run_log[!run_log$ok, , drop = FALSE]
+    quoted <- unlist(lapply(failed$log, function(f)
+      c("", paste0("---- ", f, " ----"), log_tail(file.path(html_dir, f)))))
+    op <- options(warning.length = 8170)   # R's longest error message; the default cuts at 1000
+    on.exit(options(op))
+    stop(what, " step(s) failed: ", paste(failed$script, collapse = ", "),
+         ". Logs: ", html_dir, "\n", paste(quoted, collapse = "\n"), call. = FALSE)
+  }
   invisible(run_log)
+}
+
+## Before a run: does this R match the one the analysis is recorded with (renv.lock)?
+## Stops, listing every mismatch, when R's minor version or Bioconductor's differs from
+## renv.lock or, with `need_go`, when GO.db does not hold the GO release of record
+## (GO_RELEASE_OF_RECORD, from pipeline_checks.R); 07 and 08 stop on that anyway, but only
+## after the stages before them have run. Packages of renv.lock that are missing or at another
+## version are reported, not stopped on: the lock records the whole library the pipeline ran
+## with, not only what it loads.
+check_stack <- function(lockfile, need_go = TRUE,
+                        key = c("DESeq2", "apeglm", "topGO", "goseq", "clusterProfiler",
+                                "rrvgo", "GOSemSim", "GO.db", "emmeans")) {
+  txt <- paste(readLines(lockfile, warn = FALSE), collapse = "\n")
+  section_version <- function(name) {
+    rx <- sprintf('(?s).*?"%s"\\s*:\\s*\\{\\s*"Version"\\s*:\\s*"([^"]+)".*', name)
+    if (grepl(rx, txt, perl = TRUE)) sub(rx, "\\1", txt, perl = TRUE)
+    else stop(lockfile, " records no ", name, " version", call. = FALSE)
+  }
+  rec_r <- section_version("R")
+  rec_bioc <- section_version("Bioconductor")
+  pv <- regmatches(txt, gregexpr('"Package"\\s*:\\s*"[^"]+",\\s*"Version"\\s*:\\s*"[^"]+"', txt))[[1]]
+  rec <- setNames(sub('.*"Version"\\s*:\\s*"([^"]+)"$', "\\1", pv), sub('^"Package"\\s*:\\s*"([^"]+)".*', "\\1", pv))
+  minor <- function(v) paste(unlist(strsplit(as.character(v), "[.-]"))[1:2], collapse = ".")
+  have <- function(p) nzchar(system.file(package = p))
+
+  problems <- character(0)
+  r_now <- paste(R.version$major, R.version$minor, sep = ".")
+  if (minor(r_now) != minor(rec_r)) problems <- c(problems, sprintf("R %s; recorded R %s", r_now, rec_r))
+  bioc_now <- if (have("BiocVersion")) minor(utils::packageVersion("BiocVersion")) else "not known (BiocVersion not installed)"
+  if (have("BiocVersion") && bioc_now != rec_bioc)
+    problems <- c(problems, sprintf("Bioconductor %s; recorded Bioconductor %s", bioc_now, rec_bioc))
+  go_now <- "GO release not checked (no GO stage in this run)"
+  if (need_go) {
+    go_release <- if (have("GO.db")) tryCatch({
+      info <- GO.db::GO_dbInfo()
+      info$value[info$name == "GOSOURCEDATE"]
+    }, error = function(e) NA_character_) else NA_character_
+    go_now <- if (!have("GO.db")) "GO.db not installed" else if (is.na(go_release)) "GO.db does not load" else
+      sprintf("GO.db %s, GO release %s", utils::packageVersion("GO.db"), go_release)
+    if (!identical(go_release, GO_RELEASE_OF_RECORD))
+      problems <- c(problems, sprintf("%s; 07 and 08 need GO release %s (GO.db %s)", go_now, GO_RELEASE_OF_RECORD, rec[["GO.db"]]))
+  }
+  missing <- names(rec)[!vapply(names(rec), have, logical(1))]
+  present <- setdiff(names(rec), missing)
+  differ  <- present[vapply(present, function(p) utils::packageVersion(p) != package_version(rec[[p]]), logical(1))]
+
+  message("R ", r_now, " (renv.lock: ", rec_r, "); Bioconductor ", bioc_now, " (renv.lock: ", rec_bioc, "); ", go_now)
+  message(length(present), " of ", length(rec), " renv.lock packages installed, ", length(differ),
+          " of them at another version",
+          if (length(missing)) paste0("; missing: ", paste(utils::head(missing, 15), collapse = ", "),
+                                      if (length(missing) > 15) ", ..." else "") else "")
+  key_differ <- intersect(key, c(differ, missing))
+  if (length(key_differ))
+    message("Not at the recorded version: ", paste(sprintf("%s %s (renv.lock %s)", key_differ,
+      vapply(key_differ, function(p) if (have(p)) as.character(utils::packageVersion(p)) else "missing", ""),
+      rec[key_differ]), collapse = ", "))
+  if (length(problems)) {
+    op <- options(warning.length = 8170)
+    on.exit(options(op))
+    stop("This R does not match the one the analysis is recorded with (", basename(lockfile), "):\n",
+         paste0("  - ", problems, collapse = "\n"),
+         "\nInstall the recorded stack (AGENTS.md, How to run): with R ", rec_r,
+         ", install.packages(\"renv\") and renv::restore(lockfile = \"renv.lock\", library = \"<library>\", ",
+         "prompt = FALSE), make <library> R's library (R_LIBS in .Renviron) and restart R. To run anyway, ",
+         "knit with check_versions: false; the outputs are then not of record, and 07 and 08 still stop ",
+         "unless GO.db holds GO release ", GO_RELEASE_OF_RECORD, ".", call. = FALSE)
+  }
+  invisible(TRUE)
 }

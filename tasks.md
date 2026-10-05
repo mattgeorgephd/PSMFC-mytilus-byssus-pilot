@@ -1,7 +1,7 @@
 # tasks.md
 
 Current sprint: make the analysis run end to end, from thread strength and Tag-seq counts
-to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-04.
+to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-05.
 Conventions and how to run are in `AGENTS.md`.
 
 The analysis folders were renumbered on 2026-10-03 so that their numbers are the run order:
@@ -173,6 +173,12 @@ the other sections use the new ones.
   protein-1" count as byssal accessory genes in `09`. Whole pipeline rerun from a clean commit:
   every step TRUE, `09` checks 0 failed; mitochondrial loci and DEGs unchanged; 177 of the 296
   TC GO terms of record remain among 285 (most of the change from the new UniProt records).
+- **Runner checks** (2026-10-05, pull request GO-db-2026). A run on R 4.2.2 with `GO.db`
+  3.16.0 stopped at stage `07` after 37 minutes, and its stage log only pointed to other logs.
+  `00_run_pipeline.Rmd` now checks R, Bioconductor and the GO release against `renv.lock`
+  before the first stage (`check_stack()`, parameter `check_versions`), and every runner's
+  error quotes the failed step's own error (`finish_run()`). Runner code only: no output
+  changes.
 
 ## In progress
 
