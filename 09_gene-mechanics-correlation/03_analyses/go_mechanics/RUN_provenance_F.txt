@@ -1,5 +1,5 @@
 [05_go_term_mechanics.Rmd]
-generated            : 2026-10-04 16:50:09
+generated            : 2026-10-05 00:46:10
 tissue               : F
 reported test        : ANCOVA level_day3 ~ score + treatment + level_baseline (script 01's metrics, scales and animals)
 metrics [tier]       : mean_force [primary], pad_area [primary], max_force [exploratory], adhesion_kpa [exploratory]
@@ -8,23 +8,23 @@ MIN_GENES / FDR_ALPHA: 3 / 0.1
 sets scored          : DEG set 6, GO term 138, mitochondrial 1 (of 155 sets)
 animals in the fits  : 45
 checks               : 5 run, 0 failed
-code commit          : cc48b588740f
+code commit          : aa61cc805aea
 uncommitted changes  : no
-R                    : R version 4.6.1 (2026-06-24)
+R                    : R version 4.6.1 (2026-06-24 ucrt)
 packages             : dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):
   df07d0f61d5e1404032d9f65f47d9b1b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/metrics_config_F.csv
   7974bb7c76dc553075657d35fd37ab22  09_gene-mechanics-correlation/03_analyses/gene_mechanics/paired_sample_manifest_F.csv
-  3b1f2bba838ba40aef8f63ba25225a94  09_gene-mechanics-correlation/03_analyses/gene_mechanics/vst_paired_F.csv
-  cbe1308c89e5cbcfb8ccb9ee8d1235e0  05_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_siggene.csv
-  e56aa9b3aa3b9d6b55f49288f4c315c1  05_differential-expression/03_analyses/DEG_lists/Foot/FOW_TC_siggene.csv
-  afaaf1e3b9d28ff71b0f9de02a46b772  05_differential-expression/03_analyses/DEG_lists/Foot/FDO_TC_siggene.csv
-  76a55932efad3b29fd40858bfab9fd1f  07_enrichment/03_analyses/02_topgo/topgo_enriched.csv
-  8ada039d8139d3c1810eb1fbc8658ded  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_BP.csv
-  2722dca80f03a4895c064f940d4c7657  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_MF.csv
-  7ffcd22d3d1e520cc461d11ffb33c066  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_CC.csv
-  89eccfdfe8d264d8ec9097ec332f8448  05_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv
-  6cdbf404a31c715b34bcf8ad503dcb0c  09_gene-mechanics-correlation/01_code/05_go_term_mechanics.Rmd
-  a0591028d5c3be67cb4d0daaa8562161  tools/pipeline_checks.R
-  c05a89ae4df7045cca11ac68c7a94657  tools/plot_style.R
-  9ca04deaac38400449550bdbdb27d2e1  tools/gene_ids.R
+  7019c75402bc3e70b9c8b12541381c7a  09_gene-mechanics-correlation/03_analyses/gene_mechanics/vst_paired_F.csv
+  b2464ef36b629d920f99a0250a1c5404  05_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_siggene.csv
+  bd37c4afe5fdb10a04759173d3886adb  05_differential-expression/03_analyses/DEG_lists/Foot/FOW_TC_siggene.csv
+  e64294f333c2effe621f2f606c97522c  05_differential-expression/03_analyses/DEG_lists/Foot/FDO_TC_siggene.csv
+  0ae885996b404f6856358bdaf4afff92  07_enrichment/03_analyses/02_topgo/topgo_enriched.csv
+  c7ac37d8b3b32cd14d4c671ded806aeb  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_BP.csv
+  a7f8b621a24c78816236972c3cbd1042  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_MF.csv
+  6d76c2ebd73a8274fb4b88090217ff9b  07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_CC.csv
+  31a58948061faa5687528f84e3fa856b  05_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv
+  595dc427c0c67cc73288f480cb270544  09_gene-mechanics-correlation/01_code/05_go_term_mechanics.Rmd
+  c79797c4a37e86666a1d723a018c2d5f  tools/pipeline_checks.R
+  1526bbc78ff02b5e4e399b8776996085  tools/plot_style.R
+  36a8cc5a1452358d41bd89ea4722c4cb  tools/gene_ids.R

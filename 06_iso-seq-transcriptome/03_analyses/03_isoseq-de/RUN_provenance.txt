@@ -1,26 +1,26 @@
 [03_isoseq_de_comparison.Rmd]
-generated            : 2026-10-04 16:37:37
+generated            : 2026-10-05 00:15:38
 model                : as 05: ~ treatment (day-3 control reference), >= 10 counts in a third of samples, apeglm, Wald padj
 DEG                  : padj < 0.05
 contrasts            : FOA_TC, FOW_TC, FDO_TC, GOA_TC, GOW_TC, GDO_TC
-code commit          : cc48b588740f
+code commit          : aa61cc805aea
 uncommitted changes  : no
-R                    : R version 4.6.1 (2026-06-24)
+R                    : R version 4.6.1 (2026-06-24 ucrt)
 packages             : DESeq2 1.52.0, apeglm 1.34.0, data.table 1.18.6.1
 inputs (md5, repo-relative path):
   8eba1aa421b3ad439b548576f88a7916  06_iso-seq-transcriptome/03_analyses/02_salmon/gene_counts.csv.gz
-  94d64423166c25b28560b74b69e3500e  06_iso-seq-transcriptome/03_analyses/02_salmon/salmon_mapping_summary.csv
+  1f2b2108ef3ddfe62c2422c671f1720b  06_iso-seq-transcriptome/03_analyses/02_salmon/salmon_mapping_summary.csv
   775bbc4037ddb667dfcc2fec0765f1e8  04_sequence-alignment/03_analyses/isoform-gene-map/isoform_gene_map.csv.gz
-  bf6987d93a921e9040202a0b8925b56a  05_differential-expression/03_analyses/DEG_lists/contrasts.csv
-  cac434ef874e928a94840791f9d9f301  05_differential-expression/03_analyses/DEG_lists/contrast_samples.csv
-  981d5f0b2112100eff816ccd1ada51cb  05_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_apeglm.csv
-  e5932418c1ea8b2abad6a64d6ee2e63e  05_differential-expression/03_analyses/DEG_lists/Foot/FOW_TC_apeglm.csv
-  2681c603615c30d03b35b76d52545597  05_differential-expression/03_analyses/DEG_lists/Foot/FDO_TC_apeglm.csv
-  a9942c94d6b03b2e331e349b78350177  05_differential-expression/03_analyses/DEG_lists/Gill/GOA_TC_apeglm.csv
-  52491e5ffaa53a4658facbe0c46ef775  05_differential-expression/03_analyses/DEG_lists/Gill/GOW_TC_apeglm.csv
-  c25d90b80e2880c4b2b8187ed561fcbb  05_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_apeglm.csv
-  e12c6deb0c305a3f220e15d8af3409b3  05_differential-expression/03_analyses/count_matrix/treatmentinfo_clean.csv
-  296679a4a82e85a9cd79f3d6570ed33a  05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
-  4c502353ce337d0b48fbf75fea00dca3  05_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv
-  e73cb6dcfa9ea53d13acfa6399a12e58  04_sequence-alignment/03_analyses/hisat/multiqc_data/multiqc_bowtie2.txt
-  0735b681ef1cdc6da5b9c75f88272bf3  06_iso-seq-transcriptome/01_code/03_isoseq_de_comparison.Rmd
+  efdb902b25c206061c66a6d5d3ea2c5e  05_differential-expression/03_analyses/DEG_lists/contrasts.csv
+  33098e3b6708f7c40cc55e75727f3e53  05_differential-expression/03_analyses/DEG_lists/contrast_samples.csv
+  18c0f61dc4ecbc8dd38a4ae0010a75d7  05_differential-expression/03_analyses/DEG_lists/Foot/FOA_TC_apeglm.csv
+  9c8b39bf91549ebcf3512d4db9665249  05_differential-expression/03_analyses/DEG_lists/Foot/FOW_TC_apeglm.csv
+  89ac19318892c9bd82448179f304370b  05_differential-expression/03_analyses/DEG_lists/Foot/FDO_TC_apeglm.csv
+  be56fac2c12dff7c0837735c8df5aa7e  05_differential-expression/03_analyses/DEG_lists/Gill/GOA_TC_apeglm.csv
+  27f9f064507a87c72b9d4a3474d11cb5  05_differential-expression/03_analyses/DEG_lists/Gill/GOW_TC_apeglm.csv
+  2c719e513a9e0edd0239ace85f83036a  05_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_apeglm.csv
+  0d7fe999fd56289fa6b68f44e4ab563a  05_differential-expression/03_analyses/count_matrix/treatmentinfo_clean.csv
+  c3e4dc9182babebebdfad12dc9b6e823  05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
+  ab84ffe942daa19fd0e6748d92d4e2e6  05_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv
+  9467ce3a4df5f57e29d36e085e9d8860  04_sequence-alignment/03_analyses/hisat/multiqc_data/multiqc_bowtie2.txt
+  999fce578a93faf17baedee2db50c611  06_iso-seq-transcriptome/01_code/03_isoseq_de_comparison.Rmd
