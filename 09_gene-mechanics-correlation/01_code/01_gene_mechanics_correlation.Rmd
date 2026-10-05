@@ -154,8 +154,11 @@ CANDIDATE_KEYWORDS <- paste(
   "endoplasmic reticulum chaperone", "hypoxia up-regulated",
   # hypoxia signalling
   "hypoxia-inducible", "Egl nine", "prolyl 4-hydroxylase", "prolyl hydroxylase",
-  # translational machinery (aminoacyl-tRNA synthetases)
-  "--tRNA", "tRNA ligase", "aminoacyl",
+  # translational machinery (aminoacyl-tRNA synthetases and their complex). "aminoacyl" alone
+  # also matched aminoacylase-1 and acylaminoacyl-peptidase, which act on N-acyl amino acids and
+  # peptides, not tRNA; "aminoacyl[- ]tRNA" keeps the synthetase complex (AIMP1, AIMP2) and
+  # D-aminoacyl-tRNA deacylase (2026-10-05)
+  "--tRNA", "tRNA ligase", "aminoacyl[- ]tRNA",
   # oxidative stress / detox
   "superoxide", "glutathione", "catalase", "peroxiredoxin", "dual oxidase",
   sep = "|"

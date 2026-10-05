@@ -163,7 +163,7 @@ modules <- list(
   HIF_hypoxia       = "hypoxia-inducible|Egl nine|prolyl 4-hydroxylase|prolyl hydroxylase|hypoxia up-regulated",
   oxidative_detox   = "superoxide|glutathione|catalase|peroxiredoxin|dual oxidase|peroxidase",
   HSP_proteostasis  = "heat shock|Hsp|stress-70|chaperone|BiP|peptidyl-prolyl",
-  tRNA_translation  = "--tRNA|tRNA ligase|aminoacyl",
+  tRNA_translation  = "--tRNA|tRNA ligase|aminoacyl[- ]tRNA",   # as script 01's keywords: not aminoacylase-1 or acylaminoacyl-peptidase
   byssal_collagen   = "collagen|byss|foot protein|adhesive plaque|polyphenolic|thread matrix protein|YGH-rich protein|protease inhibitor-like protein-1|C1q-domain-containing protein-1|TSP_1 domain containing protein-1",
   byssal_structural = "foot protein|adhesive plaque|polyphenolic|byssal protein-|preCol|precollagen|byssal EP|ACDC|thread matrix protein|nongradient byssal|YGH-rich protein"
 )

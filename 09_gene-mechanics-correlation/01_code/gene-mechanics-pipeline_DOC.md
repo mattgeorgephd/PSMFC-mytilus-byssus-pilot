@@ -274,10 +274,15 @@ after writing `run_log.csv`, if any step failed.
   family: in the foot run 2 of the 20 `byssal_structural` candidates are excluded and 5 more
   are flagged `caution` (`candidate_genes_F.csv`; 2 of 18 and 5 with the 2024 BLAST search;
   with the previous StringTie + prepDE counts, 6 of 16 and 5). A null result for those genes is not evidence of no association.
-- The candidate keywords are regexes on UniProt names; `Hsp` and `chaperone` in particular
-  pull in co-chaperones and assembly factors, so the `HSP_proteostasis` module is broad.
-  Tighten `CANDIDATE_KEYWORDS` or raise `CANDIDATE_MIN_PIDENT` if a narrower family is
-  wanted.
+- The candidate keywords are regexes on UniProt names, matched without regard to case, so a
+  short keyword can match inside an unrelated name. `aminoacyl` matched aminoacylase-1 and
+  acylaminoacyl-peptidase until 2026-10-05; it is now `aminoacyl[- ]tRNA` (scripts 01 and 02).
+  `Hsp` still matches abbreviations inside names ("HSPG", "HsPDE8B", "hSPL", "HSPK 21",
+  "CRHSP-24"), which brings in 6 foot and 9 gill candidates with no heat-shock role (perlecan,
+  phosphodiesterase 8B, sphingosine-1-phosphate lyase and phosphatase, Nek2, and others) and
+  PERK, an ER-stress kinase, by its abbreviation "HsPEK"; and `chaperone` pulls in histone
+  and assembly chaperones, so the `HSP_proteostasis` module is broad. Tighten
+  `CANDIDATE_KEYWORDS` or raise `CANDIDATE_MIN_PIDENT` if a narrower family is wanted.
 
 ---
 
