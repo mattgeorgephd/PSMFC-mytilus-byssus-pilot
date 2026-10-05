@@ -270,9 +270,7 @@ tRNA_translation,LOC134714403,Phenylalanine--tRNA ligase alpha subunit B (EC 6.1
 tRNA_translation,LOC134716258,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Protein lactyltransferase AARS1) (EC 6.-.-.-) (Renal carcinoma antigen NY-REN-42)",42.092,0,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134711730,"Tryptophan--tRNA ligase, cytoplasmic (EC 6.1.1.2) (Tryptophanyl-tRNA synthetase) (TrpRS) [Cleaved into: T1-TrpRS; T2-TrpRS]",72.864,0,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134688249,tRNA ligase complex-associated NAD(P)H dehydrogenase PYROXD1 (EC 1.6.99.1) (Pyridine nucleotide-disulfide oxidoreductase domain-containing protein 1),58.025,0,genome_blast,FALSE,TRUE
-tRNA_translation,LOC134689775,Acylamino-acid-releasing enzyme (AARE) (EC 3.4.19.1) (Acyl-peptide hydrolase) (APH) (Acylaminoacyl-peptidase) (fMet aminopeptidase) (fMAP),41.655,0,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134712267,"Methionine--tRNA ligase, mitochondrial (EC 6.1.1.10) (Methionyl-tRNA synthetase 2) (Mitochondrial methionyl-tRNA synthetase) (MtMetRS)",49.171,4.4899999999999985e-174,genome_blast,FALSE,TRUE
-tRNA_translation,LOC134691271,Aminoacylase-1 (ACY-1) (EC 3.5.1.14) (N-acyl-L-amino-acid amidohydrolase),56.359,6.1999999999999994e-173,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134697106,"Asparaginyl-tRNA synthetase (AsnRS) (NARS2) (EC 6.1.1.22) (Asparagine--tRNA ligase, mitochondrial)",49.348,2.1299999999999993e-164,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134722070,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)",55.087,1.7099999999999995e-163,genome_blast,FALSE,TRUE
 tRNA_translation,LOC134697966,"Probable proline--tRNA ligase, mitochondrial (EC 6.1.1.15) (Prolyl-tRNA synthetase) (ProRS) (Prolyl-tRNA synthetase 2, mitochondrial)",49.879,2.41e-149,genome_blast,FALSE,TRUE

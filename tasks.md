@@ -182,6 +182,17 @@ the other sections use the new ones.
   R's library path (a fresh R 4.6.1 whose `renv::restore()` library was not in `R_LIBS`), and the
   tensometer QC plots are no longer committed (383 JPEGs rewritten by every run; about 8 MB of
   history per run from another machine).
+- **Candidate keyword** (2026-10-05, pull request GO-db-2026). In `09` the tRNA-synthetase
+  keyword `aminoacyl` also matched aminoacylase-1 and acylaminoacyl-peptidase, enzymes of
+  N-acyl amino acids and peptides; scripts 01 and 02 now use `aminoacyl[- ]tRNA`. The two genes
+  leave both tissues' candidate sets (259 foot and 324 gill candidates tested) and the
+  `tRNA_translation` module. Slopes and p-values are unchanged; q-values move by up to 0.09 and
+  family q-values by up to 0.11 (BH over two fewer genes: glutathione peroxidase 7 with the
+  strongest thread in gill goes from family q 0.14 to 0.25), and the gill HSP70-family association with plaque area
+  keeps q 0.036 (family q 0.072). Aminoacylase-1 had been the gill's strongest adhesion
+  candidate (q 0.14). `Hsp` still matches abbreviations inside unrelated names (perlecan's
+  "HSPG", "HsPDE8B" and others: 6 foot and 9 gill candidates; DOC, caveats); whether to
+  tighten it is open.
 
 ## In progress
 

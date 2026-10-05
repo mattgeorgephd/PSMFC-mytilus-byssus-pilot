@@ -64,7 +64,6 @@ LOC134719757,Foot protein 2,85.981,0,genome_blast,FALSE,TRUE,TRUE,0.022,ok,TRUE
 LOC134712495,Amine oxidase [flavin-containing] B (EC 1.4.3.21) (EC 1.4.3.4) (Monoamine oxidase type B) (MAO-B),58.414,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134725830,Protein disulfide-isomerase (PDI) (EC 5.3.4.1) (Cellular thyroid hormone-binding protein) (Prolyl 4-hydroxylase subunit beta) (p55),63.053,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134688249,tRNA ligase complex-associated NAD(P)H dehydrogenase PYROXD1 (EC 1.6.99.1) (Pyridine nucleotide-disulfide oxidoreductase domain-containing protein 1),58.025,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
-LOC134689775,Acylamino-acid-releasing enzyme (AARE) (EC 3.4.19.1) (Acyl-peptide hydrolase) (APH) (Acylaminoacyl-peptidase) (fMet aminopeptidase) (fMAP),41.655,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134715627,Eukaryotic translation initiation factor 2-alpha kinase 3 (EC 2.7.11.1) (PRKR-like endoplasmic reticulum kinase) (Pancreatic eIF2-alpha kinase) (HsPEK) (Protein tyrosine kinase EIF2AK3) (EC 2.7.10.2),37.084,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134714798,"Aryl hydrocarbon receptor nuclear translocator (ARNT protein) (Dioxin receptor, nuclear translocator) (Hypoxia-inducible factor 1-beta) (HIF-1-beta) (HIF1-beta)",63.573,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134712292,"Glutathione reductase, mitochondrial (GR) (GRase) (EC 1.8.1.7)",62.391,0,genome_blast,FALSE,TRUE,FALSE,0.043,ok,TRUE
@@ -78,7 +77,6 @@ LOC134715935,Diamine oxidase [copper-containing] (Diamine oxidase) (EC 1.4.3.22)
 LOC134712267,"Methionine--tRNA ligase, mitochondrial (EC 6.1.1.10) (Methionyl-tRNA synthetase 2) (Mitochondrial methionyl-tRNA synthetase) (MtMetRS)",49.171,4.489999999999999e-174,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134710785,YGH-rich protein-3,65.021,2.16e-161,genome_blast,FALSE,TRUE,TRUE,0.022,ok,TRUE
 LOC134725894,A disintegrin and metalloproteinase with thrombospondin motifs 3 (ADAM-TS 3) (ADAM-TS3) (ADAMTS-3) (EC 3.4.24.-) (Procollagen II N-proteinase) (PC II-NP) (Procollagen II amino propeptide-processing enzyme),33.223,9.019999999999999e-153,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
-LOC134691271,Aminoacylase-1 (ACY-1) (EC 3.5.1.14) (N-acyl-L-amino-acid amidohydrolase),56.359,6.1999999999999994e-173,genome_blast,FALSE,TRUE,FALSE,0.043,ok,TRUE
 LOC134721046,Glutathione hydrolase 1 proenzyme (EC 3.4.19.13) (Gamma-glutamyltransferase 1) (Gamma-glutamyltranspeptidase 1) (GGT 1) (EC 2.3.2.2) (Leukotriene-C4 hydrolase) (EC 3.4.19.14) (CD antigen CD224) [Cleaved into: Glutathione hydrolase 1 heavy chain; Glutathione hydrolase 1 light chain],46.296,2.2e-164,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134725152,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)",47.124,5.859999999999999e-166,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134722070,"Phenylalanine--tRNA ligase, mitochondrial (EC 6.1.1.20) (Phenylalanyl-tRNA synthetase) (PheRS)",55.087,1.7099999999999998e-163,genome_blast,FALSE,TRUE,FALSE,0.022,ok,TRUE

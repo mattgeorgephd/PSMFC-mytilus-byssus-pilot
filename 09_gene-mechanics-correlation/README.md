@@ -86,7 +86,7 @@ family too (`best_hits_<T>.csv`):
 
 - **Gill, candidate, plaque area (primary).** Animals that express LOC134718612 more strongly
   have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.036
-  over the 326 candidates, 0.072 over the primary family). It is annotated as heat shock 70 kDa
+  over the 324 gill candidates tested, 0.072 over the primary family). It is annotated as heat shock 70 kDa
   protein 12A, but only from a 32% identity BLAST hit, so it is a distant HSP70-family gene
   rather than a confident ortholog; it is expressed at a low level in gill (DESeq2 base mean
   about 10) and is not a TC DEG. Leaving out its most influential animal (T136) gives p 1.6e-5.
@@ -100,7 +100,10 @@ family too (`best_hits_<T>.csv`):
   the animals with less of it make weaker threads. Robust to leaving out one animal.
 
 The next candidates are glutathione peroxidase 7 with the strongest thread in gill
-(exploratory, q 0.13); the lowest foot candidate q is 0.48, and no module comes near (lowest q 0.61).
+(exploratory, q 0.12); the lowest foot candidate q is 0.48, and no module comes near (lowest q 0.61).
+Until 2026-10-05 the gill's next result was aminoacylase-1 with adhesion (q 0.14), but it was
+a candidate only because the keyword `aminoacyl`, meant for tRNA synthetases, matched its name;
+the keyword is now `aminoacyl[- ]tRNA` (`01_code/gene-mechanics-pipeline_DOC.md`, caveats).
 
 Script 05 puts the sets the expression analysis found through the same ANCOVA: the up- and
 the down-regulated DEGs of each stressor, the genes behind every enriched topGO term of

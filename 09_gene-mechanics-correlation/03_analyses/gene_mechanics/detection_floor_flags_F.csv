@@ -66,7 +66,6 @@ LOC134722788,Collagen alpha-3(VI) chain,candidate,46,3,0.065,ok,TRUE
 LOC134724896,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),candidate,46,3,0.065,ok,TRUE
 LOC134687107,Sacsin (DnaJ homolog subfamily C member 29),DEG_union,46,2,0.043,ok,TRUE
 LOC134690913,Polyamine oxidase 3 (OsPAO3) (EC 1.5.3.-),candidate,46,2,0.043,ok,TRUE
-LOC134691271,Aminoacylase-1 (ACY-1) (EC 3.5.1.14) (N-acyl-L-amino-acid amidohydrolase),candidate,46,2,0.043,ok,TRUE
 LOC134693104,Low-density lipoprotein receptor-related protein 6 (LRP-6),DEG_union,46,2,0.043,ok,TRUE
 LOC134695094,NA,DEG_union,46,2,0.043,ok,TRUE
 LOC134696251,Heat shock 70 kDa protein 12B,candidate,46,2,0.043,ok,TRUE
@@ -337,7 +336,6 @@ LOC134688601,Exostosin-2 (EC 2.4.1.224) (Glucuronosyl-N-acetylglucosaminyl-prote
 LOC134688602,Dynein axonemal heavy chain 7 (Axonemal beta dynein heavy chain 7) (Axonemal dynein heavy chain b) (Ciliary dynein heavy chain 7) (Dynein-like protein 7),DEG_union,46,0,0,ok,TRUE
 LOC134688692,IQ motif and ubiquitin-like domain-containing protein,DEG_union,46,0,0,ok,TRUE
 LOC134689709,Glutamate rich 3,DEG_union,46,0,0,ok,TRUE
-LOC134689775,Acylamino-acid-releasing enzyme (AARE) (EC 3.4.19.1) (Acyl-peptide hydrolase) (APH) (Acylaminoacyl-peptidase) (fMet aminopeptidase) (fMAP),candidate,46,0,0,ok,TRUE
 LOC134689920,Eukaryotic translation initiation factor 2 subunit 1 (Eukaryotic translation initiation factor 2 subunit alpha) (eIF-2-alpha) (eIF-2A) (eIF-2alpha),DEG_union,46,0,0,ok,TRUE
 LOC134690130,NA,DEG_union,46,0,0,ok,TRUE
 LOC134690148,Krueppel-like factor 10 (EGR-alpha) (Transforming growth factor-beta-inducible early growth response protein 1) (TGFB-inducible early growth response protein 1) (TIEG-1),DEG_union,46,0,0,ok,TRUE

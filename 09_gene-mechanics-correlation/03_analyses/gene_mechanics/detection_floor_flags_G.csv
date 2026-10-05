@@ -158,7 +158,6 @@ LOC134689604,NA,DEG_union,47,1,0.021,ok,TRUE
 LOC134690273,Sodium- and chloride-dependent glycine transporter 2 (GlyT-2) (GlyT2) (Solute carrier family 6 member 5),DEG_union,47,1,0.021,ok,TRUE
 LOC134690472,NA,DEG_union,47,1,0.021,ok,TRUE
 LOC134690882,Ubiquinol-cytochrome-c reductase complex assembly factor 1 (Basic FGF-repressed Zic-binding protein homolog) (Ubiquinol-cytochrome c reductase complex chaperone CBP3 homolog) (Zic3-binding protein),candidate,47,1,0.021,ok,TRUE
-LOC134691271,Aminoacylase-1 (ACY-1) (EC 3.5.1.14) (N-acyl-L-amino-acid amidohydrolase),candidate,47,1,0.021,ok,TRUE
 LOC134692652,DNL-type zinc finger protein (Hsp70-escort protein 1) (HEP1) (mtHsp70-escort protein),candidate,47,1,0.021,ok,TRUE
 LOC134692960,NA,DEG_union,47,1,0.021,ok,TRUE
 LOC134693215,NA,DEG_union,47,1,0.021,ok,TRUE
@@ -406,7 +405,6 @@ LOC134688549,Plasma alpha-L-fucosidase (EC 3.2.1.51) (Alpha-L-fucoside fucohydro
 LOC134688555,NA,DEG_union,47,0,0,ok,TRUE
 LOC134689654,Calmodulin (CaM),DEG_union,47,0,0,ok,TRUE
 LOC134689660,"Beta-1,4-galactosyltransferase 5 (Beta-1,4-GalTase 5) (Beta4Gal-T5) (b4Gal-T5) (EC 2.4.1.-) (Beta-1,4-GalT II) (Glucosylceramide beta-1,4-galactosyltransferase) (EC 2.4.1.274) (Lactosylceramide synthase) (LacCer synthase) (UDP-Gal:beta-GlcNAc beta-1,4-galactosyltransferase 5) (UDP-galactose:beta-N-acetylglucosamine beta-1,4-galactosyltransferase 5)",DEG_union,47,0,0,ok,TRUE
-LOC134689775,Acylamino-acid-releasing enzyme (AARE) (EC 3.4.19.1) (Acyl-peptide hydrolase) (APH) (Acylaminoacyl-peptidase) (fMet aminopeptidase) (fMAP),candidate,47,0,0,ok,TRUE
 LOC134689809,MAM and LDL-receptor class A domain-containing protein 2 (Skeletal organic matrix MAM and LDL-receptor 2) (SOM MAM and LDL-receptor 2),DEG_union,47,0,0,ok,TRUE
 LOC134689810,NA,DEG_union,47,0,0,ok,TRUE
 LOC134689920,Eukaryotic translation initiation factor 2 subunit 1 (Eukaryotic translation initiation factor 2 subunit alpha) (eIF-2-alpha) (eIF-2A) (eIF-2alpha),DEG_union,47,0,0,ok,TRUE
