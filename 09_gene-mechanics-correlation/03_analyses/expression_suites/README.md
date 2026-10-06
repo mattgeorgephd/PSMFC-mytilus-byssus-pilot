@@ -36,7 +36,7 @@ strong or weak attachment, across arms (which includes the treatment effect) and
   while their slopes within arms are flat (`suites_between_within_<T>.png`).
 - **Prediction.** The six DEG programs predict the force of held-out animals across arms
   (foot Q2 0.18, permutation p 0.02; gill 0.12, p 0.05), less than the treatment alone (0.38
-  in both), and not within arms (-0.02 and -0.04). The larger sets (262 or 324 candidate genes,
+  in both), and not within arms (-0.01 and -0.04). The larger sets (262 or 324 candidate genes,
   the 2,000 most variable genes, all the axes) give Q2 from -1.00 to 0.03. One within-arm
   scenario beats its permutations: the gill candidates with plaque area (Q2 0.03, p 0.0099,
   the smallest p 100 permutations give), in line with script 01's HSP70-family gene (q 0.036);
