@@ -15558,6 +15558,7 @@ LOC134700940,Galectin-3-binding protein B (Lectin galactoside-binding soluble 3-
 LOC134701108,"Protein TANC1 (Tetratricopeptide repeat, ankyrin repeat and coiled-coil domain-containing protein 1)",37.714,1.08e-22,genome_blast,FALSE,TRUE
 LOC134701394,Protein ARV1,35.533,1.0800000000000001e-27,genome_blast,FALSE,TRUE
 LOC134701827,Cartilage oligomeric matrix protein (COMP),42.373,7.47e-25,genome_blast,FALSE,TRUE
+LOC134709324,Thread matrix protein 2F,74.096,2.05e-24,genome_blast,FALSE,TRUE
 LOC134715891,Ankyrin repeat and SAM domain-containing protein 1A (Odin),35.146,3.8099999999999996e-23,genome_blast,FALSE,TRUE
 LOC134717060,RAF-like serine/threonine-protein kinase PRAF (EC 2.7.11.1) (Protein PHOTOSYNTHESIS-RELATED RAF) (MpPRAF),28.374,1.97e-22,genome_blast,TRUE,TRUE
 LOC134723511,Piercer of microtubule wall 1 protein (Pierce1) (UPF0691 protein C9orf116 homolog),48.515,2.04e-30,genome_blast,TRUE,TRUE
@@ -16257,6 +16258,7 @@ LOC134701042,Plexin-B,28.962,9.58e-24,genome_blast,FALSE,TRUE
 LOC134701677,Cyclic GMP-AMP synthase-like receptor 2 (Sp-cGLR2) (EC 2.7.7.86),37.736,7.790000000000001e-21,genome_blast,FALSE,TRUE
 LOC134701814,Zinc finger CCHC domain-containing protein 17 (Nucleolar protein of 40 kDa) (pNO40) (Putative S1 RNA-binding domain protein) (PS1D protein),47.321,1.2599999999999999e-25,genome_blast,FALSE,TRUE
 LOC134702035,Protein ALP1-like (EC 3.1.-.-),28.077,1.82e-22,genome_blast,FALSE,TRUE
+LOC134721759,Foot protein-3,78.481,1.05e-28,genome_blast,FALSE,TRUE
 LOC134725059,Transcription factor cwo (Protein clockwork orange),38.624,8.650000000000001e-21,genome_blast,TRUE,TRUE
 LOC134708498,Metallothionein 20-II (MT-20-II),79.73,2.07e-28,genome_blast,FALSE,TRUE
 LOC134727584,Chymotrypsinogen A (EC 3.4.21.1) [Cleaved into: Chymotrypsin A chain A; Chymotrypsin A chain B; Chymotrypsin A chain C],33.908,1.11e-22,genome_blast,FALSE,TRUE
@@ -16397,6 +16399,7 @@ LOC134696091,G protein-coupled receptor 157,28.452,1.4400000000000001e-21,genome
 LOC134695695,"Beta-1,3-galactosyltransferase 1 (Beta-1,3-GalTase 1) (Beta3Gal-T1) (Beta3GalT1) (EC 2.4.1.86) (UDP-galactose:beta-N-acetyl-glucosamine-beta-1,3-galactosyltransferase 1)",30.476,3.08e-21,genome_blast,FALSE,TRUE
 LOC134698001,"Glucose dehydrogenase [FAD, quinone] (EC 1.1.5.9) [Cleaved into: Glucose dehydrogenase [FAD, quinone] short protein]",44.667,1.53e-22,genome_blast,FALSE,TRUE
 LOC134701866,Kinase D-interacting substrate of 220 kDa B (Ankyrin repeat-rich membrane-spanning protein B),39.716,6.519999999999999e-23,genome_blast,FALSE,TRUE
+LOC134705410,Foot protein 9 variant 2,78.4,5.07e-26,genome_blast,FALSE,TRUE
 LOC134699287,Melatonin receptor type 1A (Mel-1A-R) (Mel1a receptor),26.148,2.08e-21,genome_blast,FALSE,TRUE
 LOC134711516,Perlucin,38.931,5.8e-25,genome_blast,FALSE,TRUE
 LOC134705672,CREB/ATF bZIP transcription factor (Host cell factor-binding transcription factor Zhangfei) (HCF-binding transcription factor Zhangfei),41.481,1.86e-21,genome_blast,TRUE,TRUE
@@ -16528,6 +16531,7 @@ LOC134683202,Basic phospholipase A2 1 (svPLA2) (EC 3.1.1.4) (Phosphatidylcholine
 LOC134687137,PEST proteolytic signal-containing nuclear protein (PCNP) (PEST-containing nuclear protein),57.303,2.8799999999999995e-23,genome_blast,FALSE,TRUE
 LOC134690390,Golgi-associated plant pathogenesis-related protein 1 (GAPR-1) (Golgi-associated PR-1 protein) (Glioma pathogenesis-related protein 2) (GliPR 2),38.411,2.81e-23,genome_blast,FALSE,TRUE
 LOC134701998,BTB/POZ domain-containing protein KCTD7,43.382,1.86e-21,genome_blast,FALSE,TRUE
+LOC134721760,Foot protein 3 variant 4,80.769,5.1200000000000004e-26,genome_blast,TRUE,TRUE
 LOC134709578,ADP-ribosylation factor 4,50.549,1.79e-24,genome_blast,FALSE,TRUE
 LOC134709628,Sterile alpha motif domain-containing protein 15 (SAM domain-containing protein 15),44.34,5.13e-22,genome_blast,FALSE,TRUE
 LOC134718584,Brevican core protein (Brain-enriched hyaluronan-binding protein) (BEHAB) (Chondroitin sulfate proteoglycan 7),38.281,3.3700000000000004e-21,genome_blast,FALSE,TRUE
@@ -16552,6 +16556,7 @@ LOC134695597,Lipopolysaccharide-induced tumor necrosis factor-alpha factor homol
 LOC134697885,Angiopoietin-4 (ANG-4) (Angiopoietin-3) (ANG-3),47.423,1.6600000000000001e-21,genome_blast,FALSE,TRUE
 LOC134699753,Perlucin,36.842,1.01e-22,genome_blast,FALSE,TRUE
 LOC134700175,Lipopolysaccharide-induced tumor necrosis factor-alpha factor homolog (LPS-induced TNF-alpha factor homolog) (Small integral membrane protein of lysosome/late endosome),52.174,3e-24,genome_blast,FALSE,TRUE
+LOC134721757,Polyphenolic phosphoprotein mefp-5,86.735,2.59e-25,genome_blast,FALSE,TRUE
 LOC134718822,Syntaxin,37.063,9.880000000000001e-21,genome_blast,TRUE,TRUE
 LOC134706709,Partner of Y14 and mago B (PYM homolog 1 exon junction complex-associated factor B) (Protein wibg homolog B),74.074,2.7900000000000003e-22,genome_blast,FALSE,TRUE
 LOC134708494,Homeobox protein php-3 (Posterior Hox protein paralog 3),43.651,2.67e-21,genome_blast,FALSE,TRUE
@@ -16706,6 +16711,7 @@ LOC134710290,Lipopolysaccharide-induced tumor necrosis factor-alpha factor homol
 LOC134724544,Cytochrome c oxidase assembly protein COX19,52.703,3.76e-22,genome_blast,FALSE,TRUE
 LOC134695655,Vacuolar ATPase assembly integral membrane protein vma21,55.128,1.4e-21,genome_blast,FALSE,TRUE
 LOC134696427,Complex III assembly factor LYRM7 (LYR motif-containing protein 7),47.959,4.77e-21,genome_blast,FALSE,TRUE
+LOC134721758,Foot protein 3 variant 5,70.513,5.6100000000000005e-22,genome_blast,FALSE,TRUE
 LOC134715807,RIIa domain-containing protein 1,52.703,7.550000000000001e-21,genome_blast,FALSE,TRUE
 LOC134728198,Small integral membrane protein 14,59.459,7.12e-21,genome_blast,FALSE,TRUE
 LOC134687966,"Sushi, nidogen and EGF-like domain-containing protein 1 (Insulin-responsive sequence DNA-binding protein 1) (IRE-BP1)",40.23,3.27e-25,genome_blast,FALSE,TRUE

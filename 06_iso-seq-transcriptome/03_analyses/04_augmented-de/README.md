@@ -93,4 +93,8 @@ DEGs per contrast (apeglm padj < 0.05); the record is featureCounts on `ext3`:
   reads come from three animals (3,760 and 1,688 in two controls, 1,680 in one DO animal; under
   70 in every other library), the pattern of a gene expressed in a few animals, not a treatment
   effect (as foot proteins 4, 10 and 11 on the Iso-Seq reference, step 03). Foot protein 13 is a
-  DEG in Foot DO on featureCounts `full` only.
+  DEG in Foot DO on featureCounts `full` only. One of the mfp-3 genes `03_blast` step 05 annotates
+  (LOC134721760, foot protein 3 variant 4; unannotated before 2026-10-06) is a DEG in Foot OA on
+  every featureCounts matrix, the record included, and on StringTie `full`, with an apeglm fold
+  change of -0.05: its reads come from four animals (544, 355 and 262 in three controls, 224 in
+  one OA animal; under 70 in every other library of the contrast), the same pattern.

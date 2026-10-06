@@ -256,7 +256,10 @@ LOC134707598,"Serine--tRNA ligase, mitochondrial (EC 6.1.1.11) (SerRSmt) (Seryl-
 LOC134718846,Precollagen-P,95.556,5.420000000000001e-21,genome_blast,FALSE,TRUE,TRUE,0,ok,TRUE
 LOC134690949,Tubulin-specific chaperone cofactor E-like protein (EL) (Leucine-rich repeat-containing protein 35),32.759,1.27e-21,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134720973,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13),79.032,7.39e-29,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
+LOC134721759,Foot protein-3,78.481,1.05e-28,genome_blast,FALSE,TRUE,TRUE,0.304,caution,TRUE
 LOC134719493,Collagen-like protein-5,36.683,1.5100000000000002e-21,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134715482,Tubulin-specific chaperone A (TCP1-chaperonin cofactor A) (Tubulin-folding cofactor A) (CFA),68.493,3.9000000000000004e-27,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134688272,Novel acetylcholine receptor chaperone (Transmembrane protein 35A),42.063,6.699999999999999e-26,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
+LOC134721760,Foot protein 3 variant 4,80.769,5.1200000000000004e-26,genome_blast,TRUE,TRUE,TRUE,0.217,caution,TRUE
+LOC134721757,Polyphenolic phosphoprotein mefp-5,86.735,2.59e-25,genome_blast,FALSE,TRUE,TRUE,0.283,caution,TRUE
 LOC134706727,Glutathione S-transferase (PfGST) (EC 2.5.1.18),32.227,1.8e-21,genome_blast,FALSE,TRUE,FALSE,0.022,ok,TRUE

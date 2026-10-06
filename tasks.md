@@ -1,7 +1,7 @@
 # tasks.md
 
 Current sprint: make the analysis run end to end, from thread strength and Tag-seq counts
-to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-05.
+to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-06.
 Conventions and how to run are in `AGENTS.md`.
 
 The analysis folders were renumbered on 2026-10-03 so that their numbers are the run order:
@@ -193,6 +193,29 @@ the other sections use the new ones.
   candidate (q 0.14). `Hsp` still matches abbreviations inside unrelated names (perlecan's
   "HSPG", "HsPDE8B" and others: 6 foot and 9 gill candidates; DOC, caveats); whether to
   tighten it is open.
+- **Byssal genes hidden by the low-complexity filter** (2026-10-06, pull request GO-db-2026).
+  blastx's SEG filter masked the low-complexity adhesive proteins mfp-3 and mfp-5, so their genes
+  had no hit in the 2026 search. `03_blast` step 05 searches every CDS against the 241 foot and
+  byssal proteins with the filter off and step 01's database size, and adopts a hit only for a
+  gene with no hit in step 01 and at 70% identity or more: three mfp-3 genes and mfp-5 (together
+  on NC_086378.1), foot protein 9 and thread matrix protein 2F (70.5 to 86.7%; the same best
+  protein and e-value in step 01's whole database). The analysis reads its table
+  (`genome-foot-sprot2026_03-noseg/`). `09` step 04 also keeps every mussel foot protein gene with
+  reads in its byssal table, flagged when below the expression filter (12 in foot, among them
+  mfp-6, one mfp-3 and three mfp-1 copies; 21 in gill, all with almost no reads). Stages 05 to 09
+  rerun from d60490e (02 and 04 do not read the annotation and keep their outputs of record):
+  the same DEGs in every contrast, Iso-Seq included; the Foot OA DEG LOC134721760 is now
+  annotated (foot protein 3 variant 4; reads from three controls and one OA animal, fold change
+  -0.05); none of the six genes has GO terms, so the topGO terms of record, clusterProfiler and
+  goseq term sets and the GO slims are unchanged; the foot byssal list has 140 expressed genes
+  (137 before) and the byssal structural module 22 (19); mefp-5 and two mfp-3 genes become foot
+  candidates (262 tested), none associated with thread mechanics (p 0.39 or more), and the other
+  candidates' q-values move by at most 0.01 (BH over three more genes); the gill and the GO-term
+  results are unchanged. Against the outputs of record from Windows, values differ by floating
+  point (DESeq2 fold changes within 3e-6, adjusted p within 1e-6), goseq p-values up to about
+  two-fold (its length-bias fit), and figures are re-rendered. Not adopted: 23 other genes without
+  a hit match through repeats at 45% identity or less (among them two that RefSeq names "adhesive
+  plaque matrix protein-like", LOC134723087 and LOC134723088, at 36 and 37% to mfp-1).
 
 ## In progress
 

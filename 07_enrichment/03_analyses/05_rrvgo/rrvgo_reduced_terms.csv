@@ -383,7 +383,7 @@
 "FG_TC","FG","up","CC","GO:0005576",2,"GO:0005576",6.1036652881139,"extracellular region","extracellular region",650,248,7.87652601736817e-07
 "FG_TC","FG","up","CC","GO:0031012",2,"GO:0005576",4.5871215424572,"extracellular matrix","extracellular region",160,77,2.58748867444657e-05
 "FG_TC","FG","up","CC","GO:0045177",2,"GO:0005576",2.79988762424476,"apical part of cell","extracellular region",190,76,0.00158530334414727
-"FG_TC","FG","up","CC","GO:0005886",2,"GO:0005576",2.55286110947128,"plasma membrane","extracellular region",1491,505,0.00279987659733431
+"FG_TC","FG","up","CC","GO:0005886",2,"GO:0005576",2.55286110947127,"plasma membrane","extracellular region",1491,505,0.00279987659733431
 "FG_TC","FG","up","CC","GO:0005615",2,"GO:0005576",2.03854139969642,"extracellular space","extracellular region",232,83,0.0091507902400406
 "FG_TC","FG","up","CC","GO:0005902",6,"GO:0005902",2.54228541336337,"microvillus","microvillus",34,18,0.00286889455768453
 "FG_TC","FG","up","CC","GO:0140144",5,"GO:0140144",3.32676945834958,"non-collagenous component of basement membrane","non-collagenous component of basement membrane",28,17,0.000471227407204179

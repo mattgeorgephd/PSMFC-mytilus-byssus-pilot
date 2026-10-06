@@ -100,7 +100,9 @@ family too (`best_hits_<T>.csv`):
   the animals with less of it make weaker threads. Robust to leaving out one animal.
 
 The next candidates are glutathione peroxidase 7 with the strongest thread in gill
-(exploratory, q 0.12); the lowest foot candidate q is 0.48, and no module comes near (lowest q 0.61).
+(exploratory, q 0.12); the lowest foot candidate q is 0.49 (262 foot candidates since 2026-10-06, when
+`03_blast` step 05 annotated mefp-5 and two expressed mfp-3 genes: none comes near, p 0.39 or more), and
+no module comes near (lowest q 0.61).
 Until 2026-10-05 the gill's next result was aminoacylase-1 with adhesion (q 0.14), but it was
 a candidate only because the keyword `aminoacyl`, meant for tRNA synthetases, matched its name;
 the keyword is now `aminoacyl[- ]tRNA` (`01_code/gene-mechanics-pipeline_DOC.md`, caveats).

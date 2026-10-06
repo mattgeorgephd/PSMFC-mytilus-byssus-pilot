@@ -7,13 +7,15 @@ LOC134701676,Catechol oxidase (EC 1.10.3.1),candidate,46,17,0.37,caution,TRUE
 LOC134719452,Foot protein 15,candidate,46,17,0.37,caution,TRUE
 LOC134710788,Foot protein 10,candidate,46,15,0.326,caution,TRUE
 LOC134702117,Byssal metalloproteinase inhibitor-like protein 1,candidate,46,14,0.304,caution,TRUE
+LOC134721759,Foot protein-3,candidate,46,14,0.304,caution,TRUE
 LOC134683202,Basic phospholipase A2 1 (svPLA2) (EC 3.1.1.4) (Phosphatidylcholine 2-acylhydrolase),DEG_union,46,13,0.283,caution,TRUE
 LOC134709435,Foot protein 10,candidate,46,13,0.283,caution,TRUE
+LOC134721757,Polyphenolic phosphoprotein mefp-5,candidate,46,13,0.283,caution,TRUE
 LOC134696389,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),candidate,46,12,0.261,caution,TRUE
 LOC134711497,YGH-rich protein-1,candidate,46,12,0.261,caution,TRUE
 LOC134717816,Collagen-like protein-5,candidate,46,12,0.261,caution,TRUE
 LOC134688483,NA,DEG_union,46,11,0.239,caution,TRUE
-LOC134721760,NA,DEG_union,46,10,0.217,caution,TRUE
+LOC134721760,Foot protein 3 variant 4,candidate,46,10,0.217,caution,TRUE
 LOC134691266,Collagen alpha-1(XII) chain (Fibrochimerin),candidate,46,9,0.196,ok,TRUE
 LOC134718725,Collagen-like protein-7,candidate,46,9,0.196,ok,TRUE
 LOC134680970,Collagen alpha-6(VI) chain,candidate,46,8,0.174,ok,TRUE

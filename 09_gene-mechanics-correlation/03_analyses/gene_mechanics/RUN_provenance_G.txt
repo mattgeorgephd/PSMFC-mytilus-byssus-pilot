@@ -1,5 +1,5 @@
 [01_gene_mechanics_correlation.Rmd]
-generated            : 2026-10-05 18:35:11
+generated            : 2026-10-06 04:23:58
 tissue               : G
 INCLUDE_CONTROL_ARM  : TRUE
 reported test        : ANCOVA level_day3 ~ expression + treatment + level_baseline (log scale; per-animal geometric mean, largest thread for max_force)
@@ -16,7 +16,7 @@ candidates tested    : 324 (2 at the detection floor)
 DEG union tested     : 982 of 982
 family sizes (tests) : candidate x primary 648, candidate x exploratory 648, DEG union 3928
 checks               : 17 run, 0 failed
-code commit          : 9409216ff880
+code commit          : d60490e8376b
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : DESeq2 1.52.0, dplyr 1.2.1, readr 2.2.0
@@ -29,22 +29,22 @@ inputs (md5, repo-relative path):
   4c502353ce337d0b48fbf75fea00dca3  05_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv
   e12c6deb0c305a3f220e15d8af3409b3  05_differential-expression/03_analyses/count_matrix/treatmentinfo_clean.csv
   296679a4a82e85a9cd79f3d6570ed33a  05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv
-  a7289ee612dbf7bfea16b65938398de5  03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt
-  a4e3d6370e256238382097c627d34f46  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/FDO_sigs_ID.csv
-  bb646fc8c2bf56e9d5ca5d5227bef9cb  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/FOA_sigs_ID.csv
-  426a6e38d6aa869f5a96960a01345875  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/FOW_sigs_ID.csv
-  d37147cd0adbb908026ebdcfc22be63d  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/GDO_sigs_ID.csv
-  7e5ba950a09b5da5801d1423fa953912  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/GOA_sigs_ID.csv
-  e3b1cf9ef658f14742b3f1e966d66078  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/GOW_sigs_ID.csv
-  61f6408eecfcfba1d579e0924f4cf42a  05_differential-expression/03_analyses/DEG_lists/Gill/GOA_TC_siggene.csv
-  5cc330025e9bfd3bedcd59722abbca1b  05_differential-expression/03_analyses/DEG_lists/Gill/GOW_TC_siggene.csv
-  51fc5be8b6dc20431fd28b226f79372b  05_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_siggene.csv
-  7dc1f8a6762bd5538bb91f2f7e1625c0  09_gene-mechanics-correlation/01_code/01_gene_mechanics_correlation.Rmd
+  5965a110fc406b92517c3ff8a1213c17  03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt
+  2aaa55e5fd3468dcd5b5e861a7f897f9  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/FDO_sigs_ID.csv
+  c730792663b00cf1c23750a5af94262e  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/FOA_sigs_ID.csv
+  2d6511534bbce5db6ad6bf57adad1f83  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/FOW_sigs_ID.csv
+  319c8e8b1ea5d6b155171275e916e73c  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/GDO_sigs_ID.csv
+  c4a1d4cbd4ae7615a9d98e9596a0b56e  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/GOA_sigs_ID.csv
+  55378fcab95b0351f883d801d76b1fb0  05_differential-expression/03_analyses/DEG_lists/GOterms_genome/GOW_sigs_ID.csv
+  7da841b3313cf82c53a736624a4f7906  05_differential-expression/03_analyses/DEG_lists/Gill/GOA_TC_siggene.csv
+  880a0a97c4e7fbc7c7c6f045d7db3d1c  05_differential-expression/03_analyses/DEG_lists/Gill/GOW_TC_siggene.csv
+  cc18dcfb6a09bd221d3a9a5edd0b5240  05_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_siggene.csv
+  48589efc2ec2e442eed82b27714362b6  09_gene-mechanics-correlation/01_code/01_gene_mechanics_correlation.Rmd
   a0591028d5c3be67cb4d0daaa8562161  tools/pipeline_checks.R
-  9ca04deaac38400449550bdbdb27d2e1  tools/gene_ids.R
+  f6fb7d46a027ca4ec9c0be27c9ff17de  tools/gene_ids.R
 
 [02_gene_mechanics_expanded.Rmd]
-generated            : 2026-10-05 18:35:16
+generated            : 2026-10-06 04:24:02
 reported test        : script 01's ANCOVA (assoc_candidate_G.csv, assoc_DEGunion_G.csv)
 metrics [scale, tier]: mean_force [log, primary], pad_area [log, primary], max_force [log, exploratory], adhesion_kpa [log, exploratory]
 primary metrics      : mean_force, pad_area
@@ -54,7 +54,7 @@ FDR_ALPHA            : 0.1
 candidates tested    : 324 of 326 (floor filter in script 01)
 N_INFLUENCE_HITS     : 3
 checks               : 1 run, 0 failed
-code commit          : 9409216ff880
+code commit          : d60490e8376b
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : dplyr 1.2.1, readr 2.2.0
@@ -66,5 +66,5 @@ inputs (md5, repo-relative path):
   5c792518aa0003c3f4ee27b665e86e8b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/vst_paired_G.csv
   94d1ca44cd3dbba709ea1e4ddbc78561  09_gene-mechanics-correlation/03_analyses/gene_mechanics/assoc_candidate_G.csv
   7e8463d0b78e1cbddf562bc767a3f56d  09_gene-mechanics-correlation/03_analyses/gene_mechanics/assoc_DEGunion_G.csv
-  19a82a8d33c4369d97e5c9f8a522e94b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/annotation_map.csv
+  39bf5709b1803097e747dff58e84bd0d  09_gene-mechanics-correlation/03_analyses/gene_mechanics/annotation_map.csv
   8c4b2293b85fe3bb159570f4d27dc62a  09_gene-mechanics-correlation/01_code/02_gene_mechanics_expanded.Rmd
