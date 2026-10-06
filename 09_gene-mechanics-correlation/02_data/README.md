@@ -7,7 +7,8 @@
 
 The full gene count matrix, sample table and DEG lists are read cross-folder from
 `../../05_differential-expression/03_analyses/`; the genome annotation from
-`../../03_blast/03_analyses/genome-foot-sprot2026_03/` (the genome blast of 2026, Swiss-Prot
-2026_03 plus the foot and byssal proteins, with UniProt release 2026_03 records); thread measurements from
+`../../03_blast/03_analyses/genome-foot-sprot2026_03-noseg/` (the genome blast of 2026, Swiss-Prot
+2026_03 plus the foot and byssal proteins, with UniProt release 2026_03 records, and six genes
+`03_blast` step 05 found with the low-complexity filter off); thread measurements from
 `../../02_thread-strength/03_analyses/` (script 03's thread summary, script 05's per-animal
 response classification, and script 02's extraction output).

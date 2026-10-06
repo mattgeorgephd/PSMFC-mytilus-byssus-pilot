@@ -39,8 +39,8 @@ release 2026-01-23, Bioconductor 3.23): `01_code/_paths.R` stops otherwise
   could never be DEGs). Up- and down-regulated DEGs (padj < 0.05) are tested separately against
   that universe.
 - **Annotation.** The genome-wide BLAST of 2026 (Swiss-Prot 2026_03 plus the Mytilus foot and
-  byssal proteins) with the UniProt records of release 2026_03
-  (`03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt`) can give several hits
+  byssal proteins) with the UniProt records of release 2026_03, plus `03_blast` step 05's six
+  genes (`03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`), can give several hits
   per LOC; the highest bitscore is kept, as in `08` and `09`. Genes are
   joined to it through `gene_key()` (`tools/gene_ids.R`). GO IDs are trimmed and checked
   against `GO.db`. The mitochondrial loci are in no universe (05 leaves them out). topGO takes the direct annotation and walks the GO graph itself;

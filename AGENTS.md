@@ -71,7 +71,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   the cloud environment in about 31 hours on 4 threads, in resumable parts), `03_blast` step 04
   (the 2024 hits with UniProt 2026_03 records, a comparison; it runs offline from committed
   files, and `online: true` fetches the records again, which works only while UniProt serves
-  release 2026_03), `04` steps 04-06 and step 08's mitochondrial alignment (download the
+  release 2026_03), `03_blast` step 05 (the foot and byssal proteins searched again with the
+  low-complexity filter off; `run: true` needs BLAST+ and the genome CDS and takes about 2
+  minutes, `run: false` rebuilds its tables offline), `04` steps 04-06 and step 08's mitochondrial alignment (download the
   transcriptome, genome and reads and run minimap2, HISAT2, StringTie and featureCounts; set
   the `04` runner's `online: true`; steps 04-06 make the count matrix of record, which step 07
   takes), `04` step 03's recipe check (its own `online: true`), `06_iso-seq-transcriptome`
@@ -139,8 +141,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   - Annotation: each gene's best hit (highest bitscore) in the genome blastx of 2026
     (Swiss-Prot release 2026_03 plus the 196 proteins of the UniProt query "(mytilus foot)"
     and 45 byssal proteins it misses, `03_blast/02_data/byssal_additions_2026_03.tsv`;
-    `03_blast` step 01), with the UniProt records of release 2026_03
-    (`03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt`); GO release 2026-01-23
+    `03_blast` step 01), with the UniProt records of release 2026_03; and, for genes with no hit
+    there, a hit of at least 70% identity to those 241 foot and byssal proteins with blastx's
+    low-complexity filter off (`03_blast` step 05: mfp-3, mfp-5, foot protein 9 and thread
+    matrix protein 2F, six genes the filter had hidden)
+    (`03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`); GO release 2026-01-23
     (`GO.db` 3.23.1) and its generic GO slim (`08_gene-annotation/02_data/goslim_generic.obo`).
     Kept for comparison: the search of 2024 (`genome-foot/`) and its hits with the 2026_03
     records (`genome-foot-uniprot2026_03/`, `03_blast` step 04).
@@ -159,7 +164,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   library. T051F and T051G
   were removed at QC; T047 has no foot library. `library_crosswalk.csv` (05) maps every library
   to its RNA isolation record.
-- **Known data issues** (see the folder READMEs): 293 loci on unplaced scaffolds (126
+- **Known data issues** (see the folder READMEs): blastx's low-complexity filter (SEG) hid the
+  hits of six byssal genes in the 2026 search (three mfp-3, mfp-5, foot protein 9, thread
+  matrix protein 2F), which `03_blast` step 05 adds; genes whose hit of record is a weaker
+  repeat match keep it, and two genes RefSeq names "adhesive plaque matrix protein-like"
+  (LOC134723087, LOC134723088, 36 to 37% to mfp-1) have no annotation; 293 loci on unplaced scaffolds (126
   protein-coding LOCs and 167 pseudogenes) are copies of the mitochondrial protein genes and
   take their reads in the genome alignment (`tools/mt_encoded.R`); 12 of the 59 animals carry
   mitochondrial haplotypes that differ from the reference at fixed positions, which the genome

@@ -44,7 +44,7 @@ mt_protein_symbol <- function(protein_name) {
 ## Every mitochondrial row of a count matrix, with its source and protein.
 ##   gene_ids   : count-matrix row names, e.g. "gene-COX1|COX1", "STRG.10|LOC134702910",
 ##                "rna-NC_007687.1:10108..10170"
-##   blast_file : 03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt (best hit = highest bitscore)
+##   blast_file : 03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt (best hit = highest bitscore)
 ##   t_data_file: 04_sequence-alignment/03_analyses/hisat/t_data.ctab (sequence of each gene)
 ##   annotation_file: 04_sequence-alignment/02_data/annotation_mt_like_loci.csv, the loci NCBI
 ##                names after a mitochondrial protein (04/01_code/_derive_mt_like_loci.R)

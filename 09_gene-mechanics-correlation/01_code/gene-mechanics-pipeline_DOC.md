@@ -115,7 +115,7 @@ also absorbs any between-animal baseline differences the arm assignment did not 
 ### Annotation map and candidate universe
 
 `CANDIDATE_ANNOTATION = "genome"`: every gene in the count matrix is annotated with its best
-UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt`, with
+UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`, with
 `blast_pident` and `blast_evalue` carried along, and any expressed gene whose name matches
 `CANDIDATE_KEYWORDS` (byssal / collagen / plaque-curing / HSP / hypoxia / tRNA-synthetase /
 oxidative-stress terms) and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-10`,
@@ -234,7 +234,12 @@ score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 
 ### `03_analyses/expr_tables/` (script 03) and `03_analyses/byssus_genes/` (script 04)
 
-`rna_thread_manifest_<T>.csv` is tissue-suffixed. The companion `sample_metadata_<T>.csv`
+`rna_thread_manifest_<T>.csv` is tissue-suffixed. `byssus_gene_expression_<T>.csv` lists the
+byssal and foot genes (by category) with more than 5 reads in at least a third of the
+thread-having animals, and every mussel foot protein gene with reads in the tissue even below
+that filter (`mfp` TRUE, `expressed` FALSE; 12 in the foot, among them mfp-6, one mfp-3 and three
+mfp-1 copies), so that no mfp gene is left out of the table; `byssus_category_scores_<T>.csv`
+averages only the genes that pass the filter. The companion `sample_metadata_<T>.csv`
 files carry all four arms and the per-animal thread values (arithmetic mean of the thread
 peak forces as `mean_force`, the largest as `max_force`, mean area and adhesion), a
 description rather than a model input.

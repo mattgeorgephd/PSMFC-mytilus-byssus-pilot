@@ -15,8 +15,9 @@ Builds the one annotation table that every enrichment method in this folder uses
 summarises the gene sets each contrast contributes.
 
 1. **GO annotation per gene.** The genome-wide BLAST of the coding sequences against SwissProt
-   and the Mytilus foot proteins (`03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt`,
-   the search of 2026 against Swiss-Prot 2026_03, with UniProt release 2026_03 records) can
+   and the Mytilus foot proteins (`03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`,
+   the search of 2026 against Swiss-Prot 2026_03, with UniProt release 2026_03 records, and six
+   genes `03_blast` step 05 found with the low-complexity filter off) can
    give several hits per LOC, one per coding sequence. The hit with the highest bitscore is
    kept, the rule `09_gene-mechanics-correlation` uses. Its GO IDs are trimmed (the table
    separates them with "; "), kept only if this `GO.db` knows them, and split by ontology.

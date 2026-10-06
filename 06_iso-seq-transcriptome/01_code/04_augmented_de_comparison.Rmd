@@ -293,7 +293,7 @@ protein (the *M. coruscus* byssus proteins whose genes had Foot protein 12 as be
 byssal_rx <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal protein-", "preCol", "precollagen",
                    "byssal EP", "ACDC", "byssal tyrosinase", "thread matrix protein", "nongradient byssal",
                    "YGH-rich protein", sep = "|")
-bl <- fread(file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03", "LOC_GO_list.txt"), sep = "\t",
+bl <- fread(file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03-noseg", "LOC_GO_list.txt"), sep = "\t",
             select = c("gene", "bitscore", "Protein.names"))
 bl[, `:=`(gene = gene_key(trimws(gene)), bitscore = suppressWarnings(as.numeric(bitscore)))]
 bl <- bl[!is.na(gene) & nzchar(gene)][order(-bitscore)][!duplicated(gene)]
@@ -373,7 +373,7 @@ inputs <- c(file.path(recount_dir, sprintf("%s_gene_counts.csv.gz", sub(" ", "_"
             file.path(de05, "DEG_lists", c("contrasts.csv", "contrast_samples.csv")),
             file.path(de05, "DEG_lists", contrasts$dir, paste0(contrasts$code, "_apeglm.csv")),
             file.path(de05, "count_matrix", c("treatmentinfo_clean.csv", "mitochondrial_loci.csv")),
-            file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03", "LOC_GO_list.txt"),
+            file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03-noseg", "LOC_GO_list.txt"),
             here::here("01_code", "04_augmented_de_comparison.Rmd"))
 writeLines(provenance_lines(settings, inputs, repo_root, packages = c("DESeq2", "apeglm", "data.table")),
            file.path(aug_de_dir, "RUN_provenance.txt"))
