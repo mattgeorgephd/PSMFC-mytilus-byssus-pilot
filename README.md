@@ -38,7 +38,7 @@ own folder's `03_analyses/`; later folders read earlier ones.
 | `06_iso-seq-transcriptome/` | sensitivity branch: the TC contrasts repeated with the reads quantified against the Iso-Seq transcriptome (salmon, tximport, on `04`'s isoform-to-gene map) and compared with `05`; and the comparison of `04`'s genome recounts with the previous record, the evidence for the count matrix of record | runner `01_code/00_run_isoseq.Rmd` (steps 03 and 04 by default; steps 02-04 with `online: true`) |
 | `07_enrichment/` | GO enrichment: topGO (of record), goseq, clusterProfiler, rrvgo, method comparison | `01_code/00_run_enrichment.Rmd` |
 | `08_gene-annotation/` | GO slims of the TC DEGs; NCBI summaries and orthologs for the top DEGs (network) | `01_code/00_run_gene_annotation.Rmd` |
-| `09_gene-mechanics-correlation/` | per-animal ANCOVA of day-3 thread mechanics on genes, DEG sets, enriched GO terms and mitochondrial expression, foot and gill | `01_code/00_run_gene_mechanics_by_tissue.Rmd` |
+| `09_gene-mechanics-correlation/` | per-animal ANCOVA of day-3 thread mechanics on genes, DEG sets, enriched GO terms and mitochondrial expression, foot and gill; expression suites (programs, co-expression modules, expression components) between and within arms, and multi-gene prediction of held-out animals | `01_code/00_run_gene_mechanics_by_tissue.Rmd` |
 
 Run order is the folder numbers: every folder reads only lower-numbered folders (and
 `tools/`), and within a folder every step reads only earlier steps. `02_thread-strength` and
@@ -512,7 +512,7 @@ flowchart LR
 flowchart LR
   ex(["02_data/expected_animals.csv"])
   t(["02·03 thread summary;<br>02·04, 02·05 ANCOVA animals, response classes"])
-  b1(["03·01 LOC_GO_list.txt (2026)"])
+  b1(["03·05 LOC_GO_list.txt (2026)"])
   d(["05·01 counts, samples, mitochondrial list;<br>05·04 DEG lists; 05·06 *_sigs_ID.csv"])
   g(["07·02 topgo_enriched.csv;<br>07·06 consensus terms"])
   d13(["05·13 mt_share_by_sample.csv"])
@@ -521,6 +521,7 @@ flowchart LR
   m3["03 expression tables"]
   m4["04 byssal genes"]
   m5["05 DEG sets, GO terms, mt share"]
+  m6["06 expression suites, prediction"]
   ex --> m1
   t --> m1
   b1 --> m1
@@ -536,13 +537,15 @@ flowchart LR
   d --> m5
   g --> m5
   d13 --> m5
+  m1 -- "manifest, VST, candidates" --> m6
+  m5 -- "mechanics_sets" --> m6
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef run fill:#e8f4ec,stroke:#2f7a4a,color:#1b2730
   class t,d,b1,ex,g,d13 ext
-  class m1,m2,m3,m4,m5 run
+  class m1,m2,m3,m4,m5,m6 run
 ```
 
-All five steps run in the pipeline, once for foot (`F`) and once for gill (`G`); outputs carry
+All six steps run in the pipeline, once for foot (`F`) and once for gill (`G`); outputs carry
 the tissue suffix `<T>`.
 
 | step | reads | writes (`03_analyses/`) |
@@ -552,6 +555,7 @@ the tissue suffix `<T>`.
 | 03 `03_rna_thread_manifest_and_expression_tables.Rmd` | `05·01` counts and sample table; `02·03` summary; `02·02` raw thread workbook; `05·04` TC DEG lists; `09·01` `annotation_map.csv` | `expr_tables/`: `rna_thread_manifest_<T>.csv`, `top25_updown_<T>_*.csv`, `sample_metadata_<T>.csv` |
 | 04 `04_byssus_foot_gene_list_expression.Rmd` | `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`; `05·04` TC DEG lists; `09·03` manifest; `02·03` summary; `05·01` counts | `byssus_genes/`: `byssus_gene_expression_<T>.csv`, `sample_metadata_<T>.csv`, `byssus_category_scores_<T>.csv` |
 | 05 `05_go_term_mechanics.Rmd` | `09·01` manifest, VST and metrics; `05·04` TC DEG lists; `07·02` `topgo_enriched.csv`; `07·06` `consensus_terms_TC_*.csv`; `05·13` `mt_share_by_sample.csv` | `go_mechanics/`: `mechanics_sets_<T>.csv`, `mechanics_set_associations_<T>.csv`, `go_mechanics_<T>.png`, `RUN_provenance_<T>.txt` |
+| 06 `06_expression_suites.Rmd` | `09·01` `metrics_config_<T>`, `paired_sample_manifest_<T>`, `vst_paired_<T>`, `candidate_genes_<T>` (csv) and `annotation_map.csv`; `09·05` `mechanics_sets_<T>.csv` and `mechanics_set_associations_<T>.csv` (a check) | `expression_suites/`: `suite_axes_<T>`, `suite_axis_tests_<T>`, `suite_axis_members_<T>`, `suite_scores_<T>`, `suite_prediction_<T>`, `suite_prediction_null_<T>` (csv); `suites_between_within_<T>`, `suites_axes_map_<T>`, `suites_state_space_<T>`, `suites_prediction_<T>` (png); `RUN_provenance_<T>.txt` |
 
 Every folder runner also writes its reports and logs to its own `03_analyses/knit_html/`
 (git-ignored).

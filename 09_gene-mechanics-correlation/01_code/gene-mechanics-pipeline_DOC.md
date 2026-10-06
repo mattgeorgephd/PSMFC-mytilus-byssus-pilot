@@ -1,16 +1,16 @@
-# Gene-mechanics correlation pipeline, scripts 01 to 05
+# Gene-mechanics correlation pipeline, scripts 01 to 06
 
 Links foot or gill gene expression at day 3 to the same animal's byssal thread mechanics.
-Five chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
-session, parameterised by tissue. Run in order **01 → 02 → 03 → 04 → 05**, after the
+Six chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
+session, parameterised by tissue. Run in order **01 → 02 → 03 → 04 → 05 → 06**, after the
 `02_thread-strength`, `05_differential-expression` and `07_enrichment` runners, or knit
-**00_run_gene_mechanics_by_tissue.Rmd**, which renders all five for foot and gill. Script 05
-(DEG sets, enriched GO terms and mitochondrial expression against mechanics) is described in
-its own header and in the folder README.
+**00_run_gene_mechanics_by_tissue.Rmd**, which renders all six for foot and gill. Script 05
+(DEG sets, enriched GO terms and mitochondrial expression against mechanics) and script 06
+(expression suites, below) are described in their own headers and in the folder README.
 
 ## Running for a tissue
 
-Each of 01 to 05 has a knit parameter in its YAML header:
+Each of 01 to 06 has a knit parameter in its YAML header:
 
 ```yaml
 params:
@@ -49,6 +49,11 @@ count-matrix column is dropped with a message rather than a hard stop.
 02  modules, diagnostics                            ->  03_analyses/gene_mechanics/
 03  RNA x thread manifest, top-25 expression tables ->  03_analyses/expr_tables/
 04  byssus/foot gene list + expression              ->  03_analyses/byssus_genes/
+05  DEG sets, enriched GO terms, mitochondrial
+    share against mechanics (reads 07's topGO terms) ->  03_analyses/go_mechanics/
+06  expression suites: 05's sets, co-expression
+    modules and expression components between and
+    within arms; multi-gene prediction (reads 01, 05) ->  03_analyses/expression_suites/
 ```
 
 ---
@@ -186,6 +191,40 @@ Every model it fits is that same per-animal ANCOVA. It adds:
   DEG union) with `p_lm`, `q_lm`, `q_family`, the floor flag and the influence flag on one
   row. This is the table to quote from.
 
+### Script 06: expression suites
+
+Script 06 tests combinations of genes rather than single genes, and separates the across-arm
+question (does an animal's expression state go with its attachment, whatever the cause, which
+includes the treatment effect) from the within-arm question of scripts 01, 02 and 05. Its
+axes, each scored per animal and scaled to SD units:
+
+- script 05's DEG sets and GO terms with at least `min_set_genes` (10) expressed genes, scored
+  with script 05's function (a check confirms the partial correlations are script 05's);
+- co-expression modules: the `n_var_genes` (4,000) genes with the largest within-arm variance,
+  arm removed, clustered by signed correlation ((1 - r) / 2, average linkage) and cut with
+  `dynamicTreeCut::cutreeDynamic` (deepSplit 2, at least `min_module` (30) genes). A module's
+  weights are the first principal component of its genes within arms; its score applies them
+  to the expression with the arm differences kept, so its arm means can be drawn while its
+  within-arm part is the module's;
+- the first `n_pcs` (10) principal components of all expressed genes.
+
+Each axis gets, for every metric, the within-arm ANCOVA (`level_day3 ~ score + treatment +
+level_baseline`; `q_lm` over all axes per metric, `q_type` per axis type, `q_family` per tier),
+the same model without treatment (`across_r`), the correlation of the four arm means of the score
+with those of the baseline-adjusted level (`between_r`, descriptive) and an interaction test.
+
+The prediction test fits an elastic net (glmnet, alpha 0.5, lambda.min of an inner 5-fold
+cross-validation with fixed fold IDs) to predict the day-3 level of held-out animals from the
+candidate genes, the `n_top_var` (2,000) most variable genes and all the axes, across arms
+(baseline removed inside each training fold) and within arms (arm and baseline removed inside
+each training fold). Out-of-sample Q2 = 1 - SSE / SSE of the training-fold mean, over
+`cv_repeats` (3) repeats of 5 folds balanced by arm. The null is `nperm` (100) label permutations
+per scenario (within arm for the within question), each through the same procedure. Each
+run sets its own seed from `seed`, the scenario and the permutation, so the result does not
+depend on how the runs are spread over the `cores` workers (a socket cluster, which works on
+Windows); a check reruns the first scenario serially. Reference: the same cross-validation with
+the treatment alone as predictor. About 1,200 fits per tissue, 7 minutes on 4 workers.
+
 ### Bioconductor masking
 
 `S4Vectors` and `IRanges`, loaded by DESeq2, mask `dplyr::rename`, `count`, `first` and
@@ -244,9 +283,22 @@ files carry all four arms and the per-animal thread values (arithmetic mean of t
 peak forces as `mean_force`, the largest as `max_force`, mean area and adhesion), a
 description rather than a model input.
 
+### `03_analyses/expression_suites/` (script 06)
+
+The axes (`suite_axes_<T>.csv`), their tests (`suite_axis_tests_<T>.csv`), members
+(`suite_axis_members_<T>.csv`), per-animal scores (`suite_scores_<T>.csv`), the prediction test
+and its nulls (`suite_prediction_<T>.csv`, `suite_prediction_null_<T>.csv`), four figures and
+`RUN_provenance_<T>.txt`; the folder's README lists every column.
+
 ---
 
 ## Checks
+
+Script 06 checks that its axis scores are complete, that at least one module was found and
+each has at least `min_module` genes, that script 05's sets reproduce script 05's within-arm
+partial correlations (to 1e-8), that every prediction scenario has its permutations and a finite
+Q2, that the treatment-only reference ran, and that the first scenario's Q2 is the same rerun
+serially as on the workers.
 
 Script 01 checks, before any model is fitted:
 

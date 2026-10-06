@@ -12,13 +12,14 @@ weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus prote
 09_gene-mechanics-correlation/
 ├── gene-mechanics-correlation.Rproj
 ├── 01_code/
-│   ├── 00_run_gene_mechanics_by_tissue.Rmd  batch runner: scripts 01-05 for foot and gill
+│   ├── 00_run_gene_mechanics_by_tissue.Rmd  batch runner: scripts 01-06 for foot and gill
 │   ├── 01_gene_mechanics_correlation.Rmd    paired table, VST, candidate set, per-gene ANCOVA (the reported test)
 │   ├── 02_gene_mechanics_expanded.Rmd       modules, influence, best hits (same ANCOVA)
 │   ├── 03_rna_thread_manifest_and_expression_tables.Rmd
 │   ├── 04_byssus_foot_gene_list_expression.Rmd
 │   ├── 05_go_term_mechanics.Rmd             mechanics against DEG sets, enriched GO terms, mitochondrial share
-│   ├── gene-mechanics-pipeline_DOC.md       how the five chain together; config; checks
+│   ├── 06_expression_suites.Rmd             suites: programs, co-expression modules, expression components between and within arms; multi-gene prediction
+│   ├── gene-mechanics-pipeline_DOC.md       how the six chain together; config; checks
 │   └── _superseded/11-byssal_thread_by_sample.Rmd   Grace's legacy per-sample joining (not in the chain)
 ├── 02_data/
 │   ├── expected_animals.csv   every day-3 animal: in the foot / gill fits, or the reason it is out
@@ -29,11 +30,12 @@ weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus prote
     ├── expr_tables/        script 03
     ├── byssus_genes/       script 04
     ├── go_mechanics/       script 05
+    ├── expression_suites/  script 06 (README inside)
     ├── knit_html/          reports, logs and run_log.csv from runner 00 (git-ignored)
     └── _superseded/        the legacy script's two PDFs
 ```
 
-Scripts 01 to 05 take a knit parameter `tissue` (`"F"` default, or `"G"`). Knit
+Scripts 01 to 06 take a knit parameter `tissue` (`"F"` default, or `"G"`). Knit
 `00_run_gene_mechanics_by_tissue.Rmd` to run the whole chain for both tissues, after the
 `02_thread-strength`, `05_differential-expression` and `07_enrichment` runners (the
 repository-level `00_run_pipeline.Rmd` runs them in order). Each script reads the previous one's CSV
@@ -63,7 +65,7 @@ folder that contains both `02_thread-strength/` and `05_differential-expression/
 | `07_enrichment/03_analyses/02_topgo/topgo_enriched.csv` | enriched GO terms of each TC run and the DEGs in each, 07 script 02 | 05 |
 | `07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_<ont>.csv` | terms an FDR-controlled method also enriched, 07 script 06 | 05 |
 | `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` | genome-wide BLAST (Swiss-Prot 2026_03 plus 241 foot and byssal proteins, and `03_blast` step 05's six genes found with the low-complexity filter off) / UniProt (release 2026_03 records) / GO annotation | 01, 04 |
-| `tools/pipeline_checks.R` | `warn_unless()` checks and `RUN_provenance_<T>.txt` | 01, 02, 05 |
+| `tools/pipeline_checks.R` | `warn_unless()` checks and `RUN_provenance_<T>.txt` | 01, 02, 05, 06 |
 | `tools/gene_ids.R` | `gene_key()`: count-matrix gene name to LOC key | 01, 03, 04, 05 |
 
 ## Analysis design
@@ -127,5 +129,20 @@ no longer enriched, and five of its seven DEGs are among the six of "respiratory
 complex". The mitochondrial share is counted on
 the mitochondrial genome alone since 2026-10-02 (`05` step 13); with the previous genome count
 the same two associations were r -0.33 and -0.35. Nothing in foot comes near (lowest q 0.58).
+
+Script 06 asks whether combinations of genes ("suites") go with attachment, and separates the
+two questions an "expression profile" plot mixes up: across arms (an association that can be
+the treatment itself, since warming and hypoxia change both expression and thread strength)
+and within arms (the question of scripts 01, 02 and 05). Its axes are script 05's DEG sets and
+GO terms with at least 10 genes (the DEG sets have tens to hundreds of genes), co-expression
+modules of the 4,000 genes with the largest within-arm variance (arm removed, signed
+correlation, dynamic tree cut) and the first ten principal components of all expressed genes;
+each gets the within-arm ANCOVA, the same model without the treatment term, the correlation of
+its arm means with the arm means of the baseline-adjusted level and a test of differing slopes.
+An elastic net then predicts held-out animals from the candidate genes, the 2,000 most variable
+genes and all the axes, across and within arms, against label permutations, with the treatment
+alone as a reference. It needs `glmnet` and `dynamicTreeCut` (in `renv.lock`) and runs its
+prediction test on a socket cluster of `cores` workers (Windows too), about 7 minutes per tissue
+on 4 workers with 100 permutations. Results: `03_analyses/expression_suites/README.md`.
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

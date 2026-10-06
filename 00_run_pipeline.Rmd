@@ -6,7 +6,7 @@ output: html_document
 params:
   stages: "all"              # "all", or folder numbers, e.g. ["05", "07"]
   stop_on_fail: true         # stop at the first failed stage
-  cores: 4                   # parallel GO runs in 07 (1 on Windows)
+  cores: 4                   # parallel workers: GO runs in 07 (1 on Windows) and 09 step 06's prediction test
   online_annotation: false   # true also refreshes 08's NCBI and OrthoDB tables
   check_versions: true       # stop before the first stage unless R, Bioconductor and GO.db match renv.lock
 ---
@@ -79,7 +79,7 @@ stages <- data.frame(
              "07_enrichment/01_code/00_run_enrichment.Rmd",
              "08_gene-annotation/01_code/00_run_gene_annotation.Rmd",
              "09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd"))
-stage_params <- list(`07` = list(cores = params$cores),
+stage_params <- list(`07` = list(cores = params$cores), `09` = list(cores = params$cores),
                      `08` = list(online = isTRUE(params$online_annotation)))
 want <- if (identical(params$stages, "all")) stages$stage else sprintf("%02d", as.integer(unlist(params$stages)))
 stopifnot(all(want %in% stages$stage))

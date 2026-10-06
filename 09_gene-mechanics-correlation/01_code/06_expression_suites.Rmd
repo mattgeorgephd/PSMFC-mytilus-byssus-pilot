@@ -1,0 +1,560 @@
+---
+title: "06 - Expression suites: programs, modules and multi-gene prediction of thread mechanics"
+author: "Byssus expression analysis"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+params:
+  tissue: "F"              # "F" foot (default) or "G" gill
+  min_set_genes: 10        # smallest DEG set or GO term (script 05's sets) used as an axis
+  n_var_genes: 4000        # genes with the largest within-arm variance, clustered into modules
+  min_module: 30           # smallest co-expression module
+  n_pcs: 10                # principal components of all expressed genes used as axes
+  n_top_var: 2000          # genes with the largest variance, one of the prediction test's gene sets
+  nperm: 100               # label permutations per prediction scenario
+  cv_repeats: 3            # repeats of the 5-fold cross-validation
+  cores: 4                 # parallel workers (socket cluster, so Windows too); 1 runs serially
+  seed: 20261006
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 12, fig.height = 8)
+```
+
+# What this does
+
+Scripts 01, 02 and 05 test one gene, one keyword module or one gene set at a time. This script
+asks whether **combinations** of genes ("suites") go with strong or weak attachment, and it
+separates two questions that a single "expression profile" plot mixes up:
+
+- **Across treatments**: do animals whose expression is in a given state attach more or less
+  strongly, whatever the reason? Warming and hypoxia change both expression and thread
+  strength, so an association here can be the treatment itself.
+- **Within treatments**: among animals in the same arm, with each animal's own baseline held
+  constant, does the suite track attachment? This is the question of scripts 01, 02 and 05,
+  and the one that matters for screening individuals.
+
+**Axes** (each one a score per animal):
+
+1. **Programs**: script 05's DEG sets (the up- and the down-regulated DEGs of each stressor,
+   tens to hundreds of genes) and its enriched GO terms, with at least `min_set_genes`
+   expressed genes; scored exactly as script 05 scores them (first principal component of the
+   standardised genes, oriented to the set's mean expression), which a check confirms;
+2. **Co-expression modules**: the `n_var_genes` genes with the largest within-arm variance,
+   arm removed, clustered by signed correlation (dissimilarity (1 - r) / 2, average linkage)
+   and cut with the dynamic tree cut (Langfelder, Zhang and Horvath 2008, *Bioinformatics*
+   24:719-720; `dynamicTreeCut`), modules of at least `min_module` genes, in the spirit of
+   WGCNA (Langfelder and Horvath 2008, *BMC Bioinformatics* 9:559) without its soft threshold
+   and topological overlap. A module's score is its first principal component within arms,
+   applied to the expression including the arm differences, so that the score's arm means can
+   be drawn; its within-arm part is the module's;
+3. **Expression principal components**: the first `n_pcs` components of all expressed genes
+   (script 01's filter), unsupervised.
+
+**Tests**, for every axis and every metric of script 01 (`metrics_config_<T>.csv`):
+
+- *within arms*: the ANCOVA of scripts 01, 02 and 05, `level_day3 ~ score + treatment +
+  level_baseline`, partial r with a 95% interval, p; BH over all axes within metric (`q_lm`),
+  within metric and axis type (`q_type`) and within tier (`q_family`);
+- *across arms*: the same without the treatment term, `level_day3 ~ score + level_baseline`
+  (`across_r`, `p_across`); an association here includes the treatment effect;
+- *between arms*: the correlation of the four arm means of the score with the four arm means of
+  the baseline-adjusted level (`between_r`, four points, descriptive only), and the share of
+  the score's variance between arms (`eta2_arm`);
+- *interaction*: whether the within-arm slope differs between arms (`p_interaction`).
+
+**Prediction test.** For each primary metric, an elastic net (glmnet; Friedman, Hastie and
+Tibshirani 2010, *J Stat Softw* 33(1):1-22; alpha 0.5, lambda by an inner 5-fold
+cross-validation) predicts the day-3 level from three predictor sets (script 01's candidate
+genes, the `n_top_var` most variable genes and all the axes above), across and within arms.
+Covariates (the baseline, and the arm for the within question) are removed inside every
+training fold. Out-of-sample Q2 is 1 - SSE(model) / SSE(training-fold mean) over `cv_repeats`
+repeats of a 5-fold split balanced by arm; 0 means no better than the mean. The null is
+`nperm` label permutations (across arms: all animals; within arms: within each arm), each run
+through the same procedure; p = (1 + #null >= observed) / (1 + nperm). Every run is seeded from
+`seed`, the scenario and the permutation, so results do not depend on the number of workers.
+For reference, the same cross-validation predicts the across-arm level from the treatment alone.
+
+**How to read it.** The programs were chosen because their genes differ between arms, so
+arms separate along them by construction; the within-arm tests are the informative ones.
+With 10 to 12 animals per arm, a within-arm association needs a partial r of about 0.41 to
+reach p < 0.05 in one test with 80% power and about 0.6 after correcting for 100 tests, so
+this screen can show strong suites, not rule out modest ones. Exploratory.
+
+Writes, in `03_analyses/expression_suites/`:
+
+- `suite_axes_<T>.csv`: one row per axis: type, label, genes, variance explained, arm means
+  of the score, `eta2_arm`;
+- `suite_axis_tests_<T>.csv`: one row per axis and metric: the tests above;
+- `suite_axis_members_<T>.csv`: the genes of each axis (all members of programs and
+  modules with their weight; the 50 genes with the largest loading for each component) with
+  protein names;
+- `suite_scores_<T>.csv`: one row per animal: arm, the metrics, the baseline-adjusted level as
+  % of the control mean for each primary metric, and every axis score;
+- `suite_prediction_<T>.csv` and `suite_prediction_null_<T>.csv`: the prediction test and
+  its permutation nulls;
+- `suites_between_within_<T>.png`: the DEG programs, arm means against within-arm slopes;
+- `suites_axes_map_<T>.png`: every axis, across-arm against within-arm association;
+- `suites_state_space_<T>.png`: animals in the space of the DEG programs and of the first two
+  expression components, coloured by attachment;
+- `suites_prediction_<T>.png`: the prediction test and the within-arm tests against chance;
+- `RUN_provenance_<T>.txt`.
+
+```{r inputs}
+suppressPackageStartupMessages({ library(tidyverse); library(glmnet); library(dynamicTreeCut)
+                                 library(patchwork); library(ggrepel); library(parallel) })
+par_or <- function(name, default) if (exists("params") && !is.null(params[[name]])) params[[name]] else default
+TISSUE      <- toupper(par_or("tissue", "F")); stopifnot(TISSUE %in% c("F", "G"))
+MIN_SET     <- par_or("min_set_genes", 10)
+N_VAR       <- par_or("n_var_genes", 4000)
+MIN_MODULE  <- par_or("min_module", 30)
+N_PCS       <- par_or("n_pcs", 10)
+N_TOP_VAR   <- par_or("n_top_var", 2000)
+NPERM       <- par_or("nperm", 100)
+CV_REPEATS  <- par_or("cv_repeats", 3)
+CORES       <- max(1L, as.integer(par_or("cores", 4)))
+SEED        <- par_or("seed", 20261006)
+FDR_ALPHA   <- 0.10                                   # as scripts 01, 02 and 05
+
+find_repo_root <- function(start = getwd()) {
+  d <- normalizePath(start, winslash = "/", mustWork = FALSE)
+  for (i in 1:8) {
+    if (all(dir.exists(file.path(d, c("05_differential-expression", "02_thread-strength"))))) return(d)
+    d <- dirname(d)
+  }
+  stop("Repo root not found: need a parent containing 05_differential-expression/ and 02_thread-strength/.")
+}
+repo_root <- find_repo_root()
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance
+source(file.path(repo_root, "tools", "plot_style.R"))        # shared colours
+GM_DIR  <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "gene_mechanics")
+GO_DIR  <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "go_mechanics")
+OUT_DIR <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "expression_suites")
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
+need <- function(f) { if (!file.exists(f)) stop("Missing ", f, " - run the step that writes it first."); f }
+f_in <- c(metrics = sprintf("metrics_config_%s.csv", TISSUE), paired = sprintf("paired_sample_manifest_%s.csv", TISSUE),
+          vst = sprintf("vst_paired_%s.csv", TISSUE), cand = sprintf("candidate_genes_%s.csv", TISSUE))
+f_in <- setNames(file.path(GM_DIR, f_in), names(f_in))
+f_in <- c(f_in, ann = file.path(GM_DIR, "annotation_map.csv"),
+          sets = file.path(GO_DIR, sprintf("mechanics_sets_%s.csv", TISSUE)),
+          sets_assoc = file.path(GO_DIR, sprintf("mechanics_set_associations_%s.csv", TISSUE)))
+invisible(lapply(f_in, need))
+
+mcfg <- read_csv(f_in[["metrics"]], show_col_types = FALSE)
+metrics    <- mcfg$metric
+primary    <- mcfg$metric[mcfg$tier == "primary"]
+arms_kept  <- strsplit(mcfg$arms[1], ";", fixed = TRUE)[[1]]
+COVARIATES <- strsplit(mcfg$covariates[1], ";", fixed = TRUE)[[1]]
+stopifnot(identical(COVARIATES, "treatment"))
+scale_of <- function(m) mcfg$scale[match(m, mcfg$metric)]
+tier_of  <- function(m) mcfg$tier[match(m, mcfg$metric)]
+label_of <- function(m) sub(" \\(.*\\)$", "", mcfg$label[match(m, mcfg$metric)])
+on_scale <- function(m, v) if (scale_of(m) == "log") log(v) else v
+
+paired <- read_csv(f_in[["paired"]], show_col_types = FALSE) %>% mutate(treatment = factor(treatment, levels = arms_kept))
+vp_df <- read_csv(f_in[["vst"]], show_col_types = FALSE)
+vp <- as.matrix(vp_df[, -1]); rownames(vp) <- vp_df[[1]]
+stopifnot(all(paired$sample %in% colnames(vp)))
+vp <- vp[, paired$sample, drop = FALSE]
+X_all <- t(vp)                                          # animals x genes
+arm <- paired$treatment
+ann <- read_csv(f_in[["ann"]], show_col_types = FALSE) %>% select(LOC_ID, protein_name)
+cand <- read_csv(f_in[["cand"]], show_col_types = FALSE) %>% filter(tested) %>% pull(LOC_ID) %>% intersect(colnames(X_all))
+cat(sprintf("%s: %d paired animals, %d expressed genes, %d candidate genes\n", TISSUE, nrow(X_all), ncol(X_all), length(cand)))
+```
+
+# The axes
+
+```{r axes}
+## 1. programs: script 05's DEG sets and GO terms, scored as script 05 scores them
+set_score <- function(locs, min_genes = 3) {
+  z <- t(scale(t(vp[locs, , drop = FALSE])))
+  z <- z[stats::complete.cases(z), , drop = FALSE]
+  if (nrow(z) < min_genes) return(NULL)
+  pc <- prcomp(t(z), center = TRUE, scale. = FALSE)
+  sc <- pc$x[, 1]
+  if (suppressWarnings(cor(sc, colMeans(vp[rownames(z), , drop = FALSE]))) < 0) sc <- -sc
+  list(score = unname(sc), var_expl = summary(pc)$importance[2, 1], weight = pc$rotation[, 1] * sign(cor(pc$x[, 1], sc)))
+}
+sets05 <- read_csv(f_in[["sets"]], show_col_types = FALSE) %>%
+  filter(scored, set_type %in% c("DEG set", "GO term"), n_genes >= MIN_SET)
+prog <- lapply(strsplit(sets05$members, ";", fixed = TRUE), function(g) set_score(intersect(g, rownames(vp))))
+keep <- !vapply(prog, is.null, TRUE); sets05 <- sets05[keep, ]; prog <- prog[keep]
+axes <- tibble(axis_id = sets05$set_id,
+               type = ifelse(sets05$set_type == "DEG set", "DEG program", "GO term"),
+               label = ifelse(sets05$set_type == "DEG set", sets05$run, sprintf("%s: %s", sets05$run, sets05$Term)),
+               n_genes = sets05$n_genes, var_expl = vapply(prog, `[[`, 0, "var_expl"))
+S <- sapply(prog, `[[`, "score"); colnames(S) <- axes$axis_id
+members <- bind_rows(lapply(seq_along(prog), function(i)
+  tibble(axis_id = axes$axis_id[i], LOC_ID = names(prog[[i]]$weight), weight = unname(prog[[i]]$weight))))
+
+## 2. co-expression modules within arms
+R_arm <- resid(lm(X_all ~ arm))                          # expression with the arm means removed
+sd_w <- apply(R_arm, 2, sd)
+top_w <- names(sort(sd_w, decreasing = TRUE))[seq_len(min(N_VAR, ncol(X_all)))]
+Zw <- sweep(R_arm[, top_w], 2, sd_w[top_w], "/")         # within-arm, standardised
+Zraw <- sweep(sweep(X_all[, top_w], 2, colMeans(X_all[, top_w])), 2, sd_w[top_w], "/")  # same scale, arm differences kept
+D <- (1 - cor(Zw)) / 2
+tree <- hclust(as.dist(D), method = "average")
+mod <- cutreeDynamic(tree, distM = D, deepSplit = 2, minClusterSize = MIN_MODULE, verbose = 0)
+mods <- sort(setdiff(unique(mod), 0))
+short <- function(x) ifelse(is.na(x) | x == "", NA, substr(sub(" \\(.*$", "", x), 1, 40))
+for (k in mods) {
+  g <- top_w[mod == k]
+  pc <- prcomp(Zw[, g], center = TRUE, scale. = FALSE)
+  w <- pc$rotation[, 1]; if (cor(as.vector(Zw[, g] %*% w), rowMeans(Zw[, g])) < 0) w <- -w
+  id <- sprintf("module %02d", k)
+  kme <- as.vector(cor(Zw[, g], Zw[, g] %*% w))
+  hubs <- tibble(LOC_ID = g, kME = kme) %>% left_join(ann, by = "LOC_ID") %>% arrange(desc(kME))
+  hub_names <- head(unique(na.omit(short(hubs$protein_name))), 3)
+  axes <- bind_rows(axes, tibble(axis_id = id, type = "Co-expression module",
+                                 label = sprintf("Module %02d: %s", k, paste(hub_names, collapse = "; ")),
+                                 n_genes = length(g), var_expl = summary(pc)$importance[2, 1]))
+  S <- cbind(S, setNames(data.frame(as.vector(Zraw[, g] %*% w)), id))
+  members <- bind_rows(members, tibble(axis_id = id, LOC_ID = g, weight = unname(w), kME = kme))
+}
+
+## 3. principal components of all expressed genes
+pca <- prcomp(X_all, center = TRUE, scale. = FALSE)
+ve <- summary(pca)$importance[2, ]
+for (k in seq_len(min(N_PCS, ncol(pca$x)))) {
+  ld <- pca$rotation[, k]; top50 <- names(sort(abs(ld), decreasing = TRUE))[1:50]
+  sg <- if (sum(ld[top50]) < 0) -1 else 1                # oriented so its largest loadings are mostly positive
+  id <- sprintf("PC%d", k)
+  axes <- bind_rows(axes, tibble(axis_id = id, type = "Expression PC",
+                                 label = sprintf("Expression PC%d (%.1f%% of variance)", k, 100 * ve[k]),
+                                 n_genes = ncol(X_all), var_expl = unname(ve[k])))
+  S <- cbind(S, setNames(data.frame(sg * pca$x[, k]), id))
+  members <- bind_rows(members, tibble(axis_id = id, LOC_ID = top50, weight = unname(sg * ld[top50])))
+}
+S <- as.matrix(S); rownames(S) <- paired$sample
+S <- scale(S)                                             # every axis in SD units across animals
+axes <- axes %>% mutate(eta2_arm = apply(S, 2, function(x) summary(lm(x ~ arm))$r.squared),
+                        mean_control = colMeans(S[arm == "control", , drop = FALSE]),
+                        mean_OA = colMeans(S[arm == "OA", , drop = FALSE]),
+                        mean_OW = colMeans(S[arm == "OW", , drop = FALSE]),
+                        mean_DO = colMeans(S[arm == "DO", , drop = FALSE]))
+members <- members %>% left_join(ann, by = "LOC_ID")
+cat("Axes:\n"); print(table(axes$type))
+cat(sprintf("Modules: %d from %d genes (%d unassigned)\n", length(mods), length(top_w), sum(mod == 0)))
+warn_unless(!anyNA(S), "Axis scores contain missing values.")
+warn_unless(length(mods) >= 1, "No co-expression module was found.")
+warn_unless(all(table(mod[mod != 0]) >= MIN_MODULE), "A module is smaller than min_module.")
+```
+
+# The axis tests
+
+```{r tests}
+fit_axis <- function(x, metric) {
+  dat <- data.frame(y = on_scale(metric, paired[[metric]]), x = x,
+                    base = on_scale(metric, paired[[paste0("base_", metric)]]), treatment = arm)
+  dat <- dat[stats::complete.cases(dat) & is.finite(dat$y) & is.finite(dat$base), , drop = FALSE]
+  fm <- lm(y ~ x + treatment + base, data = dat)
+  co <- summary(fm)$coefficients; t <- co["x", "t value"]; df <- fm$df.residual; r <- t / sqrt(t^2 + df)
+  fa <- lm(y ~ x + base, data = dat); ta <- summary(fa)$coefficients["x", "t value"]
+  fi <- lm(y ~ x * treatment + base, data = dat)
+  yadj <- resid(lm(y ~ base, data = dat))
+  am <- tapply(dat$x, dat$treatment, mean); ay <- tapply(yadj, dat$treatment, mean)
+  tibble(metric = metric, tier = tier_of(metric), n = nrow(dat),
+         slope = co["x", "Estimate"], se = co["x", "Std. Error"], p_lm = co["x", "Pr(>|t|)"],
+         partial_r = r, partial_r_lo = tanh(atanh(r) - qnorm(0.975) / sqrt(df - 1)),
+         partial_r_hi = tanh(atanh(r) + qnorm(0.975) / sqrt(df - 1)),
+         across_r = ta / sqrt(ta^2 + fa$df.residual), p_across = summary(fa)$coefficients["x", "Pr(>|t|)"],
+         between_r = suppressWarnings(cor(am, ay)), p_interaction = anova(fm, fi)$`Pr(>F)`[2])
+}
+tests <- bind_rows(lapply(seq_len(ncol(S)), function(i)
+  bind_rows(lapply(metrics, function(m) fit_axis(S[, i], m))) %>% mutate(axis_id = colnames(S)[i], .before = 1))) %>%
+  left_join(axes %>% select(axis_id, type, label, n_genes), by = "axis_id") %>%
+  group_by(metric) %>% mutate(q_lm = p.adjust(p_lm, "BH")) %>%
+  group_by(metric, type) %>% mutate(q_type = p.adjust(p_lm, "BH")) %>%
+  group_by(tier) %>% mutate(q_family = p.adjust(p_lm, "BH")) %>% ungroup() %>%
+  relocate(type, label, n_genes, .after = axis_id)
+
+## check: script 05's sets give script 05's within-arm partial correlations
+a05 <- read_csv(f_in[["sets_assoc"]], show_col_types = FALSE) %>% select(set_id, metric, partial_r)
+cmp <- tests %>% filter(type %in% c("DEG program", "GO term")) %>% select(axis_id, metric, partial_r) %>%
+  left_join(a05, by = c("axis_id" = "set_id", "metric"), suffix = c("", "_05"))
+warn_unless(nrow(cmp) > 0 && !anyNA(cmp$partial_r_05) && max(abs(cmp$partial_r - cmp$partial_r_05)) < 1e-8,
+            "Program scores do not reproduce script 05's partial correlations (largest difference ",
+            signif(max(abs(cmp$partial_r - cmp$partial_r_05), na.rm = TRUE), 3), ").")
+cat("Within-arm tests with q_lm <", FDR_ALPHA, ":", sum(tests$q_lm < FDR_ALPHA), "of", nrow(tests), "\n")
+tests %>% filter(tier == "primary") %>% group_by(type, metric) %>%
+  summarise(axes = n(), lowest_p = signif(min(p_lm), 2), lowest_q = signif(min(q_lm), 2),
+            p_below_05 = sum(p_lm < 0.05), max_abs_across_r = round(max(abs(across_r)), 2), .groups = "drop") %>%
+  knitr::kable()
+```
+
+# Multi-gene prediction of held-out animals
+
+```{r prediction}
+resid_on <- function(Y, D, tr) {                          # residuals of Y on D, coefficients fitted on rows tr
+  B <- qr.coef(qr(D[tr, , drop = FALSE]), Y[tr, , drop = FALSE]); B[is.na(B)] <- 0
+  Y - D %*% B
+}
+cv_q2 <- function(X, y, D, strata, reps) {               # the RNG stream is set by the caller
+  n <- length(y); sse_m <- sse_0 <- 0
+  for (r in seq_len(reps)) {
+    fold <- integer(n)
+    for (s in sort(unique(strata))) { idx <- which(strata == s); fold[idx] <- sample(rep_len(1:5, length(idx))) }
+    for (f in 1:5) {
+      te <- which(fold == f); tr <- which(fold != f)
+      Xr <- resid_on(X, D, tr); yr <- as.vector(resid_on(matrix(y), D, tr))
+      keep <- which(apply(Xr[tr, , drop = FALSE], 2, sd) > 1e-8)
+      fit <- glmnet::cv.glmnet(Xr[tr, keep, drop = FALSE], yr[tr], alpha = 0.5, foldid = sample(rep_len(1:5, length(tr))))
+      p <- as.vector(predict(fit, Xr[te, keep, drop = FALSE], s = "lambda.min"))
+      sse_m <- sse_m + sum((yr[te] - p)^2); sse_0 <- sse_0 + sum((yr[te] - mean(yr[tr]))^2)
+    }
+  }
+  1 - sse_m / sse_0
+}
+top_var <- names(sort(apply(X_all, 2, var), decreasing = TRUE))[seq_len(min(N_TOP_VAR, ncol(X_all)))]
+pred_sets <- list(candidates = X_all[, cand, drop = FALSE], top_variable = X_all[, top_var, drop = FALSE], axes = S)
+SCEN <- list(); scen_tab <- tibble()
+for (m in primary) for (ps in names(pred_sets)) for (tg in c("across", "within")) {
+  ok <- is.finite(on_scale(m, paired[[m]])) & is.finite(on_scale(m, paired[[paste0("base_", m)]]))
+  b <- on_scale(m, paired[[paste0("base_", m)]])[ok]
+  SCEN[[length(SCEN) + 1]] <- list(X = pred_sets[[ps]][ok, , drop = FALSE], y = on_scale(m, paired[[m]])[ok],
+    D = if (tg == "across") cbind(1, b) else model.matrix(~ arm[ok] + b), strata = as.integer(arm[ok]), within = tg == "within")
+  scen_tab <- bind_rows(scen_tab, tibble(scenario = length(SCEN), metric = m, predictors = ps, target = tg,
+                                         n = sum(ok), n_predictors = ncol(pred_sets[[ps]])))
+}
+tasks <- expand.grid(perm = 0:NPERM, scenario = seq_along(SCEN))
+run_task <- function(i) {
+  sc <- SCEN[[tasks$scenario[i]]]; set.seed(SEED + 10000L * tasks$scenario[i] + tasks$perm[i])
+  y <- sc$y
+  if (tasks$perm[i] > 0) {
+    if (sc$within) for (s in unique(sc$strata)) { idx <- which(sc$strata == s); y[idx] <- y[idx][sample.int(length(idx))] }
+    else y <- y[sample.int(length(y))]
+  }
+  cv_q2(sc$X, y, sc$D, sc$strata, CV_REPEATS)
+}
+t0 <- Sys.time()
+## workers get the data once (clusterExport) and functions whose environment is the global one,
+## so that no task carries this report's environment (with its large matrices) to a worker
+ship <- function(f) { environment(f) <- globalenv(); f }
+q2 <- if (CORES > 1) {
+  cl <- makePSOCKcluster(CORES)
+  tryCatch({
+    invisible(clusterCall(cl, function(lp) { .libPaths(lp); suppressPackageStartupMessages(library(glmnet)); NULL }, .libPaths()))
+    wk <- new.env()
+    wk$SCEN <- SCEN; wk$tasks <- tasks; wk$SEED <- SEED; wk$CV_REPEATS <- CV_REPEATS
+    wk$cv_q2 <- ship(cv_q2); wk$resid_on <- ship(resid_on); wk$run_task <- ship(run_task)
+    clusterExport(cl, ls(wk), envir = wk)
+    unlist(parLapplyLB(cl, seq_len(nrow(tasks)), ship(function(i) run_task(i))))
+  }, finally = stopCluster(cl))
+} else vapply(seq_len(nrow(tasks)), run_task, 0)
+cat(sprintf("%d cross-validated fits on %d worker(s) in %.1f min\n", nrow(tasks), CORES, as.numeric(difftime(Sys.time(), t0, units = "mins"))))
+tasks$q2 <- q2
+## determinism: the first scenario's observed Q2, rerun serially in this session
+warn_unless(isTRUE(all.equal(run_task(1), tasks$q2[1], tolerance = 1e-12)), "The prediction test is not reproducible across workers.")
+
+## reference: the treatment alone, across arms
+arm_q2 <- sapply(primary, function(m) {
+  ok <- is.finite(on_scale(m, paired[[m]])) & is.finite(on_scale(m, paired[[paste0("base_", m)]]))
+  y <- on_scale(m, paired[[m]])[ok]; b <- on_scale(m, paired[[paste0("base_", m)]])[ok]; a <- arm[ok]
+  set.seed(SEED); n <- length(y); sse_m <- sse_0 <- 0
+  for (r in seq_len(CV_REPEATS)) {
+    fold <- integer(n); for (s in levels(a)) { idx <- which(a == s); fold[idx] <- sample(rep_len(1:5, length(idx))) }
+    for (f in 1:5) { tr <- fold != f; te <- fold == f
+      yr <- y - (cbind(1, b) %*% qr.coef(qr(cbind(1, b)[tr, ]), y[tr]))[, 1]
+      p <- tapply(yr[tr], a[tr], mean)[as.character(a[te])]
+      sse_m <- sse_m + sum((yr[te] - p)^2); sse_0 <- sse_0 + sum((yr[te] - mean(yr[tr]))^2) } }
+  1 - sse_m / sse_0 })
+
+pred <- scen_tab %>%
+  left_join(tasks %>% group_by(scenario) %>%
+              summarise(q2_obs = q2[perm == 0], null_median = median(q2[perm > 0]), null_lo = unname(quantile(q2[perm > 0], 0.025)),
+                        null_hi = unname(quantile(q2[perm > 0], 0.975)), n_perm = sum(perm > 0),
+                        p_perm = (1 + sum(q2[perm > 0] >= q2[perm == 0])) / (1 + sum(perm > 0)), .groups = "drop"),
+            by = "scenario") %>%
+  rename(q2 = q2_obs) %>%
+  mutate(treatment_only_q2 = ifelse(target == "across", arm_q2[metric], NA_real_))
+warn_unless(all(pred$n_perm == NPERM) && all(is.finite(pred$q2)), "A prediction scenario is incomplete.")
+warn_unless(all(is.finite(arm_q2)), "The treatment-only reference failed.")
+knitr::kable(pred %>% transmute(metric, predictors, target, n, n_predictors, q2 = round(q2, 3), null_median = round(null_median, 3),
+                                null_hi = round(null_hi, 3), p_perm = round(p_perm, 3), treatment_only_q2 = round(treatment_only_q2, 3)))
+```
+
+# Outputs
+
+```{r write}
+strength_pct <- sapply(primary, function(m) {             # baseline-adjusted level, % of the control mean
+  y <- on_scale(m, paired[[m]]); b <- on_scale(m, paired[[paste0("base_", m)]]); ok <- is.finite(y) & is.finite(b)
+  out <- rep(NA_real_, length(y)); r <- resid(lm(y[ok] ~ b[ok]))
+  out[ok] <- 100 * exp(r - mean(r[arm[ok] == "control"])); out })
+colnames(strength_pct) <- paste0(primary, "_pct_control")
+scores_out <- bind_cols(paired %>% select(sample, mussel, treatment, any_of(metrics), any_of(paste0("base_", metrics))),
+                        as_tibble(strength_pct), as_tibble(S))
+write_csv(axes, file.path(OUT_DIR, sprintf("suite_axes_%s.csv", TISSUE)))
+write_csv(tests, file.path(OUT_DIR, sprintf("suite_axis_tests_%s.csv", TISSUE)))
+write_csv(members %>% select(axis_id, LOC_ID, protein_name, weight, kME), file.path(OUT_DIR, sprintf("suite_axis_members_%s.csv", TISSUE)))
+write_csv(scores_out, file.path(OUT_DIR, sprintf("suite_scores_%s.csv", TISSUE)))
+write_csv(pred, file.path(OUT_DIR, sprintf("suite_prediction_%s.csv", TISSUE)))
+write_csv(tasks %>% filter(perm > 0) %>% left_join(scen_tab %>% select(scenario, metric, predictors, target), by = "scenario") %>%
+            select(metric, predictors, target, perm, q2), file.path(OUT_DIR, sprintf("suite_prediction_null_%s.csv", TISSUE)))
+```
+
+# Figures
+
+```{r figures, fig.height = 9}
+tissue_name <- TISSUE_LABELS[[TISSUE]]
+arm_lab <- c(control = "Control", OA = "OA", OW = "OW", DO = "DO")
+arm_fill_shape <- c(control = 21, OA = 22, OW = 24, DO = 23)
+fmt_p <- function(p) ifelse(p < 0.001, formatC(p, format = "e", digits = 1), formatC(p, format = "fg", digits = 2))
+strength_fill <- scale_fill_gradient(low = "#f0f0f0", high = THREAD_TRT_COLORS[["baseline"]], trans = "log10",
+                                     name = "Mean peak force,\n% of control mean\n(baseline-adjusted)")
+
+## 1. DEG programs: arm means against within-arm slopes, both primary metrics
+progs <- axes %>% filter(type == "DEG program")
+bw <- bind_rows(lapply(primary, function(m) bind_rows(lapply(seq_len(nrow(progs)), function(i)
+  tibble(metric = m, axis_id = progs$axis_id[i], arm = arm, score = S[, progs$axis_id[i]], pct = strength_pct[, paste0(m, "_pct_control")]))))) %>%
+  filter(is.finite(pct)) %>%
+  left_join(progs %>% select(axis_id, label, n_genes), by = "axis_id") %>%
+  mutate(panel = sprintf("%s (%d genes)", label, n_genes), metric_lab = vapply(metric, label_of, ""))
+bw$panel <- factor(bw$panel, levels = unique(bw$panel[order(match(bw$axis_id, progs$axis_id))]))
+bm <- bw %>% group_by(metric_lab, panel, arm) %>%
+  summarise(x = mean(score), sx = sd(score) / sqrt(n()), ly = mean(log(pct)), sy = sd(log(pct)) / sqrt(n()), .groups = "drop") %>%
+  mutate(y = exp(ly), lo = exp(ly - sy), hi = exp(ly + sy))
+bl <- tests %>% filter(type == "DEG program", metric %in% primary) %>%
+  left_join(bw %>% distinct(axis_id, panel, metric, metric_lab), by = c("axis_id", "metric")) %>%
+  mutate(txt = sprintf("within arms r = %.2f, p = %s, q = %.2f", partial_r, fmt_p(p_lm), q_lm))
+p1 <- ggplot(bw, aes(score, pct)) +
+  geom_point(aes(colour = arm, shape = arm), size = 1.4, alpha = 0.5) +
+  geom_smooth(aes(colour = arm, group = arm), method = "lm", formula = y ~ x, se = FALSE, linewidth = 0.55) +
+  geom_path(data = bm %>% arrange(panel, match(arm, arms_kept)), aes(x, y, group = interaction(panel, metric_lab)),
+            colour = "grey35", linetype = "dashed", linewidth = 0.45) +
+  geom_errorbar(data = bm, aes(x = x, ymin = lo, ymax = hi, colour = arm), inherit.aes = FALSE, width = 0, linewidth = 0.7) +
+  geom_errorbar(data = bm, aes(y = y, xmin = x - sx, xmax = x + sx, colour = arm), inherit.aes = FALSE, width = 0, linewidth = 0.7, orientation = "y") +
+  geom_point(data = bm, aes(x, y, fill = arm, shape = arm), inherit.aes = FALSE, colour = "black", size = 2.8, stroke = 0.4) +
+  geom_text(data = bl, aes(x = -Inf, y = Inf, label = txt), hjust = -0.03, vjust = 1.3, size = 2.5, colour = "grey25") +
+  facet_grid(metric_lab ~ panel, scales = "free") +
+  scale_y_log10() +
+  scale_colour_manual(values = TREATMENT_COLORS, labels = arm_lab, name = NULL) +
+  scale_fill_manual(values = TREATMENT_COLORS, labels = arm_lab, name = NULL) +
+  scale_shape_manual(values = arm_fill_shape, labels = arm_lab, name = NULL) +
+  labs(x = "Program score (SD units; first principal component of the program's genes)",
+       y = "Day-3 level, % of control mean (baseline-adjusted, log scale)",
+       title = sprintf("%s: DEG programs between arms (large points, arm means +/- 1 SE, joined in arm order) and within arms (thin lines)", tissue_name),
+       caption = "Within-arm r, p and q: ANCOVA level_day3 ~ score + treatment + level_baseline; q over every axis of this script and metric (suite_axis_tests).") +
+  theme_psmfc(9) + theme(legend.position = "bottom", strip.text = element_text(face = "bold", size = 7.5),
+                         plot.title.position = "plot", plot.caption = element_text(hjust = 0))
+ggsave(file.path(OUT_DIR, sprintf("suites_between_within_%s.png", TISSUE)), p1,
+       width = 2.3 + 2.2 * nrow(progs), height = 6.4, dpi = 220, limitsize = FALSE)
+
+## 2. every axis: across-arm against within-arm association
+type_shape <- c("DEG program" = 21, "GO term" = 22, "Co-expression module" = 24, "Expression PC" = 23)
+type_fill  <- c("DEG program" = "black", "GO term" = "grey55", "Co-expression module" = "white", "Expression PC" = "grey85")
+mp <- tests %>% filter(tier == "primary") %>% mutate(metric_lab = vapply(metric, label_of, ""))
+lab2 <- mp %>% group_by(metric_lab) %>% slice_max(abs(across_r), n = 5, with_ties = FALSE) %>% ungroup() %>%
+  mutate(txt = substr(label, 1, 40))
+sumtxt <- mp %>% group_by(metric_lab) %>%
+  summarise(txt = sprintf("%d axes; within arms lowest q = %.2f, %d with p < 0.05", n(), min(q_lm), sum(p_lm < 0.05)), .groups = "drop")
+p2 <- ggplot(mp, aes(across_r, partial_r)) +
+  geom_hline(yintercept = 0, colour = "grey70") + geom_vline(xintercept = 0, colour = "grey70") +
+  geom_point(aes(shape = type, fill = type, size = n_genes), colour = "grey20", stroke = 0.35, alpha = 0.85) +
+  geom_point(data = mp %>% filter(q_lm < FDR_ALPHA), aes(size = n_genes), shape = 1, colour = DIRECTION_COLORS[["up"]], stroke = 1.1, show.legend = FALSE) +
+  geom_text_repel(data = lab2, aes(label = txt), size = 2.5, colour = "grey25", min.segment.length = 0, seed = 1, max.overlaps = 20) +
+  geom_text(data = sumtxt, aes(x = -Inf, y = Inf, label = txt), hjust = -0.03, vjust = 1.4, size = 3, colour = "grey20") +
+  facet_wrap(~ metric_lab) +
+  scale_shape_manual(values = type_shape, name = NULL) + scale_fill_manual(values = type_fill, name = NULL) +
+  scale_size_continuous(trans = "log10", range = c(1.2, 4.5), breaks = c(10, 100, 1000, 10000), labels = scales::comma, name = "genes") +
+  coord_cartesian(xlim = c(-0.75, 0.75), ylim = c(-0.75, 0.75)) +
+  labs(x = "Across arms: partial r of the score with the day-3 level, baseline held constant (includes the treatment effect)",
+       y = "Within arms: partial r, arm and baseline held constant",
+       title = sprintf("%s: every axis, across arms against within arms", tissue_name),
+       caption = sprintf("Red ring: within-arm BH q < %.1f over every axis and metric. Labelled: the five axes most associated across arms.", FDR_ALPHA)) +
+  theme_psmfc(9.5) + theme(plot.title.position = "plot", plot.caption = element_text(hjust = 0), legend.position = "right")
+ggsave(file.path(OUT_DIR, sprintf("suites_axes_map_%s.png", TISSUE)), p2, width = 13, height = 6.2, dpi = 220)
+
+## 3. state space: the DEG programs (principal components of their scores) and the expression PCs
+P <- S[, progs$axis_id, drop = FALSE]; pp <- prcomp(P, center = TRUE, scale. = TRUE)
+ve_p <- summary(pp)$importance[2, ]
+sp <- tibble(arm = arm, a1 = pp$x[, 1], a2 = pp$x[, 2], pc1 = S[, "PC1"], pc2 = S[, "PC2"],
+             pct = strength_pct[, paste0(primary[1], "_pct_control")]) %>% filter(is.finite(pct))
+ld <- as_tibble(pp$rotation[, 1:2], rownames = "axis_id") %>% left_join(progs %>% select(axis_id, label), by = "axis_id") %>%
+  mutate(s = 0.85 * max(abs(c(sp$a1, sp$a2))) / max(sqrt(PC1^2 + PC2^2)))
+cent <- function(d, x, y) d %>% group_by(arm) %>% summarise(x = mean({{ x }}), y = mean({{ y }}), .groups = "drop")
+state_plot <- function(d, x, y, xl, yl, title, arrows = NULL) {
+  g <- ggplot(d, aes({{ x }}, {{ y }})) +
+    geom_hline(yintercept = 0, colour = "grey90") + geom_vline(xintercept = 0, colour = "grey90")
+  if (!is.null(arrows)) g <- g +
+    geom_segment(data = arrows, aes(x = 0, y = 0, xend = PC1 * s, yend = PC2 * s), inherit.aes = FALSE,
+                 arrow = arrow(length = unit(5, "pt")), colour = "grey45", linewidth = 0.4) +
+    geom_text_repel(data = arrows, aes(x = PC1 * s, y = PC2 * s, label = label), inherit.aes = FALSE, size = 2.6, colour = "grey30", seed = 2)
+  g + geom_point(aes(fill = pct, shape = arm), size = 2.6, colour = "grey25", stroke = 0.35) +
+    geom_point(data = cent(d, {{ x }}, {{ y }}), aes(x, y, colour = arm), inherit.aes = FALSE, shape = 3, size = 4.5, stroke = 1.3, show.legend = FALSE) +
+    strength_fill + scale_shape_manual(values = arm_fill_shape, labels = arm_lab, name = NULL) +
+    scale_colour_manual(values = TREATMENT_COLORS) +
+    guides(shape = guide_legend(override.aes = list(fill = "grey70"), order = 1)) +
+    labs(x = xl, y = yl, title = title) + theme_psmfc(9.5) + theme(plot.title.position = "plot")
+}
+p3 <- state_plot(sp, a1, a2, sprintf("Programs axis 1 (%.0f%%)", 100 * ve_p[1]), sprintf("Programs axis 2 (%.0f%%)", 100 * ve_p[2]),
+                 sprintf("%d DEG programs (arrows)", nrow(progs)), ld) |
+  state_plot(sp, pc1, pc2, axes$label[axes$axis_id == "PC1"], axes$label[axes$axis_id == "PC2"],
+             sprintf("All %s expressed genes", format(ncol(X_all), big.mark = ",")))
+p3 <- p3 + plot_layout(guides = "collect") +
+  plot_annotation(title = sprintf("%s: animals in expression space, coloured by attachment; crosses, arm means", tissue_name),
+                  caption = with(tests %>% filter(metric == primary[1], type %in% c("DEG program", "Expression PC")),
+                                 sprintf("Left: principal components of the %d DEG-program scores. Within arms, the lowest q of these programs and the expression components with %s is %.2f (suite_axis_tests_%s.csv).",
+                                         nrow(progs), tolower(label_of(primary[1])), min(q_lm), TISSUE)))
+ggsave(file.path(OUT_DIR, sprintf("suites_state_space_%s.png", TISSUE)), p3, width = 13, height = 6, dpi = 220)
+
+## 4. prediction test and the within-arm tests against chance
+pr <- pred %>% mutate(row = sprintf("%s | %s", label_of(metric), c(candidates = sprintf("candidates (%d)", length(cand)),
+                                     top_variable = sprintf("%s most variable genes", format(length(top_var), big.mark = ",")),
+                                     axes = sprintf("all axes (%d)", ncol(S)))[predictors]),
+                      target = factor(target, levels = c("across", "within"),
+                                      labels = c("Across arms (baseline removed)", "Within arms (arm and baseline removed)")))
+p4a <- ggplot(pr, aes(y = row)) +
+  geom_vline(xintercept = 0, colour = "grey60") +
+  geom_errorbar(aes(xmin = null_lo, xmax = null_hi), width = 0, colour = "grey75", linewidth = 2.2, orientation = "y") +
+  geom_point(aes(x = null_median), shape = 124, size = 3, colour = "grey45") +
+  geom_point(aes(x = treatment_only_q2), shape = 23, size = 2.6, fill = TREATMENT_COLORS[["control"]], colour = "black", stroke = 0.3, na.rm = TRUE) +
+  geom_point(aes(x = q2, fill = p_perm < 0.05), shape = 21, size = 2.8, colour = "black", stroke = 0.4) +
+  facet_wrap(~ target) +
+  scale_fill_manual(values = c(`TRUE` = "black", `FALSE` = "white"), labels = c(`TRUE` = "beats the permutations (p < 0.05)", `FALSE` = "within the permutation null"), name = NULL, drop = FALSE) +
+  labs(x = "Out-of-sample Q2 (elastic net; 0 = no better than the training mean)", y = NULL,
+       title = "Do multi-gene profiles predict held-out animals?",
+       subtitle = sprintf("Circle: observed; grey bar: 95%% of %d permutations; grey diamond: the treatment alone as predictor", NPERM)) +
+  theme_psmfc(9.5) + theme(legend.position = "bottom", plot.title.position = "plot")
+qq <- tests %>% filter(tier == "primary") %>% group_by(type) %>% arrange(p_lm, .by_group = TRUE) %>%
+  mutate(k = row_number(), n = n(), obs = -log10(p_lm), exp = -log10(k / (n + 1)),
+         lo = -log10(qbeta(0.975, k, n - k + 1)), hi = -log10(qbeta(0.025, k, n - k + 1))) %>% ungroup()
+p4b <- ggplot(qq, aes(exp, obs)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey90") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "grey45") +
+  geom_point(size = 1.3, colour = "grey20") +
+  facet_wrap(~ type, nrow = 1, scales = "free_x") +
+  labs(x = "expected -log10 p (no association)", y = "observed -log10 p", title = "Within-arm tests against chance, primary metrics",
+       subtitle = "Band: 95% of what chance gives") +
+  theme_psmfc(9.5) + theme(plot.title.position = "plot")
+p4 <- (p4a / p4b) + plot_layout(heights = c(1, 0.9)) + plot_annotation(title = tissue_name)
+ggsave(file.path(OUT_DIR, sprintf("suites_prediction_%s.png", TISSUE)), p4, width = 12, height = 9, dpi = 220)
+p1
+```
+
+# Provenance
+
+```{r provenance}
+prov <- file.path(OUT_DIR, sprintf("RUN_provenance_%s.txt", TISSUE))
+settings <- c(
+  "[06_expression_suites.Rmd]",
+  paste0("generated            : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+  paste0("tissue               : ", TISSUE),
+  paste0("axes                 : ", paste(sprintf("%s %d", names(table(axes$type)), as.integer(table(axes$type))), collapse = ", ")),
+  paste0("modules              : ", length(mods), " from the ", length(top_w), " genes with the largest within-arm variance (min ", MIN_MODULE, " genes)"),
+  paste0("within-arm test      : ANCOVA level_day3 ~ score + treatment + level_baseline; across-arm: without treatment"),
+  paste0("prediction           : elastic net (alpha 0.5, lambda.min of an inner 5-fold CV), ", CV_REPEATS, " x 5-fold CV balanced by arm, ",
+         NPERM, " permutations per scenario, seed ", SEED, ", ", CORES, " worker(s)"),
+  paste0("lowest within-arm q  : ", signif(min(tests$q_lm), 3), " (", sum(tests$q_lm < FDR_ALPHA), " of ", nrow(tests), " axis x metric tests below ", FDR_ALPHA, ")"),
+  paste0("prediction Q2 range  : ", sprintf("%.3f to %.3f", min(pred$q2), max(pred$q2)), "; lowest permutation p ", signif(min(pred$p_perm), 3),
+         "; treatment alone (across): ", paste(sprintf("%s %.3f", names(arm_q2), arm_q2), collapse = ", ")),
+  paste0("animals              : ", nrow(X_all)))
+inputs <- c(unname(f_in), file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "06_expression_suites.Rmd"),
+            file.path(repo_root, "tools", c("pipeline_checks.R", "plot_style.R")))
+writeLines(provenance_lines(settings, inputs, repo_root, packages = c("glmnet", "dynamicTreeCut", "dplyr", "ggplot2", "patchwork", "ggrepel")), prov)
+cat(readLines(prov), sep = "\n")
+```

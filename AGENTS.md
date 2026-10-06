@@ -42,7 +42,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **Requirements:** the packages each folder's README lists (DESeq2, apeglm, ashr, topGO,
   goseq, clusterProfiler, enrichplot, rrvgo, GOSemSim, GO.db, GSEABase, org.Hs.eg.db,
   tidyverse, readxl, openxlsx, emmeans, here, rmarkdown, R.utils (for `data.table::fread` on
-  `.gz` files), among others). Tested with R 4.6.1 and Bioconductor 3.23
+  `.gz` files), glmnet and dynamicTreeCut (`09` step 06), among others). Tested with R 4.6.1 and Bioconductor 3.23
   (`BiocManager::install(version = "3.23")`): DESeq2 1.52.0, apeglm 1.34.0, ashr 2.2.63, topGO
   2.64.0, goseq 1.64.0, clusterProfiler 4.20.0, rrvgo 1.24.0, GOSemSim 2.38.3, `GO.db` 3.23.1
   (GO release 2026-01-23) and `org.Hs.eg.db` 3.23.1. The previous runs used R 4.4.3 with
@@ -51,7 +51,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   1e-6). GO results change with the GO release in `GO.db`, so `07` and `08` stop unless it is
   2026-01-23 (`check_go_release()`, `tools/pipeline_checks.R`), and `07` records it with the
   package versions in `03_analyses/01_go-inputs/RUN_provenance.txt`. `renv.lock` at the root
-  records every package of the library the pipeline last ran with (277, R's recommended packages
+  records every package of the library the pipeline last ran with (282, R's recommended packages
   included: Matrix 1.7-6, MASS 7.3-66, mgcv 1.9-4, survival 3.8-12, ...): with R 4.6.1,
   `install.packages("renv"); renv::restore(lockfile = "renv.lock", library = "<library>",
   prompt = FALSE)` rebuilds it (the project does not activate renv, so nothing else changes).
@@ -149,6 +149,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     (`GO.db` 3.23.1) and its generic GO slim (`08_gene-annotation/02_data/goslim_generic.obo`).
     Kept for comparison: the search of 2024 (`genome-foot/`) and its hits with the 2026_03
     records (`genome-foot-uniprot2026_03/`, `03_blast` step 04).
+  - Expression suites (`09` step 06, exploratory): script 05's gene sets, co-expression
+    modules and expression components, each through the within-arm ANCOVA and the same model
+    without treatment; elastic-net prediction of held-out animals (glmnet 5.1) against label
+    permutations, seeded per run so that the result does not depend on the number of workers.
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.

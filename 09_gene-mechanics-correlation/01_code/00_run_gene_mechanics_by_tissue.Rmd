@@ -7,6 +7,7 @@ params:
   tissues: ["F", "G"]   # which tissues to run; one or both
   steps: "all"          # "all", or step numbers, e.g. [1, 2]
   stop_on_fail: true    # stop a tissue's chain at its first failed step
+  cores: 4              # workers for step 06's prediction test (a socket cluster, so Windows too)
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
 
 # Purpose
 
-Scripts 01 to 05 take a knit parameter `tissue` (`"F"` foot, the default, or `"G"` gill).
+Scripts 01 to 06 take a knit parameter `tissue` (`"F"` foot, the default, or `"G"` gill).
 This runner renders them in order for each tissue requested, each in its own R process, so
 the gill analysis is the same code as the foot analysis with one parameter changed and the
 two cannot drift apart. Reports and logs carry the tissue in their name
@@ -29,6 +30,7 @@ with `run_log.csv`.
 | 03 | `03_rna_thread_manifest_and_expression_tables.Rmd` | `expr_tables/`: RNA x thread manifest, top DEG expression tables |
 | 04 | `04_byssus_foot_gene_list_expression.Rmd` | `byssus_genes/`: byssus/foot gene list and its expression |
 | 05 | `05_go_term_mechanics.Rmd` | `go_mechanics/`: mechanics against DEG sets, enriched GO terms and mitochondrial expression |
+| 06 | `06_expression_suites.Rmd` | `expression_suites/`: programs, co-expression modules and expression components between and within arms; multi-gene prediction of held-out animals (about 7 minutes per tissue on 4 workers) |
 
 Every output is tissue-suffixed (`_F` / `_G`) except `annotation_map.csv`, a
 tissue-independent LOC-to-protein map. Run after `02_thread-strength`,
@@ -58,7 +60,8 @@ stopifnot(all(tissues %in% c("F", "G")))
 steps <- substr(list_steps(code_dir, params$steps), 1, 2)
 run_log <- do.call(rbind, lapply(tissues, function(tissue)
   run_steps(code_dir, html_dir, steps = params$steps,
-            step_params = setNames(rep(list(list(tissue = tissue)), length(steps)), steps),
+            step_params = setNames(lapply(steps, function(s)
+              if (s == "06") list(tissue = tissue, cores = params$cores) else list(tissue = tissue)), steps),
             stop_on_fail = isTRUE(params$stop_on_fail), suffix = paste0("_", tissue))))
 finish_run(run_log, html_dir, "Gene-mechanics")
 ```
