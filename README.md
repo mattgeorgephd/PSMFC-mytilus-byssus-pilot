@@ -10,7 +10,7 @@ Knit `00_run_pipeline.Rmd` at the repository root (inside `PSMFC-mytilus-byssus-
 It runs, in order and each in a fresh R process, the batch runner of every folder that can run
 from the committed data: thread strength (02), the count matrices (04), differential expression
 (05), the Iso-Seq sensitivity analysis (06, from its committed gene counts), GO enrichment (07),
-GO slims (08) and the gene-mechanics associations (09). About 55 minutes on four cores, 20 of them `09` step 06's prediction test. Reports and logs go
+GO slims (08) and the gene-mechanics associations (09). About 50 minutes on four cores, 15 of them `09` step 06's prediction test. Reports and logs go
 to each folder's `03_analyses/knit_html/` and, one per stage, to
 `knit_html/` at the root (all git-ignored). It needs R 4.6.1 and the Bioconductor 3.23 packages
 recorded in `renv.lock` (`renv::restore(lockfile = "renv.lock")`; on Ubuntu 24.04,

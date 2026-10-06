@@ -229,7 +229,7 @@ the axes, across arms; the treatment is then among the predictors, so the elasti
 against the treatment-alone Q2 shows whether this many animals can find a signal of that size
 among this many predictors (scenarios are numbered, and seeded, in the order of
 `suite_prediction_<T>.csv`, with the DEG programs and the power check last). About 1,800 fits
-per tissue, 10 minutes on 4 workers.
+per tissue, 8 minutes on 4 workers.
 
 ### Bioconductor masking
 

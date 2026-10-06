@@ -143,7 +143,14 @@ An elastic net then predicts held-out animals from the candidate genes, the 2,00
 genes, all the axes and the six DEG programs alone, across and within arms, against label
 permutations, with the treatment alone as a reference and a power check (the treatment added to
 all the axes: can the elastic net find it among them?). It needs `glmnet` and `dynamicTreeCut` (in `renv.lock`) and runs its
-prediction test on a socket cluster of `cores` workers (Windows too), about 10 minutes per tissue
-on 4 workers with 100 permutations. Results: `03_analyses/expression_suites/README.md`.
+prediction test on a socket cluster of `cores` workers (Windows too), about 8 minutes per tissue
+on 4 workers with 100 permutations. Results (`03_analyses/expression_suites/README.md`): no
+suite tracks force or plaque area within arms (lowest q 0.85 in foot, 0.89 in gill, over 108 and
+89 axes); the warming and hypoxia programs follow the arms' differences in force but are flat
+within arms; the six DEG programs predict held-out animals' force across arms (Q2 0.18 foot,
+0.12 gill; the treatment alone 0.38) and not within arms. The power check shows the limit: with
+the treatment among all the axes, the elastic net recovers Q2 0.05 to 0.07 of the treatment's
+0.38, so 45 or 46 animals per tissue are too few to find signals of that size among a hundred predictors, and
+the large sets' failure to predict says little about modest suites.
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

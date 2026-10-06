@@ -216,6 +216,21 @@ the other sections use the new ones.
   two-fold (its length-bias fit), and figures are re-rendered. Not adopted: 23 other genes without
   a hit match through repeats at 45% identity or less (among them two that RefSeq names "adhesive
   plaque matrix protein-like", LOC134723087 and LOC134723088, at 36 and 37% to mfp-1).
+- **Expression suites** (2026-10-06, pull request GO-db-2026). `09` step 06 asks whether
+  combinations of genes go with attachment, separating across arms (which includes the
+  treatment) from within arms. Its axes: script 05's DEG programs and GO terms, co-expression
+  modules of the 4,000 genes with the most within-arm variance (`dynamicTreeCut`) and the first
+  ten expression components; 108 in foot and 89 in gill, 10 to 13,017 genes each. Within arms
+  none tracks force or plaque area (lowest q 0.85 foot, 0.89 gill). The warming and hypoxia
+  programs follow the arms' force (between-arm r up to 0.92) and are flat within arms. An
+  elastic net (`glmnet`) predicts held-out animals: the six DEG programs predict force across
+  arms (Q2 0.18 foot, 0.12 gill; treatment alone 0.38) but not within; the large sets (hundreds
+  to 2,000 predictors) do not predict at all, and a power check (the treatment added to all the
+  axes, Q2 0.05 and 0.07) shows that 45 or 46 animals per tissue are too few for that many predictors. One
+  within-arm scenario beats its permutations, the gill candidates with plaque area (p 0.0099,
+  one of 32), in line with the HSP70-family gene of step 01. Exploratory; about 15 minutes on 4
+  workers, on a socket cluster that also runs on Windows; `glmnet` and `dynamicTreeCut` added to
+  `renv.lock` and to the runner's package check.
 
 ## In progress
 
