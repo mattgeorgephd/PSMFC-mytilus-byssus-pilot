@@ -1,618 +1,591 @@
 "code","family","direction","ontology","go","cluster","parent","score","term","parentTerm","size","Significant","p_weight01"
-"FOA_TC","TC","up","BP","GO:0030968",2,"GO:0030968",3.79809430034043,"endoplasmic reticulum unfolded protein response","endoplasmic reticulum unfolded protein response",26,5,0.000159186304104431
-"FOA_TC","TC","up","BP","GO:0009165",3,"GO:0009165",2.65508032312136,"nucleotide biosynthetic process","nucleotide biosynthetic process",57,4,0.00221268543376935
-"FOA_TC","TC","up","BP","GO:0006418",1,"GO:0006418",17.3116368474406,"tRNA aminoacylation for protein translation","tRNA aminoacylation for protein translation",21,13,4.8793632688122e-18
-"FOA_TC","TC","up","BP","GO:0006446",1,"GO:0006418",3.68005685537164,"regulation of translational initiation","tRNA aminoacylation for protein translation",26,5,0.000208902262995139
-"FOA_TC","TC","up","BP","GO:0032543",1,"GO:0006418",2.63312046765366,"mitochondrial translation","tRNA aminoacylation for protein translation",14,3,0.00232744556491813
-"FOA_TC","TC","up","CC","GO:0016020",3,"GO:0016020",2.06292784249569,"membrane","membrane",1940,36,0.00865111644091609
-"FOA_TC","TC","up","CC","GO:0005739",1,"GO:0005739",3.04553034404547,"mitochondrion","mitochondrion",398,19,0.000900470844882748
-"FOA_TC","TC","up","CC","GO:0005788",1,"GO:0005739",2.32471744588517,"endoplasmic reticulum lumen","mitochondrion",55,5,0.00473459193646623
-"FOA_TC","TC","up","CC","GO:0005730",1,"GO:0005739",2.32454005321096,"nucleolus","mitochondrion",285,14,0.0047365262310822
-"FOA_TC","TC","up","CC","GO:0005759",1,"GO:0005739",2.30903084016841,"mitochondrial matrix","mitochondrion",79,6,0.00490873016985223
-"FOA_TC","TC","up","CC","GO:0032040",2,"GO:0032040",2.38937526162717,"small-subunit processome","small-subunit processome",33,4,0.00407966721439698
-"FOA_TC","TC","up","MF","GO:0005524",3,"GO:0005524",4.72859860306017,"ATP binding","ATP binding",616,29,1.86810549081544e-05
-"FOA_TC","TC","up","MF","GO:0140662",4,"GO:0140662",4.29191560877988,"ATP-dependent protein folding chaperone","ATP-dependent protein folding chaperone",20,5,5.10604209907166e-05
-"FOA_TC","TC","up","MF","GO:0016597",7,"GO:0016597",2.27033972101197,"amino acid binding","amino acid binding",17,3,0.00536611874737533
-"FOA_TC","TC","up","MF","GO:0004812",1,"GO:0004812",16.7904549178411,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",21,13,1.62011216173939e-17
-"FOA_TC","TC","up","MF","GO:0016879",1,"GO:0004812",2.34786839108239,"ligase activity, forming carbon-nitrogen bonds","aminoacyl-tRNA ligase activity",16,3,0.00448881398671538
-"FOA_TC","TC","up","MF","GO:0052689",5,"GO:0052689",2.95202207909442,"carboxylic ester hydrolase activity","carboxylic ester hydrolase activity",22,4,0.00111680646902026
-"FOA_TC","TC","up","MF","GO:0051087",6,"GO:0051087",2.293066938056,"protein-folding chaperone binding","protein-folding chaperone binding",54,5,0.00509252373649347
-"FOA_TC","TC","up","MF","GO:0046982",6,"GO:0051087",2.07059942988788,"protein heterodimerization activity","protein-folding chaperone binding",59,5,0.00849964075223648
-"FOA_TC","TC","up","MF","GO:0000049",2,"GO:0000049",9.78462963041792,"tRNA binding","tRNA binding",21,9,1.6419894771816e-10
-"FOA_TC","TC","up","MF","GO:0003743",2,"GO:0000049",4.97154063727722,"translation initiation factor activity","tRNA binding",37,7,1.06772488000555e-05
-"FOA_TC","TC","down","BP","GO:0140115",3,"GO:0140115",2.5579806304621,"export across plasma membrane","export across plasma membrane",13,2,0.0027670650537864
-"FOA_TC","TC","down","BP","GO:0051289",4,"GO:0051289",2.49268985192632,"protein homotetramerization","protein homotetramerization",14,2,0.00321595636934606
-"FOA_TC","TC","down","BP","GO:0060236",1,"GO:0060236",2.7918916187128,"regulation of mitotic spindle organization","regulation of mitotic spindle organization",10,2,0.00161476148179913
-"FOA_TC","TC","down","BP","GO:0034405",2,"GO:0034405",2.7918916187128,"response to fluid shear stress","response to fluid shear stress",10,2,0.00161476148179913
-"FOA_TC","TC","down","BP","GO:0007165",5,"GO:0007165",2.35891210486373,"signal transduction","signal transduction",1114,10,0.00437610662481459
-"FOA_TC","TC","down","CC","GO:0034704",1,"GO:0034704",2.64342567895116,"calcium channel complex","calcium channel complex",13,2,0.00227286855921346
-"FOA_TC","TC","down","MF","GO:0008201",1,"GO:0008201",2.44610930916511,"heparin binding","heparin binding",14,2,0.00358006317843558
-"FOA_TC","TC","down","MF","GO:0016879",2,"GO:0016879",2.32946651716083,"ligase activity, forming carbon-nitrogen bonds","ligase activity, forming carbon-nitrogen bonds",16,2,0.00468310055322597
-"FOW_TC","TC","up","BP","GO:0032922",2,"GO:0032922",2.59573853345432,"circadian regulation of gene expression","circadian regulation of gene expression",19,3,0.00253665536161706
-"FOW_TC","TC","up","BP","GO:0097192",4,"GO:0097192",2.045996557454,"extrinsic apoptotic signaling pathway in absence of ligand","extrinsic apoptotic signaling pathway in absence of ligand",10,2,0.0089950471165533
-"FOW_TC","TC","up","BP","GO:0006334",3,"GO:0006334",2.24788336146429,"nucleosome assembly","nucleosome assembly",25,3,0.00565088720398649
-"FOW_TC","TC","up","BP","GO:0000302",1,"GO:0000302",2.90068798954458,"response to reactive oxygen species","response to reactive oxygen species",47,3,0.00125693265830773
-"FOW_TC","TC","up","MF","GO:0016706",5,"GO:0016706",2.11812788122438,"2-oxoglutarate-dependent dioxygenase activity","2-oxoglutarate-dependent dioxygenase activity",25,3,0.00761854643255664
-"FOW_TC","TC","up","MF","GO:0140662",4,"GO:0140662",2.33552863143532,"ATP-dependent protein folding chaperone","ATP-dependent protein folding chaperone",21,3,0.00461818544896236
-"FOW_TC","TC","up","MF","GO:0005525",7,"GO:0005525",2.04805514171613,"GTP binding","GTP binding",180,8,0.0089525108965091
-"FOW_TC","TC","up","MF","GO:0003924",3,"GO:0003924",2.33935031654667,"GTPase activity","GTPase activity",127,7,0.00457772483055226
-"FOW_TC","TC","up","MF","GO:0008139",1,"GO:0008139",3.19046491322591,"nuclear localization sequence binding","nuclear localization sequence binding",11,3,0.000644963424540879
-"FOW_TC","TC","up","MF","GO:0003676",6,"GO:0003676",2.09417290128695,"nucleic acid binding","nucleic acid binding",1096,29,0.0080505786781131
-"FOW_TC","TC","up","MF","GO:0140142",2,"GO:0140142",2.9618963861197,"nucleocytoplasmic carrier activity","nucleocytoplasmic carrier activity",13,3,0.00109170076310499
-"FOW_TC","TC","down","BP","GO:0048025",6,"GO:0048025",2.06480966169308,"negative regulation of mRNA splicing, via spliceosome","negative regulation of mRNA splicing, via spliceosome",11,2,0.00861371182746153
-"FOW_TC","TC","down","BP","GO:0051964",4,"GO:0051964",2.14829794284567,"negative regulation of synapse assembly","negative regulation of synapse assembly",10,2,0.00710725760947637
-"FOW_TC","TC","down","BP","GO:0070374",1,"GO:0070374",2.8931995244617,"positive regulation of ERK1 and ERK2 cascade","positive regulation of ERK1 and ERK2 cascade",17,3,0.00127879366317245
-"FOW_TC","TC","down","BP","GO:0006493",7,"GO:0006493",2.01740257808926,"protein O-linked glycosylation","protein O-linked glycosylation",34,3,0.00960721305371234
-"FOW_TC","TC","down","BP","GO:0050796",3,"GO:0050796",2.49007084101664,"regulation of insulin secretion","regulation of insulin secretion",42,4,0.00323540877456107
-"FOW_TC","TC","down","BP","GO:0048167",2,"GO:0048167",2.58937192563129,"regulation of synaptic plasticity","regulation of synaptic plasticity",60,5,0.00257411576473274
-"FOW_TC","TC","down","BP","GO:0016082",2,"GO:0048167",2.14829794284567,"synaptic vesicle priming","regulation of synaptic plasticity",10,2,0.00710725760947637
-"FOW_TC","TC","down","BP","GO:0034103",5,"GO:0034103",2.06480966169308,"regulation of tissue remodeling","regulation of tissue remodeling",11,2,0.00861371182746153
-"FOW_TC","TC","down","CC","GO:0000139",1,"GO:0000139",4.29828481100331,"Golgi membrane","Golgi membrane",228,12,5.03170520545914e-05
-"FOW_TC","TC","down","CC","GO:0005789",1,"GO:0000139",2.94574761751527,"endoplasmic reticulum membrane","Golgi membrane",364,13,0.00113305862874109
-"FOW_TC","TC","down","CC","GO:0005635",1,"GO:0000139",2.11998579224197,"nuclear envelope","Golgi membrane",147,6,0.00758602391975695
-"FOW_TC","TC","down","CC","GO:0016020",2,"GO:0016020",2.54352678647213,"membrane","membrane",2194,45,0.00286070591219056
-"FOW_TC","TC","down","CC","GO:0042734",2,"GO:0016020",2.21175544265416,"presynaptic membrane","membrane",54,4,0.00614107720532739
-"FOW_TC","TC","down","MF","GO:0004653",1,"GO:0004653",3.43842184144757,"polypeptide N-acetylgalactosaminyltransferase activity","polypeptide N-acetylgalactosaminyltransferase activity",11,3,0.000364399824008021
-"FDO_TC","TC","up","BP","GO:0008306",5,"GO:0008306",2.27776809903049,"associative learning","associative learning",31,5,0.00527511462433162
-"FDO_TC","TC","up","BP","GO:0051085",8,"GO:0051085",2.05780020967262,"chaperone cofactor-dependent protein refolding","chaperone cofactor-dependent protein refolding",12,3,0.00875386390315593
-"FDO_TC","TC","up","BP","GO:0046323",4,"GO:0046323",2.39438050352849,"glucose import","glucose import",20,3,0.00403291897264393
-"FDO_TC","TC","up","BP","GO:0034220",4,"GO:0046323",2.29407758306901,"monoatomic ion transmembrane transport","glucose import",190,16,0.00508068672243372
-"FDO_TC","TC","up","BP","GO:0072337",3,"GO:0072337",2.51660931019457,"modified amino acid transport","modified amino acid transport",17,4,0.00304362182609259
-"FDO_TC","TC","up","BP","GO:0051180",3,"GO:0072337",2.29710798129904,"vitamin transport","modified amino acid transport",10,3,0.00504535836129564
-"FDO_TC","TC","up","BP","GO:0015844",3,"GO:0072337",2.10527207772783,"monoamine transport","modified amino acid transport",14,3,0.00784743852587231
-"FDO_TC","TC","up","BP","GO:0040017",9,"GO:0040017",2.05417605994443,"positive regulation of locomotion","positive regulation of locomotion",135,7,0.00882721978559795
-"FDO_TC","TC","up","BP","GO:1900101",7,"GO:1900101",2.17078334544317,"regulation of endoplasmic reticulum unfolded protein response","regulation of endoplasmic reticulum unfolded protein response",11,3,0.00674864610443191
-"FDO_TC","TC","up","BP","GO:0050767",2,"GO:0050767",2.79437802320569,"regulation of neurogenesis","regulation of neurogenesis",95,6,0.00160554313074917
-"FDO_TC","TC","up","BP","GO:0009266",6,"GO:0009266",2.17524078888676,"response to temperature stimulus","response to temperature stimulus",46,5,0.00667973465743589
-"FDO_TC","TC","up","BP","GO:0006418",1,"GO:0006418",2.87599104331498,"tRNA aminoacylation for protein translation","tRNA aminoacylation for protein translation",23,5,0.00133048185692685
-"FDO_TC","TC","up","BP","GO:0009064",1,"GO:0006418",2.06011288283365,"glutamine family amino acid metabolic process","tRNA aminoacylation for protein translation",29,4,0.00870737236488852
-"FDO_TC","TC","up","CC","GO:0030315",2,"GO:0030315",2.97644151150987,"T-tubule","T-tubule",13,4,0.00105574367563191
-"FDO_TC","TC","up","CC","GO:0005788",1,"GO:0005788",3.57326857373475,"endoplasmic reticulum lumen","endoplasmic reticulum lumen",58,9,0.000267135389542543
-"FDO_TC","TC","up","CC","GO:0031674",1,"GO:0005788",2.3872421419453,"I band","endoplasmic reticulum lumen",54,4,0.00409975456437843
-"FDO_TC","TC","up","CC","GO:0140534",1,"GO:0005788",2.13063517776291,"endoplasmic reticulum protein-containing complex","endoplasmic reticulum lumen",61,7,0.00740226829843966
-"FDO_TC","TC","up","MF","GO:0140662",1,"GO:0140662",3.75377702001636,"ATP-dependent protein folding chaperone","ATP-dependent protein folding chaperone",23,6,0.00017628809307316
-"FDO_TC","TC","up","MF","GO:0060590",8,"GO:0060590",2.07719629112814,"ATPase regulator activity","ATPase regulator activity",16,3,0.00837150823666845
-"FDO_TC","TC","up","MF","GO:0031418",9,"GO:0031418",2.01879216700516,"L-ascorbic acid binding","L-ascorbic acid binding",12,3,0.00957652249160819
-"FDO_TC","TC","up","MF","GO:0004812",2,"GO:0004812",2.81310528405095,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",23,5,0.00153778179761153
-"FDO_TC","TC","up","MF","GO:0099106",6,"GO:0099106",2.19595597365282,"ion channel regulator activity","ion channel regulator activity",20,4,0.006368600789508
-"FDO_TC","TC","up","MF","GO:0072349",3,"GO:0072349",2.80212423859774,"modified amino acid transmembrane transporter activity","modified amino acid transmembrane transporter activity",14,4,0.00157716002707969
-"FDO_TC","TC","up","MF","GO:0140678",5,"GO:0140678",2.5692330753416,"molecular function inhibitor activity","molecular function inhibitor activity",93,7,0.00269629200939087
-"FDO_TC","TC","up","MF","GO:0051087",4,"GO:0051087",2.79427869183049,"protein-folding chaperone binding","protein-folding chaperone binding",61,8,0.00160591039087634
-"FDO_TC","TC","up","MF","GO:0031072",4,"GO:0051087",2.69292286673288,"heat shock protein binding","protein-folding chaperone binding",56,7,0.00202804287994037
-"FDO_TC","TC","up","MF","GO:0042169",4,"GO:0051087",2.13138065257735,"SH2 domain binding","protein-folding chaperone binding",11,3,0.00738957306174512
-"FDO_TC","TC","up","MF","GO:0022829",7,"GO:0022829",2.13138065257735,"wide pore channel activity","wide pore channel activity",11,3,0.00738957306174512
-"FDO_TC","TC","down","BP","GO:0030030",8,"GO:0030030",3.20311827899192,"cell projection organization","cell projection organization",587,75,0.000626443231225009
-"FDO_TC","TC","down","BP","GO:0044087",8,"GO:0030030",2.60749684247337,"regulation of cellular component biogenesis","cell projection organization",305,17,0.00246889805489943
-"FDO_TC","TC","down","BP","GO:0070841",8,"GO:0030030",2.06843099143258,"inclusion body assembly","cell projection organization",11,3,0.00854218570341846
-"FDO_TC","TC","down","BP","GO:0003341",3,"GO:0003341",6.19856749850085,"cilium movement","cilium movement",115,46,6.33041966022742e-07
-"FDO_TC","TC","down","BP","GO:0007018",3,"GO:0003341",3.14877760199246,"microtubule-based movement","cilium movement",215,57,0.000709941228936109
-"FDO_TC","TC","down","BP","GO:0003356",3,"GO:0003341",2.19367902226747,"regulation of cilium beat frequency","cilium movement",10,3,0.00640207824538697
-"FDO_TC","TC","down","BP","GO:0060294",1,"GO:0060294",9.82269645685446,"cilium movement involved in cell motility","cilium movement involved in cell motility",79,34,1.50419293023416e-10
-"FDO_TC","TC","down","BP","GO:0030317",1,"GO:0060294",7.74211486746589,"flagellated sperm motility","cilium movement involved in cell motility",62,24,1.81086107079972e-08
-"FDO_TC","TC","down","BP","GO:0060285",1,"GO:0060294",2.8937562803975,"cilium-dependent cell motility","cilium movement involved in cell motility",86,37,0.00127715532831325
-"FDO_TC","TC","down","BP","GO:0007368",6,"GO:0007368",3.91278169160483,"determination of left/right symmetry","determination of left/right symmetry",51,11,0.000122241398105597
-"FDO_TC","TC","down","BP","GO:0003351",4,"GO:0003351",5.09742861508686,"epithelial cilium movement involved in extracellular fluid movement","epithelial cilium movement involved in extracellular fluid movement",34,13,7.99045269814552e-06
-"FDO_TC","TC","down","BP","GO:0090660",4,"GO:0003351",3.80741958474115,"cerebrospinal fluid circulation","epithelial cilium movement involved in extracellular fluid movement",14,5,0.000155804650065144
-"FDO_TC","TC","down","BP","GO:0060287",4,"GO:0003351",2.19367902226747,"epithelial cilium movement involved in determination of left/right asymmetry","epithelial cilium movement involved in extracellular fluid movement",10,3,0.00640207824538697
-"FDO_TC","TC","down","BP","GO:0072175",14,"GO:0072175",2.31911295958444,"epithelial tube formation","epithelial tube formation",32,3,0.00479608686645871
-"FDO_TC","TC","down","BP","GO:0051649",10,"GO:0051649",3.12167595069824,"establishment of localization in cell","establishment of localization in cell",790,33,0.000755655850803249
-"FDO_TC","TC","down","BP","GO:0071554",10,"GO:0051649",2.06843099143258,"cell wall organization or biogenesis","establishment of localization in cell",11,3,0.00854218570341846
-"FDO_TC","TC","down","BP","GO:0000226",15,"GO:0000226",2.25429421342384,"microtubule cytoskeleton organization","microtubule cytoskeleton organization",302,60,0.00556808410470469
-"FDO_TC","TC","down","BP","GO:0043149",15,"GO:0000226",2.03068083248463,"stress fiber assembly","microtubule cytoskeleton organization",28,3,0.00931792407798775
-"FDO_TC","TC","down","BP","GO:0060336",9,"GO:0060336",3.15793707693944,"negative regulation of type II interferon-mediated signaling pathway","negative regulation of type II interferon-mediated signaling pathway",11,4,0.000695125023969712
-"FDO_TC","TC","down","BP","GO:1902216",9,"GO:0060336",3.15793707693944,"positive regulation of interleukin-4-mediated signaling pathway","negative regulation of type II interferon-mediated signaling pathway",11,4,0.000695125023969712
-"FDO_TC","TC","down","BP","GO:0042532",11,"GO:0042532",2.8500153598386,"negative regulation of tyrosine phosphorylation of STAT protein","negative regulation of tyrosine phosphorylation of STAT protein",13,4,0.0014124875878171
-"FDO_TC","TC","down","BP","GO:0042531",11,"GO:0042532",2.8500153598386,"positive regulation of tyrosine phosphorylation of STAT protein","negative regulation of tyrosine phosphorylation of STAT protein",13,4,0.0014124875878171
-"FDO_TC","TC","down","BP","GO:0002790",12,"GO:0002790",2.80050282585022,"peptide secretion","peptide secretion",61,8,0.00158305926608529
-"FDO_TC","TC","down","BP","GO:0018200",5,"GO:0018200",4.40071604046975,"peptidyl-glutamic acid modification","peptidyl-glutamic acid modification",11,5,3.97451334501727e-05
-"FDO_TC","TC","down","BP","GO:0070212",5,"GO:0018200",3.3402690904893,"protein poly-ADP-ribosylation","peptidyl-glutamic acid modification",10,4,0.000456805063780788
-"FDO_TC","TC","down","BP","GO:0042158",5,"GO:0018200",2.78594703515684,"lipoprotein biosynthetic process","peptidyl-glutamic acid modification",22,3,0.00163701615329187
-"FDO_TC","TC","down","BP","GO:0010875",17,"GO:0010875",2.06843099143258,"positive regulation of cholesterol efflux","positive regulation of cholesterol efflux",11,3,0.00854218570341846
-"FDO_TC","TC","down","BP","GO:0003016",16,"GO:0003016",2.06843099143258,"respiratory system process","respiratory system process",11,3,0.00854218570341846
-"FDO_TC","TC","down","BP","GO:0007288",2,"GO:0007288",8.89587565469535,"sperm axoneme assembly","sperm axoneme assembly",20,10,1.2709379425365e-09
-"FDO_TC","TC","down","BP","GO:0036158",2,"GO:0007288",8.33497379148569,"outer dynein arm assembly","sperm axoneme assembly",17,9,4.62408925703331e-09
-"FDO_TC","TC","down","BP","GO:0036159",2,"GO:0007288",7.74973431294392,"inner dynein arm assembly","sperm axoneme assembly",10,7,1.77936763563245e-08
-"FDO_TC","TC","down","BP","GO:0035082",2,"GO:0007288",7.21749668144433,"axoneme assembly","sperm axoneme assembly",74,37,6.06042831438291e-08
-"FDO_TC","TC","down","BP","GO:0060271",2,"GO:0007288",4.53288666768093,"cilium assembly","sperm axoneme assembly",203,56,2.93165818306663e-05
-"FDO_TC","TC","down","BP","GO:1905515",2,"GO:0007288",2.46369645400755,"non-motile cilium assembly","sperm axoneme assembly",26,5,0.00343798158392581
-"FDO_TC","TC","down","BP","GO:0120316",13,"GO:0120316",2.39104666649457,"sperm flagellum assembly","sperm flagellum assembly",29,13,0.00406399657722933
-"FDO_TC","TC","down","BP","GO:0021591",7,"GO:0021591",3.74491768996676,"ventricular system development","ventricular system development",22,6,0.000179921187998779
-"FDO_TC","TC","down","BP","GO:0043583",7,"GO:0021591",2.3242239002547,"ear development","ventricular system development",51,5,0.00473997553108439
-"FDO_TC","TC","down","BP","GO:0003279",7,"GO:0021591",2.03542042552889,"cardiac septum development","ventricular system development",24,4,0.00921678749688486
-"FDO_TC","TC","down","CC","GO:0005737",3,"GO:0005737",6.42666878922247,"cytoplasm","cytoplasm",4033,210,3.74396009167825e-07
-"FDO_TC","TC","down","CC","GO:0001669",3,"GO:0005737",5.01449679288865,"acrosomal vesicle","cytoplasm",32,9,9.67170868838891e-06
-"FDO_TC","TC","down","CC","GO:0005576",4,"GO:0005576",2.40348435726433,"extracellular region","extracellular region",576,33,0.00394925923823005
-"FDO_TC","TC","down","CC","GO:0005874",1,"GO:0005874",18.3852565827182,"microtubule","microtubule",219,53,4.11854122330275e-19
-"FDO_TC","TC","down","CC","GO:0005930",1,"GO:0005874",16.1397612207837,"axoneme","microtubule",121,48,7.24834371336933e-17
-"FDO_TC","TC","down","CC","GO:0005858",1,"GO:0005874",10.3718660661399,"axonemal dynein complex","microtubule",18,11,4.24750534312957e-11
-"FDO_TC","TC","down","CC","GO:0036064",1,"GO:0005874",9.10132254815739,"ciliary basal body","microtubule",84,20,7.91912962554369e-10
-"FDO_TC","TC","down","CC","GO:0005879",1,"GO:0005874",8.50603911633402,"axonemal microtubule","microtubule",36,13,3.11860868245271e-09
-"FDO_TC","TC","down","CC","GO:0030286",1,"GO:0005874",4.21145017170814,"dynein complex","microtubule",45,18,6.14539536167711e-05
-"FDO_TC","TC","down","CC","GO:0034451",1,"GO:0005874",3.81130982779738,"centriolar satellite","microtubule",35,8,0.000154415244063193
-"FDO_TC","TC","down","CC","GO:0005882",1,"GO:0005874",2.77402928734692,"intermediate filament","microtubule",12,4,0.00168256059106475
-"FDO_TC","TC","down","CC","GO:0002177",1,"GO:0005874",2.77402928734692,"manchette","microtubule",12,4,0.00168256059106475
-"FDO_TC","TC","down","CC","GO:0005856",1,"GO:0005874",2.6989022432205,"cytoskeleton","microtubule",876,120,0.00200031207581427
-"FDO_TC","TC","down","CC","GO:0005814",1,"GO:0005874",2.60014205740188,"centriole","microtubule",76,10,0.00251106492969052
-"FDO_TC","TC","down","CC","GO:0031514",2,"GO:0031514",11.5675568596834,"motile cilium","motile cilium",130,48,2.70671880556731e-12
-"FDO_TC","TC","down","CC","GO:0036126",2,"GO:0031514",10.5398431766935,"sperm flagellum","motile cilium",68,22,2.88507311209138e-11
-"FDO_TC","TC","down","CC","GO:0097729",2,"GO:0031514",8.64444529004994,"9+2 motile cilium","motile cilium",88,32,2.26753871079036e-09
-"FDO_TC","TC","down","CC","GO:0097225",2,"GO:0031514",3.19901037621796,"sperm midpiece","motile cilium",24,6,0.000632396741893842
-"FDO_TC","TC","down","CC","GO:0005929",2,"GO:0031514",2.97295034537961,"cilium","motile cilium",333,92,0.00106426469289578
-"FDO_TC","TC","down","MF","GO:0005524",3,"GO:0005524",4.84051954194812,"ATP binding","ATP binding",714,52,1.44371164013875e-05
-"FDO_TC","TC","down","MF","GO:0070403",3,"GO:0005524",3.77786531770982,"NAD+ binding","ATP binding",14,5,0.000166776433515813
-"FDO_TC","TC","down","MF","GO:1990404",8,"GO:1990404",2.68406149176309,"NAD+-protein ADP-ribosyltransferase activity","NAD+-protein ADP-ribosyltransferase activity",23,5,0.00206984825819203
-"FDO_TC","TC","down","MF","GO:0003950",8,"GO:1990404",2.68406149176309,"NAD+ ADP-ribosyltransferase activity","NAD+-protein ADP-ribosyltransferase activity",23,5,0.00206984825819203
-"FDO_TC","TC","down","MF","GO:0016881",6,"GO:0016881",4.37054344776337,"acid-amino acid ligase activity","acid-amino acid ligase activity",11,5,4.26046058877476e-05
-"FDO_TC","TC","down","MF","GO:0005509",4,"GO:0005509",4.83693748239442,"calcium ion binding","calcium ion binding",257,26,1.45566861206365e-05
-"FDO_TC","TC","down","MF","GO:0038024",9,"GO:0038024",2.68406149176309,"cargo receptor activity","cargo receptor activity",23,5,0.00206984825819203
-"FDO_TC","TC","down","MF","GO:0005200",9,"GO:0038024",2.44675141019281,"structural constituent of cytoskeleton","cargo receptor activity",49,7,0.00357477399372814
-"FDO_TC","TC","down","MF","GO:0070840",5,"GO:0070840",4.58983528854736,"dynein complex binding","dynein complex binding",16,6,2.57137082144846e-05
-"FDO_TC","TC","down","MF","GO:0045505",2,"GO:0045505",11.9333651021171,"dynein intermediate chain binding","dynein intermediate chain binding",29,14,1.16582911727831e-12
-"FDO_TC","TC","down","MF","GO:0051959",2,"GO:0045505",11.4355598449121,"dynein light intermediate chain binding","dynein intermediate chain binding",21,12,3.66809145391087e-12
-"FDO_TC","TC","down","MF","GO:0008017",2,"GO:0045505",8.82799640959086,"microtubule binding","dynein intermediate chain binding",108,21,1.48594792689847e-09
-"FDO_TC","TC","down","MF","GO:0015631",2,"GO:0045505",3.53211741318846,"tubulin binding","dynein intermediate chain binding",153,29,0.000293685555439471
-"FDO_TC","TC","down","MF","GO:0034185",2,"GO:0045505",2.69451243984262,"apolipoprotein binding","dynein intermediate chain binding",14,4,0.0020206335525477
-"FDO_TC","TC","down","MF","GO:0045504",2,"GO:0045505",2.05086953815531,"dynein heavy chain binding","dynein intermediate chain binding",11,3,0.00889468273552783
-"FDO_TC","TC","down","MF","GO:0008569",1,"GO:0008569",12.5875834414728,"minus-end-directed microtubule motor activity","minus-end-directed microtubule motor activity",18,12,2.58473818328404e-13
-"FDO_TC","TC","down","MF","GO:0016887",1,"GO:0008569",4.55388171127532,"ATP hydrolysis activity","minus-end-directed microtubule motor activity",220,23,2.79330454958831e-05
-"FDO_TC","TC","down","MF","GO:0003777",1,"GO:0008569",2.6247908815647,"microtubule motor activity","minus-end-directed microtubule motor activity",43,17,0.00237251582786057
-"FDO_TC","TC","down","MF","GO:0004550",7,"GO:0004550",3.31618771514143,"nucleoside diphosphate kinase activity","nucleoside diphosphate kinase activity",10,4,0.000482850054608746
-"GOA_TC","TC","up","BP","GO:0006749",1,"GO:0006749",6.7747189234715,"glutathione metabolic process","glutathione metabolic process",26,8,1.67989089616634e-07
-"GOA_TC","TC","up","BP","GO:0006807",1,"GO:0006749",4.01524589333664,"nitrogen compound metabolic process","glutathione metabolic process",3470,103,9.65504065137441e-05
-"GOA_TC","TC","up","BP","GO:0042744",7,"GO:0042744",2.75763978705,"hydrogen peroxide catabolic process","hydrogen peroxide catabolic process",10,3,0.00174727077509798
-"GOA_TC","TC","up","BP","GO:0006869",8,"GO:0006869",2.64383474504488,"lipid transport","lipid transport",142,9,0.00227072873066988
-"GOA_TC","TC","up","BP","GO:0071806",8,"GO:0006869",2.21215131068714,"protein transmembrane transport","lipid transport",34,4,0.0061354820421063
-"GOA_TC","TC","up","BP","GO:0034453",12,"GO:0034453",2.13782782442435,"microtubule anchoring","microtubule anchoring",16,3,0.0072806838925064
-"GOA_TC","TC","up","BP","GO:0046471",11,"GO:0046471",2.40509823029306,"phosphatidylglycerol metabolic process","phosphatidylglycerol metabolic process",13,3,0.00393461070945649
-"GOA_TC","TC","up","BP","GO:0045727",13,"GO:0045727",2.07208278702244,"positive regulation of translation","positive regulation of translation",42,5,0.00847065927515377
-"GOA_TC","TC","up","BP","GO:0006457",3,"GO:0006457",3.36571246869444,"protein folding","protein folding",105,11,0.000430811741597651
-"GOA_TC","TC","up","BP","GO:0015986",10,"GO:0015986",2.40509823029306,"proton motive force-driven ATP synthesis","proton motive force-driven ATP synthesis",13,3,0.00393461070945649
-"GOA_TC","TC","up","BP","GO:0051341",9,"GO:0051341",2.51083728521038,"regulation of oxidoreductase activity","regulation of oxidoreductase activity",12,3,0.00308434332820665
-"GOA_TC","TC","up","BP","GO:0034976",6,"GO:0034976",2.8052695263577,"response to endoplasmic reticulum stress","response to endoplasmic reticulum stress",117,12,0.00156577903449918
-"GOA_TC","TC","up","BP","GO:0006805",6,"GO:0034976",2.670345953258,"xenobiotic metabolic process","response to endoplasmic reticulum stress",22,4,0.00213625969523377
-"GOA_TC","TC","up","BP","GO:1990748",6,"GO:0034976",2.06167019210619,"cellular detoxification","response to endoplasmic reticulum stress",17,3,0.00867620505971476
-"GOA_TC","TC","up","BP","GO:0006986",4,"GO:0006986",3.3495896100031,"response to unfolded protein","response to unfolded protein",51,6,0.000447105888830196
-"GOA_TC","TC","up","BP","GO:0006099",5,"GO:0006099",3.05069722499008,"tricarboxylic acid cycle","tricarboxylic acid cycle",30,5,0.00088982125409839
-"GOA_TC","TC","up","BP","GO:0072350",2,"GO:0072350",3.92014864083767,"tricarboxylic acid metabolic process","tricarboxylic acid metabolic process",11,4,0.00012018530201927
-"GOA_TC","TC","up","CC","GO:0009986",3,"GO:0009986",3.62223619141076,"cell surface","cell surface",164,12,0.000238651302284726
-"GOA_TC","TC","up","CC","GO:0005788",1,"GO:0005788",6.24020983751244,"endoplasmic reticulum lumen","endoplasmic reticulum lumen",63,11,5.75161969912532e-07
-"GOA_TC","TC","up","CC","GO:0005790",1,"GO:0005788",3.71163715707585,"smooth endoplasmic reticulum","endoplasmic reticulum lumen",12,4,0.000194250812011544
-"GOA_TC","TC","up","CC","GO:0140534",1,"GO:0005788",3.51450405748128,"endoplasmic reticulum protein-containing complex","endoplasmic reticulum lumen",66,8,0.000305841167256688
-"GOA_TC","TC","up","CC","GO:0005782",1,"GO:0005788",2.1086768568571,"peroxisomal matrix","endoplasmic reticulum lumen",16,3,0.00778615675908726
-"GOA_TC","TC","up","CC","GO:0070062",5,"GO:0070062",2.08448779373442,"extracellular exosome","extracellular exosome",233,13,0.00823212973791425
-"GOA_TC","TC","up","CC","GO:0098800",4,"GO:0098800",3.14390089108287,"inner mitochondrial membrane protein complex","inner mitochondrial membrane protein complex",64,7,0.000717958115440908
-"GOA_TC","TC","up","CC","GO:0042470",2,"GO:0042470",3.82094776304697,"melanosome","melanosome",45,7,0.000151026179757324
-"GOA_TC","TC","up","CC","GO:0005829",2,"GO:0042470",2.07529691063568,"cytosol","melanosome",1684,58,0.00840820108343388
-"GOA_TC","TC","up","MF","GO:0008559",6,"GO:0008559",2.11916401343133,"ABC-type xenobiotic transporter activity","ABC-type xenobiotic transporter activity",15,3,0.00760039190223013
-"GOA_TC","TC","up","MF","GO:0051287",3,"GO:0051287",2.76052925384596,"NAD binding","NAD binding",58,6,0.00173568434415687
-"GOA_TC","TC","up","MF","GO:0004364",1,"GO:0004364",8.51660019025116,"glutathione transferase activity","glutathione transferase activity",22,9,3.04368574113505e-09
-"GOA_TC","TC","up","MF","GO:0016836",4,"GO:0016836",2.75733714613756,"hydro-lyase activity","hydro-lyase activity",32,5,0.00174848879635734
-"GOA_TC","TC","up","MF","GO:0004601",2,"GO:0004601",2.81113139518477,"peroxidase activity","peroxidase activity",31,7,0.00154478699569657
-"GOA_TC","TC","up","MF","GO:0016667",2,"GO:0004601",2.43304764136443,"oxidoreductase activity, acting on a sulfur group of donors","peroxidase activity",33,7,0.00368937124576494
-"GOA_TC","TC","up","MF","GO:0004602",2,"GO:0004601",2.40801209604683,"glutathione peroxidase activity","peroxidase activity",12,3,0.00390830010174141
-"GOA_TC","TC","up","MF","GO:0003756",5,"GO:0003756",2.65336566828068,"protein disulfide isomerase activity","protein disulfide isomerase activity",10,3,0.00222143869087385
-"GOA_TC","TC","down","BP","GO:0002250",6,"GO:0002250",2.45705495970404,"adaptive immune response","adaptive immune response",70,6,0.00349096134778392
-"GOA_TC","TC","down","BP","GO:0060402",3,"GO:0060402",2.74998538537118,"calcium ion transport into cytosol","calcium ion transport into cytosol",10,3,0.0017783392526846
-"GOA_TC","TC","down","BP","GO:0007155",1,"GO:0007155",3.15956473528622,"cell adhesion","cell adhesion",407,19,0.000692524695047822
-"GOA_TC","TC","down","BP","GO:0044248",1,"GO:0007155",2.04718000233173,"cellular catabolic process","cell adhesion",636,17,0.00897056913645056
-"GOA_TC","TC","down","BP","GO:0060443",8,"GO:0060443",2.39759761355417,"mammary gland morphogenesis","mammary gland morphogenesis",13,3,0.00400315481903386
-"GOA_TC","TC","down","BP","GO:0052372",4,"GO:0052372",2.74998538537118,"modulation by symbiont of entry into host","modulation by symbiont of entry into host",10,3,0.0017783392526846
-"GOA_TC","TC","down","BP","GO:0001937",10,"GO:0001937",2.21243207224209,"negative regulation of endothelial cell proliferation","negative regulation of endothelial cell proliferation",15,3,0.00613151687363916
-"GOA_TC","TC","down","BP","GO:1901799",14,"GO:1901799",2.03483615360763,"negative regulation of proteasomal protein catabolic process","negative regulation of proteasomal protein catabolic process",21,3,0.00922919551581876
-"GOA_TC","TC","down","BP","GO:0016322",13,"GO:0016322",2.13047973670591,"neuron remodeling","neuron remodeling",16,3,0.00740491816481638
-"GOA_TC","TC","down","BP","GO:0030193",7,"GO:0030193",2.41867228008607,"regulation of blood coagulation","regulation of blood coagulation",14,3,0.00381353485324545
-"GOA_TC","TC","down","BP","GO:0055117",11,"GO:0055117",2.13047973670591,"regulation of cardiac muscle contraction","regulation of cardiac muscle contraction",16,3,0.00740491816481638
-"GOA_TC","TC","down","BP","GO:0060341",5,"GO:0060341",2.47047412973987,"regulation of cellular localization","regulation of cellular localization",331,7,0.0033847443367175
-"GOA_TC","TC","down","BP","GO:0045428",12,"GO:0045428",2.13047973670591,"regulation of nitric oxide biosynthetic process","regulation of nitric oxide biosynthetic process",16,3,0.00740491816481638
-"GOA_TC","TC","down","BP","GO:0097178",9,"GO:0097178",2.30110736179693,"ruffle assembly","ruffle assembly",14,3,0.00499910936880964
-"GOA_TC","TC","down","BP","GO:0071709",9,"GO:0097178",2.05598371973857,"membrane assembly","ruffle assembly",32,4,0.0087905546909072
-"GOA_TC","TC","down","BP","GO:0051300",2,"GO:0051300",3.10449201325769,"spindle pole body organization","spindle pole body organization",17,4,0.000786154648520073
-"GOA_TC","TC","down","CC","GO:0005901",4,"GO:0005901",2.91705134888665,"caveola","caveola",19,4,0.00121045500672259
-"GOA_TC","TC","down","CC","GO:0005581",3,"GO:0005581",6.68315263159177,"collagen trimer","collagen trimer",36,9,2.07418442297763e-07
-"GOA_TC","TC","down","CC","GO:0062023",2,"GO:0062023",7.00954435570732,"collagen-containing extracellular matrix","collagen-containing extracellular matrix",150,19,9.78263036948478e-08
-"GOA_TC","TC","down","CC","GO:0005615",1,"GO:0005615",7.73702562672412,"extracellular space","extracellular space",482,29,1.83220630487769e-08
-"GOA_TC","TC","down","CC","GO:0005823",1,"GO:0005615",3.11139164669236,"central plaque of spindle pole body","extracellular space",17,4,0.000773763703098782
-"GOA_TC","TC","down","CC","GO:0005576",1,"GO:0005615",2.86950475418522,"extracellular region","extracellular space",759,44,0.00135050204394165
-"GOA_TC","TC","down","CC","GO:0030428",1,"GO:0005615",2.75547834631973,"cell septum","extracellular space",10,3,0.00175598844461948
-"GOA_TC","TC","down","MF","GO:0003924",4,"GO:0003924",2.02679768407597,"GTPase activity","GTPase activity",155,10,0.00940161182305143
-"GOA_TC","TC","down","MF","GO:0034185",5,"GO:0034185",2.01960688969356,"apolipoprotein binding","apolipoprotein binding",17,3,0.00955857407941459
-"GOA_TC","TC","down","MF","GO:0008201",3,"GO:0008201",2.11249643696456,"heparin binding","heparin binding",30,4,0.00771797847536991
-"GOA_TC","TC","down","MF","GO:0004867",1,"GO:0004867",2.775353915114,"serine-type endopeptidase inhibitor activity","serine-type endopeptidase inhibitor activity",20,4,0.00167743648500386
-"GOA_TC","TC","down","MF","GO:0032934",2,"GO:0032934",2.47009444997843,"sterol binding","sterol binding",36,4,0.003387704726255
-"GOW_TC","TC","up","BP","GO:0032482",8,"GO:0032482",2.03163316596989,"Rab protein signal transduction","Rab protein signal transduction",14,2,0.00929751385115133
-"GOW_TC","TC","up","BP","GO:0008088",5,"GO:0008088",2.42939443393379,"axo-dendritic transport","axo-dendritic transport",31,3,0.0037205364705597
-"GOW_TC","TC","up","BP","GO:0042546",7,"GO:0042546",2.09561303712849,"cell wall biogenesis","cell wall biogenesis",13,2,0.00802392688842511
-"GOW_TC","TC","up","BP","GO:0032869",1,"GO:0032869",3.10825686790664,"cellular response to insulin stimulus","cellular response to insulin stimulus",70,5,0.000779369008415441
-"GOW_TC","TC","up","BP","GO:0002067",2,"GO:0002067",3.0087480511274,"glandular epithelial cell differentiation","glandular epithelial cell differentiation",19,3,0.000980058385433991
-"GOW_TC","TC","up","BP","GO:0002066",2,"GO:0002067",2.32558066428144,"columnar/cuboidal epithelial cell development","glandular epithelial cell differentiation",10,2,0.00472519064770566
-"GOW_TC","TC","up","BP","GO:0010453",2,"GO:0002067",2.24140425532639,"regulation of cell fate commitment","glandular epithelial cell differentiation",11,2,0.00573582304711141
-"GOW_TC","TC","up","BP","GO:0048260",3,"GO:0048260",2.87780850291284,"positive regulation of receptor-mediated endocytosis","positive regulation of receptor-mediated endocytosis",21,3,0.00132492561691302
-"GOW_TC","TC","up","BP","GO:0046677",6,"GO:0046677",2.16519449816109,"response to antibiotic","response to antibiotic",12,2,0.00683605427005959
-"GOW_TC","TC","up","BP","GO:0006418",4,"GO:0006418",2.5552667984811,"tRNA aminoacylation for protein translation","tRNA aminoacylation for protein translation",27,3,0.00278441010701321
-"GOW_TC","TC","up","BP","GO:0002183",4,"GO:0006418",2.30420153972295,"cytoplasmic translational initiation","tRNA aminoacylation for protein translation",33,3,0.00496361925108101
-"GOW_TC","TC","up","BP","GO:0045947",4,"GO:0006418",2.16519449816109,"negative regulation of translational initiation","tRNA aminoacylation for protein translation",12,2,0.00683605427005959
-"GOW_TC","TC","up","BP","GO:0045727",4,"GO:0006418",2.03948485756322,"positive regulation of translation","tRNA aminoacylation for protein translation",41,3,0.00913093271332249
-"GOW_TC","TC","up","CC","GO:0016324",3,"GO:0016324",2.04629265720976,"apical plasma membrane","apical plasma membrane",121,5,0.00898891642962416
-"GOW_TC","TC","up","CC","GO:0010494",1,"GO:0010494",3.85162654666108,"cytoplasmic stress granule","cytoplasmic stress granule",48,5,0.000140725711576669
-"GOW_TC","TC","up","CC","GO:0017101",1,"GO:0010494",2.24061187020196,"aminoacyl-tRNA synthetase multienzyme complex","cytoplasmic stress granule",11,2,0.00574629780515632
-"GOW_TC","TC","up","CC","GO:0005902",2,"GO:0005902",3.47438699890125,"microvillus","microvillus",32,4,0.000335438572417169
-"GOW_TC","TC","up","MF","GO:0004812",1,"GO:0004812",2.47036012335349,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",27,3,0.00338563298057563
-"GOW_TC","TC","up","MF","GO:0070577",3,"GO:0070577",2.03773059295916,"lysine-acetylated histone binding","lysine-acetylated histone binding",13,2,0.00916789027917006
-"GOW_TC","TC","up","MF","GO:0003730",2,"GO:0003730",2.04900224183642,"mRNA 3'-UTR binding","mRNA 3'-UTR binding",38,3,0.00893300872485207
-"GOW_TC","TC","up","MF","GO:0000049",2,"GO:0003730",2.01774420311735,"tRNA binding","mRNA 3'-UTR binding",39,3,0.0095996587926416
-"GOW_TC","TC","down","BP","GO:0009583",2,"GO:0009583",2.14603369813326,"detection of light stimulus","detection of light stimulus",11,2,0.00714440888442002
-"GOW_TC","TC","down","BP","GO:0000278",3,"GO:0000278",2.10583200605897,"mitotic cell cycle","mitotic cell cycle",386,6,0.00783732747910216
-"GOW_TC","TC","down","BP","GO:0150117",1,"GO:0150117",2.14603369813326,"positive regulation of cell-substrate junction organization","positive regulation of cell-substrate junction organization",11,2,0.00714440888442002
-"GOW_TC","TC","down","BP","GO:0009954",4,"GO:0009954",2.0009694831819,"proximal/distal pattern formation","proximal/distal pattern formation",13,2,0.00997770172245223
-"GOW_TC","TC","down","CC","GO:0044853",1,"GO:0044853",2.26503861792734,"plasma membrane raft","plasma membrane raft",32,3,0.00543202027242709
-"GOW_TC","TC","down","MF","GO:0015085",1,"GO:0015085",2.19913224700305,"calcium ion transmembrane transporter activity","calcium ion transmembrane transporter activity",72,3,0.0063221930497502
-"GDO_TC","TC","up","BP","GO:0036503",1,"GO:0036503",3.02288312351811,"ERAD pathway","ERAD pathway",54,7,0.00094867373417097
-"GDO_TC","TC","up","BP","GO:0034976",1,"GO:0036503",2.10659274821837,"response to endoplasmic reticulum stress","ERAD pathway",116,12,0.00782361105666301
-"GDO_TC","TC","up","BP","GO:0019439",9,"GO:0019439",2.21217437821382,"aromatic compound catabolic process","aromatic compound catabolic process",187,6,0.0061351561649815
-"GDO_TC","TC","up","BP","GO:0015816",2,"GO:0015816",2.92994290757657,"glycine transport","glycine transport",18,3,0.00117505201731635
-"GDO_TC","TC","up","BP","GO:0002119",8,"GO:0002119",2.43485769915571,"nematode larval development","nematode larval development",16,3,0.0036740266386227
-"GDO_TC","TC","up","BP","GO:1901576",3,"GO:1901576",2.76999881464647,"organic substance biosynthetic process","organic substance biosynthetic process",2596,58,0.00169824828761588
-"GDO_TC","TC","up","BP","GO:0006807",3,"GO:1901576",2.38913084524489,"nitrogen compound metabolic process","organic substance biosynthetic process",3328,67,0.00408196385454531
-"GDO_TC","TC","up","BP","GO:0042446",3,"GO:1901576",2.03364150955905,"hormone biosynthetic process","organic substance biosynthetic process",22,3,0.00925461785553946
-"GDO_TC","TC","up","BP","GO:0006457",5,"GO:0006457",2.58106525429145,"protein folding","protein folding",106,9,0.00262382427483025
-"GDO_TC","TC","up","BP","GO:0006986",7,"GO:0006986",2.43790746033912,"response to unfolded protein","response to unfolded protein",51,4,0.00364831677139543
-"GDO_TC","TC","up","BP","GO:0048488",6,"GO:0048488",2.54496987197454,"synaptic vesicle endocytosis","synaptic vesicle endocytosis",30,4,0.00285121605617955
-"GDO_TC","TC","up","BP","GO:0006418",4,"GO:0006418",2.7183409306314,"tRNA aminoacylation for protein translation","tRNA aminoacylation for protein translation",27,4,0.00191275378209365
-"GDO_TC","TC","up","BP","GO:0018279",4,"GO:0006418",2.70754118196585,"protein N-linked glycosylation via asparagine","tRNA aminoacylation for protein translation",13,3,0.00196091522291159
-"GDO_TC","TC","up","BP","GO:0006487",4,"GO:0006418",2.63747195400286,"protein N-linked glycosylation","tRNA aminoacylation for protein translation",27,6,0.00230424177525618
-"GDO_TC","TC","up","BP","GO:0006023",4,"GO:0006418",2.28408501978432,"aminoglycan biosynthetic process","tRNA aminoacylation for protein translation",18,3,0.00519894209331033
-"GDO_TC","TC","up","CC","GO:0140534",2,"GO:0140534",6.08046289788294,"endoplasmic reticulum protein-containing complex","endoplasmic reticulum protein-containing complex",66,10,8.30877698201167e-07
-"GDO_TC","TC","up","CC","GO:0005788",2,"GO:0140534",5.36083991598462,"endoplasmic reticulum lumen","endoplasmic reticulum protein-containing complex",62,9,4.35672436030557e-06
-"GDO_TC","TC","up","CC","GO:0005789",2,"GO:0140534",5.15786767970339,"endoplasmic reticulum membrane","endoplasmic reticulum protein-containing complex",414,26,6.95236108986404e-06
-"GDO_TC","TC","up","CC","GO:0005790",2,"GO:0140534",4.11298927080985,"smooth endoplasmic reticulum","endoplasmic reticulum protein-containing complex",12,4,7.70922514372207e-05
-"GDO_TC","TC","up","CC","GO:0016529",2,"GO:0140534",2.88586997856677,"sarcoplasmic reticulum","endoplasmic reticulum protein-containing complex",38,6,0.00130055888811455
-"GDO_TC","TC","up","CC","GO:0005793",2,"GO:0140534",2.00126734077211,"endoplasmic reticulum-Golgi intermediate compartment","endoplasmic reticulum protein-containing complex",45,4,0.00997086093720538
-"GDO_TC","TC","up","CC","GO:0042470",1,"GO:0042470",8.94578265959542,"melanosome","melanosome",45,11,1.13296720890697e-09
-"GDO_TC","TC","up","CC","GO:0098796",3,"GO:0098796",2.12933571392272,"membrane protein complex","membrane protein complex",412,18,0.00742444998702785
-"GDO_TC","TC","up","MF","GO:0004812",3,"GO:0004812",2.59825040344433,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",27,4,0.00252202621532432
-"GDO_TC","TC","up","MF","GO:0016705",1,"GO:0016705",3.03009687179502,"oxidoreductase activity, acting on paired donors, with incorporation or reduction of molecular oxygen","oxidoreductase activity, acting on paired donors, with incorporation or reduction of molecular oxygen",69,7,0.000933046156459303
-"GDO_TC","TC","up","MF","GO:0004497",1,"GO:0016705",2.3829394398547,"monooxygenase activity","oxidoreductase activity, acting on paired donors, with incorporation or reduction of molecular oxygen",43,5,0.00414057408983211
-"GDO_TC","TC","up","MF","GO:0015035",1,"GO:0016705",2.19249227165727,"protein-disulfide reductase activity","oxidoreductase activity, acting on paired donors, with incorporation or reduction of molecular oxygen",18,3,0.00641959645185328
-"GDO_TC","TC","up","MF","GO:0003756",2,"GO:0003756",2.96988351551448,"protein disulfide isomerase activity","protein disulfide isomerase activity",10,3,0.00107180674180519
-"GDO_TC","TC","up","MF","GO:0000049",4,"GO:0000049",2.09512654221856,"tRNA binding","tRNA binding",37,4,0.00803292029489571
-"GDO_TC","TC","down","BP","GO:0002250",2,"GO:0002250",3.74300205228712,"adaptive immune response","adaptive immune response",66,8,0.000180716558611098
-"GDO_TC","TC","down","BP","GO:0007155",3,"GO:0007155",2.93065812867111,"cell adhesion","cell adhesion",402,13,0.00117311846674849
-"GDO_TC","TC","down","BP","GO:0008356",3,"GO:0007155",2.06206598246179,"asymmetric cell division","cell adhesion",28,3,0.00866830168043957
-"GDO_TC","TC","down","BP","GO:0006695",6,"GO:0006695",2.77155203921771,"cholesterol biosynthetic process","cholesterol biosynthetic process",16,3,0.00169218546662629
-"GDO_TC","TC","down","BP","GO:0060325",8,"GO:0060325",2.01476794380216,"face morphogenesis","face morphogenesis",10,2,0.00966567206059015
-"GDO_TC","TC","down","BP","GO:0000122",4,"GO:0000122",2.92925681395273,"negative regulation of transcription by RNA polymerase II","negative regulation of transcription by RNA polymerase II",207,10,0.00117690981859032
-"GDO_TC","TC","down","BP","GO:0055057",1,"GO:0055057",4.63145736921342,"neuroblast division","neuroblast division",12,4,2.33637543194385e-05
-"GDO_TC","TC","down","BP","GO:0035914",1,"GO:0055057",3.15799181118974,"skeletal muscle cell differentiation","neuroblast division",12,3,0.000695037422696403
-"GDO_TC","TC","down","BP","GO:0001568",1,"GO:0055057",2.02548626367045,"blood vessel development","neuroblast division",197,6,0.00943004437339367
-"GDO_TC","TC","down","BP","GO:0070374",7,"GO:0070374",2.06206598246179,"positive regulation of ERK1 and ERK2 cascade","positive regulation of ERK1 and ERK2 cascade",28,3,0.00866830168043957
-"GDO_TC","TC","down","BP","GO:0051300",5,"GO:0051300",2.85690199666456,"spindle pole body organization","spindle pole body organization",15,3,0.0013902663247337
-"GDO_TC","TC","down","CC","GO:0005581",2,"GO:0005581",4.86713979704667,"collagen trimer","collagen trimer",35,6,1.35787628319346e-05
-"GDO_TC","TC","down","CC","GO:0062023",1,"GO:0062023",5.96698944642176,"collagen-containing extracellular matrix","collagen-containing extracellular matrix",155,13,1.0789729415061e-06
-"GDO_TC","TC","down","CC","GO:0005576",3,"GO:0005576",3.4562227583423,"extracellular region","extracellular region",737,26,0.000349765719165016
-"GDO_TC","TC","down","CC","GO:0005615",3,"GO:0005576",2.88008613619643,"extracellular space","extracellular region",467,14,0.00131799530681743
-"GDO_TC","TC","down","CC","GO:0005823",3,"GO:0005576",2.84099160771907,"central plaque of spindle pole body","extracellular region",15,3,0.00144214321914604
-"GDO_TC","TC","down","MF","GO:0042813",1,"GO:0042813",3.13068853986032,"Wnt receptor activity","Wnt receptor activity",12,3,0.000740135883190849
-"GDO_TC","TC","down","MF","GO:0017147",2,"GO:0017147",2.74466289241733,"Wnt-protein binding","Wnt-protein binding",16,3,0.00180026777478633
-"GDO_TC","TC","down","MF","GO:0008061",2,"GO:0017147",2.08073511531775,"chitin binding","Wnt-protein binding",27,3,0.00830357064081183
-"GDO_TC","TC","down","MF","GO:0016798",3,"GO:0016798",2.33813021289531,"hydrolase activity, acting on glycosyl bonds","hydrolase activity, acting on glycosyl bonds",105,6,0.00459060353846649
-"FG_TC","FG","up","BP","GO:0034314",24,"GO:0034314",2.53659113895879,"Arp2/3 complex-mediated actin nucleation","Arp2/3 complex-mediated actin nucleation",29,14,0.00290675789715129
-"FG_TC","FG","up","BP","GO:0030041",24,"GO:0034314",2.46314381726129,"actin filament polymerization","Arp2/3 complex-mediated actin nucleation",74,36,0.00344235917652299
-"FG_TC","FG","up","BP","GO:0002250",8,"GO:0002250",3.26249558688683,"adaptive immune response","adaptive immune response",71,34,0.000546392102054468
-"FG_TC","FG","up","BP","GO:0006955",8,"GO:0002250",3.2457610133903,"immune response","adaptive immune response",434,162,0.000567857003776109
-"FG_TC","FG","up","BP","GO:0002920",8,"GO:0002250",2.99214118964602,"regulation of humoral immune response","adaptive immune response",10,8,0.00101826029661985
-"FG_TC","FG","up","BP","GO:0001525",21,"GO:0001525",2.83038113721555,"angiogenesis","angiogenesis",150,51,0.00147781089078428
-"FG_TC","FG","up","BP","GO:0048565",21,"GO:0001525",2.68730197786408,"digestive tract development","angiogenesis",51,22,0.00205446157101408
-"FG_TC","FG","up","BP","GO:0042335",21,"GO:0001525",2.44303858116208,"cuticle development","angiogenesis",18,11,0.00360546611932734
-"FG_TC","FG","up","BP","GO:0001568",21,"GO:0001525",2.15010530740752,"blood vessel development","angiogenesis",198,71,0.00707774143020031
-"FG_TC","FG","up","BP","GO:0035214",21,"GO:0001525",2.13303036421327,"eye-antennal disc development","angiogenesis",10,7,0.00736155626502571
-"FG_TC","FG","up","BP","GO:0008366",21,"GO:0001525",2.08073934255462,"axon ensheathment","angiogenesis",48,14,0.00830348981779758
-"FG_TC","FG","up","BP","GO:0001658",18,"GO:0001658",2.98272392261534,"branching involved in ureteric bud morphogenesis","branching involved in ureteric bud morphogenesis",12,9,0.00104058144457881
-"FG_TC","FG","up","BP","GO:0061343",2,"GO:0061343",3.85793301267999,"cell adhesion involved in heart morphogenesis","cell adhesion involved in heart morphogenesis",16,12,0.00013869697441413
-"FG_TC","FG","up","BP","GO:0042472",2,"GO:0061343",3.32380044108822,"inner ear morphogenesis","cell adhesion involved in heart morphogenesis",31,18,0.000474459950178512
-"FG_TC","FG","up","BP","GO:0001947",2,"GO:0061343",2.07723828819921,"heart looping","cell adhesion involved in heart morphogenesis",22,12,0.0083706987356447
-"FG_TC","FG","up","BP","GO:0030154",7,"GO:0030154",3.28012150547419,"cell differentiation","cell differentiation",1361,459,0.000524660651891506
-"FG_TC","FG","up","BP","GO:0051145",7,"GO:0030154",2.98272392261534,"smooth muscle cell differentiation","cell differentiation",12,9,0.00104058144457881
-"FG_TC","FG","up","BP","GO:0045663",7,"GO:0030154",2.09658939139426,"positive regulation of myoblast differentiation","cell differentiation",17,10,0.00800590824902672
-"FG_TC","FG","up","BP","GO:0006030",14,"GO:0006030",3.0719344615466,"chitin metabolic process","chitin metabolic process",19,14,0.000847355277069041
-"FG_TC","FG","up","BP","GO:0006023",14,"GO:0006030",3.06476198784828,"aminoglycan biosynthetic process","chitin metabolic process",20,10,0.000861465743307662
-"FG_TC","FG","up","BP","GO:0060271",10,"GO:0060271",3.18762323052691,"cilium assembly","cilium assembly",244,113,0.000649197396473701
-"FG_TC","FG","up","BP","GO:0036159",10,"GO:0060271",3.00674395979028,"inner dynein arm assembly","cilium assembly",14,10,0.000984591404850885
-"FG_TC","FG","up","BP","GO:0030032",10,"GO:0060271",2.20364809703518,"lamellipodium assembly","cilium assembly",32,17,0.00625679467070392
-"FG_TC","FG","up","BP","GO:0046847",10,"GO:0060271",2.10583863514935,"filopodium assembly","cilium assembly",46,30,0.00783720785069833
-"FG_TC","FG","up","BP","GO:0003341",11,"GO:0003341",3.16700219182507,"cilium movement","cilium movement",134,68,0.000680765922952224
-"FG_TC","FG","up","BP","GO:0003352",11,"GO:0003341",2.08906677736404,"regulation of cilium movement","cilium movement",23,14,0.00814579024261713
-"FG_TC","FG","up","BP","GO:0003351",11,"GO:0003341",2.006872257982,"epithelial cilium movement involved in extracellular fluid movement","cilium movement",37,19,0.00984300582275058
-"FG_TC","FG","up","BP","GO:0048813",9,"GO:0048813",3.1959776675125,"dendrite morphogenesis","dendrite morphogenesis",76,35,0.00063682826733748
-"FG_TC","FG","up","BP","GO:0021954",9,"GO:0048813",2.59356064347551,"central nervous system neuron development","dendrite morphogenesis",25,11,0.00254940807185343
-"FG_TC","FG","up","BP","GO:0035162",28,"GO:0035162",2.44303858116208,"embryonic hemopoiesis","embryonic hemopoiesis",18,11,0.00360546611932734
-"FG_TC","FG","up","BP","GO:0002762",28,"GO:0035162",2.13303036421327,"negative regulation of myeloid leukocyte differentiation","embryonic hemopoiesis",10,7,0.00736155626502571
-"FG_TC","FG","up","BP","GO:0043249",28,"GO:0035162",2.13303036421327,"erythrocyte maturation","embryonic hemopoiesis",10,7,0.00736155626502571
-"FG_TC","FG","up","BP","GO:0051649",31,"GO:0051649",2.2440626355742,"establishment of localization in cell","establishment of localization in cell",884,207,0.00570082046986861
-"FG_TC","FG","up","BP","GO:0042073",31,"GO:0051649",2.17848850457064,"intraciliary transport","establishment of localization in cell",34,15,0.0066299689643871
-"FG_TC","FG","up","BP","GO:0097194",17,"GO:0097194",3.04978264219722,"execution phase of apoptosis","execution phase of apoptosis",28,14,0.000891697107354982
-"FG_TC","FG","up","BP","GO:0007163",17,"GO:0097194",2.60519174137556,"establishment or maintenance of cell polarity","execution phase of apoptosis",119,47,0.0024820370419352
-"FG_TC","FG","up","BP","GO:0007017",17,"GO:0097194",2.16918467700739,"microtubule-based process","execution phase of apoptosis",509,202,0.00677353412304955
-"FG_TC","FG","up","BP","GO:0006775",36,"GO:0006775",2.13303036421327,"fat-soluble vitamin metabolic process","fat-soluble vitamin metabolic process",10,7,0.00736155626502571
-"FG_TC","FG","up","BP","GO:0007156",1,"GO:0007156",4.65924858919216,"homophilic cell adhesion via plasma membrane adhesion molecules","homophilic cell adhesion via plasma membrane adhesion molecules",69,36,2.19155013785536e-05
-"FG_TC","FG","up","BP","GO:0016339",1,"GO:0007156",2.99214118964602,"calcium-dependent cell-cell adhesion via plasma membrane cell adhesion molecules","homophilic cell adhesion via plasma membrane adhesion molecules",10,8,0.00101826029661985
-"FG_TC","FG","up","BP","GO:0044331",1,"GO:0007156",2.98272392261534,"cell-cell adhesion mediated by cadherin","homophilic cell adhesion via plasma membrane adhesion molecules",12,9,0.00104058144457881
-"FG_TC","FG","up","BP","GO:0007160",1,"GO:0007156",2.70925618862007,"cell-matrix adhesion","homophilic cell adhesion via plasma membrane adhesion molecules",69,34,0.00195318693852323
-"FG_TC","FG","up","BP","GO:0033627",1,"GO:0007156",2.53256841375954,"cell adhesion mediated by integrin","homophilic cell adhesion via plasma membrane adhesion molecules",20,12,0.00293380730927935
-"FG_TC","FG","up","BP","GO:0007157",1,"GO:0007156",2.18038810713497,"heterophilic cell-cell adhesion via plasma membrane cell adhesion molecules","homophilic cell adhesion via plasma membrane adhesion molecules",24,13,0.00660103283243266
-"FG_TC","FG","up","BP","GO:0035317",23,"GO:0035317",2.5518235229971,"imaginal disc-derived wing hair organization","imaginal disc-derived wing hair organization",11,8,0.00280657386686587
-"FG_TC","FG","up","BP","GO:0006954",26,"GO:0006954",2.48215793494692,"inflammatory response","inflammatory response",152,57,0.00329489868545446
-"FG_TC","FG","up","BP","GO:0007229",3,"GO:0007229",3.83466465174592,"integrin-mediated signaling pathway","integrin-mediated signaling pathway",29,18,0.000146330665674036
-"FG_TC","FG","up","BP","GO:0032488",3,"GO:0007229",3.4277864950173,"Cdc42 protein signal transduction","integrin-mediated signaling pathway",15,11,0.000373433697682914
-"FG_TC","FG","up","BP","GO:0009755",3,"GO:0007229",2.9838991292472,"hormone-mediated signaling pathway","integrin-mediated signaling pathway",56,22,0.00103776942377821
-"FG_TC","FG","up","BP","GO:0008063",3,"GO:0007229",2.98272392261534,"Toll signaling pathway","integrin-mediated signaling pathway",12,9,0.00104058144457881
-"FG_TC","FG","up","BP","GO:0002224",3,"GO:0007229",2.62451959935357,"toll-like receptor signaling pathway","integrin-mediated signaling pathway",32,16,0.00237399828372309
-"FG_TC","FG","up","BP","GO:0007219",3,"GO:0007229",2.29621434580263,"Notch signaling pathway","integrin-mediated signaling pathway",74,30,0.00505575074116489
-"FG_TC","FG","up","BP","GO:0007218",3,"GO:0007229",2.1980094826274,"neuropeptide signaling pathway","integrin-mediated signaling pathway",12,8,0.00633855871143998
-"FG_TC","FG","up","BP","GO:0030336",13,"GO:0030336",3.08569757291176,"negative regulation of cell migration","negative regulation of cell migration",78,33,0.000820923006648675
-"FG_TC","FG","up","BP","GO:0016477",13,"GO:0030336",2.81684948801304,"cell migration","negative regulation of cell migration",424,159,0.00152458103120239
-"FG_TC","FG","up","BP","GO:0022408",34,"GO:0022408",2.19571688160743,"negative regulation of cell-cell adhesion","negative regulation of cell-cell adhesion",34,16,0.00637210785918138
-"FG_TC","FG","up","BP","GO:0031348",35,"GO:0031348",2.19333097745359,"negative regulation of defense response","negative regulation of defense response",89,25,0.00640721094522481
-"FG_TC","FG","up","BP","GO:0002832",35,"GO:0031348",2.07940406125327,"negative regulation of response to biotic stimulus","negative regulation of defense response",52,14,0.00832905900514274
-"FG_TC","FG","up","BP","GO:0000122",22,"GO:0000122",2.81687840747219,"negative regulation of transcription by RNA polymerase II","negative regulation of transcription by RNA polymerase II",206,78,0.00152447951347019
-"FG_TC","FG","up","BP","GO:1901616",6,"GO:1901616",3.45656243347936,"organic hydroxy compound catabolic process","organic hydroxy compound catabolic process",22,11,0.000349492263538814
-"FG_TC","FG","up","BP","GO:0120254",6,"GO:1901616",2.6320444361923,"olefinic compound metabolic process","organic hydroxy compound catabolic process",39,21,0.00233321931946707
-"FG_TC","FG","up","BP","GO:0070374",20,"GO:0070374",2.9056703425124,"positive regulation of ERK1 and ERK2 cascade","positive regulation of ERK1 and ERK2 cascade",28,16,0.00124259515947447
-"FG_TC","FG","up","BP","GO:0030178",20,"GO:0070374",2.53268220111716,"negative regulation of Wnt signaling pathway","positive regulation of ERK1 and ERK2 cascade",66,22,0.00293303873756908
-"FG_TC","FG","up","BP","GO:0043123",20,"GO:0070374",2.28160381379583,"positive regulation of canonical NF-kappaB signal transduction","positive regulation of ERK1 and ERK2 cascade",39,19,0.00522872963637597
-"FG_TC","FG","up","BP","GO:2001235",20,"GO:0070374",2.10038312394172,"positive regulation of apoptotic signaling pathway","positive regulation of ERK1 and ERK2 cascade",49,21,0.00793627806830525
-"FG_TC","FG","up","BP","GO:0032722",37,"GO:0032722",2.13303036421327,"positive regulation of chemokine production","positive regulation of chemokine production",10,7,0.00736155626502571
-"FG_TC","FG","up","BP","GO:0010875",33,"GO:0010875",2.1980094826274,"positive regulation of cholesterol efflux","positive regulation of cholesterol efflux",12,8,0.00633855871143998
-"FG_TC","FG","up","BP","GO:0051491",19,"GO:0051491",2.9674991301531,"positive regulation of filopodium assembly","positive regulation of filopodium assembly",23,14,0.00107770741222857
-"FG_TC","FG","up","BP","GO:0051489",19,"GO:0051491",2.67193963825094,"regulation of filopodium assembly","positive regulation of filopodium assembly",38,24,0.00212843485246402
-"FG_TC","FG","up","BP","GO:0045860",30,"GO:0045860",2.29503366247745,"positive regulation of protein kinase activity","positive regulation of protein kinase activity",38,18,0.00506951412583437
-"FG_TC","FG","up","BP","GO:0051496",12,"GO:0051496",3.10748493557945,"positive regulation of stress fiber assembly","positive regulation of stress fiber assembly",18,12,0.00078075552182103
-"FG_TC","FG","up","BP","GO:0032956",12,"GO:0051496",2.39495458287812,"regulation of actin cytoskeleton organization","positive regulation of stress fiber assembly",130,61,0.004027591513815
-"FG_TC","FG","up","BP","GO:0051603",29,"GO:0051603",2.32360680690042,"proteolysis involved in protein catabolic process","proteolysis involved in protein catabolic process",370,89,0.00474671539675702
-"FG_TC","FG","up","BP","GO:0042127",27,"GO:0042127",2.48187647727288,"regulation of cell population proliferation","regulation of cell population proliferation",536,192,0.00329703473629167
-"FG_TC","FG","up","BP","GO:0014855",27,"GO:0042127",2.3563505501451,"striated muscle cell proliferation","regulation of cell population proliferation",16,10,0.00440199403637448
-"FG_TC","FG","up","BP","GO:0051171",39,"GO:0051171",2.12626026430894,"regulation of nitrogen compound metabolic process","regulation of nitrogen compound metabolic process",1490,451,0.00747721271276689
-"FG_TC","FG","up","BP","GO:0010543",38,"GO:0010543",2.13303036421327,"regulation of platelet activation","regulation of platelet activation",10,7,0.00736155626502571
-"FG_TC","FG","up","BP","GO:0035151",4,"GO:0035151",3.49936805512685,"regulation of tube size, open tracheal system","regulation of tube size, open tracheal system",19,13,0.000316688246146239
-"FG_TC","FG","up","BP","GO:0008360",4,"GO:0035151",2.30026624992683,"regulation of cell shape","regulation of tube size, open tracheal system",58,26,0.0050088006838733
-"FG_TC","FG","up","BP","GO:0009617",5,"GO:0009617",3.4764517670181,"response to bacterium","response to bacterium",183,78,0.000333847580401421
-"FG_TC","FG","up","BP","GO:0009620",5,"GO:0009617",3.30042680223538,"response to fungus","response to bacterium",16,12,0.000500694934585517
-"FG_TC","FG","up","BP","GO:0019730",5,"GO:0009617",2.656216003389,"antimicrobial humoral response","response to bacterium",15,10,0.00220690681918683
-"FG_TC","FG","up","BP","GO:0050830",5,"GO:0009617",2.29233653782495,"defense response to Gram-positive bacterium","response to bacterium",21,12,0.00510109559322784
-"FG_TC","FG","up","BP","GO:0050829",5,"GO:0009617",2.07723828819921,"defense response to Gram-negative bacterium","response to bacterium",22,12,0.0083706987356447
-"FG_TC","FG","up","BP","GO:0019991",16,"GO:0019991",3.05068100441752,"septate junction assembly","septate junction assembly",16,11,0.000889854488874238
-"FG_TC","FG","up","BP","GO:0070830",16,"GO:0019991",2.13303036421327,"bicellular tight junction assembly","septate junction assembly",10,7,0.00736155626502571
-"FG_TC","FG","up","BP","GO:0007288",25,"GO:0007288",2.48983429301731,"sperm axoneme assembly","sperm axoneme assembly",25,14,0.00323717149080343
-"FG_TC","FG","up","BP","GO:0051300",15,"GO:0051300",3.05068100441752,"spindle pole body organization","spindle pole body organization",16,11,0.000889854488874238
-"FG_TC","FG","up","BP","GO:0090307",15,"GO:0051300",2.68789008485535,"mitotic spindle assembly","spindle pole body organization",29,16,0.00205168137105417
-"FG_TC","FG","up","BP","GO:0042554",32,"GO:0042554",2.1980094826274,"superoxide anion generation","superoxide anion generation",12,8,0.00633855871143998
-"FG_TC","FG","up","BP","GO:0001659",40,"GO:0001659",2.08370402574741,"temperature homeostasis","temperature homeostasis",33,10,0.00824699961431457
-"FG_TC","FG","up","CC","GO:0005912",5,"GO:0005912",3.42268141206298,"adherens junction","adherens junction",75,36,0.000377849270377458
-"FG_TC","FG","up","CC","GO:0005918",5,"GO:0005912",2.98800500038414,"septate junction","adherens junction",18,12,0.0010280044618103
-"FG_TC","FG","up","CC","GO:0044291",5,"GO:0005912",2.02760415518015,"cell-cell contact zone","adherens junction",20,13,0.00938416952743592
-"FG_TC","FG","up","CC","GO:0005930",3,"GO:0005930",5.3136527891262,"axoneme","axoneme",137,79,4.85676634998156e-06
-"FG_TC","FG","up","CC","GO:0005879",3,"GO:0005930",5.1963332967436,"axonemal microtubule","axoneme",37,24,6.36307003412896e-06
-"FG_TC","FG","up","CC","GO:0036064",3,"GO:0005930",3.71224353137304,"ciliary basal body","axoneme",105,48,0.000193979782761093
-"FG_TC","FG","up","CC","GO:0005814",3,"GO:0005930",3.09773008536543,"centriole","axoneme",91,41,0.000798490796244679
-"FG_TC","FG","up","CC","GO:0005813",3,"GO:0005930",3.05613230464241,"centrosome","axoneme",302,118,0.000878754769825992
-"FG_TC","FG","up","CC","GO:0005823",3,"GO:0005930",2.93891656888077,"central plaque of spindle pole body","axoneme",16,11,0.00115102148728071
-"FG_TC","FG","up","CC","GO:0005874",3,"GO:0005930",2.52605559598272,"microtubule","axoneme",253,102,0.00297813516059869
-"FG_TC","FG","up","CC","GO:0016459",3,"GO:0005930",2.50546594816729,"myosin complex","axoneme",39,18,0.00312272724105645
-"FG_TC","FG","up","CC","GO:0032432",3,"GO:0005930",2.14971693788896,"actin filament bundle","axoneme",26,12,0.00708407355866592
-"FG_TC","FG","up","CC","GO:0005856",3,"GO:0005930",2.06267175552908,"cytoskeleton","axoneme",1034,399,0.0086562191801122
-"FG_TC","FG","up","CC","GO:0036156",3,"GO:0005930",2.0605631945706,"inner dynein arm","axoneme",10,7,0.00869834853424446
-"FG_TC","FG","up","CC","GO:0005581",8,"GO:0005581",2.10239721355677,"collagen trimer","collagen trimer",34,17,0.00789955789693787
-"FG_TC","FG","up","CC","GO:0005838",8,"GO:0005581",2.0248044229053,"proteasome regulatory particle","collagen trimer",21,11,0.00944486113702756
-"FG_TC","FG","up","CC","GO:0062023",1,"GO:0062023",8.72848728014121,"collagen-containing extracellular matrix","collagen-containing extracellular matrix",141,72,1.8685844045957e-09
-"FG_TC","FG","up","CC","GO:0005615",2,"GO:0005615",6.14031214298863,"extracellular space","extracellular space",471,183,7.2391546909126e-07
-"FG_TC","FG","up","CC","GO:0005576",2,"GO:0005615",3.53770896604769,"extracellular region","extracellular space",753,290,0.000289928583654238
-"FG_TC","FG","up","CC","GO:0045177",2,"GO:0005615",3.03179173787209,"apical part of cell","extracellular space",160,67,0.000929411971331468
-"FG_TC","FG","up","CC","GO:0008305",9,"GO:0008305",2.0605631945706,"integrin complex","integrin complex",10,7,0.00869834853424446
-"FG_TC","FG","up","CC","GO:0005902",7,"GO:0005902",2.17324468646894,"microvillus","microvillus",31,16,0.00671050668791919
-"FG_TC","FG","up","CC","GO:0098552",6,"GO:0098552",2.85741973084077,"side of membrane","side of membrane",144,52,0.00138860993822368
-"FG_TC","FG","up","CC","GO:0005886",6,"GO:0098552",2.49414698011597,"plasma membrane","side of membrane",1477,495,0.00320518439683339
-"FG_TC","FG","up","CC","GO:0016324",6,"GO:0098552",2.05408159425117,"apical plasma membrane","side of membrane",122,48,0.00882914004976801
-"FG_TC","FG","up","CC","GO:0036126",4,"GO:0036126",5.09655470801093,"sperm flagellum","sperm flagellum",75,41,8.00654763793032e-06
-"FG_TC","FG","up","CC","GO:0031514",4,"GO:0036126",4.44691316207236,"motile cilium","sperm flagellum",151,84,3.57344282612085e-05
-"FG_TC","FG","up","CC","GO:0005929",4,"GO:0036126",3.23504959160047,"cilium","sperm flagellum",393,197,0.000582036751851307
-"FG_TC","FG","up","CC","GO:0060170",4,"GO:0036126",2.83692059665098,"ciliary membrane","sperm flagellum",23,14,0.00145572521081311
-"FG_TC","FG","up","CC","GO:0097729",4,"GO:0036126",2.63714830434044,"9+2 motile cilium","sperm flagellum",99,55,0.0023059596074119
-"FG_TC","FG","up","MF","GO:0061809",10,"GO:0061809",2.22594142924977,"NAD+ nucleotidase, cyclic ADP-ribose generating","NAD+ nucleotidase, cyclic ADP-ribose generating",21,12,0.00594372312719128
-"FG_TC","FG","up","MF","GO:0005509",1,"GO:0005509",6.32340890542634,"calcium ion binding","calcium ion binding",322,133,4.74887889658681e-07
-"FG_TC","FG","up","MF","GO:0030234",4,"GO:0030234",3.40745989638904,"enzyme regulator activity","enzyme regulator activity",447,140,0.000391327261391355
-"FG_TC","FG","up","MF","GO:0004602",11,"GO:0004602",2.14813947115502,"glutathione peroxidase activity","glutathione peroxidase activity",12,8,0.007109851482278
-"FG_TC","FG","up","MF","GO:0004364",6,"GO:0004364",3.03352806663744,"glutathione transferase activity","glutathione transferase activity",18,12,0.000925703558835218
-"FG_TC","FG","up","MF","GO:0020037",3,"GO:0020037",3.6663784392903,"heme binding","heme binding",61,31,0.000215586499409452
-"FG_TC","FG","up","MF","GO:0008201",8,"GO:0008201",2.99989806084248,"heparin binding","heparin binding",32,18,0.00100023475113423
-"FG_TC","FG","up","MF","GO:0097367",8,"GO:0008201",2.33576112953507,"carbohydrate derivative binding","heparin binding",1207,358,0.00461571378047208
-"FG_TC","FG","up","MF","GO:0043560",2,"GO:0043560",4.00813693770986,"insulin receptor substrate binding","insulin receptor substrate binding",10,9,9.81438436157978e-05
-"FG_TC","FG","up","MF","GO:0003779",2,"GO:0043560",3.575292060184,"actin binding","insulin receptor substrate binding",187,77,0.000265893634120603
-"FG_TC","FG","up","MF","GO:0008017",2,"GO:0043560",3.10301954344196,"microtubule binding","insulin receptor substrate binding",127,51,0.00078882461936636
-"FG_TC","FG","up","MF","GO:0051082",2,"GO:0043560",2.06613914134678,"unfolded protein binding","insulin receptor substrate binding",48,22,0.00858738350720534
-"FG_TC","FG","up","MF","GO:0005178",7,"GO:0005178",2.99989806084248,"integrin binding","integrin binding",32,18,0.00100023475113423
-"FG_TC","FG","up","MF","GO:0005125",7,"GO:0005178",2.59428805564647,"cytokine activity","integrin binding",15,10,0.00254514156985656
-"FG_TC","FG","up","MF","GO:0005102",7,"GO:0005178",2.14091655509941,"signaling receptor binding","integrin binding",317,130,0.0072290868920027
-"FG_TC","FG","up","MF","GO:0003777",9,"GO:0003777",2.22884682800636,"microtubule motor activity","microtubule motor activity",54,25,0.00590409275817425
-"FG_TC","FG","up","MF","GO:0033293",12,"GO:0033293",2.13241568188731,"monocarboxylic acid binding","monocarboxylic acid binding",19,11,0.00737198288219239
-"FG_TC","FG","up","MF","GO:0005343",13,"GO:0005343",2.05021998756221,"organic acid:sodium symporter activity","organic acid:sodium symporter activity",27,12,0.00890799598131558
-"FG_TC","FG","up","MF","GO:0004888",5,"GO:0004888",3.1544863188692,"transmembrane signaling receptor activity","transmembrane signaling receptor activity",171,81,0.000700670255009583
-"FG_TC","FG","up","MF","GO:0008528",5,"GO:0004888",2.94230996927987,"G protein-coupled peptide receptor activity","transmembrane signaling receptor activity",14,10,0.00114206291852927
-"FG_TC","FG","up","MF","GO:0008066",5,"GO:0004888",2.21921171838538,"glutamate receptor activity","transmembrane signaling receptor activity",14,9,0.00603654276416595
-"FG_TC","FG","down","BP","GO:0007030",4,"GO:0007030",6.73005299023208,"Golgi organization","Golgi organization",71,39,1.86185994885793e-07
-"FG_TC","FG","down","BP","GO:0043062",4,"GO:0007030",3.53159704447377,"extracellular structure organization","Golgi organization",102,43,0.00029403765838981
-"FG_TC","FG","down","BP","GO:0033043",4,"GO:0007030",3.4182717803482,"regulation of organelle organization","Golgi organization",435,103,0.000381705325890044
-"FG_TC","FG","down","BP","GO:0007029",4,"GO:0007030",3.22175389422331,"endoplasmic reticulum organization","Golgi organization",47,21,0.000600131061880669
-"FG_TC","FG","down","BP","GO:0033363",4,"GO:0007030",2.00996602698971,"secretory granule organization","Golgi organization",16,9,0.00977313669057531
-"FG_TC","FG","down","BP","GO:0048149",25,"GO:0048149",2.54103923682338,"behavioral response to ethanol","behavioral response to ethanol",14,9,0.00287713846468285
-"FG_TC","FG","down","BP","GO:0007589",21,"GO:0007589",2.76395939340847,"body fluid secretion","body fluid secretion",21,10,0.00172202957745237
-"FG_TC","FG","down","BP","GO:0005975",7,"GO:0005975",5.50719473006217,"carbohydrate metabolic process","carbohydrate metabolic process",235,101,3.11032141058998e-06
-"FG_TC","FG","down","BP","GO:0006094",7,"GO:0005975",4.27718700595663,"gluconeogenesis","carbohydrate metabolic process",28,17,5.28217753750949e-05
-"FG_TC","FG","down","BP","GO:0019320",7,"GO:0005975",3.32047692870139,"hexose catabolic process","carbohydrate metabolic process",14,10,0.000478104764134254
-"FG_TC","FG","down","BP","GO:0055008",11,"GO:0055008",3.89639997203188,"cardiac muscle tissue morphogenesis","cardiac muscle tissue morphogenesis",19,13,0.000126940448371016
-"FG_TC","FG","down","BP","GO:0055013",11,"GO:0055008",2.43766156433947,"cardiac muscle cell development","cardiac muscle tissue morphogenesis",23,9,0.00365038302034431
-"FG_TC","FG","down","BP","GO:0007417",34,"GO:0007417",2.14919035203696,"central nervous system development","central nervous system development",313,94,0.00709266826924881
-"FG_TC","FG","down","BP","GO:0021545",34,"GO:0007417",2.02249653947965,"cranial nerve development","central nervous system development",11,7,0.00949518565071354
-"FG_TC","FG","down","BP","GO:0002181",3,"GO:0002181",6.91823457742109,"cytoplasmic translation","cytoplasmic translation",79,41,1.20716162937278e-07
-"FG_TC","FG","down","BP","GO:0006493",3,"GO:0002181",6.39347092495794,"protein O-linked glycosylation","cytoplasmic translation",34,23,4.04137429702851e-07
-"FG_TC","FG","down","BP","GO:0006486",3,"GO:0002181",6.35132256272014,"protein glycosylation","cytoplasmic translation",115,75,4.45325369865597e-07
-"FG_TC","FG","down","BP","GO:0006412",3,"GO:0002181",5.95597119208849,"translation","cytoplasmic translation",332,127,1.10669719171993e-06
-"FG_TC","FG","down","BP","GO:0018279",3,"GO:0002181",4.78626844793509,"protein N-linked glycosylation via asparagine","cytoplasmic translation",13,11,1.63580507813371e-05
-"FG_TC","FG","down","BP","GO:0006487",3,"GO:0002181",4.35842162433316,"protein N-linked glycosylation","cytoplasmic translation",33,25,4.38105167405096e-05
-"FG_TC","FG","down","BP","GO:0006465",3,"GO:0002181",2.80596853568104,"signal peptide processing","cytoplasmic translation",11,8,0.00156326089565187
-"FG_TC","FG","down","BP","GO:0006418",3,"GO:0002181",2.6455989035471,"tRNA aminoacylation for protein translation","cytoplasmic translation",26,14,0.0022615234557154
-"FG_TC","FG","down","BP","GO:0050982",14,"GO:0050982",3.469322324036,"detection of mechanical stimulus","detection of mechanical stimulus",33,16,0.000339373303522688
-"FG_TC","FG","down","BP","GO:0035994",14,"GO:0050982",3.25746341134275,"response to muscle stretch","detection of mechanical stimulus",10,8,0.000552759975179768
-"FG_TC","FG","down","BP","GO:0001573",19,"GO:0001573",2.87455044893188,"ganglioside metabolic process","ganglioside metabolic process",13,9,0.00133490251433018
-"FG_TC","FG","down","BP","GO:0006688",19,"GO:0001573",2.49762564701978,"glycosphingolipid biosynthetic process","ganglioside metabolic process",19,11,0.00317961365182624
-"FG_TC","FG","down","BP","GO:0007293",24,"GO:0007293",2.64738856928947,"germarium-derived egg chamber formation","germarium-derived egg chamber formation",16,10,0.00225222321510487
-"FG_TC","FG","down","BP","GO:0060419",18,"GO:0060419",2.92279114188996,"heart growth","heart growth",25,8,0.00119456244764064
-"FG_TC","FG","down","BP","GO:0042246",18,"GO:0060419",2.54103923682338,"tissue regeneration","heart growth",14,9,0.00287713846468285
-"FG_TC","FG","down","BP","GO:0040011",27,"GO:0040011",2.53787200713657,"locomotion","locomotion",343,93,0.00289819760258942
-"FG_TC","FG","down","BP","GO:0007586",27,"GO:0040011",2.2589654022162,"digestion","locomotion",29,14,0.00550851577885548
-"FG_TC","FG","down","BP","GO:0099558",9,"GO:0099558",4.24287869736138,"maintenance of synapse structure","maintenance of synapse structure",16,12,5.71638278462097e-05
-"FG_TC","FG","down","BP","GO:0042438",32,"GO:0042438",2.35187455476079,"melanin biosynthetic process","melanin biosynthetic process",10,7,0.00444759717021974
-"FG_TC","FG","down","BP","GO:0051560",35,"GO:0051560",2.02249653947965,"mitochondrial calcium ion homeostasis","mitochondrial calcium ion homeostasis",11,7,0.00949518565071354
-"FG_TC","FG","down","BP","GO:0016333",31,"GO:0016333",2.35187455476079,"morphogenesis of follicular epithelium","morphogenesis of follicular epithelium",10,7,0.00444759717021974
-"FG_TC","FG","down","BP","GO:0006936",5,"GO:0006936",6.27952757183557,"muscle contraction","muscle contraction",69,38,5.25378659600288e-07
-"FG_TC","FG","down","BP","GO:0090257",5,"GO:0006936",2.93708829981448,"regulation of muscle system process","muscle contraction",58,27,0.00115587720784636
-"FG_TC","FG","down","BP","GO:0003009",5,"GO:0006936",2.02249653947965,"skeletal muscle contraction","muscle contraction",11,7,0.00949518565071354
-"FG_TC","FG","down","BP","GO:0007274",12,"GO:0007274",3.82891315170623,"neuromuscular synaptic transmission","neuromuscular synaptic transmission",17,12,0.000148281458221476
-"FG_TC","FG","down","BP","GO:0060012",12,"GO:0007274",2.95854854401335,"synaptic transmission, glycinergic","neuromuscular synaptic transmission",15,10,0.00110014886738928
-"FG_TC","FG","down","BP","GO:0048167",12,"GO:0007274",2.85885532892157,"regulation of synaptic plasticity","neuromuscular synaptic transmission",74,25,0.00138402734587537
-"FG_TC","FG","down","BP","GO:0007271",12,"GO:0007274",2.54103923682338,"synaptic transmission, cholinergic","neuromuscular synaptic transmission",14,9,0.00287713846468285
-"FG_TC","FG","down","BP","GO:0050806",12,"GO:0007274",2.26069676710378,"positive regulation of synaptic transmission","neuromuscular synaptic transmission",52,17,0.00548659916291183
-"FG_TC","FG","down","BP","GO:0050804",12,"GO:0007274",2.09474185769338,"modulation of chemical synaptic transmission","neuromuscular synaptic transmission",167,62,0.00804003875768398
-"FG_TC","FG","down","BP","GO:0006807",23,"GO:0006807",2.6544608691332,"nitrogen compound metabolic process","nitrogen compound metabolic process",3345,776,0.00221584373960485
-"FG_TC","FG","down","BP","GO:0006735",23,"GO:0006807",2.35187455476079,"NADH regeneration","nitrogen compound metabolic process",10,7,0.00444759717021974
-"FG_TC","FG","down","BP","GO:0009226",16,"GO:0009226",3.27234554543588,"nucleotide-sugar biosynthetic process","nucleotide-sugar biosynthetic process",12,9,0.000534139203616255
-"FG_TC","FG","down","BP","GO:0061615",16,"GO:0009226",3.25746341134275,"glycolytic process through fructose-6-phosphate","nucleotide-sugar biosynthetic process",10,8,0.000552759975179768
-"FG_TC","FG","down","BP","GO:0052652",16,"GO:0009226",2.25628467131238,"cyclic purine nucleotide metabolic process","nucleotide-sugar biosynthetic process",15,9,0.00554262286062321
-"FG_TC","FG","down","BP","GO:0015695",28,"GO:0015695",2.49762564701978,"organic cation transport","organic cation transport",19,11,0.00317961365182624
-"FG_TC","FG","down","BP","GO:0015697",28,"GO:0015695",2.25628467131238,"quaternary ammonium group transport","organic cation transport",15,9,0.00554262286062321
-"FG_TC","FG","down","BP","GO:0015931",28,"GO:0015695",2.23393629230081,"nucleobase-containing compound transport","organic cation transport",91,12,0.00583530697513249
-"FG_TC","FG","down","BP","GO:0006869",28,"GO:0015695",2.04295799254684,"lipid transport","organic cation transport",136,43,0.00905820212787235
-"FG_TC","FG","down","BP","GO:0006793",20,"GO:0006793",2.78312596897076,"phosphorus metabolic process","phosphorus metabolic process",680,191,0.00164768440430366
-"FG_TC","FG","down","BP","GO:0046434",20,"GO:0006793",2.34351764221005,"organophosphate catabolic process","phosphorus metabolic process",54,20,0.00453400879041609
-"FG_TC","FG","down","BP","GO:0071805",10,"GO:0071805",3.9124048713776,"potassium ion transmembrane transport","potassium ion transmembrane transport",45,25,0.000122347508182171
-"FG_TC","FG","down","BP","GO:1903804",10,"GO:0071805",2.95854854401335,"glycine import across plasma membrane","potassium ion transmembrane transport",15,10,0.00110014886738928
-"FG_TC","FG","down","BP","GO:0035725",10,"GO:0071805",2.44109828268011,"sodium ion transmembrane transport","potassium ion transmembrane transport",48,21,0.00362161030567558
-"FG_TC","FG","down","BP","GO:1990573",10,"GO:0071805",2.35187455476079,"potassium ion import across plasma membrane","potassium ion transmembrane transport",10,7,0.00444759717021974
-"FG_TC","FG","down","BP","GO:0034067",13,"GO:0034067",3.77706848278956,"protein localization to Golgi apparatus","protein localization to Golgi apparatus",15,11,0.000167082712506744
-"FG_TC","FG","down","BP","GO:0070972",13,"GO:0034067",2.52704066094893,"protein localization to endoplasmic reticulum","protein localization to Golgi apparatus",44,30,0.00297138782165352
-"FG_TC","FG","down","BP","GO:0042391",15,"GO:0042391",3.34697522542029,"regulation of membrane potential","regulation of membrane potential",103,44,0.0004498055135769
-"FG_TC","FG","down","BP","GO:0001508",15,"GO:0042391",2.25599236868474,"action potential","regulation of membrane potential",37,15,0.00554635458789437
-"FG_TC","FG","down","BP","GO:0006446",17,"GO:0006446",3.15609198536463,"regulation of translational initiation","regulation of translational initiation",29,16,0.000698084531231316
-"FG_TC","FG","down","BP","GO:0045727",17,"GO:0006446",2.4398075932048,"positive regulation of translation","regulation of translational initiation",38,18,0.00363238945974058
-"FG_TC","FG","down","BP","GO:0034976",29,"GO:0034976",2.42862291616208,"response to endoplasmic reticulum stress","response to endoplasmic reticulum stress",117,51,0.00372715182328137
-"FG_TC","FG","down","BP","GO:0006986",22,"GO:0006986",2.6544913409457,"response to unfolded protein","response to unfolded protein",50,22,0.00221568827272912
-"FG_TC","FG","down","BP","GO:0030970",6,"GO:0030970",5.83465568375726,"retrograde protein transport, ER to cytosol","retrograde protein transport, ER to cytosol",15,13,1.46333687368655e-06
-"FG_TC","FG","down","BP","GO:0006886",6,"GO:0030970",5.53166168413563,"intracellular protein transport","retrograde protein transport, ER to cytosol",363,132,2.93993897574908e-06
-"FG_TC","FG","down","BP","GO:0006614",6,"GO:0030970",4.78626844793509,"SRP-dependent cotranslational protein targeting to membrane","retrograde protein transport, ER to cytosol",13,11,1.63580507813371e-05
-"FG_TC","FG","down","BP","GO:0015031",6,"GO:0030970",3.90121661586884,"protein transport","retrograde protein transport, ER to cytosol",658,248,0.000125540364171306
-"FG_TC","FG","down","BP","GO:0070861",6,"GO:0030970",3.75989493256951,"regulation of protein exit from endoplasmic reticulum","retrograde protein transport, ER to cytosol",11,9,0.000173822130002731
-"FG_TC","FG","down","BP","GO:0045047",6,"GO:0030970",2.36463902214569,"protein targeting to ER","retrograde protein transport, ER to cytosol",23,18,0.00431877896916485
-"FG_TC","FG","down","BP","GO:0006605",6,"GO:0030970",2.02217392835727,"protein targeting","retrograde protein transport, ER to cytosol",134,46,0.00950224167067709
-"FG_TC","FG","down","BP","GO:0006890",1,"GO:0006890",10.2711044605997,"retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",28,24,5.35667798152159e-11
-"FG_TC","FG","down","BP","GO:0006888",1,"GO:0006890",5.7430547845693,"endoplasmic reticulum to Golgi vesicle-mediated transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",81,44,1.80694617236204e-06
-"FG_TC","FG","down","BP","GO:0006891",1,"GO:0006890",5.27584979868663,"intra-Golgi vesicle-mediated transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",24,17,5.29846660366006e-06
-"FG_TC","FG","down","BP","GO:0042147",1,"GO:0006890",3.8151528193521,"retrograde transport, endosome to Golgi","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",36,20,0.000153054879807443
-"FG_TC","FG","down","BP","GO:0035459",1,"GO:0006890",3.75989493256951,"vesicle cargo loading","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",11,9,0.000173822130002731
-"FG_TC","FG","down","BP","GO:0006896",1,"GO:0006890",3.25746341134275,"Golgi to vacuole transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",10,8,0.000552759975179768
-"FG_TC","FG","down","BP","GO:0099532",1,"GO:0006890",3.25746341134275,"synaptic vesicle endosomal processing","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",10,8,0.000552759975179768
-"FG_TC","FG","down","BP","GO:0016192",1,"GO:0006890",3.14583186534395,"vesicle-mediated transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",620,241,0.000714772992844661
-"FG_TC","FG","down","BP","GO:0006810",1,"GO:0006890",2.65743788272886,"transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",1568,540,0.00220070645483784
-"FG_TC","FG","down","BP","GO:0060627",1,"GO:0006890",2.30036527575503,"regulation of vesicle-mediated transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",163,63,0.00500765873039904
-"FG_TC","FG","down","BP","GO:0090114",1,"GO:0006890",2.25590592903666,"COPII-coated vesicle budding","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",18,10,0.00554745861447758
-"FG_TC","FG","down","BP","GO:0048488",1,"GO:0006890",2.13778423811002,"synaptic vesicle endocytosis","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",37,18,0.00728141462732951
-"FG_TC","FG","down","BP","GO:0045214",2,"GO:0045214",7.58577815268344,"sarcomere organization","sarcomere organization",31,23,2.59550486536902e-08
-"FG_TC","FG","down","BP","GO:0044837",2,"GO:0045214",3.25746341134275,"actomyosin contractile ring organization","sarcomere organization",10,8,0.000552759975179768
-"FG_TC","FG","down","BP","GO:0009070",26,"GO:0009070",2.54103923682338,"serine family amino acid biosynthetic process","serine family amino acid biosynthetic process",14,9,0.00287713846468285
-"FG_TC","FG","down","BP","GO:0006536",26,"GO:0009070",2.26591919811429,"glutamate metabolic process","serine family amino acid biosynthetic process",20,11,0.00542101740792666
-"FG_TC","FG","down","BP","GO:0006544",26,"GO:0009070",2.02249653947965,"glycine metabolic process","serine family amino acid biosynthetic process",11,7,0.00949518565071354
-"FG_TC","FG","down","BP","GO:0097479",33,"GO:0097479",2.34138283271285,"synaptic vesicle localization","synaptic vesicle localization",23,10,0.00455635094306238
-"FG_TC","FG","down","BP","GO:0016082",8,"GO:0016082",4.26989278717136,"synaptic vesicle priming","synaptic vesicle priming",12,10,5.37164387982231e-05
-"FG_TC","FG","down","BP","GO:0048791",8,"GO:0016082",2.35187455476079,"calcium ion-regulated exocytosis of neurotransmitter","synaptic vesicle priming",10,7,0.00444759717021974
-"FG_TC","FG","down","BP","GO:0007269",8,"GO:0016082",2.27139856196872,"neurotransmitter secretion","synaptic vesicle priming",53,31,0.0053530517023801
-"FG_TC","FG","down","BP","GO:0031629",8,"GO:0016082",2.02249653947965,"synaptic vesicle fusion to presynaptic active zone membrane","synaptic vesicle priming",11,7,0.00949518565071354
-"FG_TC","FG","down","BP","GO:0090659",30,"GO:0090659",2.35187455476079,"walking behavior","walking behavior",10,7,0.00444759717021974
-"FG_TC","FG","down","BP","GO:0061744",30,"GO:0090659",2.35187455476079,"motor behavior","walking behavior",10,7,0.00444759717021974
-"FG_TC","FG","down","CC","GO:0030663",5,"GO:0030663",4.82476381872043,"COPI-coated vesicle membrane","COPI-coated vesicle membrane",13,11,1.49704957147582e-05
-"FG_TC","FG","down","CC","GO:0030672",5,"GO:0030663",4.38774458979648,"synaptic vesicle membrane","COPI-coated vesicle membrane",57,29,4.09501418237952e-05
-"FG_TC","FG","down","CC","GO:0030120",5,"GO:0030663",3.34296402550503,"vesicle coat","COPI-coated vesicle membrane",36,21,0.000453979220159939
-"FG_TC","FG","down","CC","GO:0030660",5,"GO:0030663",2.91903324485268,"Golgi-associated vesicle membrane","COPI-coated vesicle membrane",26,20,0.00120494369948296
-"FG_TC","FG","down","CC","GO:0030134",5,"GO:0030663",2.84502469857843,"COPII-coated ER to Golgi transport vesicle","COPI-coated vesicle membrane",35,21,0.00142881269879571
-"FG_TC","FG","down","CC","GO:0031045",5,"GO:0030663",2.6537704542081,"dense core granule","COPI-coated vesicle membrane",21,12,0.00221936915457189
-"FG_TC","FG","down","CC","GO:0012507",5,"GO:0030663",2.37854562525698,"ER to Golgi transport vesicle membrane","COPI-coated vesicle membrane",24,13,0.00418267744791749
-"FG_TC","FG","down","CC","GO:0042470",5,"GO:0030663",2.05134083188517,"melanosome","COPI-coated vesicle membrane",44,19,0.00888503551543052
-"FG_TC","FG","down","CC","GO:0031201",7,"GO:0031201",2.90311684543169,"SNARE complex","SNARE complex",25,14,0.00124992269758665
-"FG_TC","FG","down","CC","GO:0030131",7,"GO:0031201",2.0443445148593,"clathrin adaptor complex","SNARE complex",11,7,0.00902932915636743
-"FG_TC","FG","down","CC","GO:0034704",9,"GO:0034704",2.28319433244965,"calcium channel complex","calcium channel complex",15,9,0.00520961545841198
-"FG_TC","FG","down","CC","GO:0034702",9,"GO:0034704",2.20013532493149,"monoatomic ion channel complex","calcium channel complex",69,40,0.00630760770584808
-"FG_TC","FG","down","CC","GO:0022625",2,"GO:0022625",9.21312144962461,"cytosolic large ribosomal subunit","cytosolic large ribosomal subunit",44,31,6.12179173045751e-10
-"FG_TC","FG","down","CC","GO:0016460",2,"GO:0022625",3.86767736564972,"myosin II complex","cytosolic large ribosomal subunit",17,12,0.000135619654719114
-"FG_TC","FG","down","CC","GO:0022627",2,"GO:0022625",3.74796748080728,"cytosolic small ribosomal subunit","cytosolic large ribosomal subunit",34,19,0.000178662134884928
-"FG_TC","FG","down","CC","GO:0005840",2,"GO:0022625",2.07919848011722,"ribosome","cytosolic large ribosomal subunit",141,63,0.00833300264896347
-"FG_TC","FG","down","CC","GO:0005789",1,"GO:0005789",22.1583717795286,"endoplasmic reticulum membrane","endoplasmic reticulum membrane",426,217,6.94429593835449e-23
-"FG_TC","FG","down","CC","GO:0000139",1,"GO:0005789",19.1138636895697,"Golgi membrane","endoplasmic reticulum membrane",267,137,7.69371882350352e-20
-"FG_TC","FG","down","CC","GO:0005788",1,"GO:0005789",13.9349483714169,"endoplasmic reticulum lumen","endoplasmic reticulum membrane",64,46,1.1615866941365e-14
-"FG_TC","FG","down","CC","GO:0140534",1,"GO:0005789",12.6324547394755,"endoplasmic reticulum protein-containing complex","endoplasmic reticulum membrane",63,44,2.33101603227836e-13
-"FG_TC","FG","down","CC","GO:0033116",1,"GO:0005789",8.78212312621095,"endoplasmic reticulum-Golgi intermediate compartment membrane","endoplasmic reticulum membrane",25,21,1.65149351927254e-09
-"FG_TC","FG","down","CC","GO:0030867",1,"GO:0005789",5.7356448014627,"rough endoplasmic reticulum membrane","endoplasmic reticulum membrane",19,15,1.83804101629881e-06
-"FG_TC","FG","down","CC","GO:0032580",1,"GO:0005789",5.32415715554495,"Golgi cisterna membrane","endoplasmic reticulum membrane",40,24,4.74070405197531e-06
-"FG_TC","FG","down","CC","GO:0032588",1,"GO:0005789",4.50870866205832,"trans-Golgi network membrane","endoplasmic reticulum membrane",31,19,3.09949783934477e-05
-"FG_TC","FG","down","CC","GO:0033017",1,"GO:0005789",4.28275731627075,"sarcoplasmic reticulum membrane","endoplasmic reticulum membrane",16,12,5.21486036065562e-05
-"FG_TC","FG","down","CC","GO:0005791",1,"GO:0005789",3.81308181925207,"rough endoplasmic reticulum","endoplasmic reticulum membrane",30,24,0.000153786488573934
-"FG_TC","FG","down","CC","GO:0005793",1,"GO:0005789",3.3066753158298,"endoplasmic reticulum-Golgi intermediate compartment","endoplasmic reticulum membrane",51,36,0.000493542644925581
-"FG_TC","FG","down","CC","GO:0005797",1,"GO:0005789",3.28504375880534,"Golgi medial cisterna","endoplasmic reticulum membrane",10,8,0.000518747768114608
-"FG_TC","FG","down","CC","GO:0005794",1,"GO:0005789",3.14315880957355,"Golgi apparatus","endoplasmic reticulum membrane",593,261,0.000719185943351724
-"FG_TC","FG","down","CC","GO:0098554",1,"GO:0005789",2.83247464925237,"cytoplasmic side of endoplasmic reticulum membrane","endoplasmic reticulum membrane",11,8,0.00147070426122111
-"FG_TC","FG","down","CC","GO:0005801",1,"GO:0005789",2.79081874592123,"cis-Golgi network","endoplasmic reticulum membrane",18,11,0.00161875548904465
-"FG_TC","FG","down","CC","GO:0070971",1,"GO:0005789",2.46655356711253,"endoplasmic reticulum exit site","endoplasmic reticulum membrane",12,8,0.00341543821104816
-"FG_TC","FG","down","CC","GO:0005783",1,"GO:0005789",2.0679600767827,"endoplasmic reticulum","endoplasmic reticulum membrane",700,328,0.00855145319877651
-"FG_TC","FG","down","CC","GO:0005790",1,"GO:0005789",2.0443445148593,"smooth endoplasmic reticulum","endoplasmic reticulum membrane",11,7,0.00902932915636743
-"FG_TC","FG","down","CC","GO:0043005",8,"GO:0043005",2.48350514351184,"neuron projection","neuron projection",537,166,0.00328469354094723
-"FG_TC","FG","down","CC","GO:0097440",8,"GO:0043005",2.16225513326318,"apical dendrite","neuron projection",13,8,0.00688247855310248
-"FG_TC","FG","down","CC","GO:0048471",6,"GO:0048471",3.42733446103457,"perinuclear region of cytoplasm","perinuclear region of cytoplasm",276,97,0.000373822587270728
-"FG_TC","FG","down","CC","GO:0005881",6,"GO:0048471",3.27820550263157,"cytoplasmic microtubule","perinuclear region of cytoplasm",58,16,0.000526980441966025
-"FG_TC","FG","down","CC","GO:0030018",6,"GO:0048471",2.07587412144311,"Z disc","perinuclear region of cytoplasm",62,25,0.00839703335978287
-"FG_TC","FG","down","CC","GO:0014069",10,"GO:0014069",2.0325140881272,"postsynaptic density","postsynaptic density",129,46,0.00927867390445239
-"FG_TC","FG","down","CC","GO:0098793",4,"GO:0098793",7.31168911590031,"presynapse","presynapse",251,119,4.87877606020939e-08
-"FG_TC","FG","down","CC","GO:0060076",4,"GO:0098793",5.25225260530588,"excitatory synapse","presynapse",20,15,5.59432115834238e-06
-"FG_TC","FG","down","CC","GO:0045202",4,"GO:0098793",4.31404314058191,"synapse","presynapse",581,223,4.85240296490703e-05
-"FG_TC","FG","down","CC","GO:0043195",4,"GO:0098793",3.6965379581596,"terminal bouton","presynapse",22,14,0.000201123140508772
-"FG_TC","FG","down","CC","GO:0031594",4,"GO:0098793",3.12614304041834,"neuromuscular junction","presynapse",37,19,0.00074792312193443
-"FG_TC","FG","down","CC","GO:0098978",4,"GO:0098793",2.21279637349002,"glutamatergic synapse","presynapse",174,60,0.00612637570159301
-"FG_TC","FG","down","CC","GO:0098982",4,"GO:0098793",2.03378980289654,"GABA-ergic synapse","presynapse",24,12,0.00925145833142692
-"FG_TC","FG","down","CC","GO:0042734",3,"GO:0042734",7.8102239164158,"presynaptic membrane","presynaptic membrane",62,37,1.54801827564143e-08
-"FG_TC","FG","down","CC","GO:0016020",3,"GO:0042734",5.61707665236941,"membrane","presynaptic membrane",2845,932,2.41503454660241e-06
-"FG_TC","FG","down","CC","GO:0005886",3,"GO:0042734",3.35836354323855,"plasma membrane","presynaptic membrane",1477,455,0.00043816376204611
-"FG_TC","FG","down","CC","GO:0005905",3,"GO:0042734",3.12614304041834,"clathrin-coated pit","presynaptic membrane",37,19,0.00074792312193443
-"FG_TC","FG","down","CC","GO:0045211",3,"GO:0042734",2.00180849123272,"postsynaptic membrane","presynaptic membrane",102,36,0.00995844453325717
-"FG_TC","FG","down","MF","GO:0016706",17,"GO:0016706",2.05299992526559,"2-oxoglutarate-dependent dioxygenase activity","2-oxoglutarate-dependent dioxygenase activity",26,13,0.00885115762143622
-"FG_TC","FG","down","MF","GO:0005525",13,"GO:0005525",2.21990393732526,"GTP binding","GTP binding",222,76,0.00602692882466807
-"FG_TC","FG","down","MF","GO:0003924",16,"GO:0003924",2.05496553572785,"GTPase activity","GTPase activity",155,54,0.00881118793106616
-"FG_TC","FG","down","MF","GO:0031418",4,"GO:0031418",4.8458344532449,"L-ascorbic acid binding","L-ascorbic acid binding",11,10,1.42615111811726e-05
-"FG_TC","FG","down","MF","GO:0030170",4,"GO:0031418",2.54099405599336,"pyridoxal phosphate binding","L-ascorbic acid binding",34,17,0.00287743779675186
-"FG_TC","FG","down","MF","GO:0004812",12,"GO:0004812",2.55491223840622,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",26,14,0.00278668424081154
-"FG_TC","FG","down","MF","GO:0015297",6,"GO:0015297",3.18409396105929,"antiporter activity","antiporter activity",48,27,0.000654494556668421
-"FG_TC","FG","down","MF","GO:0005516",5,"GO:0005516",4.65009702429333,"calmodulin binding","calmodulin binding",92,43,2.23822104914935e-05
-"FG_TC","FG","down","MF","GO:0019905",5,"GO:0005516",4.22189682449408,"syntaxin binding","calmodulin binding",29,18,5.99933585777908e-05
-"FG_TC","FG","down","MF","GO:0000149",5,"GO:0005516",3.5855734991741,"SNARE binding","calmodulin binding",51,32,0.000259672823885258
-"FG_TC","FG","down","MF","GO:0030276",5,"GO:0005516",3.45645779324509,"clathrin binding","calmodulin binding",32,18,0.000349576481413939
-"FG_TC","FG","down","MF","GO:0008092",5,"GO:0005516",2.01203546613728,"cytoskeletal protein binding","calmodulin binding",425,120,0.00972667788786731
-"FG_TC","FG","down","MF","GO:0140103",7,"GO:0140103",3.0652996079877,"catalytic activity, acting on a glycoprotein","catalytic activity, acting on a glycoprotein",19,12,0.000860399980776703
-"FG_TC","FG","down","MF","GO:0003756",7,"GO:0140103",2.29754270409856,"protein disulfide isomerase activity","catalytic activity, acting on a glycoprotein",10,7,0.00504031055382579
-"FG_TC","FG","down","MF","GO:0015375",9,"GO:0015375",2.88345207380712,"glycine:sodium symporter activity","glycine:sodium symporter activity",15,10,0.00130781985428892
-"FG_TC","FG","down","MF","GO:0005085",10,"GO:0005085",2.65208649021573,"guanyl-nucleotide exchange factor activity","guanyl-nucleotide exchange factor activity",91,37,0.00222799139818867
-"FG_TC","FG","down","MF","GO:0005096",10,"GO:0005085",2.0016490118615,"GTPase activator activity","guanyl-nucleotide exchange factor activity",92,35,0.00996210209321591
-"FG_TC","FG","down","MF","GO:0016758",1,"GO:0016758",7.11715206455253,"hexosyltransferase activity","hexosyltransferase activity",106,61,7.63568379733146e-08
-"FG_TC","FG","down","MF","GO:0035250",1,"GO:0016758",4.30905526558629,"UDP-galactosyltransferase activity","hexosyltransferase activity",20,12,4.90845410276164e-05
-"FG_TC","FG","down","MF","GO:0008194",1,"GO:0016758",3.22331606671669,"UDP-glycosyltransferase activity","hexosyltransferase activity",74,40,0.00059797624718434
-"FG_TC","FG","down","MF","GO:0140828",15,"GO:0140828",2.0710706481503,"metal cation:monoatomic cation antiporter activity","metal cation:monoatomic cation antiporter activity",18,10,0.00849042347215295
-"FG_TC","FG","down","MF","GO:0015035",8,"GO:0015035",2.97114111426326,"protein-disulfide reductase activity","protein-disulfide reductase activity",17,11,0.00106870757021577
-"FG_TC","FG","down","MF","GO:0008307",2,"GO:0008307",5.76789037933324,"structural constituent of muscle","structural constituent of muscle",10,10,1.70651307716977e-06
-"FG_TC","FG","down","MF","GO:0003735",2,"GO:0008307",5.20457045433328,"structural constituent of ribosome","structural constituent of muscle",119,54,6.24352055242552e-06
-"FG_TC","FG","down","MF","GO:0016741",14,"GO:0016741",2.19709066156655,"transferase activity, transferring one-carbon groups","transferase activity, transferring one-carbon groups",81,14,0.00635198316568344
-"FG_TC","FG","down","MF","GO:0019205",14,"GO:0016741",2.08065712597452,"nucleobase-containing compound kinase activity","transferase activity, transferring one-carbon groups",23,11,0.0083050619058346
-"FG_TC","FG","down","MF","GO:0003743",11,"GO:0003743",2.61372268425512,"translation initiation factor activity","translation initiation factor activity",39,19,0.00243375757211779
-"FG_TC","FG","down","MF","GO:0005249",3,"GO:0005249",5.11970128179282,"voltage-gated potassium channel activity","voltage-gated potassium channel activity",16,13,7.59099522443498e-06
-"FG_TC","FG","down","MF","GO:0005262",3,"GO:0005249",2.45500340957773,"calcium channel activity","voltage-gated potassium channel activity",60,24,0.00350749120265532
+"FOA_TC","TC","up","BP","GO:0009165",2,"GO:0009165",3.01343784653808,"nucleotide biosynthetic process","nucleotide biosynthetic process",48,4,0.000969532012622455
+"FOA_TC","TC","up","BP","GO:0006457",3,"GO:0006457",2.56145180706097,"protein folding","protein folding",77,6,0.00274503693877857
+"FOA_TC","TC","up","BP","GO:0006418",1,"GO:0006418",17.7299265462722,"tRNA aminoacylation for protein translation","tRNA aminoacylation for protein translation",21,13,1.86240210453575e-18
+"FOA_TC","TC","up","BP","GO:0006446",1,"GO:0006418",4.76622313423596,"regulation of translational initiation","tRNA aminoacylation for protein translation",32,6,1.71307692716672e-05
+"FOA_TC","TC","up","CC","GO:0005788",1,"GO:0005788",2.8492717143015,"endoplasmic reticulum lumen","endoplasmic reticulum lumen",62,6,0.00141490827226835
+"FOA_TC","TC","up","CC","GO:0005759",1,"GO:0005788",2.5246889000347,"mitochondrial matrix","endoplasmic reticulum lumen",96,7,0.00298752191655093
+"FOA_TC","TC","up","CC","GO:0098800",1,"GO:0005788",2.35654448171952,"inner mitochondrial membrane protein complex","endoplasmic reticulum lumen",17,3,0.00440002879137616
+"FOA_TC","TC","up","CC","GO:0032040",2,"GO:0032040",2.44160046236452,"small-subunit processome","small-subunit processome",32,4,0.00361742501640774
+"FOA_TC","TC","up","MF","GO:0005524",3,"GO:0005524",5.94492373798646,"ATP binding","ATP binding",480,27,1.13521014081699e-06
+"FOA_TC","TC","up","MF","GO:0016597",7,"GO:0016597",2.35792251884134,"amino acid binding","amino acid binding",16,3,0.0043860894168347
+"FOA_TC","TC","up","MF","GO:0004812",1,"GO:0004812",16.8410276743833,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",21,13,1.44202345908051e-17
+"FOA_TC","TC","up","MF","GO:0016879",1,"GO:0004812",2.35792251884134,"ligase activity, forming carbon-nitrogen bonds","aminoacyl-tRNA ligase activity",16,3,0.0043860894168347
+"FOA_TC","TC","up","MF","GO:0052689",5,"GO:0052689",2.96543380533393,"carboxylic ester hydrolase activity","carboxylic ester hydrolase activity",22,4,0.00108284474850262
+"FOA_TC","TC","up","MF","GO:0016887",5,"GO:0052689",2.14110876753078,"ATP hydrolysis activity","carboxylic ester hydrolase activity",191,10,0.00722588811103596
+"FOA_TC","TC","up","MF","GO:0160215",4,"GO:0160215",3.21989010115475,"deacylase activity","deacylase activity",19,4,0.000602712083941085
+"FOA_TC","TC","up","MF","GO:0051087",6,"GO:0051087",2.45862008126781,"protein-folding chaperone binding","protein-folding chaperone binding",52,5,0.00347840317429998
+"FOA_TC","TC","up","MF","GO:0046982",6,"GO:0051087",2.0250190501827,"protein heterodimerization activity","protein-folding chaperone binding",61,5,0.00944019466278466
+"FOA_TC","TC","up","MF","GO:0000049",2,"GO:0000049",8.2986275971031,"tRNA binding","tRNA binding",14,7,5.02773527683505e-09
+"FOA_TC","TC","up","MF","GO:0003743",2,"GO:0000049",5.54294682414289,"translation initiation factor activity","tRNA binding",31,7,2.86452868687276e-06
+"FOA_TC","TC","down","BP","GO:0140115",2,"GO:0140115",2.49589162956435,"export across plasma membrane","export across plasma membrane",15,2,0.0031923343457733
+"FOA_TC","TC","down","BP","GO:0051289",3,"GO:0051289",2.49589162956435,"protein homotetramerization","protein homotetramerization",15,2,0.0031923343457733
+"FOA_TC","TC","down","BP","GO:0007165",1,"GO:0007165",3.11137034843679,"signal transduction","signal transduction",1162,11,0.000773801650210434
+"FOA_TC","TC","down","CC","GO:0034704",1,"GO:0034704",2.64495536115416,"calcium channel complex","calcium channel complex",13,2,0.00226487709043471
+"FOA_TC","TC","down","CC","GO:0031514",2,"GO:0031514",2.23474377691264,"motile cilium","motile cilium",145,4,0.00582446745711938
+"FOA_TC","TC","down","MF","GO:0008201",1,"GO:0008201",2.57766731798462,"heparin binding","heparin binding",13,2,0.00264443369361387
+"FOA_TC","TC","down","MF","GO:0016879",2,"GO:0016879",2.39540862501941,"ligase activity, forming carbon-nitrogen bonds","ligase activity, forming carbon-nitrogen bonds",16,2,0.00402338298536205
+"FOW_TC","TC","up","BP","GO:0008637",4,"GO:0008637",2.4619782528409,"apoptotic mitochondrial changes","apoptotic mitochondrial changes",21,3,0.00345161022732386
+"FOW_TC","TC","up","BP","GO:0032922",3,"GO:0032922",2.59027135979468,"circadian regulation of gene expression","circadian regulation of gene expression",19,3,0.00256879022654717
+"FOW_TC","TC","up","BP","GO:0097192",5,"GO:0097192",2.04228093951731,"extrinsic apoptotic signaling pathway in absence of ligand","extrinsic apoptotic signaling pathway in absence of ligand",10,2,0.00907233462651312
+"FOW_TC","TC","up","BP","GO:0006446",2,"GO:0006446",2.60452565191523,"regulation of translational initiation","regulation of translational initiation",33,4,0.00248584673157078
+"FOW_TC","TC","up","BP","GO:0072344",2,"GO:0006446",2.52430903850785,"rescue of stalled cytosolic ribosome","regulation of translational initiation",20,3,0.00299013613600877
+"FOW_TC","TC","up","BP","GO:0000302",1,"GO:0000302",3.19423713735347,"response to reactive oxygen species","response to reactive oxygen species",43,3,0.000639385617102029
+"FOW_TC","TC","up","CC","GO:0005654",1,"GO:0005654",3.26424616965972,"nucleoplasm","nucleoplasm",985,28,0.000544194101716865
+"FOW_TC","TC","up","MF","GO:0016706",3,"GO:0016706",2.01577525244114,"2-oxoglutarate-dependent dioxygenase activity","2-oxoglutarate-dependent dioxygenase activity",27,3,0.00964327934590888
+"FOW_TC","TC","up","MF","GO:0003924",2,"GO:0003924",2.72246633126845,"GTPase activity","GTPase activity",148,9,0.00189467039321152
+"FOW_TC","TC","up","MF","GO:0061608",1,"GO:0061608",3.31483021326605,"nuclear import signal receptor activity","nuclear import signal receptor activity",10,3,0.000484361691003215
+"FOW_TC","TC","down","BP","GO:0140115",2,"GO:0140115",3.05267517175435,"export across plasma membrane","export across plasma membrane",16,3,0.000885777874977009
+"FOW_TC","TC","down","BP","GO:0006874",4,"GO:0006874",2.63843724971874,"intracellular calcium ion homeostasis","intracellular calcium ion homeostasis",46,4,0.00229912588104956
+"FOW_TC","TC","down","BP","GO:0051964",5,"GO:0051964",2.20101274271922,"negative regulation of synapse assembly","negative regulation of synapse assembly",10,2,0.00629487712664305
+"FOW_TC","TC","down","BP","GO:0070374",1,"GO:0070374",4.15527956398631,"positive regulation of ERK1 and ERK2 cascade","positive regulation of ERK1 and ERK2 cascade",19,4,6.99391638772887e-05
+"FOW_TC","TC","down","BP","GO:0006493",6,"GO:0006493",2.14557952063081,"protein O-linked glycosylation","protein O-linked glycosylation",48,4,0.00715188428925093
+"FOW_TC","TC","down","BP","GO:0048167",3,"GO:0048167",2.79382856926953,"regulation of synaptic plasticity","regulation of synaptic plasticity",56,5,0.00160757569232059
+"FOW_TC","TC","down","BP","GO:0016079",3,"GO:0048167",2.05315323201656,"synaptic vesicle exocytosis","regulation of synaptic plasticity",29,3,0.00884803369792243
+"FOW_TC","TC","down","BP","GO:0034103",7,"GO:0034103",2.04154637719031,"regulation of tissue remodeling","regulation of tissue remodeling",12,2,0.00908769248753926
+"FOW_TC","TC","down","BP","GO:0061337",7,"GO:0034103",2.04154637719031,"cardiac conduction","regulation of tissue remodeling",12,2,0.00908769248753926
+"FOW_TC","TC","down","CC","GO:0000139",1,"GO:0000139",3.52071560408104,"Golgi membrane","Golgi membrane",239,11,0.000301497972470119
+"FOW_TC","TC","down","CC","GO:0005789",1,"GO:0000139",2.93875437449365,"endoplasmic reticulum membrane","Golgi membrane",390,14,0.00115145143538711
+"FOW_TC","TC","down","CC","GO:0005635",1,"GO:0000139",2.02285596583006,"nuclear envelope","Golgi membrane",150,5,0.0094873305933389
+"FOW_TC","TC","down","CC","GO:0031012",3,"GO:0031012",2.13991678871577,"extracellular matrix","extracellular matrix",94,5,0.00724574776072971
+"FOW_TC","TC","down","CC","GO:0014704",4,"GO:0014704",2.03981738988121,"intercalated disc","intercalated disc",11,2,0.00912394398054098
+"FOW_TC","TC","down","CC","GO:0016020",2,"GO:0016020",2.39100661199781,"membrane","membrane",2195,46,0.00406437141239603
+"FOW_TC","TC","down","CC","GO:0042734",2,"GO:0016020",2.35841242377391,"presynaptic membrane","membrane",50,4,0.00438114448792302
+"FOW_TC","TC","down","MF","GO:0004653",1,"GO:0004653",3.42962903851097,"polypeptide N-acetylgalactosaminyltransferase activity","polypeptide N-acetylgalactosaminyltransferase activity",11,3,0.000371852719066422
+"FDO_TC","TC","up","BP","GO:0008306",6,"GO:0008306",2.30767858127774,"associative learning","associative learning",31,5,0.00492403825957027
+"FDO_TC","TC","up","BP","GO:0072337",3,"GO:0072337",3.00112351908198,"modified amino acid transport","modified amino acid transport",22,5,0.000997416345106473
+"FDO_TC","TC","up","BP","GO:0015807",3,"GO:0072337",2.87455186138162,"L-amino acid transport","modified amino acid transport",21,3,0.00133489817285285
+"FDO_TC","TC","up","BP","GO:0051180",3,"GO:0072337",2.07724749879713,"vitamin transport","modified amino acid transport",12,3,0.00837052121019574
+"FDO_TC","TC","up","BP","GO:0034220",1,"GO:0034220",3.49448611167173,"monoatomic ion transmembrane transport","monoatomic ion transmembrane transport",208,17,0.000320268251176006
+"FDO_TC","TC","up","BP","GO:0098708",1,"GO:0034220",2.40906363936234,"D-glucose import across plasma membrane","monoatomic ion transmembrane transport",16,3,0.0038988485069549
+"FDO_TC","TC","up","BP","GO:1905039",1,"GO:0034220",2.03547307249505,"carboxylic acid transmembrane transport","monoatomic ion transmembrane transport",63,7,0.00921567026765505
+"FDO_TC","TC","up","BP","GO:0051346",2,"GO:0051346",3.01445290262631,"negative regulation of hydrolase activity","negative regulation of hydrolase activity",13,4,0.000967268617094952
+"FDO_TC","TC","up","BP","GO:0170041",7,"GO:0170041",2.19453611069199,"non-proteinogenic amino acid metabolic process","non-proteinogenic amino acid metabolic process",21,4,0.00638945608127743
+"FDO_TC","TC","up","BP","GO:1900101",5,"GO:1900101",2.31694664767341,"regulation of endoplasmic reticulum unfolded protein response","regulation of endoplasmic reticulum unfolded protein response",10,3,0.00482007007716057
+"FDO_TC","TC","up","BP","GO:0009266",8,"GO:0009266",2.08884544490973,"response to temperature stimulus","response to temperature stimulus",45,6,0.00814994269520185
+"FDO_TC","TC","up","BP","GO:0006418",4,"GO:0006418",2.90763043027969,"tRNA aminoacylation for protein translation","tRNA aminoacylation for protein translation",23,5,0.00123699962998107
+"FDO_TC","TC","up","CC","GO:0030315",2,"GO:0030315",2.71758239325125,"T-tubule","T-tubule",15,4,0.00191609751107433
+"FDO_TC","TC","up","CC","GO:0098802",2,"GO:0030315",2.19984094054428,"plasma membrane signaling receptor complex","T-tubule",32,5,0.00631188473625271
+"FDO_TC","TC","up","CC","GO:0005788",1,"GO:0005788",3.87373826911193,"endoplasmic reticulum lumen","endoplasmic reticulum lumen",65,10,0.000133740126881973
+"FDO_TC","TC","up","CC","GO:0031674",1,"GO:0005788",2.38476017986846,"I band","endoplasmic reticulum lumen",57,4,0.00412325144769436
+"FDO_TC","TC","up","CC","GO:0098800",3,"GO:0098800",2.15251953979736,"inner mitochondrial membrane protein complex","inner mitochondrial membrane protein complex",21,4,0.00703850559547211
+"FDO_TC","TC","up","MF","GO:0031418",6,"GO:0031418",2.0175804056795,"L-ascorbic acid binding","L-ascorbic acid binding",12,3,0.00960328005917497
+"FDO_TC","TC","up","MF","GO:0004812",1,"GO:0004812",2.81119173823197,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",23,5,0.00154457237017689
+"FDO_TC","TC","up","MF","GO:0031072",2,"GO:0031072",2.57948584475962,"heat shock protein binding","heat shock protein binding",57,7,0.00263338377385391
+"FDO_TC","TC","up","MF","GO:0051087",2,"GO:0031072",2.16532371390947,"protein-folding chaperone binding","heat shock protein binding",60,7,0.00683402063963097
+"FDO_TC","TC","up","MF","GO:0042169",2,"GO:0031072",2.0175804056795,"SH2 domain binding","heat shock protein binding",12,3,0.00960328005917497
+"FDO_TC","TC","up","MF","GO:0072349",3,"GO:0072349",2.27824355326382,"modified amino acid transmembrane transporter activity","modified amino acid transmembrane transporter activity",19,4,0.00526934272692781
+"FDO_TC","TC","up","MF","GO:0061608",4,"GO:0061608",2.25607347786578,"nuclear import signal receptor activity","nuclear import signal receptor activity",10,3,0.00554531884304473
+"FDO_TC","TC","up","MF","GO:0044183",5,"GO:0044183",2.19792094774378,"protein folding chaperone","protein folding chaperone",35,5,0.00633985101605435
+"FDO_TC","TC","down","BP","GO:0019677",8,"GO:0019677",2.76665563232433,"NAD+ catabolic process","NAD+ catabolic process",13,4,0.00171137178530887
+"FDO_TC","TC","down","BP","GO:0065007",10,"GO:0065007",2.52649142276705,"biological regulation","biological regulation",3063,108,0.00297514801690493
+"FDO_TC","TC","down","BP","GO:0007368",3,"GO:0007368",3.54768991504558,"determination of left/right symmetry","determination of left/right symmetry",52,11,0.000283341432305396
+"FDO_TC","TC","down","BP","GO:0043583",3,"GO:0007368",2.74594588240451,"ear development","determination of left/right symmetry",39,5,0.00179495728318605
+"FDO_TC","TC","down","BP","GO:0072175",13,"GO:0072175",2.27579717402607,"epithelial tube formation","epithelial tube formation",25,3,0.00529910867237628
+"FDO_TC","TC","down","BP","GO:0030317",1,"GO:0030317",16.1244579256527,"flagellated sperm motility","flagellated sperm motility",99,38,7.50830790906989e-17
+"FDO_TC","TC","down","BP","GO:0060294",1,"GO:0030317",8.13003733249538,"cilium movement involved in cell motility","flagellated sperm motility",111,46,7.41246520086719e-09
+"FDO_TC","TC","down","BP","GO:0003341",1,"GO:0030317",6.20113954386021,"cilium movement","flagellated sperm motility",146,58,6.29303947702595e-07
+"FDO_TC","TC","down","BP","GO:0007018",1,"GO:0030317",2.86800630305704,"microtubule-based movement","flagellated sperm motility",244,69,0.00135516974418914
+"FDO_TC","TC","down","BP","GO:0003356",1,"GO:0030317",2.13114486511535,"regulation of cilium beat frequency","flagellated sperm motility",10,3,0.00739358610317148
+"FDO_TC","TC","down","BP","GO:0060287",1,"GO:0030317",2.13114486511535,"epithelial cilium movement involved in determination of left/right asymmetry","flagellated sperm motility",10,3,0.00739358610317148
+"FDO_TC","TC","down","BP","GO:0090660",1,"GO:0030317",2.00659681556846,"cerebrospinal fluid circulation","flagellated sperm motility",11,3,0.00984925052843014
+"FDO_TC","TC","down","BP","GO:0060336",6,"GO:0060336",3.07306741907485,"negative regulation of type II interferon-mediated signaling pathway","negative regulation of type II interferon-mediated signaling pathway",11,4,0.00084514763581506
+"FDO_TC","TC","down","BP","GO:1902216",6,"GO:0060336",3.07306741907485,"positive regulation of interleukin-4-mediated signaling pathway","negative regulation of type II interferon-mediated signaling pathway",11,4,0.00084514763581506
+"FDO_TC","TC","down","BP","GO:0042532",5,"GO:0042532",3.07306741907485,"negative regulation of tyrosine phosphorylation of STAT protein","negative regulation of tyrosine phosphorylation of STAT protein",11,4,0.00084514763581506
+"FDO_TC","TC","down","BP","GO:0042531",5,"GO:0042532",2.91167666323751,"positive regulation of tyrosine phosphorylation of STAT protein","negative regulation of tyrosine phosphorylation of STAT protein",12,4,0.00122552827825685
+"FDO_TC","TC","down","BP","GO:0018200",4,"GO:0018200",3.25464105258618,"peptidyl-glutamic acid modification","peptidyl-glutamic acid modification",10,4,0.000556363905935724
+"FDO_TC","TC","down","BP","GO:0070212",4,"GO:0018200",2.91167666323751,"protein poly-ADP-ribosylation","peptidyl-glutamic acid modification",12,4,0.00122552827825685
+"FDO_TC","TC","down","BP","GO:0044087",9,"GO:0044087",2.65728961492671,"regulation of cellular component biogenesis","regulation of cellular component biogenesis",324,20,0.00220145790259374
+"FDO_TC","TC","down","BP","GO:0070841",9,"GO:0044087",2.00659681556846,"inclusion body assembly","regulation of cellular component biogenesis",11,3,0.00984925052843014
+"FDO_TC","TC","down","BP","GO:0033363",11,"GO:0033363",2.4048037337893,"secretory granule organization","secretory granule organization",16,4,0.00393727968662229
+"FDO_TC","TC","down","BP","GO:0007338",12,"GO:0007338",2.29823349584572,"single fertilization","single fertilization",37,6,0.00503229977437776
+"FDO_TC","TC","down","BP","GO:0007288",2,"GO:0007288",9.5000144654604,"sperm axoneme assembly","sperm axoneme assembly",22,11,3.16217233292531e-10
+"FDO_TC","TC","down","BP","GO:0036158",2,"GO:0007288",8.79041473948068,"outer dynein arm assembly","sperm axoneme assembly",15,9,1.62026205188132e-09
+"FDO_TC","TC","down","BP","GO:0036159",2,"GO:0007288",7.17002697978581,"inner dynein arm assembly","sperm axoneme assembly",11,7,6.76040976223088e-08
+"FDO_TC","TC","down","BP","GO:0060271",2,"GO:0007288",6.05592555428696,"cilium assembly","sperm axoneme assembly",219,59,8.79173209666807e-07
+"FDO_TC","TC","down","BP","GO:0035082",2,"GO:0007288",4.85158677791744,"axoneme assembly","sperm axoneme assembly",72,35,1.40738598549048e-05
+"FDO_TC","TC","down","BP","GO:1905515",2,"GO:0007288",3.10153733390677,"non-motile cilium assembly","sperm axoneme assembly",27,6,0.000791521408959611
+"FDO_TC","TC","down","BP","GO:0044458",2,"GO:0007288",2.0835076470015,"motile cilium assembly","sperm axoneme assembly",46,18,0.00825072957572166
+"FDO_TC","TC","down","BP","GO:0120316",7,"GO:0120316",2.84302097983046,"sperm flagellum assembly","sperm flagellum assembly",35,15,0.00143542008962774
+"FDO_TC","TC","down","CC","GO:0001669",4,"GO:0001669",2.82164515708639,"acrosomal vesicle","acrosomal vesicle",38,9,0.00150783855156242
+"FDO_TC","TC","down","CC","GO:0002080",4,"GO:0001669",2.01798681376949,"acrosomal membrane","acrosomal vesicle",10,3,0.00959429761680978
+"FDO_TC","TC","down","CC","GO:0160111",3,"GO:0160111",6.70698700858265,"axonemal A tubule inner sheath","axonemal A tubule inner sheath",16,8,1.96341900936739e-07
+"FDO_TC","TC","down","CC","GO:0160110",5,"GO:0160110",2.1926094184586,"axonemal microtubule doublet inner sheath","axonemal microtubule doublet inner sheath",25,11,0.00641786506035869
+"FDO_TC","TC","down","CC","GO:0005930",2,"GO:0005930",18.1808157564008,"axoneme","axoneme",161,65,6.59453600239706e-19
+"FDO_TC","TC","down","CC","GO:0005858",2,"GO:0005930",13.3901569465051,"axonemal dynein complex","axoneme",22,14,4.07233084224516e-14
+"FDO_TC","TC","down","CC","GO:0036064",2,"GO:0005930",10.4265642158941,"ciliary basal body","axoneme",113,25,3.74486170458116e-11
+"FDO_TC","TC","down","CC","GO:1990716",2,"GO:0005930",4.3418944936558,"axonemal central apparatus","axoneme",10,5,4.55098607164461e-05
+"FDO_TC","TC","down","CC","GO:0005879",2,"GO:0005930",4.02956309504989,"axonemal microtubule","axoneme",43,17,9.34193637138284e-05
+"FDO_TC","TC","down","CC","GO:0005814",2,"GO:0005930",3.90363747569771,"centriole","axoneme",84,13,0.000124842519367436
+"FDO_TC","TC","down","CC","GO:0034451",2,"GO:0005930",2.99834916227667,"centriolar satellite","axoneme",35,7,0.00100380842803454
+"FDO_TC","TC","down","CC","GO:0002177",2,"GO:0005930",2.48567726530852,"manchette","axoneme",14,4,0.0032683061765649
+"FDO_TC","TC","down","CC","GO:0097649",2,"GO:0005930",2.1926094184586,"A axonemal microtubule","axoneme",25,11,0.00641786506035869
+"FDO_TC","TC","down","CC","GO:0005813",2,"GO:0005930",2.02247482040917,"centrosome","axoneme",250,25,0.0094956605168971
+"FDO_TC","TC","down","CC","GO:0036126",1,"GO:0036126",19.7530395973202,"sperm flagellum","sperm flagellum",125,46,1.76587680741025e-20
+"FDO_TC","TC","down","CC","GO:0097225",1,"GO:0036126",6.99660005697797,"sperm midpiece","sperm flagellum",46,13,1.00785938218728e-07
+"FDO_TC","TC","down","CC","GO:0031514",1,"GO:0036126",5.57947757793314,"motile cilium","sperm flagellum",161,59,2.63343390097918e-06
+"FDO_TC","TC","down","CC","GO:0097228",1,"GO:0036126",5.37519902819376,"sperm principal piece","sperm flagellum",29,9,4.21503292903812e-06
+"FDO_TC","TC","down","CC","GO:0097729",1,"GO:0036126",4.46052418834066,"9+2 motile cilium","sperm flagellum",136,51,3.46318595610152e-05
+"FDO_TC","TC","down","CC","GO:0097229",1,"GO:0036126",4.09349233694027,"sperm end piece","sperm flagellum",17,6,8.06320428629888e-05
+"FDO_TC","TC","down","CC","GO:0005929",1,"GO:0036126",2.52929406490099,"cilium","sperm flagellum",389,108,0.00295601024627299
+"FDO_TC","TC","down","CC","GO:0001750",1,"GO:0036126",2.06470474174794,"photoreceptor outer segment","sperm flagellum",18,4,0.00861579304052322
+"FDO_TC","TC","down","MF","GO:0005524",4,"GO:0005524",4.95851601921282,"ATP binding","ATP binding",545,43,1.10023126185634e-05
+"FDO_TC","TC","down","MF","GO:0070403",4,"GO:0005524",3.48607434552043,"NAD+ binding","ATP binding",16,5,0.000326531929403038
+"FDO_TC","TC","down","MF","GO:0003950",8,"GO:0003950",2.70080522080531,"NAD+ poly-ADP-ribosyltransferase activity","NAD+ poly-ADP-ribosyltransferase activity",23,5,0.00199156634760063
+"FDO_TC","TC","down","MF","GO:0016776",8,"GO:0003950",2.476747368981,"phosphotransferase activity, phosphate group as acceptor","NAD+ poly-ADP-ribosyltransferase activity",16,4,0.003336204248041
+"FDO_TC","TC","down","MF","GO:0019205",8,"GO:0003950",2.27892515927697,"nucleobase-containing compound kinase activity","NAD+ poly-ADP-ribosyltransferase activity",18,4,0.00526107921249154
+"FDO_TC","TC","down","MF","GO:0140807",6,"GO:0140807",3.22252244457327,"NAD+-protein-glutamate ADP-ribosyltransferase activity","NAD+-protein-glutamate ADP-ribosyltransferase activity",18,5,0.000599069977551484
+"FDO_TC","TC","down","MF","GO:0016881",5,"GO:0016881",4.38887422465202,"acid-amino acid ligase activity","acid-amino acid ligase activity",11,5,4.08437656198877e-05
+"FDO_TC","TC","down","MF","GO:0005509",3,"GO:0005509",5.26581383225691,"calcium ion binding","calcium ion binding",261,27,5.42233278140201e-06
+"FDO_TC","TC","down","MF","GO:0038024",9,"GO:0038024",2.45294150574798,"cargo receptor activity","cargo receptor activity",26,5,0.00352418334364102
+"FDO_TC","TC","down","MF","GO:0005200",9,"GO:0038024",2.32031936887464,"structural constituent of cytoskeleton","cargo receptor activity",52,7,0.00478278249576245
+"FDO_TC","TC","down","MF","GO:0070840",7,"GO:0070840",2.70848037339297,"dynein complex binding","dynein complex binding",14,4,0.00195667919205138
+"FDO_TC","TC","down","MF","GO:0045505",2,"GO:0045505",11.7294708641483,"dynein intermediate chain binding","dynein intermediate chain binding",30,14,1.86435724964185e-12
+"FDO_TC","TC","down","MF","GO:0051959",2,"GO:0045505",11.4815341522179,"dynein light intermediate chain binding","dynein intermediate chain binding",21,12,3.29963459096088e-12
+"FDO_TC","TC","down","MF","GO:0008017",2,"GO:0045505",10.6292704934691,"microtubule binding","dynein intermediate chain binding",117,24,2.34816984474348e-11
+"FDO_TC","TC","down","MF","GO:0034185",2,"GO:0045505",2.84062798235568,"apolipoprotein binding","dynein intermediate chain binding",13,4,0.00144335120006588
+"FDO_TC","TC","down","MF","GO:0015631",2,"GO:0045505",2.84020575353618,"tubulin binding","dynein intermediate chain binding",164,32,0.0014447551341277
+"FDO_TC","TC","down","MF","GO:0008569",1,"GO:0008569",12.6340196768885,"minus-end-directed microtubule motor activity","minus-end-directed microtubule motor activity",18,12,2.32263156085567e-13
+"FDO_TC","TC","down","MF","GO:0003777",1,"GO:0008569",2.64323931478161,"microtubule motor activity","minus-end-directed microtubule motor activity",43,17,0.00227384410040881
+"GOA_TC","TC","up","BP","GO:0006740",4,"GO:0006740",2.70292768499331,"NADPH regeneration","NADPH regeneration",13,3,0.00198185700022757
+"GOA_TC","TC","up","BP","GO:0006099",4,"GO:0006740",2.49896439142126,"tricarboxylic acid cycle","NADPH regeneration",24,4,0.00316982735218408
+"GOA_TC","TC","up","BP","GO:0006805",4,"GO:0006740",2.30746862501561,"xenobiotic metabolic process","NADPH regeneration",27,4,0.00492641932276615
+"GOA_TC","TC","up","BP","GO:0042743",4,"GO:0006740",2.19938544196355,"hydrogen peroxide metabolic process","NADPH regeneration",15,3,0.00631850826682849
+"GOA_TC","TC","up","BP","GO:0019752",2,"GO:0019752",4.40584261659789,"carboxylic acid metabolic process","carboxylic acid metabolic process",313,22,3.92787251262982e-05
+"GOA_TC","TC","up","BP","GO:0042180",2,"GO:0019752",3.23583587076405,"ketone metabolic process","carboxylic acid metabolic process",69,6,0.000580983942378699
+"GOA_TC","TC","up","BP","GO:0006081",2,"GO:0019752",2.95032463438838,"aldehyde metabolic process","carboxylic acid metabolic process",31,5,0.00112118006079894
+"GOA_TC","TC","up","BP","GO:1902652",2,"GO:0019752",2.19697261356334,"secondary alcohol metabolic process","carboxylic acid metabolic process",39,4,0.00635370996829916
+"GOA_TC","TC","up","BP","GO:0009056",12,"GO:0009056",2.00770749578086,"catabolic process","catabolic process",1183,43,0.00982409388546877
+"GOA_TC","TC","up","BP","GO:0006635",11,"GO:0006635",2.03979344625781,"fatty acid beta-oxidation","fatty acid beta-oxidation",32,4,0.00912444701778857
+"GOA_TC","TC","up","BP","GO:0006749",1,"GO:0006749",7.11788156817123,"glutathione metabolic process","glutathione metabolic process",32,9,7.62286856824903e-08
+"GOA_TC","TC","up","BP","GO:0034453",3,"GO:0034453",2.98658999730517,"microtubule anchoring","microtubule anchoring",18,4,0.00103135933235673
+"GOA_TC","TC","up","BP","GO:0006457",3,"GO:0034453",2.91590843080303,"protein folding","microtubule anchoring",101,9,0.00121364471546338
+"GOA_TC","TC","up","BP","GO:0045665",10,"GO:0045665",2.19938544196355,"negative regulation of neuron differentiation","negative regulation of neuron differentiation",15,3,0.00631850826682849
+"GOA_TC","TC","up","BP","GO:0035672",5,"GO:0035672",2.60655040309866,"oligopeptide transmembrane transport","oligopeptide transmembrane transport",11,3,0.00247428428561024
+"GOA_TC","TC","up","BP","GO:0034635",5,"GO:0035672",2.60655040309866,"glutathione transport","oligopeptide transmembrane transport",11,3,0.00247428428561024
+"GOA_TC","TC","up","BP","GO:0046471",7,"GO:0046471",2.48996811180146,"phosphatidylglycerol metabolic process","phosphatidylglycerol metabolic process",12,3,0.0032361741776024
+"GOA_TC","TC","up","BP","GO:0015986",8,"GO:0015986",2.4093856885846,"proton motive force-driven ATP synthesis","proton motive force-driven ATP synthesis",14,3,0.00389595840416413
+"GOA_TC","TC","up","BP","GO:0032350",9,"GO:0032350",2.19938544196355,"regulation of hormone metabolic process","regulation of hormone metabolic process",15,3,0.00631850826682849
+"GOA_TC","TC","up","BP","GO:0046685",6,"GO:0046685",2.60655040309866,"response to arsenic-containing substance","response to arsenic-containing substance",11,3,0.00247428428561024
+"GOA_TC","TC","up","CC","GO:0005788",1,"GO:0005788",5.69899086692252,"endoplasmic reticulum lumen","endoplasmic reticulum lumen",71,11,1.99990392654624e-06
+"GOA_TC","TC","up","CC","GO:0140534",1,"GO:0005788",4.40709885074605,"endoplasmic reticulum protein-containing complex","endoplasmic reticulum lumen",64,9,3.91652722002817e-05
+"GOA_TC","TC","up","CC","GO:0005790",1,"GO:0005788",3.71107541261833,"smooth endoplasmic reticulum","endoplasmic reticulum lumen",12,4,0.000194502231090026
+"GOA_TC","TC","up","CC","GO:0005782",1,"GO:0005788",2.03234953804255,"peroxisomal matrix","endoplasmic reticulum lumen",17,3,0.00928219017261335
+"GOA_TC","TC","up","CC","GO:0042470",2,"GO:0042470",3.88375011833401,"melanosome","melanosome",44,7,0.000130692264088674
+"GOA_TC","TC","up","CC","GO:0070062",2,"GO:0042470",2.06820068850157,"extracellular exosome","melanosome",234,13,0.00854671675826308
+"GOA_TC","TC","up","CC","GO:0098803",3,"GO:0098803",3.87793751258985,"respiratory chain complex","respiratory chain complex",40,6,0.000132453209857943
+"GOA_TC","TC","up","CC","GO:0009986",3,"GO:0098803",2.7066539225311,"cell surface","respiratory chain complex",174,12,0.00196492544881698
+"GOA_TC","TC","up","MF","GO:0008559",7,"GO:0008559",2.11895402768119,"ABC-type xenobiotic transporter activity","ABC-type xenobiotic transporter activity",15,3,0.00760406765672037
+"GOA_TC","TC","up","MF","GO:0051287",4,"GO:0051287",2.75976998391904,"NAD binding","NAD binding",60,6,0.0017387214667593
+"GOA_TC","TC","up","MF","GO:0004364",1,"GO:0004364",8.51714422146835,"glutathione transferase activity","glutathione transferase activity",22,9,3.03987536953122e-09
+"GOA_TC","TC","up","MF","GO:0016836",2,"GO:0016836",4.10292205749644,"hydro-lyase activity","hydro-lyase activity",27,6,7.89001706454747e-05
+"GOA_TC","TC","up","MF","GO:0016667",3,"GO:0016667",2.82452390621066,"oxidoreductase activity, acting on a sulfur group of donors","oxidoreductase activity, acting on a sulfur group of donors",33,7,0.001497876798523
+"GOA_TC","TC","up","MF","GO:0016651",3,"GO:0016667",2.79217394974517,"oxidoreductase activity, acting on NAD(P)H","oxidoreductase activity, acting on a sulfur group of donors",30,5,0.00161371208066725
+"GOA_TC","TC","up","MF","GO:0004602",3,"GO:0016667",2.20696297052069,"glutathione peroxidase activity","oxidoreductase activity, acting on a sulfur group of donors",14,3,0.00620921973970652
+"GOA_TC","TC","up","MF","GO:0016620",3,"GO:0016667",2.13789573470602,"oxidoreductase activity, acting on the aldehyde or oxo group of donors, NAD or NADP as acceptor","oxidoreductase activity, acting on a sulfur group of donors",17,3,0.00727954550678085
+"GOA_TC","TC","up","MF","GO:0016616",3,"GO:0016667",2.05556167229612,"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor","oxidoreductase activity, acting on a sulfur group of donors",77,9,0.00879910150549543
+"GOA_TC","TC","up","MF","GO:0033764",3,"GO:0016667",2.03766615468685,"steroid dehydrogenase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor","oxidoreductase activity, acting on a sulfur group of donors",16,3,0.00916925066219173
+"GOA_TC","TC","up","MF","GO:0003756",5,"GO:0003756",2.52380399754346,"protein disulfide isomerase activity","protein disulfide isomerase activity",11,3,0.00299361538732943
+"GOA_TC","TC","up","MF","GO:0042803",6,"GO:0042803",2.19005915641381,"protein homodimerization activity","protein homodimerization activity",238,14,0.00645566288733396
+"GOA_TC","TC","up","MF","GO:0034185",6,"GO:0042803",2.11895402768119,"apolipoprotein binding","protein homodimerization activity",15,3,0.00760406765672037
+"GOA_TC","TC","down","BP","GO:0060402",1,"GO:0060402",2.64480692330394,"calcium ion transport into cytosol","calcium ion transport into cytosol",11,3,0.0022656513368523
+"GOA_TC","TC","down","BP","GO:0051480",1,"GO:0060402",2.00708520268817,"regulation of cytosolic calcium ion concentration","calcium ion transport into cytosol",18,3,0.00983818075061328
+"GOA_TC","TC","down","BP","GO:1904385",7,"GO:1904385",2.00708520268817,"cellular response to angiotensin","cellular response to angiotensin",18,3,0.00983818075061328
+"GOA_TC","TC","down","BP","GO:0030198",3,"GO:0030198",2.42755897405036,"extracellular matrix organization","extracellular matrix organization",96,8,0.003736293857682
+"GOA_TC","TC","down","BP","GO:0001937",4,"GO:0001937",2.32545672821469,"negative regulation of endothelial cell proliferation","negative regulation of endothelial cell proliferation",14,3,0.00472653928356512
+"GOA_TC","TC","down","BP","GO:0016322",6,"GO:0016322",2.15449874530264,"neuron remodeling","neuron remodeling",16,3,0.00700650207074177
+"GOA_TC","TC","down","BP","GO:1904427",5,"GO:1904427",2.23661602918744,"positive regulation of calcium ion transmembrane transport","positive regulation of calcium ion transmembrane transport",15,3,0.00579941210624985
+"GOA_TC","TC","down","BP","GO:0030193",2,"GO:0030193",2.43589683691987,"regulation of blood coagulation","regulation of blood coagulation",14,3,0.00366524629217217
+"GOA_TC","TC","down","CC","GO:0005901",4,"GO:0005901",3.00102619124836,"caveola","caveola",18,4,0.000997639896762373
+"GOA_TC","TC","down","CC","GO:0005589",3,"GO:0005589",3.73928325997244,"collagen type VI trimer","collagen type VI trimer",12,4,0.000182270649034135
+"GOA_TC","TC","down","CC","GO:0005581",3,"GO:0005589",3.51981740899165,"collagen trimer","collagen type VI trimer",18,7,0.000302122166967676
+"GOA_TC","TC","down","CC","GO:0005576",1,"GO:0005576",6.92091003938716,"extracellular region","extracellular region",654,37,1.19974779552905e-07
+"GOA_TC","TC","down","CC","GO:0098644",1,"GO:0005576",2.43153648415177,"complex of collagen trimers","extracellular region",16,6,0.00370223102441668
+"GOA_TC","TC","down","CC","GO:0032153",1,"GO:0005576",2.02851243466832,"cell division site","extracellular region",60,3,0.00936456407001216
+"GOA_TC","TC","down","CC","GO:0140144",2,"GO:0140144",4.0981083932307,"non-collagenous component of basement membrane","non-collagenous component of basement membrane",29,6,7.97795544905948e-05
+"GOA_TC","TC","down","CC","GO:0140151",5,"GO:0140151",2.71508934567535,"solid phase of interstitial matrix","solid phase of interstitial matrix",17,4,0.00192712841194845
+"GOA_TC","TC","down","MF","GO:0008200",1,"GO:0008200",2.98909301268022,"ion channel inhibitor activity","ion channel inhibitor activity",18,4,0.00102543228629834
+"GOA_TC","TC","down","MF","GO:0004867",3,"GO:0004867",2.11917409337596,"serine-type endopeptidase inhibitor activity","serine-type endopeptidase inhibitor activity",16,3,0.00760021549971143
+"GOA_TC","TC","down","MF","GO:0004860",3,"GO:0004867",2.04703157640518,"protein kinase inhibitor activity","serine-type endopeptidase inhibitor activity",36,4,0.00897363547194439
+"GOA_TC","TC","down","MF","GO:0032934",2,"GO:0032934",2.74170102844051,"sterol binding","sterol binding",32,4,0.00181258746194481
+"GOW_TC","TC","up","BP","GO:0032869",2,"GO:0032869",3.01106709325942,"cellular response to insulin stimulus","cellular response to insulin stimulus",75,4,0.000974839025211926
+"GOW_TC","TC","up","BP","GO:0032528",1,"GO:0032528",3.6238896629075,"microvillus organization","microvillus organization",12,3,0.000237744422467718
+"GOW_TC","TC","up","BP","GO:0051148",6,"GO:0051148",2.23766320950172,"negative regulation of muscle cell differentiation","negative regulation of muscle cell differentiation",11,2,0.00578544528278171
+"GOW_TC","TC","up","BP","GO:0050778",5,"GO:0050778",2.33098005362763,"positive regulation of immune response","positive regulation of immune response",228,5,0.00466680813641018
+"GOW_TC","TC","up","BP","GO:0048260",3,"GO:0048260",3.00319245005212,"positive regulation of receptor-mediated endocytosis","positive regulation of receptor-mediated endocytosis",19,3,0.000992676063796247
+"GOW_TC","TC","up","BP","GO:0007605",7,"GO:0007605",2.00534252604744,"sensory perception of sound","sensory perception of sound",42,3,0.00987773734786563
+"GOW_TC","TC","up","BP","GO:0006418",4,"GO:0006418",2.54982798802544,"tRNA aminoacylation for protein translation","tRNA aminoacylation for protein translation",27,3,0.00281949943550981
+"GOW_TC","TC","up","BP","GO:0002183",4,"GO:0006418",2.22639339109035,"cytoplasmic translational initiation","tRNA aminoacylation for protein translation",35,3,0.00593754082731831
+"GOW_TC","TC","up","CC","GO:0017101",3,"GO:0017101",2.25617895529883,"aminoacyl-tRNA synthetase multienzyme complex","aminoacyl-tRNA synthetase multienzyme complex",11,2,0.00554397221075068
+"GOW_TC","TC","up","CC","GO:0010494",2,"GO:0010494",3.56907260684063,"cytoplasmic stress granule","cytoplasmic stress granule",56,5,0.00026972884528156
+"GOW_TC","TC","up","CC","GO:0031528",1,"GO:0031528",5.66336807574884,"microvillus membrane","microvillus membrane",10,4,2.170860538811e-06
+"GOW_TC","TC","up","MF","GO:0004812",2,"GO:0004812",2.44481814696424,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",27,3,0.00359072258247039
+"GOW_TC","TC","up","MF","GO:0003730",1,"GO:0003730",2.99632768327568,"mRNA 3'-UTR binding","mRNA 3'-UTR binding",39,4,0.00100849167318676
+"GOW_TC","TC","up","MF","GO:0000049",1,"GO:0003730",2.44481814696424,"tRNA binding","mRNA 3'-UTR binding",27,3,0.00359072258247039
+"GOW_TC","TC","up","MF","GO:0003743",1,"GO:0003730",2.12375655768259,"translation initiation factor activity","mRNA 3'-UTR binding",35,3,0.00752044331821054
+"GOW_TC","TC","down","BP","GO:0086002",7,"GO:0086002",2.03145676303199,"cardiac muscle cell action potential involved in contraction","cardiac muscle cell action potential involved in contraction",13,2,0.00930129110820598
+"GOW_TC","TC","down","BP","GO:0009583",5,"GO:0009583",2.17676512293987,"detection of light stimulus","detection of light stimulus",11,2,0.00665633049479583
+"GOW_TC","TC","down","BP","GO:0030326",2,"GO:0030326",2.36455013562471,"embryonic limb morphogenesis","embryonic limb morphogenesis",22,3,0.00431966297884123
+"GOW_TC","TC","down","BP","GO:0140115",1,"GO:0140115",2.72168418992131,"export across plasma membrane","export across plasma membrane",22,3,0.00189808566862645
+"GOW_TC","TC","down","BP","GO:0150117",6,"GO:0150117",2.10079700719553,"positive regulation of cell-substrate junction organization","positive regulation of cell-substrate junction organization",12,2,0.00792871838687797
+"GOW_TC","TC","down","BP","GO:0050856",4,"GO:0050856",2.17676512293987,"regulation of T cell receptor signaling pathway","regulation of T cell receptor signaling pathway",11,2,0.00665633049479583
+"GOW_TC","TC","down","BP","GO:1903115",3,"GO:1903115",2.17676512293987,"regulation of actin filament-based movement","regulation of actin filament-based movement",11,2,0.00665633049479583
+"GOW_TC","TC","down","CC","GO:0031594",2,"GO:0031594",2.0868066254962,"neuromuscular junction","neuromuscular junction",37,3,0.00818829299934757
+"GOW_TC","TC","down","CC","GO:0044853",1,"GO:0044853",2.11994280343544,"plasma membrane raft","plasma membrane raft",33,3,0.00758677486242153
+"GOW_TC","TC","down","MF","GO:0015085",1,"GO:0015085",2.45262217149123,"calcium ion transmembrane transporter activity","calcium ion transmembrane transporter activity",69,3,0.00352677560848519
+"GOW_TC","TC","down","MF","GO:0016722",2,"GO:0016722",2.24937028824824,"oxidoreductase activity, acting on metal ions","oxidoreductase activity, acting on metal ions",10,2,0.00563157291787972
+"GDO_TC","TC","up","BP","GO:0015816",3,"GO:0015816",2.94181175079334,"glycine transport","glycine transport",19,3,0.00114337383400538
+"GDO_TC","TC","up","BP","GO:0002119",7,"GO:0002119",2.45174478951837,"nematode larval development","nematode larval development",16,3,0.00353390776703298
+"GDO_TC","TC","up","BP","GO:0002690",6,"GO:0002690",2.53563678464663,"positive regulation of leukocyte chemotaxis","positive regulation of leukocyte chemotaxis",15,3,0.00291315246875005
+"GDO_TC","TC","up","BP","GO:0006457",2,"GO:0006457",3.05528586075733,"protein folding","protein folding",102,8,0.000880469140964055
+"GDO_TC","TC","up","BP","GO:0042743",2,"GO:0006457",2.53563678464663,"hydrogen peroxide metabolic process","protein folding",15,3,0.00291315246875005
+"GDO_TC","TC","up","BP","GO:0006515",5,"GO:0006515",2.62625645275351,"protein quality control for misfolded or incompletely synthesized proteins","protein quality control for misfolded or incompletely synthesized proteins",14,3,0.00236452302417238
+"GDO_TC","TC","up","BP","GO:0046683",8,"GO:0046683",2.25905424470186,"response to organophosphorus","response to organophosphorus",27,3,0.00550738903144962
+"GDO_TC","TC","up","BP","GO:0048488",1,"GO:0048488",3.09815730427119,"synaptic vesicle endocytosis","synaptic vesicle endocytosis",32,5,0.000797705700768842
+"GDO_TC","TC","up","BP","GO:0072583",1,"GO:0048488",2.80332521257962,"clathrin-dependent endocytosis","synaptic vesicle endocytosis",26,4,0.00157280466063982
+"GDO_TC","TC","up","BP","GO:0016482",1,"GO:0048488",2.12851655169664,"cytosolic transport","synaptic vesicle endocytosis",59,5,0.0074384671311204
+"GDO_TC","TC","up","BP","GO:0006418",4,"GO:0006418",2.74032984256328,"tRNA aminoacylation for protein translation","tRNA aminoacylation for protein translation",27,4,0.00181831933766149
+"GDO_TC","TC","up","BP","GO:0006023",4,"GO:0006418",2.53563678464663,"aminoglycan biosynthetic process","tRNA aminoacylation for protein translation",15,3,0.00291315246875005
+"GDO_TC","TC","up","BP","GO:0009101",4,"GO:0006418",2.48519421497116,"glycoprotein biosynthetic process","tRNA aminoacylation for protein translation",109,8,0.00327194341993309
+"GDO_TC","TC","up","BP","GO:0006487",4,"GO:0006418",2.46193170443368,"protein N-linked glycosylation","tRNA aminoacylation for protein translation",32,4,0.00345198019649391
+"GDO_TC","TC","up","BP","GO:0042401",4,"GO:0006418",2.30079470098115,"biogenic amine biosynthetic process","tRNA aminoacylation for protein translation",18,3,0.00500270966410858
+"GDO_TC","TC","up","CC","GO:0140534",1,"GO:0140534",8.35005800144514,"endoplasmic reticulum protein-containing complex","endoplasmic reticulum protein-containing complex",64,12,4.46623940083181e-09
+"GDO_TC","TC","up","CC","GO:0005788",1,"GO:0140534",4.95640994025152,"endoplasmic reticulum lumen","endoplasmic reticulum protein-containing complex",70,9,1.1055797099367e-05
+"GDO_TC","TC","up","CC","GO:0005789",1,"GO:0140534",4.55950025279674,"endoplasmic reticulum membrane","endoplasmic reticulum protein-containing complex",447,27,2.75739984730203e-05
+"GDO_TC","TC","up","CC","GO:0005790",1,"GO:0140534",4.13258168852486,"smooth endoplasmic reticulum","endoplasmic reticulum protein-containing complex",12,4,7.36916552144733e-05
+"GDO_TC","TC","up","CC","GO:0016529",1,"GO:0140534",2.83553265376268,"sarcoplasmic reticulum","endoplasmic reticulum protein-containing complex",40,6,0.00146038494179247
+"GDO_TC","TC","up","CC","GO:0005793",1,"GO:0140534",2.07190895714088,"endoplasmic reticulum-Golgi intermediate compartment","endoplasmic reticulum protein-containing complex",46,4,0.00847405040370809
+"GDO_TC","TC","up","CC","GO:0042470",2,"GO:0042470",7.88982093018557,"melanosome","melanosome",44,10,1.28878083676138e-08
+"GDO_TC","TC","up","CC","GO:0005829",2,"GO:0042470",2.08022435731134,"cytosol","melanosome",1697,47,0.00831334191411227
+"GDO_TC","TC","up","CC","GO:0098796",3,"GO:0098796",3.39427280177069,"membrane protein complex","membrane protein complex",423,25,0.000403391923017203
+"GDO_TC","TC","up","CC","GO:0043020",3,"GO:0098796",2.79041572956115,"NADPH oxidase complex","membrane protein complex",12,3,0.00162025835810197
+"GDO_TC","TC","up","MF","GO:0003925",5,"GO:0003925",2.14249831428952,"G protein activity","G protein activity",55,5,0.00720280546995975
+"GDO_TC","TC","up","MF","GO:0019003",6,"GO:0019003",2.09517044605404,"GDP binding","GDP binding",19,3,0.00803210826941534
+"GDO_TC","TC","up","MF","GO:0005525",6,"GO:0019003",2.01129271651113,"GTP binding","GDP binding",191,10,0.00974332711554014
+"GDO_TC","TC","up","MF","GO:0004812",3,"GO:0004812",2.55934216908498,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",27,4,0.00275840372684582
+"GDO_TC","TC","up","MF","GO:0016705",2,"GO:0016705",2.64789311443024,"oxidoreductase activity, acting on paired donors, with incorporation or reduction of molecular oxygen","oxidoreductase activity, acting on paired donors, with incorporation or reduction of molecular oxygen",68,7,0.00224960819580102
+"GDO_TC","TC","up","MF","GO:0004497",2,"GO:0016705",2.04636312082073,"monooxygenase activity","oxidoreductase activity, acting on paired donors, with incorporation or reduction of molecular oxygen",40,5,0.00898745811008262
+"GDO_TC","TC","up","MF","GO:0042277",4,"GO:0042277",2.40689534790373,"peptide binding","peptide binding",52,6,0.00391836286662185
+"GDO_TC","TC","up","MF","GO:0003756",1,"GO:0003756",2.80756283329112,"protein disulfide isomerase activity","protein disulfide isomerase activity",11,3,0.0015575326762604
+"GDO_TC","TC","up","MF","GO:0044183",7,"GO:0044183",2.03791036262045,"protein folding chaperone","protein folding chaperone",35,4,0.00916409615435137
+"GDO_TC","TC","down","BP","GO:0000902",5,"GO:0000902",2.18076258870302,"cell morphogenesis","cell morphogenesis",320,9,0.00659534337567611
+"GDO_TC","TC","down","BP","GO:0006695",3,"GO:0006695",2.82318160865031,"cholesterol biosynthetic process","cholesterol biosynthetic process",16,3,0.0015025135295652
+"GDO_TC","TC","down","BP","GO:0071786",6,"GO:0071786",2.04929048332584,"endoplasmic reticulum tubular network organization","endoplasmic reticulum tubular network organization",10,2,0.00892708184904114
+"GDO_TC","TC","down","BP","GO:0050673",1,"GO:0050673",3.47452801044508,"epithelial cell proliferation","epithelial cell proliferation",100,5,0.000335329676185004
+"GDO_TC","TC","down","BP","GO:0008356",1,"GO:0050673",2.20249568298216,"asymmetric cell division","epithelial cell proliferation",26,3,0.00627341931920627
+"GDO_TC","TC","down","BP","GO:0000122",4,"GO:0000122",2.79370674771858,"negative regulation of transcription by RNA polymerase II","negative regulation of transcription by RNA polymerase II",225,10,0.00160802668776602
+"GDO_TC","TC","down","BP","GO:0070374",7,"GO:0070374",2.02730003172768,"positive regulation of ERK1 and ERK2 cascade","positive regulation of ERK1 and ERK2 cascade",30,3,0.0093907432824665
+"GDO_TC","TC","down","BP","GO:0035914",2,"GO:0035914",3.33072763421267,"skeletal muscle cell differentiation","skeletal muscle cell differentiation",11,3,0.000466952135389237
+"GDO_TC","TC","down","BP","GO:0007405",2,"GO:0035914",2.53293958528436,"neuroblast proliferation","skeletal muscle cell differentiation",20,3,0.00293130099023896
+"GDO_TC","TC","down","CC","GO:0005589",2,"GO:0005589",3.2298212988818,"collagen type VI trimer","collagen type VI trimer",11,3,0.000589085999378202
+"GDO_TC","TC","down","CC","GO:0005576",1,"GO:0005576",4.99336485768771,"extracellular region","extracellular region",627,22,1.01539528474416e-05
+"GDO_TC","TC","down","MF","GO:0042813",1,"GO:0042813",3.25776483871836,"Wnt receptor activity","Wnt receptor activity",11,3,0.000552376458493052
+"GDO_TC","TC","down","MF","GO:0017147",2,"GO:0017147",2.75159360841941,"Wnt-protein binding","Wnt-protein binding",16,3,0.00177176611511344
+"GDO_TC","TC","down","MF","GO:0008061",2,"GO:0017147",2.34159338263752,"chitin binding","Wnt-protein binding",22,3,0.00455414251795653
+"GDO_TC","TC","down","MF","GO:0016722",3,"GO:0016722",2.00115847918659,"oxidoreductase activity, acting on metal ions","oxidoreductase activity, acting on metal ions",10,2,0.00997336057702942
+"GDO_TC","TC","down","MF","GO:0016628",3,"GO:0016722",2.00115847918659,"oxidoreductase activity, acting on the CH-CH group of donors, NAD or NADP as acceptor","oxidoreductase activity, acting on metal ions",10,2,0.00997336057702942
+"FG_TC","FG","up","BP","GO:0006270",33,"GO:0006270",2.1249776582764,"DNA replication initiation","DNA replication initiation",10,7,0.00749932787672268
+"FG_TC","FG","up","BP","GO:0001667",30,"GO:0001667",2.27975855385213,"ameboidal-type cell migration","ameboidal-type cell migration",101,42,0.00525099308234156
+"FG_TC","FG","up","BP","GO:0007298",30,"GO:0001667",2.06577315665706,"border follicle cell migration","ameboidal-type cell migration",22,12,0.00859462323888247
+"FG_TC","FG","up","BP","GO:0048646",20,"GO:0048646",2.94133593839416,"anatomical structure formation involved in morphogenesis","anatomical structure formation involved in morphogenesis",358,115,0.00114462719917279
+"FG_TC","FG","up","BP","GO:0008360",20,"GO:0048646",2.01703080582651,"regulation of cell shape","anatomical structure formation involved in morphogenesis",49,22,0.00961544070723546
+"FG_TC","FG","up","BP","GO:0048754",15,"GO:0048754",3.03884193415558,"branching morphogenesis of an epithelial tube","branching morphogenesis of an epithelial tube",25,15,0.000914446002730014
+"FG_TC","FG","up","BP","GO:0035317",15,"GO:0048754",2.5424664105324,"imaginal disc-derived wing hair organization","branching morphogenesis of an epithelial tube",11,8,0.00286769916233482
+"FG_TC","FG","up","BP","GO:0035214",15,"GO:0048754",2.1249776582764,"eye-antennal disc development","branching morphogenesis of an epithelial tube",10,7,0.00749932787672268
+"FG_TC","FG","up","BP","GO:1904646",27,"GO:1904646",2.34570223620735,"cellular response to amyloid-beta","cellular response to amyloid-beta",16,10,0.00451125902392299
+"FG_TC","FG","up","BP","GO:0070301",27,"GO:1904646",2.28043164412754,"cellular response to hydrogen peroxide","cellular response to amyloid-beta",21,12,0.0052428611463933
+"FG_TC","FG","up","BP","GO:0006030",14,"GO:0006030",3.06302229722539,"chitin metabolic process","chitin metabolic process",19,14,0.000864923511373893
+"FG_TC","FG","up","BP","GO:0003341",11,"GO:0003341",3.18887499902005,"cilium movement","cilium movement",168,91,0.000647328906634653
+"FG_TC","FG","up","BP","GO:0003352",11,"GO:0003341",2.08279262954296,"regulation of cilium movement","cilium movement",23,14,0.00826432467068558
+"FG_TC","FG","up","BP","GO:0006952",23,"GO:0006952",2.69939505691474,"defense response","defense response",464,161,0.00199804351811689
+"FG_TC","FG","up","BP","GO:0048813",9,"GO:0048813",3.38139788459623,"dendrite morphogenesis","dendrite morphogenesis",80,37,0.000415529743018155
+"FG_TC","FG","up","BP","GO:0021954",9,"GO:0048813",2.58330972662023,"central nervous system neuron development","dendrite morphogenesis",25,11,0.00261029909845975
+"FG_TC","FG","up","BP","GO:0001892",18,"GO:0001892",2.97205643022327,"embryonic placenta development","embryonic placenta development",12,9,0.00106645754164972
+"FG_TC","FG","up","BP","GO:0003006",18,"GO:0001892",2.36375309368213,"developmental process involved in reproduction","embryonic placenta development",293,97,0.00432759794923662
+"FG_TC","FG","up","BP","GO:0030198",13,"GO:0030198",3.08628739294525,"extracellular matrix organization","extracellular matrix organization",101,44,0.000819808858972955
+"FG_TC","FG","up","BP","GO:0030317",1,"GO:0030317",7.46733350302664,"flagellated sperm motility","flagellated sperm motility",115,64,3.40931003644061e-08
+"FG_TC","FG","up","BP","GO:0007288",1,"GO:0030317",2.57441303348895,"sperm axoneme assembly","flagellated sperm motility",27,15,0.00266432356826351
+"FG_TC","FG","up","BP","GO:0022412",1,"GO:0030317",2.54092613535194,"cellular process involved in reproduction in multicellular organism","flagellated sperm motility",171,62,0.00287788784323477
+"FG_TC","FG","up","BP","GO:0007156",2,"GO:0007156",5.09779435421049,"homophilic cell-cell adhesion","homophilic cell-cell adhesion",69,37,7.98372640738554e-06
+"FG_TC","FG","up","BP","GO:0061343",2,"GO:0007156",3.84377319676171,"cell adhesion involved in heart morphogenesis","homophilic cell-cell adhesion",16,12,0.000143293603147174
+"FG_TC","FG","up","BP","GO:0016339",2,"GO:0007156",2.9823474336542,"calcium-dependent cell-cell adhesion","homophilic cell-cell adhesion",10,8,0.00104148391353395
+"FG_TC","FG","up","BP","GO:0007160",2,"GO:0007156",2.30248229617078,"cell-matrix adhesion","homophilic cell-cell adhesion",72,33,0.00498330769797655
+"FG_TC","FG","up","BP","GO:0007157",2,"GO:0007156",2.26995290260927,"heterophilic cell-cell adhesion","homophilic cell-cell adhesion",26,14,0.0053709003834407
+"FG_TC","FG","up","BP","GO:0036159",6,"GO:0036159",3.41494166865457,"inner dynein arm assembly","inner dynein arm assembly",15,11,0.000384643441146865
+"FG_TC","FG","up","BP","GO:0030041",6,"GO:0036159",2.35777782201749,"actin filament polymerization","inner dynein arm assembly",62,29,0.00438755100331986
+"FG_TC","FG","up","BP","GO:0060271",6,"GO:0036159",2.18634476181822,"cilium assembly","inner dynein arm assembly",262,117,0.00651111308415472
+"FG_TC","FG","up","BP","GO:0007229",10,"GO:0007229",3.21567973017831,"integrin-mediated signaling pathway","integrin-mediated signaling pathway",29,17,0.000608583634935421
+"FG_TC","FG","up","BP","GO:0009755",10,"GO:0007229",3.03691711761683,"hormone-mediated signaling pathway","integrin-mediated signaling pathway",64,24,0.000918507871235328
+"FG_TC","FG","up","BP","GO:0008063",10,"GO:0007229",2.97205643022327,"Toll signaling pathway","integrin-mediated signaling pathway",12,9,0.00106645754164972
+"FG_TC","FG","up","BP","GO:0030178",10,"GO:0007229",2.52503098111832,"negative regulation of Wnt signaling pathway","integrin-mediated signaling pathway",64,22,0.00298516965928552
+"FG_TC","FG","up","BP","GO:0007264",10,"GO:0007229",2.47720978163677,"small GTPase-mediated signal transduction","integrin-mediated signaling pathway",189,65,0.00333265393338152
+"FG_TC","FG","up","BP","GO:0070374",10,"GO:0007229",2.47249348378496,"positive regulation of ERK1 and ERK2 cascade","integrin-mediated signaling pathway",30,16,0.00336904270662279
+"FG_TC","FG","up","BP","GO:0006691",35,"GO:0006691",2.07922617516151,"leukotriene metabolic process","leukotriene metabolic process",16,9,0.0083324712686934
+"FG_TC","FG","up","BP","GO:0006406",29,"GO:0006406",2.28778414084628,"mRNA export from nucleus","mRNA export from nucleus",31,16,0.0051548479442404
+"FG_TC","FG","up","BP","GO:0042116",28,"GO:0042116",2.34320471718452,"macrophage activation","macrophage activation",31,13,0.00453727688648627
+"FG_TC","FG","up","BP","GO:0042113",28,"GO:0042116",2.08251201247418,"B cell activation","macrophage activation",42,17,0.00826966634566208
+"FG_TC","FG","up","BP","GO:0045185",34,"GO:0045185",2.08232948183304,"maintenance of protein location","maintenance of protein location",35,17,0.00827314275352862
+"FG_TC","FG","up","BP","GO:0032507",34,"GO:0045185",2.08072761169792,"maintenance of protein location in cell","maintenance of protein location",29,12,0.00830371410884602
+"FG_TC","FG","up","BP","GO:0022408",26,"GO:0022408",2.43227294150732,"negative regulation of cell-cell adhesion","negative regulation of cell-cell adhesion",38,17,0.00369595826498574
+"FG_TC","FG","up","BP","GO:0007204",24,"GO:0007204",2.61060246658172,"positive regulation of cytosolic calcium ion concentration","positive regulation of cytosolic calcium ion concentration",33,16,0.00245130602927623
+"FG_TC","FG","up","BP","GO:0051491",19,"GO:0051491",2.95301087839546,"positive regulation of filopodium assembly","positive regulation of filopodium assembly",23,14,0.00111426662261131
+"FG_TC","FG","up","BP","GO:0051489",19,"GO:0051491",2.55570982452391,"regulation of filopodium assembly","positive regulation of filopodium assembly",34,22,0.00278157116414634
+"FG_TC","FG","up","BP","GO:0032731",25,"GO:0032731",2.5424664105324,"positive regulation of interleukin-1 beta production","positive regulation of interleukin-1 beta production",11,8,0.00286769916233482
+"FG_TC","FG","up","BP","GO:0043525",31,"GO:0043525",2.26568073048888,"positive regulation of neuron apoptotic process","positive regulation of neuron apoptotic process",39,19,0.00542399486258758
+"FG_TC","FG","up","BP","GO:0032956",21,"GO:0032956",2.90408589712419,"regulation of actin cytoskeleton organization","regulation of actin cytoskeleton organization",123,55,0.00124713682434524
+"FG_TC","FG","up","BP","GO:0051496",21,"GO:0032956",2.71406963133893,"positive regulation of stress fiber assembly","regulation of actin cytoskeleton organization",17,11,0.00193165858534294
+"FG_TC","FG","up","BP","GO:0034314",21,"GO:0032956",2.52854162820788,"Arp2/3 complex-mediated actin nucleation","regulation of actin cytoskeleton organization",28,14,0.0029611361195179
+"FG_TC","FG","up","BP","GO:0051128",21,"GO:0032956",2.0898203615438,"regulation of cellular component organization","regulation of actin cytoskeleton organization",840,250,0.00813166799095968
+"FG_TC","FG","up","BP","GO:0002920",17,"GO:0002920",2.9823474336542,"regulation of humoral immune response","regulation of humoral immune response",10,8,0.00104148391353395
+"FG_TC","FG","up","BP","GO:0001867",17,"GO:0002920",2.1249776582764,"complement activation, lectin pathway","regulation of humoral immune response",10,7,0.00749932787672268
+"FG_TC","FG","up","BP","GO:0035151",4,"GO:0035151",3.48481309011016,"regulation of tube size, open tracheal system","regulation of tube size, open tracheal system",19,13,0.000327481604753472
+"FG_TC","FG","up","BP","GO:0009617",3,"GO:0009617",4.42660070612673,"response to bacterium","response to bacterium",176,76,3.74454706753229e-05
+"FG_TC","FG","up","BP","GO:0045087",3,"GO:0009617",3.0920910053468,"innate immune response","response to bacterium",284,93,0.000808926372873549
+"FG_TC","FG","up","BP","GO:0009620",3,"GO:0009617",2.9823474336542,"response to fungus","response to bacterium",10,8,0.00104148391353395
+"FG_TC","FG","up","BP","GO:0050829",3,"GO:0009617",2.86963510524217,"defense response to Gram-negative bacterium","response to bacterium",21,13,0.00135009675914022
+"FG_TC","FG","up","BP","GO:0019730",3,"GO:0009617",2.6451273541861,"antimicrobial humoral response","response to bacterium",15,10,0.00226398031193749
+"FG_TC","FG","up","BP","GO:0051384",32,"GO:0051384",2.18939674298325,"response to glucocorticoid","response to glucocorticoid",29,13,0.00646551698608961
+"FG_TC","FG","up","BP","GO:0045471",32,"GO:0051384",2.18258445792201,"response to ethanol","response to glucocorticoid",43,18,0.00656773380317431
+"FG_TC","FG","up","BP","GO:0035282",12,"GO:0035282",3.15663317660599,"segmentation","segmentation",62,24,0.000697215162741499
+"FG_TC","FG","up","BP","GO:0035162",12,"GO:0035282",2.71406963133893,"embryonic hemopoiesis","segmentation",17,11,0.00193165858534294
+"FG_TC","FG","up","BP","GO:0042335",12,"GO:0035282",2.34570223620735,"cuticle development","segmentation",16,10,0.00451125902392299
+"FG_TC","FG","up","BP","GO:0042472",12,"GO:0035282",2.16808581122184,"inner ear morphogenesis","segmentation",24,13,0.00679069443631662
+"FG_TC","FG","up","BP","GO:0001568",12,"GO:0035282",2.13294867006729,"blood vessel development","segmentation",172,58,0.00736294116086123
+"FG_TC","FG","up","BP","GO:0008366",12,"GO:0035282",2.0752520532224,"axon ensheathment","segmentation",42,13,0.0084090695946535
+"FG_TC","FG","up","BP","GO:0019991",16,"GO:0019991",3.03828800958371,"septate junction assembly","septate junction assembly",16,11,0.000915613084746182
+"FG_TC","FG","up","BP","GO:0070830",16,"GO:0019991",2.97205643022327,"bicellular tight junction assembly","septate junction assembly",12,9,0.00106645754164972
+"FG_TC","FG","up","BP","GO:0045217",16,"GO:0019991",2.1249776582764,"cell-cell junction maintenance","septate junction assembly",10,7,0.00749932787672268
+"FG_TC","FG","up","BP","GO:0048863",22,"GO:0048863",2.7189454698455,"stem cell differentiation","stem cell differentiation",73,29,0.00191009307540961
+"FG_TC","FG","up","BP","GO:0051145",22,"GO:0048863",2.5424664105324,"smooth muscle cell differentiation","stem cell differentiation",11,8,0.00286769916233482
+"FG_TC","FG","up","BP","GO:0045663",22,"GO:0048863",2.34570223620735,"positive regulation of myoblast differentiation","stem cell differentiation",16,10,0.00451125902392299
+"FG_TC","FG","up","BP","GO:0002065",22,"GO:0048863",2.08088312953138,"columnar/cuboidal epithelial cell differentiation","stem cell differentiation",18,9,0.00830074113890751
+"FG_TC","FG","up","BP","GO:0014855",7,"GO:0014855",3.41494166865457,"striated muscle cell proliferation","striated muscle cell proliferation",15,11,0.000384643441146865
+"FG_TC","FG","up","BP","GO:0050673",7,"GO:0014855",2.54117189026793,"epithelial cell proliferation","striated muscle cell proliferation",103,43,0.0028762597888971
+"FG_TC","FG","up","BP","GO:0042554",8,"GO:0042554",3.41494166865457,"superoxide anion generation","superoxide anion generation",15,11,0.000384643441146865
+"FG_TC","FG","up","BP","GO:0001659",5,"GO:0001659",3.44221556696444,"temperature homeostasis","temperature homeostasis",38,14,0.000361230517291728
+"FG_TC","FG","up","BP","GO:0010669",5,"GO:0001659",2.08637672248398,"epithelial structure maintenance","temperature homeostasis",17,10,0.0081964025076088
+"FG_TC","FG","up","CC","GO:0043020",7,"GO:0043020",2.46767461559634,"NADPH oxidase complex","NADPH oxidase complex",11,8,0.00340663327687328
+"FG_TC","FG","up","CC","GO:0008305",7,"GO:0043020",2.06069345540756,"integrin complex","NADPH oxidase complex",10,7,0.00869573997184674
+"FG_TC","FG","up","CC","GO:0005912",4,"GO:0005912",3.6007671204978,"adherens junction","adherens junction",87,41,0.000250745345150519
+"FG_TC","FG","up","CC","GO:0005918",4,"GO:0005912",2.98820952573214,"septate junction","adherens junction",18,12,0.00102752045043352
+"FG_TC","FG","up","CC","GO:0160111",9,"GO:0160111",2.00496265011225,"axonemal A tubule inner sheath","axonemal A tubule inner sheath",17,10,0.009886381151589
+"FG_TC","FG","up","CC","GO:0160110",8,"GO:0160110",2.46549047765107,"axonemal microtubule doublet inner sheath","axonemal microtubule doublet inner sheath",26,17,0.00342380894594052
+"FG_TC","FG","up","CC","GO:0036064",3,"GO:0036064",5.57375420690706,"ciliary basal body","ciliary basal body",139,66,2.66836842574074e-06
+"FG_TC","FG","up","CC","GO:0005930",3,"GO:0036064",4.42197135229445,"axoneme","ciliary basal body",186,101,3.78467549043762e-05
+"FG_TC","FG","up","CC","GO:0016460",3,"GO:0036064",3.20669095547551,"myosin II complex","ciliary basal body",38,21,0.000621311002685384
+"FG_TC","FG","up","CC","GO:0005813",3,"GO:0036064",2.96692264817578,"centrosome","ciliary basal body",303,115,0.00107913890963603
+"FG_TC","FG","up","CC","GO:0001534",3,"GO:0036064",2.90396273324022,"radial spoke","ciliary basal body",10,8,0.00124749055667209
+"FG_TC","FG","up","CC","GO:0005814",3,"GO:0036064",2.82453588849329,"centriole","ciliary basal body",99,43,0.00149783547233465
+"FG_TC","FG","up","CC","GO:0097649",3,"GO:0036064",2.46549047765107,"A axonemal microtubule","ciliary basal body",26,17,0.00342380894594052
+"FG_TC","FG","up","CC","GO:0005884",3,"GO:0036064",2.44615981837325,"actin filament","ciliary basal body",42,19,0.00357964683503502
+"FG_TC","FG","up","CC","GO:0016459",3,"GO:0036064",2.29814686160764,"myosin complex","ciliary basal body",61,34,0.00503330373128261
+"FG_TC","FG","up","CC","GO:1990716",3,"GO:0036064",2.06069345540756,"axonemal central apparatus","ciliary basal body",10,7,0.00869573997184674
+"FG_TC","FG","up","CC","GO:0005576",2,"GO:0005576",6.1036652881139,"extracellular region","extracellular region",650,248,7.87652601736817e-07
+"FG_TC","FG","up","CC","GO:0031012",2,"GO:0005576",4.5871215424572,"extracellular matrix","extracellular region",160,77,2.58748867444657e-05
+"FG_TC","FG","up","CC","GO:0045177",2,"GO:0005576",2.79988762424476,"apical part of cell","extracellular region",190,76,0.00158530334414727
+"FG_TC","FG","up","CC","GO:0005886",2,"GO:0005576",2.55286110947127,"plasma membrane","extracellular region",1491,505,0.00279987659733431
+"FG_TC","FG","up","CC","GO:0005615",2,"GO:0005576",2.03854139969642,"extracellular space","extracellular region",232,83,0.0091507902400406
+"FG_TC","FG","up","CC","GO:0005902",6,"GO:0005902",2.54228541336337,"microvillus","microvillus",34,18,0.00286889455768453
+"FG_TC","FG","up","CC","GO:0140144",5,"GO:0140144",3.32676945834958,"non-collagenous component of basement membrane","non-collagenous component of basement membrane",28,17,0.000471227407204179
+"FG_TC","FG","up","CC","GO:0036126",1,"GO:0036126",7.12267654968179,"sperm flagellum","sperm flagellum",141,73,7.53916850763459e-08
+"FG_TC","FG","up","CC","GO:0060170",1,"GO:0036126",2.59084678652366,"ciliary membrane","sperm flagellum",24,14,0.00256538891292342
+"FG_TC","FG","up","CC","GO:0097225",1,"GO:0036126",2.55569178600589,"sperm midpiece","sperm flagellum",52,25,0.00278168669972345
+"FG_TC","FG","up","CC","GO:0005929",1,"GO:0036126",2.05996281391424,"cilium","sperm flagellum",454,215,0.00871038168645721
+"FG_TC","FG","up","MF","GO:0008528",6,"GO:0008528",3.04006470621728,"G protein-coupled peptide receptor activity","G protein-coupled peptide receptor activity",14,10,0.000911874967550014
+"FG_TC","FG","up","MF","GO:0008066",6,"GO:0008528",2.30211802955356,"glutamate receptor activity","G protein-coupled peptide receptor activity",14,9,0.00498748922503316
+"FG_TC","FG","up","MF","GO:0004888",6,"GO:0008528",2.28791661768802,"transmembrane signaling receptor activity","G protein-coupled peptide receptor activity",160,75,0.00515327575334463
+"FG_TC","FG","up","MF","GO:0005509",1,"GO:0005509",7.1313137354885,"calcium ion binding","calcium ion binding",327,135,7.39071175181771e-08
+"FG_TC","FG","up","MF","GO:0033293",1,"GO:0005509",2.47628527460105,"monocarboxylic acid binding","calcium ion binding",18,11,0.00333975589732679
+"FG_TC","FG","up","MF","GO:0050839",2,"GO:0050839",5.30954996297694,"cell adhesion molecule binding","cell adhesion molecule binding",142,65,4.90286615011034e-06
+"FG_TC","FG","up","MF","GO:0005125",2,"GO:0050839",4.45342007447542,"cytokine activity","cell adhesion molecule binding",13,11,3.52030202555164e-05
+"FG_TC","FG","up","MF","GO:0005102",2,"GO:0050839",3.14010677699447,"signaling receptor binding","cell adhesion molecule binding",309,123,0.000724257869886499
+"FG_TC","FG","up","MF","GO:0005178",2,"GO:0050839",2.44933861839121,"integrin binding","cell adhesion molecule binding",33,17,0.00355354141733245
+"FG_TC","FG","up","MF","GO:0008061",8,"GO:0008061",2.47628527460105,"chitin binding","chitin binding",18,11,0.00333975589732679
+"FG_TC","FG","up","MF","GO:0008201",8,"GO:0008061",2.13116131450556,"heparin binding","chitin binding",27,14,0.00739330606811537
+"FG_TC","FG","up","MF","GO:0004602",7,"GO:0004602",3.04006470621728,"glutathione peroxidase activity","glutathione peroxidase activity",14,10,0.000911874967550014
+"FG_TC","FG","up","MF","GO:0016712",7,"GO:0004602",2.68824043155352,"oxidoreductase activity, acting on paired donors, with incorporation or reduction of molecular oxygen, reduced flavin or flavoprotein as one donor, and incorporation of one atom of oxygen","glutathione peroxidase activity",15,10,0.00205002694077029
+"FG_TC","FG","up","MF","GO:0004364",5,"GO:0004364",3.14586002543452,"glutathione transferase activity","glutathione transferase activity",18,12,0.000714726647748182
+"FG_TC","FG","up","MF","GO:0020037",4,"GO:0020037",3.89375007349635,"heme binding","heme binding",61,31,0.000127717358144299
+"FG_TC","FG","up","MF","GO:1990837",4,"GO:0020037",2.23941187676011,"sequence-specific double-stranded DNA binding","heme binding",317,100,0.00576219728168539
+"FG_TC","FG","up","MF","GO:0000978",4,"GO:0020037",2.06625549549095,"RNA polymerase II cis-regulatory region sequence-specific DNA binding","heme binding",201,72,0.00858508312379103
+"FG_TC","FG","up","MF","GO:0043560",3,"GO:0043560",4.10618908390224,"insulin receptor substrate binding","insulin receptor substrate binding",10,9,7.83088626019673e-05
+"FG_TC","FG","up","MF","GO:0003779",3,"GO:0043560",2.71387501941561,"actin binding","insulin receptor substrate binding",166,64,0.00193252437583405
+"FG_TC","FG","up","MF","GO:0008017",3,"GO:0043560",2.39127382018918,"microtubule binding","insulin receptor substrate binding",134,52,0.00406187149737004
+"FG_TC","FG","up","MF","GO:0099106",10,"GO:0099106",2.15560650515203,"ion channel regulator activity","ion channel regulator activity",47,17,0.00698865327985914
+"FG_TC","FG","up","MF","GO:0003777",9,"GO:0003777",2.35134532138239,"microtubule motor activity","microtubule motor activity",54,25,0.00445302033754839
+"FG_TC","FG","down","BP","GO:0007030",3,"GO:0007030",7.24482463579636,"Golgi organization","Golgi organization",72,40,5.6908267491947e-08
+"FG_TC","FG","down","BP","GO:0099558",3,"GO:0007030",4.79256812106998,"maintenance of synapse structure","Golgi organization",15,12,1.61224811903361e-05
+"FG_TC","FG","down","BP","GO:0043062",3,"GO:0007030",3.56066272078205,"extracellular structure organization","Golgi organization",107,40,0.000275002903532794
+"FG_TC","FG","down","BP","GO:0007029",3,"GO:0007030",3.22171239094958,"endoplasmic reticulum organization","Golgi organization",50,24,0.00060018841603769
+"FG_TC","FG","down","BP","GO:0170034",20,"GO:0170034",3.04655233363176,"L-amino acid biosynthetic process","L-amino acid biosynthetic process",22,13,0.000898354331978988
+"FG_TC","FG","down","BP","GO:0048149",27,"GO:0048149",2.58538258247184,"behavioral response to ethanol","behavioral response to ethanol",14,9,0.0025978700166023
+"FG_TC","FG","down","BP","GO:0005975",18,"GO:0005975",3.23569317061148,"carbohydrate metabolic process","carbohydrate metabolic process",217,92,0.000581174873009513
+"FG_TC","FG","down","BP","GO:1901136",18,"GO:0005975",2.3335180523341,"carbohydrate derivative catabolic process","carbohydrate metabolic process",119,47,0.0046396150407704
+"FG_TC","FG","down","BP","GO:0010467",18,"GO:0005975",2.00668675460116,"gene expression","carbohydrate metabolic process",2079,429,0.00984721103591055
+"FG_TC","FG","down","BP","GO:0055008",10,"GO:0055008",3.83479594524506,"cardiac muscle tissue morphogenesis","cardiac muscle tissue morphogenesis",15,11,0.000146286434484951
+"FG_TC","FG","down","BP","GO:0055013",10,"GO:0055008",2.38709822106155,"cardiac muscle cell development","cardiac muscle tissue morphogenesis",20,9,0.00410111340751873
+"FG_TC","FG","down","BP","GO:0007417",8,"GO:0007417",3.96174806233804,"central nervous system development","central nervous system development",278,88,0.000109207367329963
+"FG_TC","FG","down","BP","GO:0042552",8,"GO:0007417",2.57890634643159,"myelination","central nervous system development",36,17,0.00263689995962867
+"FG_TC","FG","down","BP","GO:0021545",8,"GO:0007417",2.05702461914835,"cranial nerve development","central nervous system development",11,7,0.00876951107407307
+"FG_TC","FG","down","BP","GO:0050982",12,"GO:0050982",3.52873190730272,"detection of mechanical stimulus","detection of mechanical stimulus",34,16,0.000295983902984617
+"FG_TC","FG","down","BP","GO:0001573",16,"GO:0001573",3.301169845739,"ganglioside metabolic process","ganglioside metabolic process",10,8,0.000499839017571908
+"FG_TC","FG","down","BP","GO:0006688",16,"GO:0001573",2.10561275810743,"glycosphingolipid biosynthetic process","ganglioside metabolic process",21,11,0.00784128505138394
+"FG_TC","FG","down","BP","GO:0007293",26,"GO:0007293",2.69577256415018,"germarium-derived egg chamber formation","germarium-derived egg chamber formation",16,10,0.00201477909409685
+"FG_TC","FG","down","BP","GO:0006094",7,"GO:0006094",4.32964080590596,"gluconeogenesis","gluconeogenesis",29,16,4.68122153335405e-05
+"FG_TC","FG","down","BP","GO:0019320",7,"GO:0006094",3.62238969005087,"hexose catabolic process","gluconeogenesis",20,13,0.000238566967394782
+"FG_TC","FG","down","BP","GO:0060419",23,"GO:0060419",2.95439806080624,"heart growth","heart growth",23,9,0.00111071321541851
+"FG_TC","FG","down","BP","GO:0042246",23,"GO:0060419",2.58538258247184,"tissue regeneration","heart growth",14,9,0.0025978700166023
+"FG_TC","FG","down","BP","GO:0006874",24,"GO:0006874",2.94323104916211,"intracellular calcium ion homeostasis","intracellular calcium ion homeostasis",58,28,0.00113964332420197
+"FG_TC","FG","down","BP","GO:0007035",24,"GO:0006874",2.05702461914835,"vacuolar acidification","intracellular calcium ion homeostasis",11,7,0.00876951107407307
+"FG_TC","FG","down","BP","GO:0006886",4,"GO:0006886",5.99544090187059,"intracellular protein transport","intracellular protein transport",259,104,1.01055300568095e-06
+"FG_TC","FG","down","BP","GO:0030970",4,"GO:0006886",5.90780349861147,"retrograde protein transport, ER to cytosol","intracellular protein transport",15,13,1.23650677819515e-06
+"FG_TC","FG","down","BP","GO:0006614",4,"GO:0006886",5.5449840759134,"SRP-dependent cotranslational protein targeting to membrane","intracellular protein transport",12,11,2.85112280646539e-06
+"FG_TC","FG","down","BP","GO:0045047",4,"GO:0006886",2.86367902466653,"protein targeting to ER","intracellular protein transport",23,19,0.00136874005070544
+"FG_TC","FG","down","BP","GO:0065002",4,"GO:0006886",2.05091330771671,"intracellular protein transmembrane transport","intracellular protein transport",16,9,0.00889378634664711
+"FG_TC","FG","down","BP","GO:0040011",13,"GO:0040011",3.45249227441056,"locomotion","locomotion",352,100,0.000352783062159945
+"FG_TC","FG","down","BP","GO:0042303",13,"GO:0040011",3.29779312950355,"molting cycle","locomotion",32,12,0.000503740501848201
+"FG_TC","FG","down","BP","GO:0016333",32,"GO:0016333",2.38805912085115,"morphogenesis of follicular epithelium","morphogenesis of follicular epithelium",10,7,0.00409204950544818
+"FG_TC","FG","down","BP","GO:1902532",28,"GO:1902532",2.48115394860757,"negative regulation of intracellular signal transduction","negative regulation of intracellular signal transduction",250,63,0.0033025245247225
+"FG_TC","FG","down","BP","GO:0046578",28,"GO:1902532",2.28056105558288,"regulation of Ras protein signal transduction","negative regulation of intracellular signal transduction",20,8,0.00524129910671412
+"FG_TC","FG","down","BP","GO:0036498",28,"GO:1902532",2.05091330771671,"IRE1-mediated unfolded protein response","negative regulation of intracellular signal transduction",16,9,0.00889378634664711
+"FG_TC","FG","down","BP","GO:0007026",34,"GO:0007026",2.29892056725924,"negative regulation of microtubule depolymerization","negative regulation of microtubule depolymerization",15,9,0.00502434476708759
+"FG_TC","FG","down","BP","GO:0170041",35,"GO:0170041",2.17725499899545,"non-proteinogenic amino acid metabolic process","non-proteinogenic amino acid metabolic process",23,11,0.00664882651142322
+"FG_TC","FG","down","BP","GO:0009226",9,"GO:0009226",3.83479594524506,"nucleotide-sugar biosynthetic process","nucleotide-sugar biosynthetic process",15,11,0.000146286434484951
+"FG_TC","FG","down","BP","GO:0006096",9,"GO:0009226",3.44013779012557,"glycolytic process","nucleotide-sugar biosynthetic process",30,13,0.00036296287800108
+"FG_TC","FG","down","BP","GO:0052652",9,"GO:0009226",2.29892056725924,"cyclic purine nucleotide metabolic process","nucleotide-sugar biosynthetic process",15,9,0.00502434476708759
+"FG_TC","FG","down","BP","GO:0006793",30,"GO:0006793",2.39097234605767,"phosphorus metabolic process","phosphorus metabolic process",664,195,0.00406469210493922
+"FG_TC","FG","down","BP","GO:0046434",30,"GO:0006793",2.32204790365845,"organophosphate catabolic process","phosphorus metabolic process",105,36,0.00476378438293839
+"FG_TC","FG","down","BP","GO:0006487",2,"GO:0006487",9.61604768900978,"protein N-linked glycosylation","protein N-linked glycosylation",37,28,2.4207632129669e-10
+"FG_TC","FG","down","BP","GO:0002181",2,"GO:0006487",7.66183619745174,"cytoplasmic translation","protein N-linked glycosylation",112,56,2.17853129255261e-08
+"FG_TC","FG","down","BP","GO:0009101",2,"GO:0006487",5.91872381297674,"glycoprotein biosynthetic process","protein N-linked glycosylation",128,76,1.2058025196206e-06
+"FG_TC","FG","down","BP","GO:0006412",2,"GO:0006487",4.63501014919517,"translation","protein N-linked glycosylation",306,127,2.31734049451231e-05
+"FG_TC","FG","down","BP","GO:0006493",2,"GO:0006487",2.94323104916211,"protein O-linked glycosylation","protein N-linked glycosylation",58,28,0.00113964332420197
+"FG_TC","FG","down","BP","GO:0006418",2,"GO:0006487",2.70643423333174,"tRNA aminoacylation for protein translation","protein N-linked glycosylation",26,14,0.00196591966384066
+"FG_TC","FG","down","BP","GO:0006446",2,"GO:0006487",2.1798337955829,"regulation of translational initiation","protein N-linked glycosylation",37,16,0.00660946343655212
+"FG_TC","FG","down","BP","GO:0070972",19,"GO:0070972",3.21051761370431,"protein localization to endoplasmic reticulum","protein localization to endoplasmic reticulum",19,12,0.000615860551119823
+"FG_TC","FG","down","BP","GO:0034067",19,"GO:0070972",2.48139044991005,"protein localization to Golgi apparatus","protein localization to endoplasmic reticulum",12,8,0.00330072657711711
+"FG_TC","FG","down","BP","GO:0097479",19,"GO:0070972",2.36641258648253,"synaptic vesicle localization","protein localization to endoplasmic reticulum",26,12,0.00430117797765324
+"FG_TC","FG","down","BP","GO:0009306",29,"GO:0009306",2.45333176749414,"protein secretion","protein secretion",97,44,0.00352101789661413
+"FG_TC","FG","down","BP","GO:0050714",29,"GO:0009306",2.05404602520521,"positive regulation of protein secretion","protein secretion",37,16,0.00882986319261676
+"FG_TC","FG","down","BP","GO:0170038",14,"GO:0170038",3.43095364207263,"proteinogenic amino acid biosynthetic process","proteinogenic amino acid biosynthetic process",23,14,0.000370720291493598
+"FG_TC","FG","down","BP","GO:0048841",31,"GO:0048841",2.38805912085115,"regulation of axon extension involved in axon guidance","regulation of axon extension involved in axon guidance",10,7,0.00409204950544818
+"FG_TC","FG","down","BP","GO:0042391",25,"GO:0042391",2.84026329083568,"regulation of membrane potential","regulation of membrane potential",112,47,0.00144456373910423
+"FG_TC","FG","down","BP","GO:0007589",25,"GO:0042391",2.05091330771671,"body fluid secretion","regulation of membrane potential",16,9,0.00889378634664711
+"FG_TC","FG","down","BP","GO:0090257",22,"GO:0090257",2.968769134212,"regulation of muscle system process","regulation of muscle system process",61,29,0.00107456048412996
+"FG_TC","FG","down","BP","GO:0060048",22,"GO:0090257",2.32039371972904,"cardiac muscle contraction","regulation of muscle system process",31,16,0.0047819637574594
+"FG_TC","FG","down","BP","GO:0003300",22,"GO:0090257",2.3166215910313,"cardiac muscle hypertrophy","regulation of muscle system process",29,13,0.00482367910825793
+"FG_TC","FG","down","BP","GO:0033043",15,"GO:0033043",3.41498007234733,"regulation of organelle organization","regulation of organelle organization",416,103,0.000384609429488748
+"FG_TC","FG","down","BP","GO:1903053",15,"GO:0033043",2.17725499899545,"regulation of extracellular matrix organization","regulation of organelle organization",23,11,0.00664882651142322
+"FG_TC","FG","down","BP","GO:0051592",36,"GO:0051592",2.05349142178722,"response to calcium ion","response to calcium ion",49,19,0.00884114632117592
+"FG_TC","FG","down","BP","GO:0006890",1,"GO:0006890",10.2807452772354,"retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",30,25,5.23907629232652e-11
+"FG_TC","FG","down","BP","GO:0006888",1,"GO:0006890",5.5564075299045,"endoplasmic reticulum to Golgi vesicle-mediated transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",80,43,2.77710608531916e-06
+"FG_TC","FG","down","BP","GO:0006891",1,"GO:0006890",5.36329659798308,"intra-Golgi vesicle-mediated transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",24,17,4.33214916634153e-06
+"FG_TC","FG","down","BP","GO:0042147",1,"GO:0006890",4.97635262551803,"retrograde transport, endosome to Golgi","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",44,25,1.05595977422719e-05
+"FG_TC","FG","down","BP","GO:0006896",1,"GO:0006890",4.84760391572916,"Golgi to vacuole transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",13,11,1.42035231766826e-05
+"FG_TC","FG","down","BP","GO:0035459",1,"GO:0006890",4.32533810174799,"vesicle cargo loading","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",12,10,4.72783050245272e-05
+"FG_TC","FG","down","BP","GO:0099532",1,"GO:0006890",3.301169845739,"synaptic vesicle endosomal processing","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",10,8,0.000499839017571908
+"FG_TC","FG","down","BP","GO:0006810",1,"GO:0006890",2.54018665708874,"transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",1477,524,0.00288279223051588
+"FG_TC","FG","down","BP","GO:0090114",1,"GO:0006890",2.28386013750545,"COPII-coated vesicle budding","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",18,10,0.00520163485765743
+"FG_TC","FG","down","BP","GO:0006893",1,"GO:0006890",2.05937228262201,"Golgi to plasma membrane transport","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",38,19,0.00872223367136247
+"FG_TC","FG","down","BP","GO:0048488",1,"GO:0006890",2.05426283014579,"synaptic vesicle endocytosis","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",36,16,0.00882545632057717
+"FG_TC","FG","down","BP","GO:0045214",5,"GO:0045214",5.93188598781606,"sarcomere organization","sarcomere organization",29,20,1.16980645152559e-06
+"FG_TC","FG","down","BP","GO:0031033",5,"GO:0045214",5.5449840759134,"myosin filament organization","sarcomere organization",12,11,2.85112280646539e-06
+"FG_TC","FG","down","BP","GO:0009070",17,"GO:0009070",3.301169845739,"serine family amino acid biosynthetic process","serine family amino acid biosynthetic process",10,8,0.000499839017571908
+"FG_TC","FG","down","BP","GO:0043436",17,"GO:0009070",2.94616486848355,"oxoacid metabolic process","serine family amino acid biosynthetic process",305,95,0.00113197055879273
+"FG_TC","FG","down","BP","GO:0035725",6,"GO:0035725",4.56595309843991,"sodium ion transmembrane transport","sodium ion transmembrane transport",51,27,2.71673264608589e-05
+"FG_TC","FG","down","BP","GO:0071805",6,"GO:0035725",3.46372188305658,"potassium ion transmembrane transport","sodium ion transmembrane transport",46,26,0.000343778028723319
+"FG_TC","FG","down","BP","GO:1990573",6,"GO:0035725",3.00867635951407,"potassium ion import across plasma membrane","sodium ion transmembrane transport",15,10,0.000980220182945441
+"FG_TC","FG","down","BP","GO:1903804",6,"GO:0035725",2.69577256415018,"glycine import across plasma membrane","sodium ion transmembrane transport",16,10,0.00201477909409685
+"FG_TC","FG","down","BP","GO:0060012",21,"GO:0060012",3.00867635951407,"synaptic transmission, glycinergic","synaptic transmission, glycinergic",15,10,0.000980220182945441
+"FG_TC","FG","down","BP","GO:0007274",21,"GO:0060012",2.67405903919855,"neuromuscular synaptic transmission","synaptic transmission, glycinergic",21,12,0.0021180731789232
+"FG_TC","FG","down","BP","GO:0007271",21,"GO:0060012",2.54828631346652,"synaptic transmission, cholinergic","synaptic transmission, glycinergic",19,11,0.00282952598430323
+"FG_TC","FG","down","BP","GO:0050806",21,"GO:0060012",2.54185178185311,"positive regulation of synaptic transmission","synaptic transmission, glycinergic",49,16,0.00287176050328241
+"FG_TC","FG","down","BP","GO:0007268",21,"GO:0060012",2.0979552211874,"chemical synaptic transmission","synaptic transmission, glycinergic",247,110,0.00798076970369153
+"FG_TC","FG","down","BP","GO:0016082",11,"GO:0016082",3.80946303302177,"synaptic vesicle priming","synaptic vesicle priming",11,9,0.000155073277895064
+"FG_TC","FG","down","BP","GO:0017158",11,"GO:0016082",3.44431942425147,"regulation of calcium ion-dependent exocytosis","synaptic vesicle priming",16,11,0.000359484836254595
+"FG_TC","FG","down","BP","GO:0031629",11,"GO:0016082",2.84795201438656,"synaptic vesicle fusion to presynaptic active zone membrane","synaptic vesicle priming",11,8,0.00141921432337682
+"FG_TC","FG","down","BP","GO:0048791",11,"GO:0016082",2.05702461914835,"calcium ion-regulated exocytosis of neurotransmitter","synaptic vesicle priming",11,7,0.00876951107407307
+"FG_TC","FG","down","BP","GO:0090659",33,"GO:0090659",2.38805912085115,"walking behavior","walking behavior",10,7,0.00409204950544818
+"FG_TC","FG","down","CC","GO:0030663",5,"GO:0030663",4.2883017945565,"COPI-coated vesicle membrane","COPI-coated vesicle membrane",14,11,5.14870732628986e-05
+"FG_TC","FG","down","CC","GO:0030672",5,"GO:0030663",4.06746915713262,"synaptic vesicle membrane","COPI-coated vesicle membrane",59,29,8.56112509239037e-05
+"FG_TC","FG","down","CC","GO:0030660",5,"GO:0030663",2.93141628180445,"Golgi-associated vesicle membrane","COPI-coated vesicle membrane",27,20,0.00117107232614864
+"FG_TC","FG","down","CC","GO:0030120",5,"GO:0030663",2.80999793640298,"vesicle coat","COPI-coated vesicle membrane",37,21,0.001548823978299
+"FG_TC","FG","down","CC","GO:0012507",5,"GO:0030663",2.38867289239744,"ER to Golgi transport vesicle membrane","COPI-coated vesicle membrane",24,13,0.00408627045521616
+"FG_TC","FG","down","CC","GO:0031045",5,"GO:0030663",2.31040050987812,"dense core granule","COPI-coated vesicle membrane",20,11,0.00489327349592815
+"FG_TC","FG","down","CC","GO:0030140",5,"GO:0030663",2.04725835395571,"trans-Golgi network transport vesicle","COPI-coated vesicle membrane",16,9,0.00896895089055724
+"FG_TC","FG","down","CC","GO:0031201",7,"GO:0031201",2.54366081331228,"SNARE complex","SNARE complex",19,11,0.00285982321108771
+"FG_TC","FG","down","CC","GO:0030131",7,"GO:0031201",2.05398632920241,"clathrin adaptor complex","SNARE complex",11,7,0.0088310769859949
+"FG_TC","FG","down","CC","GO:0097440",10,"GO:0097440",2.17303195384548,"apical dendrite","apical dendrite",13,8,0.00671379453393031
+"FG_TC","FG","down","CC","GO:0034704",8,"GO:0034704",2.29509815902356,"calcium channel complex","calcium channel complex",15,9,0.00506876131434873
+"FG_TC","FG","down","CC","GO:0008076",8,"GO:0034704",2.05398632920241,"voltage-gated potassium channel complex","calcium channel complex",11,7,0.0088310769859949
+"FG_TC","FG","down","CC","GO:0022625",2,"GO:0022625",11.0475069098354,"cytosolic large ribosomal subunit","cytosolic large ribosomal subunit",40,31,8.96381923966188e-12
+"FG_TC","FG","down","CC","GO:0022627",2,"GO:0022625",3.42469214754988,"cytosolic small ribosomal subunit","cytosolic large ribosomal subunit",23,14,0.000376103913508552
+"FG_TC","FG","down","CC","GO:0005881",2,"GO:0022625",3.29002445070668,"cytoplasmic microtubule","cytosolic large ribosomal subunit",66,16,0.000512832510794031
+"FG_TC","FG","down","CC","GO:0022626",2,"GO:0022625",2.4788922586418,"cytosolic ribosome","cytosolic large ribosomal subunit",80,55,0.00331976805353638
+"FG_TC","FG","down","CC","GO:0030018",2,"GO:0022625",2.43434784983303,"Z disc","cytosolic large ribosomal subunit",65,27,0.00367834237378257
+"FG_TC","FG","down","CC","GO:0005789",1,"GO:0005789",20.7250833736727,"endoplasmic reticulum membrane","endoplasmic reticulum membrane",459,225,1.8832875107094e-21
+"FG_TC","FG","down","CC","GO:0000139",1,"GO:0005789",19.8115300369449,"Golgi membrane","endoplasmic reticulum membrane",283,144,1.54336967614015e-20
+"FG_TC","FG","down","CC","GO:0140534",1,"GO:0005789",16.7844339350349,"endoplasmic reticulum protein-containing complex","endoplasmic reticulum membrane",64,49,1.64272953302017e-17
+"FG_TC","FG","down","CC","GO:0005788",1,"GO:0005789",14.1936314017829,"endoplasmic reticulum lumen","endoplasmic reticulum membrane",72,50,6.40278027315006e-15
+"FG_TC","FG","down","CC","GO:0033116",1,"GO:0005789",7.6864965143215,"endoplasmic reticulum-Golgi intermediate compartment membrane","endoplasmic reticulum membrane",27,21,2.05827541034107e-08
+"FG_TC","FG","down","CC","GO:0032580",1,"GO:0005789",5.63265196455156,"Golgi cisterna membrane","endoplasmic reticulum membrane",39,24,2.32995769407687e-06
+"FG_TC","FG","down","CC","GO:0030867",1,"GO:0005789",4.9785575926896,"rough endoplasmic reticulum membrane","endoplasmic reticulum membrane",25,17,1.05061212178042e-05
+"FG_TC","FG","down","CC","GO:0033017",1,"GO:0005789",4.7795795700105,"sarcoplasmic reticulum membrane","endoplasmic reticulum membrane",17,13,1.66119429131379e-05
+"FG_TC","FG","down","CC","GO:0005791",1,"GO:0005789",3.82799239689671,"rough endoplasmic reticulum","endoplasmic reticulum membrane",36,26,0.000148596165648137
+"FG_TC","FG","down","CC","GO:0044322",1,"GO:0005789",3.80494070629554,"endoplasmic reticulum quality control compartment","endoplasmic reticulum membrane",11,9,0.000156696499135453
+"FG_TC","FG","down","CC","GO:0032588",1,"GO:0005789",3.80154024138841,"trans-Golgi network membrane","endoplasmic reticulum membrane",39,21,0.000157928226589407
+"FG_TC","FG","down","CC","GO:0005794",1,"GO:0005789",3.15615451718698,"Golgi apparatus","endoplasmic reticulum membrane",615,269,0.00069798402487627
+"FG_TC","FG","down","CC","GO:0005802",1,"GO:0005789",3.07768891560724,"trans-Golgi network","endoplasmic reticulum membrane",123,56,0.000836201773658653
+"FG_TC","FG","down","CC","GO:0031985",1,"GO:0005789",2.95711202912652,"Golgi cisterna","endoplasmic reticulum membrane",59,36,0.00110379385226922
+"FG_TC","FG","down","CC","GO:0005801",1,"GO:0005789",2.6690239202188,"cis-Golgi network","endoplasmic reticulum membrane",21,12,0.00214277257751489
+"FG_TC","FG","down","CC","GO:0005793",1,"GO:0005789",2.60648395967216,"endoplasmic reticulum-Golgi intermediate compartment","endoplasmic reticulum membrane",51,34,0.00247466285938785
+"FG_TC","FG","down","CC","GO:0005783",1,"GO:0005789",2.16184940797659,"endoplasmic reticulum","endoplasmic reticulum membrane",737,337,0.00688891128586292
+"FG_TC","FG","down","CC","GO:0070971",1,"GO:0005789",2.05398632920241,"endoplasmic reticulum exit site","endoplasmic reticulum membrane",11,7,0.0088310769859949
+"FG_TC","FG","down","CC","GO:0016020",4,"GO:0016020",5.92243778067508,"membrane","membrane",2851,941,1.19553479204391e-06
+"FG_TC","FG","down","CC","GO:0042734",4,"GO:0016020",5.10164432203388,"presynaptic membrane","membrane",56,32,7.91326442256952e-06
+"FG_TC","FG","down","CC","GO:0005886",4,"GO:0016020",3.90236359580098,"plasma membrane","membrane",1491,459,0.000125209247133244
+"FG_TC","FG","down","CC","GO:0005905",4,"GO:0016020",3.08699028154122,"clathrin-coated pit","membrane",32,17,0.000818483103599613
+"FG_TC","FG","down","CC","GO:0030315",4,"GO:0016020",2.31040050987812,"T-tubule","membrane",20,11,0.00489327349592815
+"FG_TC","FG","down","CC","GO:0043209",9,"GO:0043209",2.23484514671358,"myelin sheath","myelin sheath",23,12,0.0058231081117205
+"FG_TC","FG","down","CC","GO:0045171",9,"GO:0043209",2.18099880671297,"intercellular bridge","myelin sheath",26,13,0.00659175706422619
+"FG_TC","FG","down","CC","GO:0048471",6,"GO:0048471",3.78995536361333,"perinuclear region of cytoplasm","perinuclear region of cytoplasm",289,102,0.000162197679407264
+"FG_TC","FG","down","CC","GO:0099738",6,"GO:0048471",2.05878855950719,"cell cortex region","perinuclear region of cytoplasm",22,13,0.00873396486468074
+"FG_TC","FG","down","CC","GO:0014069",11,"GO:0014069",2.11306500012123,"postsynaptic density","postsynaptic density",144,50,0.0077078809787882
+"FG_TC","FG","down","CC","GO:0098793",3,"GO:0098793",7.71411063454933,"presynapse","presynapse",273,122,1.93147621953393e-08
+"FG_TC","FG","down","CC","GO:0060076",3,"GO:0098793",5.77082905828117,"excitatory synapse","presynapse",23,17,1.69500483637884e-06
+"FG_TC","FG","down","CC","GO:0097470",3,"GO:0098793",4.43197903273472,"ribbon synapse","presynapse",10,9,3.69846035113601e-05
+"FG_TC","FG","down","CC","GO:0043195",3,"GO:0098793",4.39794450582768,"terminal bouton","presynapse",20,14,3.99995857988026e-05
+"FG_TC","FG","down","CC","GO:0045202",3,"GO:0098793",4.1210317232755,"synapse","presynapse",640,239,7.56777613771553e-05
+"FG_TC","FG","down","CC","GO:0031594",3,"GO:0098793",3.67587186150762,"neuromuscular junction","presynapse",37,20,0.000210925039200175
+"FG_TC","FG","down","CC","GO:0098978",3,"GO:0098793",2.7499359784589,"glutamatergic synapse","presynapse",223,77,0.00177854157450327
+"FG_TC","FG","down","MF","GO:0031418",3,"GO:0031418",4.77658219986803,"L-ascorbic acid binding","L-ascorbic acid binding",11,10,1.67269901102908e-05
+"FG_TC","FG","down","MF","GO:0030170",3,"GO:0031418",2.63627020136742,"pyridoxal phosphate binding","L-ascorbic acid binding",33,17,0.00231062675954242
+"FG_TC","FG","down","MF","GO:0035250",2,"GO:0035250",5.69720259444199,"UDP-galactosyltransferase activity","UDP-galactosyltransferase activity",20,13,2.00815580757906e-06
+"FG_TC","FG","down","MF","GO:0046527",2,"GO:0035250",5.69634775345206,"glucosyltransferase activity","UDP-galactosyltransferase activity",10,10,2.01211244198712e-06
+"FG_TC","FG","down","MF","GO:0008194",2,"GO:0035250",3.17442157429222,"UDP-glycosyltransferase activity","UDP-galactosyltransferase activity",77,43,0.00066923466077831
+"FG_TC","FG","down","MF","GO:0016758",2,"GO:0035250",2.73032310130811,"hexosyltransferase activity","UDP-galactosyltransferase activity",106,61,0.00186070231813847
+"FG_TC","FG","down","MF","GO:0016741",2,"GO:0035250",2.16443889313121,"transferase activity, transferring one-carbon groups","UDP-galactosyltransferase activity",77,14,0.00684795829664406
+"FG_TC","FG","down","MF","GO:0004812",11,"GO:0004812",2.48243698704105,"aminoacyl-tRNA ligase activity","aminoacyl-tRNA ligase activity",26,14,0.00329278225734411
+"FG_TC","FG","down","MF","GO:0015297",12,"GO:0015297",2.1853006688993,"antiporter activity","antiporter activity",37,19,0.00652678536582062
+"FG_TC","FG","down","MF","GO:0016830",7,"GO:0016830",3.20692147041822,"carbon-carbon lyase activity","carbon-carbon lyase activity",29,17,0.000620981310567899
+"FG_TC","FG","down","MF","GO:0140312",13,"GO:0140312",2.0336969263702,"cargo adaptor activity","cargo adaptor activity",13,8,0.00925343702384184
+"FG_TC","FG","down","MF","GO:0015375",6,"GO:0015375",3.23732467460309,"glycine:sodium symporter activity","glycine:sodium symporter activity",16,11,0.0005789956826843
+"FG_TC","FG","down","MF","GO:0140828",14,"GO:0140828",2.01736025295743,"metal cation:monoatomic cation antiporter activity","metal cation:monoatomic cation antiporter activity",18,10,0.00960814939159128
+"FG_TC","FG","down","MF","GO:0003756",8,"GO:0003756",3.14294910844783,"protein disulfide isomerase activity","protein disulfide isomerase activity",12,9,0.000719533289506725
+"FG_TC","FG","down","MF","GO:0140103",8,"GO:0003756",2.9061096580172,"catalytic activity, acting on a glycoprotein","protein disulfide isomerase activity",17,11,0.00124133883379159
+"FG_TC","FG","down","MF","GO:0019887",10,"GO:0019887",2.68598569858188,"protein kinase regulator activity","protein kinase regulator activity",97,28,0.00206069777140877
+"FG_TC","FG","down","MF","GO:0005096",10,"GO:0019887",2.51855219278105,"GTPase activator activity","protein kinase regulator activity",85,35,0.00303003613125577
+"FG_TC","FG","down","MF","GO:0005085",10,"GO:0019887",2.51771685337358,"guanyl-nucleotide exchange factor activity","protein kinase regulator activity",88,36,0.00303586983274479
+"FG_TC","FG","down","MF","GO:0015035",9,"GO:0015035",2.71917327397473,"protein-disulfide reductase activity","protein-disulfide reductase activity",20,12,0.0019090914209852
+"FG_TC","FG","down","MF","GO:0016491",9,"GO:0015035",2.38389639910289,"oxidoreductase activity","protein-disulfide reductase activity",333,102,0.00413146046176117
+"FG_TC","FG","down","MF","GO:0016667",9,"GO:0015035",2.2040322036948,"oxidoreductase activity, acting on a sulfur group of donors","protein-disulfide reductase activity",31,18,0.00625126336846675
+"FG_TC","FG","down","MF","GO:0008307",1,"GO:0008307",7.47374872044216,"structural constituent of muscle","structural constituent of muscle",16,15,3.35931925738201e-08
+"FG_TC","FG","down","MF","GO:0003735",1,"GO:0008307",5.38591492044041,"structural constituent of ribosome","structural constituent of muscle",116,54,4.11230274427814e-06
+"FG_TC","FG","down","MF","GO:0140313",1,"GO:0008307",2.17556468818244,"molecular sequestering activity","structural constituent of muscle",31,10,0.00667475473058127
+"FG_TC","FG","down","MF","GO:0019905",5,"GO:0019905",3.78654398428942,"syntaxin binding","syntaxin binding",21,14,0.000163476757745917
+"FG_TC","FG","down","MF","GO:0000149",5,"GO:0019905",3.31367621784317,"SNARE binding","syntaxin binding",46,29,0.000485650435094686
+"FG_TC","FG","down","MF","GO:0051393",5,"GO:0019905",3.18021796372808,"alpha-actinin binding","syntaxin binding",14,10,0.000660361942354364
+"FG_TC","FG","down","MF","GO:0031267",5,"GO:0019905",2.22136542386783,"small GTPase binding","syntaxin binding",119,45,0.00600668110899073
+"FG_TC","FG","down","MF","GO:0005249",4,"GO:0005249",4.55023968926238,"voltage-gated potassium channel activity","voltage-gated potassium channel activity",15,12,2.81682788101057e-05
+"FG_TC","FG","down","MF","GO:0005267",4,"GO:0005249",2.69687651209813,"potassium channel activity","voltage-gated potassium channel activity",22,18,0.00200966416210116
+"FG_TC","FG","down","MF","GO:0099094",4,"GO:0005249",2.52211988483899,"ligand-gated monoatomic cation channel activity","voltage-gated potassium channel activity",52,22,0.0030052466046879

@@ -12,7 +12,9 @@ source(here::here("01_code", "_paths.R"))
 
 For each treatment-vs-treatment-control contrast, join the DESeq2 DEG list
 (`<X>_TC_siggene*.csv`, one row per gene, `padj < 0.05`) to the BLAST/UniProt/GO master
-table (`03_blast/03_analyses/genome-foot/LOC_GO_list.txt`) and write three files to
+table (`03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`: the genome blast of 2026,
+Swiss-Prot 2026_03 plus the Mytilus foot and byssal proteins, with UniProt release 2026_03 records,
+and six genes `03_blast` step 05 found with the low-complexity filter off) and write three files to
 `03_analyses/DEG_lists/GOterms_genome/`:
 
 - `<X>_sigs_merged.csv`: every DEG with every annotation row it matched (a gene with several

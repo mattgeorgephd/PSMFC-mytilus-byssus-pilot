@@ -29,7 +29,7 @@ plaque measurements, noted below. It reads one file from outside this folder
 └── 03_analyses/
     ├── 01_build-mussel-key/                 script 01: mussel-treatment-key.csv (tag -> arm, species, rna flag)
     ├── 02_extract-tensometer-data/          script 02: thread-summary-raw-output.xlsx
-    │   └── QC_plots/<source_folder>/        per-trace loess QC jpgs
+    │   └── QC_plots/<source_folder>/        per-trace loess QC jpgs (git-ignored; written on every run)
     ├── 03_assemble-thread-summary/          script 03: thread-summary.xlsx, input to 04, 05 and 09
     ├── 04_analyze-thread-strength/          script 04: figures + STATS_ancova_*.csv
     ├── 05_decompose-adhesion/               script 05: force and area ANCOVA

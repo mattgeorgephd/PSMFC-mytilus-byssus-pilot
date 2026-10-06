@@ -1,16 +1,16 @@
-# Gene-mechanics correlation pipeline, scripts 01 to 05
+# Gene-mechanics correlation pipeline, scripts 01 to 06
 
 Links foot or gill gene expression at day 3 to the same animal's byssal thread mechanics.
-Five chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
-session, parameterised by tissue. Run in order **01 → 02 → 03 → 04 → 05**, after the
+Six chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
+session, parameterised by tissue. Run in order **01 → 02 → 03 → 04 → 05 → 06**, after the
 `02_thread-strength`, `05_differential-expression` and `07_enrichment` runners, or knit
-**00_run_gene_mechanics_by_tissue.Rmd**, which renders all five for foot and gill. Script 05
-(DEG sets, enriched GO terms and mitochondrial expression against mechanics) is described in
-its own header and in the folder README.
+**00_run_gene_mechanics_by_tissue.Rmd**, which renders all six for foot and gill. Script 05
+(DEG sets, enriched GO terms and mitochondrial expression against mechanics) and script 06
+(expression suites, below) are described in their own headers and in the folder README.
 
 ## Running for a tissue
 
-Each of 01 to 05 has a knit parameter in its YAML header:
+Each of 01 to 06 has a knit parameter in its YAML header:
 
 ```yaml
 params:
@@ -49,6 +49,11 @@ count-matrix column is dropped with a message rather than a hard stop.
 02  modules, diagnostics                            ->  03_analyses/gene_mechanics/
 03  RNA x thread manifest, top-25 expression tables ->  03_analyses/expr_tables/
 04  byssus/foot gene list + expression              ->  03_analyses/byssus_genes/
+05  DEG sets, enriched GO terms, mitochondrial
+    share against mechanics (reads 07's topGO terms) ->  03_analyses/go_mechanics/
+06  expression suites: 05's sets, co-expression
+    modules and expression components between and
+    within arms; multi-gene prediction (reads 01, 05) ->  03_analyses/expression_suites/
 ```
 
 ---
@@ -115,7 +120,7 @@ also absorbs any between-animal baseline differences the arm assignment did not 
 ### Annotation map and candidate universe
 
 `CANDIDATE_ANNOTATION = "genome"`: every gene in the count matrix is annotated with its best
-UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`, with
+UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`, with
 `blast_pident` and `blast_evalue` carried along, and any expressed gene whose name matches
 `CANDIDATE_KEYWORDS` (byssal / collagen / plaque-curing / HSP / hypoxia / tRNA-synthetase /
 oxidative-stress terms) and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-10`,
@@ -123,6 +128,14 @@ oxidative-stress terms) and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-1
 to genes named in the treatment-vs-control DEG tables plus the byssal structural genes; it
 made "already a DEG in some contrast" a hidden entry condition and is kept only for comparison. `in_TC_DEG_annotation` marks the
 overlap in every table.
+
+Several best hits of the BLAST search of 2026 are *M. coruscus* byssus proteins (Qin et al.
+2016, J Proteomics 144:87-98) whose names carry no byssal word. The keywords name them
+explicitly: "YGH-rich protein" as byssal structural (the genes whose 2024 best hit was Foot
+protein 12), and "protease inhibitor-like protein-1", "C1q-domain-containing protein-1" and
+"TSP_1 domain containing protein-1" as byssal accessory (candidates in script 01, the
+`byssal_collagen` module in script 02, `byssal_accessory` in script 04). These names occur
+only on *M. coruscus* entries in the BLAST tables.
 
 ### Gene keys and the mitochondrial loci
 
@@ -153,7 +166,10 @@ Every model it fits is that same per-animal ANCOVA. It adds:
   PC1 of each module's members (genes passing the BLAST floor, `blast_ok`), oriented so a
   higher score is higher expression, through the same ANCOVA (`p_lm`, `q_lm` across the six
   modules within a metric, `q_family` within a tier).
-  `byssal_structural` is a sixth module (foot proteins, preCols, byssal EP/ACDC, the
+  `byssal_structural` is a sixth module (foot proteins, preCols including preCOL-NG, named
+  "Nongradient byssal" in UniProt, the thread matrix proteins, the *M. coruscus* YGH-rich
+  proteins (Qin et al. 2016; the best hits, in the search of 2026, of the genes whose 2024 best
+  hit was Foot protein 12), byssal EP/ACDC, the
   plaque-curing tyrosinase: the structural proteins of the plaque and thread), separate from the broad `byssal_collagen` regex, so the test "these genes track
   thread building, not strength" has its own row (`BYSSAL_STRUCTURAL_REGEX` in script 01
   flags the same genes in the candidate table).
@@ -174,6 +190,46 @@ Every model it fits is that same per-animal ANCOVA. It adds:
 - `best_hits_<T>.csv`: the single best hit per metric for each gene set (candidate, module,
   DEG union) with `p_lm`, `q_lm`, `q_family`, the floor flag and the influence flag on one
   row. This is the table to quote from.
+
+### Script 06: expression suites
+
+Script 06 tests combinations of genes rather than single genes, and separates the across-arm
+question (does an animal's expression state go with its attachment, whatever the cause, which
+includes the treatment effect) from the within-arm question of scripts 01, 02 and 05. Its
+axes, each scored per animal and scaled to SD units:
+
+- script 05's DEG sets and GO terms with at least `min_set_genes` (10) expressed genes, scored
+  with script 05's function (a check confirms the partial correlations are script 05's);
+- co-expression modules: the `n_var_genes` (4,000) genes with the largest within-arm variance,
+  arm removed, clustered by signed correlation ((1 - r) / 2, average linkage) and cut with
+  `dynamicTreeCut::cutreeDynamic` (deepSplit 2, at least `min_module` (30) genes). A module's
+  weights are the first principal component of its genes within arms; its score applies them
+  to the expression with the arm differences kept, so its arm means can be drawn while its
+  within-arm part is the module's;
+- the first `n_pcs` (10) principal components of all expressed genes.
+
+Each axis gets, for every metric, the within-arm ANCOVA (`level_day3 ~ score + treatment +
+level_baseline`; `q_lm` over all axes per metric, `q_type` per axis type, `q_family` per tier),
+the same model without treatment (`across_r`), the correlation of the four arm means of the score
+with those of the baseline-adjusted level (`between_r`, descriptive) and an interaction test.
+
+The prediction test fits an elastic net (glmnet, alpha 0.5, lambda.min of an inner 5-fold
+cross-validation with fixed fold IDs) to predict the day-3 level of held-out animals from the
+candidate genes, the `n_top_var` (2,000) most variable genes, all the axes and the six DEG
+programs alone, across arms
+(baseline removed inside each training fold) and within arms (arm and baseline removed inside
+each training fold). Out-of-sample Q2 = 1 - SSE / SSE of the training-fold mean, over
+`cv_repeats` (3) repeats of 5 folds balanced by arm. The null is `nperm` (100) label permutations
+per scenario (within arm for the within question), each through the same procedure. Each
+run sets its own seed from `seed`, the scenario and the permutation, so the result does not
+depend on how the runs are spread over the `cores` workers (a socket cluster, which works on
+Windows); a check reruns the first scenario serially. Reference: the same cross-validation with
+the treatment alone as predictor. Power check: the treatment's indicator columns added to all
+the axes, across arms; the treatment is then among the predictors, so the elastic net's Q2 there
+against the treatment-alone Q2 shows whether this many animals can find a signal of that size
+among this many predictors (scenarios are numbered, and seeded, in the order of
+`suite_prediction_<T>.csv`, with the DEG programs and the power check last). About 1,800 fits
+per tissue, 8 minutes on 4 workers.
 
 ### Bioconductor masking
 
@@ -219,17 +275,36 @@ score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 | `RUN_provenance_<T>.txt` | settings of scripts 01 and 02 (arms, covariates, model, metrics with scale and tier, modules, family sizes), the code commit that ran and whether tracked files differed from it, R and package versions, and an MD5 of every input, all with repository-relative paths |
 | `animal_reconciliation_<T>.csv` | animals whose presence in the fits differs from `02_data/expected_animals.csv` (empty when they agree) |
 | `candidate_heatmap_<T>.png`, `top_candidate_scatter_<T>.png`, `best_hit_per_metric_scatter_<T>.png` | figures of genes selected by smallest p (effects biased away from zero). The two scatter files are added-variable plots: day-3 level and expression each residualised on arm and baseline, with the tested slope drawn through the origin, points coloured by arm |
+| `candidate_scatter_<T>/NN_<LOC>_<name>.png` | one figure per heatmap gene (60 per tissue), numbered in the heatmap's row order: an added-variable panel per metric, each with partial r and its 95% interval, p, `q_lm` and `q_family`. Rewritten on every run (the folder's figures are removed first) |
 
 ### `03_analyses/expr_tables/` (script 03) and `03_analyses/byssus_genes/` (script 04)
 
-`rna_thread_manifest_<T>.csv` is tissue-suffixed. The companion `sample_metadata_<T>.csv`
+`rna_thread_manifest_<T>.csv` is tissue-suffixed. `byssus_gene_expression_<T>.csv` lists the
+byssal and foot genes (by category) with more than 5 reads in at least a third of the
+thread-having animals, and every mussel foot protein gene with reads in the tissue even below
+that filter (`mfp` TRUE, `expressed` FALSE; 12 in the foot, among them mfp-6, one mfp-3 and three
+mfp-1 copies), so that no mfp gene is left out of the table; `byssus_category_scores_<T>.csv`
+averages only the genes that pass the filter. The companion `sample_metadata_<T>.csv`
 files carry all four arms and the per-animal thread values (arithmetic mean of the thread
 peak forces as `mean_force`, the largest as `max_force`, mean area and adhesion), a
 description rather than a model input.
 
+### `03_analyses/expression_suites/` (script 06)
+
+The axes (`suite_axes_<T>.csv`), their tests (`suite_axis_tests_<T>.csv`), members
+(`suite_axis_members_<T>.csv`), per-animal scores (`suite_scores_<T>.csv`), the prediction test
+and its nulls (`suite_prediction_<T>.csv`, `suite_prediction_null_<T>.csv`), four figures and
+`RUN_provenance_<T>.txt`; the folder's README lists every column.
+
 ---
 
 ## Checks
+
+Script 06 checks that its axis scores are complete, that at least one module was found and
+each has at least `min_module` genes, that script 05's sets reproduce script 05's within-arm
+partial correlations (to 1e-8), that every prediction scenario has its permutations and a finite
+Q2, that the treatment-only reference ran, and that the first scenario's Q2 is the same rerun
+serially as on the workers.
 
 Script 01 checks, before any model is fitted:
 
@@ -259,13 +334,18 @@ after writing `run_log.csv`, if any step failed.
   LOC134711106, foot protein-4 variant-1, and LOC134692428, byssal peroxidase-like 4: zero
   counts in 28 and 27 of the 46 day-3 foot libraries, against medians of 159 and 215 counts in
   the 12 day-0 ones), so the detection-floor filter removes part of the byssal structural
-  family: in the foot run 2 of the 18 `byssal_structural` candidates are excluded and 5 more
-  are flagged `caution` (`candidate_genes_F.csv`; with the previous StringTie + prepDE counts,
-  6 of 16 and 5). A null result for those genes is not evidence of no association.
-- The candidate keywords are regexes on UniProt names; `Hsp` and `chaperone` in particular
-  pull in co-chaperones and assembly factors, so the `HSP_proteostasis` module is broad.
-  Tighten `CANDIDATE_KEYWORDS` or raise `CANDIDATE_MIN_PIDENT` if a narrower family is
-  wanted.
+  family: in the foot run 2 of the 20 `byssal_structural` candidates are excluded and 5 more
+  are flagged `caution` (`candidate_genes_F.csv`; 2 of 18 and 5 with the 2024 BLAST search;
+  with the previous StringTie + prepDE counts, 6 of 16 and 5). A null result for those genes is not evidence of no association.
+- The candidate keywords are regexes on UniProt names, matched without regard to case, so a
+  short keyword can match inside an unrelated name. `aminoacyl` matched aminoacylase-1 and
+  acylaminoacyl-peptidase until 2026-10-05; it is now `aminoacyl[- ]tRNA` (scripts 01 and 02).
+  `Hsp` still matches abbreviations inside names ("HSPG", "HsPDE8B", "hSPL", "HSPK 21",
+  "CRHSP-24"), which brings in 6 foot and 9 gill candidates with no heat-shock role (perlecan,
+  phosphodiesterase 8B, sphingosine-1-phosphate lyase and phosphatase, Nek2, and others) and
+  PERK, an ER-stress kinase, by its abbreviation "HsPEK"; and `chaperone` pulls in histone
+  and assembly chaperones, so the `HSP_proteostasis` module is broad. Tighten
+  `CANDIDATE_KEYWORDS` or raise `CANDIDATE_MIN_PIDENT` if a narrower family is wanted.
 
 ---
 

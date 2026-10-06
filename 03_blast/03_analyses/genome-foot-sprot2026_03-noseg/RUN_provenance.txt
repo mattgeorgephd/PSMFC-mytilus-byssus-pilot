@@ -1,0 +1,23 @@
+03 step 05: genome CDS blastx against the foot and byssal proteins, low-complexity filter off
+run                  : 2026-10-06 03:48 UTC
+foot proteins        : 02_data/uniprotkb_mytilus_foot_2026_03_byssal.fasta (241 sequences); records 02_data/uniprot_mytilus_foot_r2026_03.tsv (release 2026_03)
+blastx               : blastx: 2.15.0+; -evalue 1E-20 -max_target_seqs 1 -seg no -dbsize 209093815 -outfmt 6; 4 threads
+hits (HSPs)          : 1784 (480 genes)
+adopted              : 6 genes (no hit in step 01's search, identity >= 70%): LOC134721757, LOC134721760, LOC134721759, LOC134705410, LOC134709324, LOC134721758
+rows added           : 6 to step 01's 41588
+full-database check  : swissprot_n_mytilusfoot_r2026_03, same best protein for every adopted CDS
+checks               : 6 of 6 passed
+code commit          : fdd72b44c9a7
+uncommitted changes  : no
+R                    : R version 4.6.1 (2026-06-24)
+packages             : dplyr 1.2.1, stringr 1.6.0, tidyr 1.3.2
+inputs (md5, repo-relative path):
+  b20c9d94bbb647042112f46e4543eb23  03_blast/01_code/05_byssal_noseg_search.Rmd
+  1c6ec6f88c564fa8f57fc37a1347a725  03_blast/01_code/_blastx_noseg.sh
+  7904e3f596a80d528f9e900fdc4f8b79  03_blast/02_data/uniprotkb_mytilus_foot_2026_03_byssal.fasta
+  878e05e7480dd5681b81e3d5f13a568b  03_blast/02_data/uniprot_mytilus_foot_r2026_03.tsv
+  a4df841e16db68b41719d564986f706b  04_sequence-alignment/02_data/cds_from_genomic.fasta
+  a7289ee612dbf7bfea16b65938398de5  03_blast/03_analyses/genome-foot-sprot2026_03/LOC_GO_list.txt
+  75a20c7427ff78c941d0cc6fc7751485  03_blast/03_analyses/genome-foot-sprot2026_03/genome_n_foot_blastx.tab
+  e44eea17ae99d4e4b4a74fed37eeac0e  03_blast/03_analyses/genome-foot-sprot2026_03/RUN_provenance.txt
+  f41913ea5f42f431670118b5ed0a5b38  03_blast/03_analyses/genome-foot-sprot2026_03-noseg/foot_noseg_blastx.tab

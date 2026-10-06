@@ -1,0 +1,242 @@
+Entry	Reviewed	Entry Name	Protein names	Gene Names	Organism	Length	Gene Ontology IDs	Gene Ontology (biological process)	Gene Ontology (molecular function)	Gene Ontology (cellular component)	Gene Ontology (GO)	Gene Names (ordered locus)	Induction	PathwayCommons	Reactome	UniPathway	Interacts with
+A1X158	reviewed	FP1V1_PERVI	Foot protein 1 variant 1	fp-1	Perna viridis (Asian green mussel) (Mytilus viridis)	561	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+A1X159	reviewed	FP1V2_PERVI	Foot protein 1 variant 2	fp-1	Perna viridis (Asian green mussel) (Mytilus viridis)	431	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q25460	reviewed	FP1_MYTED	Adhesive plaque matrix protein (Foot protein 1) (MEFP1) (Polyphenolic adhesive protein)	FP1	Mytilus edulis (Blue mussel)	875	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q25434	reviewed	FP1_MYTCO	Adhesive plaque matrix protein (Foot protein 1) (MCFP1)	FP1	Mytilus coruscus (Sea mussel)	872	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q25464	reviewed	FP2_MYTGA	Adhesive plaque matrix protein 2 (Foot protein 2) (MGFP-2) (MGFP2)	FP2	Mytilus galloprovincialis (Mediterranean mussel)	473	GO:0005509; GO:0005576		calcium ion binding [GO:0005509]	extracellular region [GO:0005576]	extracellular region [GO:0005576]; calcium ion binding [GO:0005509]						
+Q27409	reviewed	FP1_MYTGA	Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1)	FP1	Mytilus galloprovincialis (Mediterranean mussel)	751	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+A0A0G2YHY5	unreviewed	A0A0G2YHY5_MYTCO	Superoxide dismutase [Cu-Zn] (EC 1.15.1.1)		Mytilus coruscus (Sea mussel)	181	GO:0004784; GO:0005507		copper ion binding [GO:0005507]; superoxide dismutase activity [GO:0004784]		copper ion binding [GO:0005507]; superoxide dismutase activity [GO:0004784]						
+A0A0K2D816	unreviewed	A0A0K2D816_MYTCO	Foot protein-2		Mytilus coruscus (Sea mussel)	284	GO:0005509; GO:0005886; GO:0007154; GO:0007157; GO:0023052; GO:0032991; GO:0045197	cell communication [GO:0007154]; establishment or maintenance of epithelial cell apical/basal polarity [GO:0045197]; heterophilic cell-cell adhesion [GO:0007157]; signaling [GO:0023052]	calcium ion binding [GO:0005509]	plasma membrane [GO:0005886]; protein-containing complex [GO:0032991]	plasma membrane [GO:0005886]; protein-containing complex [GO:0032991]; calcium ion binding [GO:0005509]; cell communication [GO:0007154]; establishment or maintenance of epithelial cell apical/basal polarity [GO:0045197]; heterophilic cell-cell adhesion [GO:0007157]; signaling [GO:0023052]						
+A0A193DU95	unreviewed	A0A193DU95_MYTCO	Reticulocalbin-3		Mytilus coruscus (Sea mussel)	320	GO:0005509; GO:0005788; GO:0015031	protein transport [GO:0015031]	calcium ion binding [GO:0005509]	endoplasmic reticulum lumen [GO:0005788]	endoplasmic reticulum lumen [GO:0005788]; calcium ion binding [GO:0005509]; protein transport [GO:0015031]						
+A0A193DU96	unreviewed	A0A193DU96_MYTCO	Amine oxidase (EC 1.4.3.-)		Mytilus coruscus (Sea mussel)	784	GO:0005507; GO:0005886; GO:0008131; GO:0009308; GO:0048038	amine metabolic process [GO:0009308]	copper ion binding [GO:0005507]; primary methylamine oxidase activity [GO:0008131]; quinone binding [GO:0048038]	plasma membrane [GO:0005886]	plasma membrane [GO:0005886]; copper ion binding [GO:0005507]; primary methylamine oxidase activity [GO:0008131]; quinone binding [GO:0048038]; amine metabolic process [GO:0009308]						
+A0A193DU97	unreviewed	A0A193DU97_MYTCO	Byssal HSP-like protein 1		Mytilus coruscus (Sea mussel)	658	GO:0005524; GO:0005788; GO:0016887		ATP binding [GO:0005524]; ATP hydrolysis activity [GO:0016887]	endoplasmic reticulum lumen [GO:0005788]	endoplasmic reticulum lumen [GO:0005788]; ATP binding [GO:0005524]; ATP hydrolysis activity [GO:0016887]						
+A0A193DUA0	unreviewed	A0A193DUA0_MYTCO	Byssal peroxidase-like protein 1		Mytilus coruscus (Sea mussel)	714	GO:0004601; GO:0005576; GO:0006979; GO:0020037	response to oxidative stress [GO:0006979]	heme binding [GO:0020037]; peroxidase activity [GO:0004601]	extracellular region [GO:0005576]	extracellular region [GO:0005576]; heme binding [GO:0020037]; peroxidase activity [GO:0004601]; response to oxidative stress [GO:0006979]						
+A0A193DUA1	unreviewed	A0A193DUA1_MYTCO	Byssal metalloproteinase inhibitor-like protein 1		Mytilus coruscus (Sea mussel)	204	GO:0002020; GO:0008191; GO:0031012; GO:0051045	negative regulation of membrane protein ectodomain proteolysis [GO:0051045]	metalloendopeptidase inhibitor activity [GO:0008191]; protease binding [GO:0002020]	extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]; metalloendopeptidase inhibitor activity [GO:0008191]; protease binding [GO:0002020]; negative regulation of membrane protein ectodomain proteolysis [GO:0051045]						
+A0A193DUA2	unreviewed	A0A193DUA2_MYTCO	Byssal peroxidase-like protein 2		Mytilus coruscus (Sea mussel)	742	GO:0004601; GO:0005576; GO:0006979; GO:0020037	response to oxidative stress [GO:0006979]	heme binding [GO:0020037]; peroxidase activity [GO:0004601]	extracellular region [GO:0005576]	extracellular region [GO:0005576]; heme binding [GO:0020037]; peroxidase activity [GO:0004601]; response to oxidative stress [GO:0006979]						
+A0A193DUA3	unreviewed	A0A193DUA3_MYTCO	Byssal peroxidase-like protein 4		Mytilus coruscus (Sea mussel)	725	GO:0004601; GO:0005576; GO:0006979; GO:0020037	response to oxidative stress [GO:0006979]	heme binding [GO:0020037]; peroxidase activity [GO:0004601]	extracellular region [GO:0005576]	extracellular region [GO:0005576]; heme binding [GO:0020037]; peroxidase activity [GO:0004601]; response to oxidative stress [GO:0006979]						
+O96064	reviewed	MYSP_MYTGA	Paramyosin		Mytilus galloprovincialis (Mediterranean mussel)	864	GO:0016459; GO:0030016			myofibril [GO:0030016]; myosin complex [GO:0016459]	myofibril [GO:0030016]; myosin complex [GO:0016459]						
+P00000	reviewed	DEFGA_MYTGA	Defensin gallicin		Mytilus galloprovincialis (Mediterranean mussel)	68	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q1XBT7	unreviewed	Q1XBT7_MYTED	Foot protein 2	fp-2	Mytilus edulis (Blue mussel)	466	GO:0005509; GO:0005886; GO:0007154; GO:0007157; GO:0023052; GO:0032991; GO:0045197	cell communication [GO:0007154]; establishment or maintenance of epithelial cell apical/basal polarity [GO:0045197]; heterophilic cell-cell adhesion [GO:0007157]; signaling [GO:0023052]	calcium ion binding [GO:0005509]	plasma membrane [GO:0005886]; protein-containing complex [GO:0032991]	plasma membrane [GO:0005886]; protein-containing complex [GO:0032991]; calcium ion binding [GO:0005509]; cell communication [GO:0007154]; establishment or maintenance of epithelial cell apical/basal polarity [GO:0045197]; heterophilic cell-cell adhesion [GO:0007157]; signaling [GO:0023052]						
+U5Y6P4	unreviewed	U5Y6P4_PERVI	PVFP-5		Perna viridis (Asian green mussel) (Mytilus viridis)	99	GO:0000902; GO:0005112; GO:0005886; GO:0007219; GO:0042063; GO:0048666	cell morphogenesis [GO:0000902]; gliogenesis [GO:0042063]; neuron development [GO:0048666]; Notch signaling pathway [GO:0007219]	Notch binding [GO:0005112]	plasma membrane [GO:0005886]	plasma membrane [GO:0005886]; Notch binding [GO:0005112]; cell morphogenesis [GO:0000902]; gliogenesis [GO:0042063]; neuron development [GO:0048666]; Notch signaling pathway [GO:0007219]						
+U5Y6U9	unreviewed	U5Y6U9_PERVI	PVFP-5		Perna viridis (Asian green mussel) (Mytilus viridis)	140	GO:0005509; GO:0005886; GO:0007157; GO:0032991; GO:0045197	establishment or maintenance of epithelial cell apical/basal polarity [GO:0045197]; heterophilic cell-cell adhesion [GO:0007157]	calcium ion binding [GO:0005509]	plasma membrane [GO:0005886]; protein-containing complex [GO:0032991]	plasma membrane [GO:0005886]; protein-containing complex [GO:0032991]; calcium ion binding [GO:0005509]; establishment or maintenance of epithelial cell apical/basal polarity [GO:0045197]; heterophilic cell-cell adhesion [GO:0007157]						
+A0A075M2L6	unreviewed	A0A075M2L6_MYTCO	Mussel byssus collagen-like protein 1		Mytilus coruscus (Sea mussel)	284	GO:0030020; GO:0030198; GO:0031012	extracellular matrix organization [GO:0030198]	extracellular matrix structural constituent conferring tensile strength [GO:0030020]	extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]; extracellular matrix structural constituent conferring tensile strength [GO:0030020]; extracellular matrix organization [GO:0030198]						
+A0A075M3Q7	unreviewed	A0A075M3Q7_MYTCO	Mussel byssus cycteine-rich protein		Mytilus coruscus (Sea mussel)	132											
+A0A075M3W5	unreviewed	A0A075M3W5_MYTCO	Mussel byssus collagen-like protein 3		Mytilus coruscus (Sea mussel)	204											
+A0A075M440	unreviewed	A0A075M440_MYTCO	Mussel byssus collagen-like protein 2		Mytilus coruscus (Sea mussel)	277											
+A0A075M899	unreviewed	A0A075M899_MYTCO	Mussel byssus glycosyl-hydrolase-like protein		Mytilus coruscus (Sea mussel)	307	GO:0005576; GO:0008422; GO:0009251; GO:0009986	glucan catabolic process [GO:0009251]	beta-glucosidase activity [GO:0008422]	cell surface [GO:0009986]; extracellular region [GO:0005576]	cell surface [GO:0009986]; extracellular region [GO:0005576]; beta-glucosidase activity [GO:0008422]; glucan catabolic process [GO:0009251]						
+A0A0G2YHT2	unreviewed	A0A0G2YHT2_MYTCO	Byssal protein-3		Mytilus coruscus (Sea mussel)	135											
+A0A0G2YLH0	unreviewed	A0A0G2YLH0_MYTCO	Byssal tyrosinase-like protein-1		Mytilus coruscus (Sea mussel)	685	GO:0016491		oxidoreductase activity [GO:0016491]		oxidoreductase activity [GO:0016491]						
+A0A0G2YN99	unreviewed	A0A0G2YN99_MYTCO	Byssal protein-2		Mytilus coruscus (Sea mussel)	134											
+A0A0G2YQ77	unreviewed	A0A0G2YQ77_MYTCO	Byssal protein-1		Mytilus coruscus (Sea mussel)	238											
+A0A0K0YB03	unreviewed	A0A0K0YB03_MYTCO	Byssal EP-like protein 1 (EP-protein-1)		Mytilus coruscus (Sea mussel)	236	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+A0A0K2D880	unreviewed	A0A0K2D880_MYTCO	Foot protein-6		Mytilus coruscus (Sea mussel)	122											
+A0A193DU98	unreviewed	A0A193DU98_MYTCO	Byssal glycosyl-hydrolase-like protein 2		Mytilus coruscus (Sea mussel)	347	GO:0005576; GO:0008422; GO:0009251; GO:0009986	glucan catabolic process [GO:0009251]	beta-glucosidase activity [GO:0008422]	cell surface [GO:0009986]; extracellular region [GO:0005576]	cell surface [GO:0009986]; extracellular region [GO:0005576]; beta-glucosidase activity [GO:0008422]; glucan catabolic process [GO:0009251]						
+A0A193DU99	unreviewed	A0A193DU99_MYTCO	Byssal protease inhibitor-like protein 1		Mytilus coruscus (Sea mussel)	1437	GO:0004866; GO:0005576		endopeptidase inhibitor activity [GO:0004866]	extracellular region [GO:0005576]	extracellular region [GO:0005576]; endopeptidase inhibitor activity [GO:0004866]						
+A0A193DUA5	unreviewed	A0A193DUA5_MYTCO	Byssal tyrosinase-like protein 2		Mytilus coruscus (Sea mussel)	701	GO:0016491		oxidoreductase activity [GO:0016491]		oxidoreductase activity [GO:0016491]						
+A0A223HCJ0	unreviewed	A0A223HCJ0_MYTCA	Foot protein 9 variant 1		Mytilus californianus (California mussel)	128											
+A0A223HCJ5	unreviewed	A0A223HCJ5_MYTCA	Foot protein 8		Mytilus californianus (California mussel)	69											
+A0A223HCJ6	unreviewed	A0A223HCJ6_MYTCA	Foot protein 7 variant 1		Mytilus californianus (California mussel)	59											
+A0A223HCJ8	unreviewed	A0A223HCJ8_MYTCA	Foot protein 10		Mytilus californianus (California mussel)	319											
+A0A223HCK0	unreviewed	A0A223HCK0_MYTCA	Foot protein 9 variant 2		Mytilus californianus (California mussel)	125											
+A0A223HCK1	unreviewed	A0A223HCK1_MYTCA	Foot protein 18		Mytilus californianus (California mussel)	72											
+A0A223HCK2	unreviewed	A0A223HCK2_MYTCA	Foot protein 16		Mytilus californianus (California mussel)	94											
+A0A223HCK4	unreviewed	A0A223HCK4_MYTCA	Foot protein 15		Mytilus californianus (California mussel)	249											
+A0A223HCK5	unreviewed	A0A223HCK5_MYTCA	Foot protein 19		Mytilus californianus (California mussel)	74											
+A0A223HCK7	unreviewed	A0A223HCK7_MYTCA	Foot protein 14		Mytilus californianus (California mussel)	120											
+A0A223HCL0	unreviewed	A0A223HCL0_MYTCA	Foot protein 2		Mytilus californianus (California mussel)	431	GO:0005509		calcium ion binding [GO:0005509]		calcium ion binding [GO:0005509]						
+A0A223HCL5	unreviewed	A0A223HCL5_MYTCA	Foot protein 12		Mytilus californianus (California mussel)	695											
+A0A223HCL7	unreviewed	A0A223HCL7_MYTCA	Foot protein 13		Mytilus californianus (California mussel)	127											
+A0A223HCP4	unreviewed	A0A223HCP4_MYTCA	Foot protein 11		Mytilus californianus (California mussel)	496											
+A0A223HCQ2	unreviewed	A0A223HCQ2_MYTCA	Foot protein 7 variant 2		Mytilus californianus (California mussel)	65											
+A0A223HCQ3	unreviewed	A0A223HCQ3_MYTCA	Foot protein 17		Mytilus californianus (California mussel)	203											
+A0A8B6BUU3	unreviewed	A0A8B6BUU3_MYTGA	Foot protein-3	MGAL_10B086414	Mytilus galloprovincialis (Mediterranean mussel)	96											
+A0A8B6CJ07	unreviewed	A0A8B6CJ07_MYTGA	Foot protein-3	MGAL_10B030697	Mytilus galloprovincialis (Mediterranean mussel)	66											
+A0A8B6CJD1	unreviewed	A0A8B6CJD1_MYTGA	Foot protein-3	MGAL_10B056840	Mytilus galloprovincialis (Mediterranean mussel)	77											
+A0A8B6DI91	unreviewed	A0A8B6DI91_MYTGA	Foot protein-3	MGAL_10B039310	Mytilus galloprovincialis (Mediterranean mussel)	63											
+A0A8B6DS71	unreviewed	A0A8B6DS71_MYTGA	Foot protein-5	MGAL_10B003880	Mytilus galloprovincialis (Mediterranean mussel)	100											
+A0A8B6DS81	unreviewed	A0A8B6DS81_MYTGA	Foot protein-3	MGAL_10B055545	Mytilus galloprovincialis (Mediterranean mussel)	79											
+A0A8B6DXP2	unreviewed	A0A8B6DXP2_MYTGA	Foot protein-3	MGAL_10B061768	Mytilus galloprovincialis (Mediterranean mussel)	109											
+A0A8B6FH20	unreviewed	A0A8B6FH20_MYTGA	Foot protein-3	MGAL_10B039298	Mytilus galloprovincialis (Mediterranean mussel)	73											
+A0A8B6G2K6	unreviewed	A0A8B6G2K6_MYTGA	Foot protein 1	MGAL_10B064866	Mytilus galloprovincialis (Mediterranean mussel)	600	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+A0A8B6HC65	unreviewed	A0A8B6HC65_MYTGA	Foot protein-3	MGAL_10B038902	Mytilus galloprovincialis (Mediterranean mussel)	68											
+A0A8B6HD33	unreviewed	A0A8B6HD33_MYTGA	Foot protein-3	MGAL_10B055877	Mytilus galloprovincialis (Mediterranean mussel)	71											
+A0A8S3PYW8	unreviewed	A0A8S3PYW8_MYTED	Foot protein 1	MEDL_2404	Mytilus edulis (Blue mussel)	196											
+A0A9D4EBM3	unreviewed	A0A9D4EBM3_DREPO	Foot protein-3	DPMN_177157	Dreissena polymorpha (Zebra mussel) (Mytilus polymorpha)	68											
+A1XF84	unreviewed	A1XF84_MYTCA	Foot protein-4 variant-1	fp-4	Mytilus californianus (California mussel)	770											
+A1XF85	unreviewed	A1XF85_MYTCA	Foot protein-4 variant-2	fp-4	Mytilus californianus (California mussel)	810											
+B5B0G9	unreviewed	B5B0G9_PERVI	Foot protein 1 variant 2	fp-1	Perna viridis (Asian green mussel) (Mytilus viridis)	431											
+C7ENH7	unreviewed	C7ENH7_MYTCO	Foot protein-3		Mytilus coruscus (Sea mussel)	78											
+C7ENH8	unreviewed	C7ENH8_MYTCO	Foot protein-5		Mytilus coruscus (Sea mussel)	101											
+D3JVE6	unreviewed	D3JVE6_MYTCO	Foot protein 3 variant 1		Mytilus coruscus (Sea mussel)	78											
+D3JVE7	unreviewed	D3JVE7_MYTCO	Foot protein 3 variant 2		Mytilus coruscus (Sea mussel)	78											
+D3JVE8	unreviewed	D3JVE8_MYTCO	Foot protein 3 variant 3		Mytilus coruscus (Sea mussel)	66											
+D3JVE9	unreviewed	D3JVE9_MYTCO	Foot protein 3 variant 4		Mytilus coruscus (Sea mussel)	78											
+D3JVF0	unreviewed	D3JVF0_MYTCO	Foot protein 3 variant 5		Mytilus coruscus (Sea mussel)	78											
+D3JVF1	unreviewed	D3JVF1_MYTCO	Foot protein 3 variant 6		Mytilus coruscus (Sea mussel)	77											
+D3JVF2	unreviewed	D3JVF2_MYTCO	Foot protein 3 variant 7		Mytilus coruscus (Sea mussel)	78											
+D3JVF3	unreviewed	D3JVF3_MYTCO	Foot protein 3 variant 8		Mytilus coruscus (Sea mussel)	78											
+D3JVF4	unreviewed	D3JVF4_MYTCO	Foot protein 3 variant 9		Mytilus coruscus (Sea mussel)	78											
+D3JVF5	unreviewed	D3JVF5_MYTCO	Foot protein 3 variant 10		Mytilus coruscus (Sea mussel)	78											
+D3JVF6	unreviewed	D3JVF6_MYTCO	Foot protein 3 variant 11		Mytilus coruscus (Sea mussel)	80											
+D3JVF7	unreviewed	D3JVF7_MYTCO	Foot protein 3 variant 12		Mytilus coruscus (Sea mussel)	78											
+D3JVF8	unreviewed	D3JVF8_MYTCO	Foot protein 3 variant 13		Mytilus coruscus (Sea mussel)	80											
+D3JVF9	unreviewed	D3JVF9_MYTCO	Foot protein 3 variant 14		Mytilus coruscus (Sea mussel)	72											
+D3JVG0	unreviewed	D3JVG0_MYTCO	Foot protein 6 variant 1		Mytilus coruscus (Sea mussel)	123											
+D3JVG1	unreviewed	D3JVG1_MYTCO	Foot protein 6 variant 2		Mytilus coruscus (Sea mussel)	123											
+D3JVG2	unreviewed	D3JVG2_MYTCO	Foot protein 6 variant 3		Mytilus coruscus (Sea mussel)	123											
+D3JVG3	unreviewed	D3JVG3_MYTCO	Foot protein 6 variant 4		Mytilus coruscus (Sea mussel)	123											
+D3JVG4	unreviewed	D3JVG4_MYTCO	Foot protein 6 variant 5		Mytilus coruscus (Sea mussel)	123											
+D3JVG5	unreviewed	D3JVG5_MYTCO	Foot protein 6 variant 6		Mytilus coruscus (Sea mussel)	123											
+D3JVG6	unreviewed	D3JVG6_MYTCO	Foot protein 6 variant 7		Mytilus coruscus (Sea mussel)	102											
+D3JVG7	unreviewed	D3JVG7_MYTCO	Foot protein 6 variant 8		Mytilus coruscus (Sea mussel)	97											
+D3JVG8	unreviewed	D3JVG8_MYTCO	Foot protein 6 variant 9		Mytilus coruscus (Sea mussel)	96											
+E7DRN3	unreviewed	E7DRN3_MYTCO	Mussel foot protein-5 variant 1		Mytilus coruscus (Sea mussel)	95											
+E7DRN4	unreviewed	E7DRN4_MYTCO	Mussel foot protein-5 variant 2		Mytilus coruscus (Sea mussel)	95											
+E7DRN5	unreviewed	E7DRN5_MYTCO	Mussel foot protein-5 variant 3		Mytilus coruscus (Sea mussel)	95											
+I1X3T9	unreviewed	I1X3T9_MYTCO	Thread protein-1		Mytilus coruscus (Sea mussel)	159	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+O16161	unreviewed	O16161_MYTED	Precollagen P	preCol-P	Mytilus edulis (Blue mussel)	902											
+O44367	unreviewed	O44367_MYTED	Precollagen D	preCol-D	Mytilus edulis (Blue mussel)	922											
+O61476	unreviewed	O61476_DREPO	Foot protein 1		Dreissena polymorpha (Zebra mussel) (Mytilus polymorpha)	68											
+O61477	unreviewed	O61477_DREPO	Foot protein 1		Dreissena polymorpha (Zebra mussel) (Mytilus polymorpha)	221											
+O61478	unreviewed	O61478_DREPO	Foot protein 1		Dreissena polymorpha (Zebra mussel) (Mytilus polymorpha)	307											
+Q0H214	unreviewed	Q0H214_MYTCA	Foot protein-6 variant-3	fp-6-3	Mytilus californianus (California mussel)	121											
+Q0H215	unreviewed	Q0H215_MYTCA	Foot protein-6 variant-2	fp-6-2	Mytilus californianus (California mussel)	121											
+Q0H216	unreviewed	Q0H216_MYTCA	Foot protein-6 variant-1	fp-6-1	Mytilus californianus (California mussel)	121											
+Q1W2I9	unreviewed	Q1W2I9_MYTCA	Foot protein-5	fp5	Mytilus californianus (California mussel)	96											
+Q1XBT6	unreviewed	Q1XBT6_MYTED	Foot protein 2	fp-2	Mytilus edulis (Blue mussel)	429	GO:0005509		calcium ion binding [GO:0005509]		calcium ion binding [GO:0005509]						
+Q1XBT8	unreviewed	Q1XBT8_MYTED	Foot protein 2	fp-2	Mytilus edulis (Blue mussel)	504	GO:0005509		calcium ion binding [GO:0005509]		calcium ion binding [GO:0005509]						
+Q1XBT9	unreviewed	Q1XBT9_MYTED	Foot protein 1	fp-1	Mytilus edulis (Blue mussel)	125	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q1XBU0	unreviewed	Q1XBU0_MYTED	Foot protein 1	fp-1	Mytilus edulis (Blue mussel)	565	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q2Q9Z6	unreviewed	Q2Q9Z6_MYTCA	Foot protein 3 variant 11	fp-3	Mytilus californianus (California mussel)	69											
+Q2Q9Z7	unreviewed	Q2Q9Z7_MYTCA	Foot protein 3 variant 10	fp-3	Mytilus californianus (California mussel)	69											
+Q2Q9Z8	unreviewed	Q2Q9Z8_MYTCA	Foot protein 3 variant 9	fp-3	Mytilus californianus (California mussel)	69											
+Q2Q9Z9	unreviewed	Q2Q9Z9_MYTCA	Foot protein 3 variant 8	fp-3	Mytilus californianus (California mussel)	69											
+Q2TCK9	unreviewed	Q2TCK9_MYTCA	Foot protein 1 variant 2		Mytilus californianus (California mussel)	672	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q2TCL0	unreviewed	Q2TCL0_MYTCA	Foot protein 1 variant 1		Mytilus californianus (California mussel)	732	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q2VPV1	unreviewed	Q2VPV1_MYTCA	Foot protein 3 variant 7		Mytilus californianus (California mussel)	75											
+Q2VPV2	unreviewed	Q2VPV2_MYTCA	Foot protein 3 variant 6		Mytilus californianus (California mussel)	78											
+Q2VPV3	unreviewed	Q2VPV3_MYTCA	Foot protein 3 variant 5		Mytilus californianus (California mussel)	78											
+Q2VPV4	unreviewed	Q2VPV4_MYTCA	Foot protein 3 variant 4		Mytilus californianus (California mussel)	78											
+Q2VPV5	unreviewed	Q2VPV5_MYTCA	Foot protein 3 variant 3		Mytilus californianus (California mussel)	78											
+Q2VPV6	unreviewed	Q2VPV6_MYTCA	Foot protein 3 variant 2		Mytilus californianus (California mussel)	68											
+Q2VPV7	unreviewed	Q2VPV7_MYTCA	Foot protein 3 variant 1		Mytilus californianus (California mussel)	66											
+Q6QZR3	unreviewed	Q6QZR3_MYTGA	Foot protein-5		Mytilus galloprovincialis (Mediterranean mussel)	76											
+Q8T602	unreviewed	Q8T602_9BIVA	Adhesive plaque protein		Mytilus sp. JHX-2002	197	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+Q9GUX7	unreviewed	Q9GUX7_MYTGA	Foot protein-3B	mgfp-3B	Mytilus galloprovincialis (Mediterranean mussel)	77											
+Q9GUX8	unreviewed	Q9GUX8_MYTGA	Foot protein-3A	mgfp-3A	Mytilus galloprovincialis (Mediterranean mussel)	70											
+Q9N626	unreviewed	Q9N626_MYTED	Foot protein-3 variant8 (Foot protein-3 variant8B)	Mefp3	Mytilus edulis (Blue mussel)	68											
+Q9N6G6	unreviewed	Q9N6G6_MYTED	Foot protein-3 variant14 (Foot protein-3 variant7)	Mefp3	Mytilus edulis (Blue mussel)	68											
+Q9NAT6	unreviewed	Q9NAT6_MYTED	Foot protein-3 variant20	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAT7	unreviewed	Q9NAT7_MYTED	Foot protein-3 variant19	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAT8	unreviewed	Q9NAT8_MYTED	Foot protein-3 variant18	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAT9	unreviewed	Q9NAT9_MYTED	Foot protein-3 variant17	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAU0	unreviewed	Q9NAU0_MYTED	Foot protein-3 variant16	Mefp3	Mytilus edulis (Blue mussel)	73											
+Q9NAU1	unreviewed	Q9NAU1_MYTED	Foot protein-3 variant15	Mefp3	Mytilus edulis (Blue mussel)	78											
+Q9NAU2	unreviewed	Q9NAU2_MYTED	Foot protein-3 variant13	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAU3	unreviewed	Q9NAU3_MYTED	Foot protein-3 variant12	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAU4	unreviewed	Q9NAU4_MYTED	Foot protein-3 variant11	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAU5	unreviewed	Q9NAU5_MYTED	Foot protein-3 variant10	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAU6	unreviewed	Q9NAU6_MYTED	Foot protein-3 variant9	Mefp3	Mytilus edulis (Blue mussel)	68											
+Q9NAU7	unreviewed	Q9NAU7_MYTED	Foot protein-3 variant6	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAU8	unreviewed	Q9NAU8_MYTED	Foot protein-3 variant5	Mefp3	Mytilus edulis (Blue mussel)	78											
+Q9NAU9	unreviewed	Q9NAU9_MYTED	Foot protein-3 variant4	Mefp3	Mytilus edulis (Blue mussel)	78											
+Q9NAV0	unreviewed	Q9NAV0_MYTED	Foot protein-3 variant3	Mefp3	Mytilus edulis (Blue mussel)	72											
+Q9NAV1	unreviewed	Q9NAV1_MYTED	Foot protein-3 variant2	Mefp3	Mytilus edulis (Blue mussel)	78											
+Q9NAV2	unreviewed	Q9NAV2_MYTED	Foot protein-3 variant1	Mefp3	Mytilus edulis (Blue mussel)	72											
+U5Y3P3	unreviewed	U5Y3P3_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	576	GO:0031012			extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]						
+U5Y3P8	unreviewed	U5Y3P8_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	634											
+U5Y3Q3	unreviewed	U5Y3Q3_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	772											
+U5Y3Q8	unreviewed	U5Y3Q8_PERVI	Actin		Perna viridis (Asian green mussel) (Mytilus viridis)	135											
+U5Y3R2	unreviewed	U5Y3R2_PERVI	Actin		Perna viridis (Asian green mussel) (Mytilus viridis)	45											
+U5Y3R4	unreviewed	U5Y3R4_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	451											
+U5Y3S0	unreviewed	U5Y3S0_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	395											
+U5Y3S6	unreviewed	U5Y3S6_PERVI	PVFP-5		Perna viridis (Asian green mussel) (Mytilus viridis)	139	GO:0005509		calcium ion binding [GO:0005509]		calcium ion binding [GO:0005509]						
+U5Y3T1	unreviewed	U5Y3T1_PERVI	PVFP-1		Perna viridis (Asian green mussel) (Mytilus viridis)	65											
+U5Y3T5	unreviewed	U5Y3T5_PERVI	Tyrosinase 1		Perna viridis (Asian green mussel) (Mytilus viridis)	687	GO:0016491		oxidoreductase activity [GO:0016491]		oxidoreductase activity [GO:0016491]						
+U5Y3X8	unreviewed	U5Y3X8_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	665											
+U5Y3Y2	unreviewed	U5Y3Y2_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	438	GO:0031012			extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]						
+U5Y3Y4	unreviewed	U5Y3Y4_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	600											
+U5Y3Y8	unreviewed	U5Y3Y8_PERVI	Actin		Perna viridis (Asian green mussel) (Mytilus viridis)	221											
+U5Y3Z1	unreviewed	U5Y3Z1_PERVI	Actin		Perna viridis (Asian green mussel) (Mytilus viridis)	97											
+U5Y3Z7	unreviewed	U5Y3Z7_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	440											
+U5Y400	unreviewed	U5Y400_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	446											
+U5Y405	unreviewed	U5Y405_PERVI	PVFP-5		Perna viridis (Asian green mussel) (Mytilus viridis)	88	GO:0000902; GO:0005886; GO:0042063; GO:0048666	cell morphogenesis [GO:0000902]; gliogenesis [GO:0042063]; neuron development [GO:0048666]		plasma membrane [GO:0005886]	plasma membrane [GO:0005886]; cell morphogenesis [GO:0000902]; gliogenesis [GO:0042063]; neuron development [GO:0048666]						
+U5Y408	unreviewed	U5Y408_PERVI	PVFP-1		Perna viridis (Asian green mussel) (Mytilus viridis)	131											
+U5Y413	unreviewed	U5Y413_PERVI	PVFP-3		Perna viridis (Asian green mussel) (Mytilus viridis)	70											
+U5Y417	unreviewed	U5Y417_PERVI	Tyrosinase 4		Perna viridis (Asian green mussel) (Mytilus viridis)	425	GO:0016491		oxidoreductase activity [GO:0016491]		oxidoreductase activity [GO:0016491]						
+U5Y4M6	unreviewed	U5Y4M6_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	446	GO:0030020; GO:0030198; GO:0031012	extracellular matrix organization [GO:0030198]	extracellular matrix structural constituent conferring tensile strength [GO:0030020]	extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]; extracellular matrix structural constituent conferring tensile strength [GO:0030020]; extracellular matrix organization [GO:0030198]						
+U5Y4N0	unreviewed	U5Y4N0_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	591											
+U5Y4N4	unreviewed	U5Y4N4_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	400	GO:0031012			extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]						
+U5Y4N6	unreviewed	U5Y4N6_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	642											
+U5Y4N8	unreviewed	U5Y4N8_PERVI	Actin		Perna viridis (Asian green mussel) (Mytilus viridis)	135											
+U5Y4P3	unreviewed	U5Y4P3_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	469											
+U5Y4P6	unreviewed	U5Y4P6_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	427											
+U5Y4Q4	unreviewed	U5Y4Q4_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	424											
+U5Y4Q8	unreviewed	U5Y4Q8_PERVI	PVFP-5		Perna viridis (Asian green mussel) (Mytilus viridis)	176	GO:0005886; GO:0007157; GO:0032991; GO:0045197	establishment or maintenance of epithelial cell apical/basal polarity [GO:0045197]; heterophilic cell-cell adhesion [GO:0007157]		plasma membrane [GO:0005886]; protein-containing complex [GO:0032991]	plasma membrane [GO:0005886]; protein-containing complex [GO:0032991]; establishment or maintenance of epithelial cell apical/basal polarity [GO:0045197]; heterophilic cell-cell adhesion [GO:0007157]						
+U5Y4R1	unreviewed	U5Y4R1_PERVI	PVFP-3		Perna viridis (Asian green mussel) (Mytilus viridis)	70											
+U5Y4R7	unreviewed	U5Y4R7_PERVI	Tyrosinase 2		Perna viridis (Asian green mussel) (Mytilus viridis)	572	GO:0016491		oxidoreductase activity [GO:0016491]		oxidoreductase activity [GO:0016491]						
+U5Y6L5	unreviewed	U5Y6L5_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	596	GO:0031012			extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]						
+U5Y6L9	unreviewed	U5Y6L9_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	469											
+U5Y6M4	unreviewed	U5Y6M4_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	628											
+U5Y6M8	unreviewed	U5Y6M8_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	463	GO:0031012			extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]						
+U5Y6N3	unreviewed	U5Y6N3_PERVI	Actin		Perna viridis (Asian green mussel) (Mytilus viridis)	112	GO:0005856			cytoskeleton [GO:0005856]	cytoskeleton [GO:0005856]						
+U5Y6N6	unreviewed	U5Y6N6_PERVI	Myosin		Perna viridis (Asian green mussel) (Mytilus viridis)	157	GO:0005509; GO:0005859		calcium ion binding [GO:0005509]	muscle myosin complex [GO:0005859]	muscle myosin complex [GO:0005859]; calcium ion binding [GO:0005509]						
+U5Y6N9	unreviewed	U5Y6N9_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	419											
+U5Y6P2	unreviewed	U5Y6P2_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	445											
+U5Y6P8	unreviewed	U5Y6P8_PERVI	PVFP-2		Perna viridis (Asian green mussel) (Mytilus viridis)	322	GO:0005509		calcium ion binding [GO:0005509]		calcium ion binding [GO:0005509]						
+U5Y6Q1	unreviewed	U5Y6Q1_PERVI	Tyrosinase 5		Perna viridis (Asian green mussel) (Mytilus viridis)	680	GO:0016491		oxidoreductase activity [GO:0016491]		oxidoreductase activity [GO:0016491]						
+U5Y6S1	unreviewed	U5Y6S1_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	395	GO:0030020; GO:0030198; GO:0031012	extracellular matrix organization [GO:0030198]	extracellular matrix structural constituent conferring tensile strength [GO:0030020]	extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]; extracellular matrix structural constituent conferring tensile strength [GO:0030020]; extracellular matrix organization [GO:0030198]						
+U5Y6S4	unreviewed	U5Y6S4_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	432	GO:0030020; GO:0030198; GO:0031012	extracellular matrix organization [GO:0030198]	extracellular matrix structural constituent conferring tensile strength [GO:0030020]	extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]; extracellular matrix structural constituent conferring tensile strength [GO:0030020]; extracellular matrix organization [GO:0030198]						
+U5Y6S7	unreviewed	U5Y6S7_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	404	GO:0031012			extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]						
+U5Y6T1	unreviewed	U5Y6T1_PERVI	PreCol-NG		Perna viridis (Asian green mussel) (Mytilus viridis)	659											
+U5Y6T4	unreviewed	U5Y6T4_PERVI	Actin		Perna viridis (Asian green mussel) (Mytilus viridis)	221											
+U5Y6T6	unreviewed	U5Y6T6_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	464											
+U5Y6U1	unreviewed	U5Y6U1_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	400											
+U5Y6U6	unreviewed	U5Y6U6_PERVI	PreCol-D		Perna viridis (Asian green mussel) (Mytilus viridis)	422											
+U5Y6V3	unreviewed	U5Y6V3_PERVI	PVFP-6		Perna viridis (Asian green mussel) (Mytilus viridis)	122	GO:0005576; GO:0030414		peptidase inhibitor activity [GO:0030414]	extracellular region [GO:0005576]	extracellular region [GO:0005576]; peptidase inhibitor activity [GO:0030414]						
+U5Y6V7	unreviewed	U5Y6V7_PERVI	Tyrosinase 3		Perna viridis (Asian green mussel) (Mytilus viridis)	699	GO:0016491		oxidoreductase activity [GO:0016491]		oxidoreductase activity [GO:0016491]						
+A5HKH7	unreviewed	A5HKH7_MYTGA	Thread matrix protein 1A		Mytilus galloprovincialis (Mediterranean mussel)	534											
+A5HKH8	unreviewed	A5HKH8_MYTGA	Thread matrix protein 1B		Mytilus galloprovincialis (Mediterranean mussel)	236											
+A5HKH9	unreviewed	A5HKH9_MYTGA	Thread matrix protein 2A		Mytilus galloprovincialis (Mediterranean mussel)	416											
+A5HKI0	unreviewed	A5HKI0_MYTGA	Thread matrix protein 2B		Mytilus galloprovincialis (Mediterranean mussel)	117											
+A5HKI1	unreviewed	A5HKI1_MYTGA	Thread matrix protein 2C		Mytilus galloprovincialis (Mediterranean mussel)	397											
+A5HKI2	unreviewed	A5HKI2_MYTGA	Thread matrix protein 2D		Mytilus galloprovincialis (Mediterranean mussel)	214											
+A5HKI3	unreviewed	A5HKI3_MYTGA	Thread matrix protein 2E		Mytilus galloprovincialis (Mediterranean mussel)	332											
+A5HKI4	unreviewed	A5HKI4_MYTGA	Thread matrix protein 2F		Mytilus galloprovincialis (Mediterranean mussel)	429											
+A5HKI5	unreviewed	A5HKI5_MYTGA	Thread matrix protein 2G		Mytilus galloprovincialis (Mediterranean mussel)	181											
+A5HKI6	unreviewed	A5HKI6_MYTGA	Thread matrix protein 2H		Mytilus galloprovincialis (Mediterranean mussel)	228											
+A5HKI7	unreviewed	A5HKI7_MYTGA	Thread matrix protein C1		Mytilus galloprovincialis (Mediterranean mussel)	156											
+A5HKI8	unreviewed	A5HKI8_MYTGA	Thread matrix protein C2		Mytilus galloprovincialis (Mediterranean mussel)	155											
+A5HKI9	unreviewed	A5HKI9_MYTGA	Thread matrix protein F3T7		Mytilus galloprovincialis (Mediterranean mussel)	65											
+Q8T5C2	unreviewed	Q8T5C2_MYTGA	Proximal thread matrix protein 1		Mytilus galloprovincialis (Mediterranean mussel)	453											
+Q8T5C3	unreviewed	Q8T5C3_MYTED	Proximal thread matrix protein 1b		Mytilus edulis (Blue mussel)	444											
+Q8T6U5	unreviewed	Q8T6U5_MYTED	Proximal thread matrix protein 1 variant a		Mytilus edulis (Blue mussel)	441											
+O76271	unreviewed	O76271_MYTED	Nongradient byssal		Mytilus edulis (Blue mussel)	904											
+Q8MW53	unreviewed	Q8MW53_MYTGA	Precollagen-D		Mytilus galloprovincialis (Mediterranean mussel)	922											
+Q8MW54	unreviewed	Q8MW54_MYTGA	Precollagen-P		Mytilus galloprovincialis (Mediterranean mussel)	894											
+Q8MW55	unreviewed	Q8MW55_MYTGA	Precollagen-NG		Mytilus galloprovincialis (Mediterranean mussel)	905											
+W5ZXC4	unreviewed	W5ZXC4_MYTGA	Precollagen NG		Mytilus galloprovincialis (Mediterranean mussel)	902											
+A9QLN2	unreviewed	A9QLN2_MYTCA	Precollagen-D		Mytilus californianus (California mussel)	1000											
+A9QLN3	unreviewed	A9QLN3_MYTCA	Precollagen-NG		Mytilus californianus (California mussel)	960											
+A9QLN4	unreviewed	A9QLN4_MYTCA	Precollagen-P		Mytilus californianus (California mussel)	944	GO:0031012			extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]						
+Q8WTE8	unreviewed	Q8WTE8_MYTED	Polyphenolic phosphoprotein mefp-5		Mytilus edulis (Blue mussel)	98											
+A0A0K2D811	unreviewed	A0A0K2D811_MYTCO	C1q-domain-containing protein-1		Mytilus coruscus (Sea mussel)	162	GO:0005576			extracellular region [GO:0005576]	extracellular region [GO:0005576]						
+A0A0K2D7V5	unreviewed	A0A0K2D7V5_MYTCO	Collagen-like protein-5		Mytilus coruscus (Sea mussel)	1202											
+A0A0K2D7M3	unreviewed	A0A0K2D7M3_MYTCO	Collagen-like protein-4		Mytilus coruscus (Sea mussel)	239											
+A0A0K2D7R0	unreviewed	A0A0K2D7R0_MYTCO	Collagen-like protein-6		Mytilus coruscus (Sea mussel)	476	GO:0031012			extracellular matrix [GO:0031012]	extracellular matrix [GO:0031012]						
+A0A0K2D820	unreviewed	A0A0K2D820_MYTCO	Collagen-like protein-7		Mytilus coruscus (Sea mussel)	364											
+A0A0K2D7Q5	unreviewed	A0A0K2D7Q5_MYTCO	Protease inhibitor-like protein-1		Mytilus coruscus (Sea mussel)	1448	GO:0004866; GO:0005576		endopeptidase inhibitor activity [GO:0004866]	extracellular region [GO:0005576]	extracellular region [GO:0005576]; endopeptidase inhibitor activity [GO:0004866]						
+A0A0K2D876	unreviewed	A0A0K2D876_MYTCO	Leu-rich protein-1		Mytilus coruscus (Sea mussel)	202											
+A0A0K2D7W0	unreviewed	A0A0K2D7W0_MYTCO	YGH-rich protein-1		Mytilus coruscus (Sea mussel)	873											
+A0A0K2D7W4	unreviewed	A0A0K2D7W4_MYTCO	YGH-rich protein-2		Mytilus coruscus (Sea mussel)	509											
+A0A0K2D7N2	unreviewed	A0A0K2D7N2_MYTCO	YGH-rich protein-3		Mytilus coruscus (Sea mussel)	518											
+A0A0K2D7M8	unreviewed	A0A0K2D7M8_MYTCO	TSP_1 domain containing protein-1		Mytilus coruscus (Sea mussel)	651											
+A0A0K2D7R5	unreviewed	A0A0K2D7R5_MYTCO	Tyrosinase-like protein-2		Mytilus coruscus (Sea mussel)	197	GO:0016491		oxidoreductase activity [GO:0016491]		oxidoreductase activity [GO:0016491]						
+A0A6B7E5P4	unreviewed	A0A6B7E5P4_MYTGA	Catechol oxidase (EC 1.10.3.1)		Mytilus galloprovincialis (Mediterranean mussel)	561	GO:0004097		catechol oxidase activity [GO:0004097]		catechol oxidase activity [GO:0004097]						
+Q25534	unreviewed	Q25534_MYTTR	Adhesive protein		Mytilus trossulus (Blue mussel)	40											
+Q2TCK5	unreviewed	Q2TCK5_PERCI	Foot protein 1 variant 4		Perna canaliculus (Green-lipped mussel)	388											
+Q2TCK6	unreviewed	Q2TCK6_PERCI	Foot protein 1 variant 3		Perna canaliculus (Green-lipped mussel)	404											
+Q2TCK7	unreviewed	Q2TCK7_PERCI	Foot protein 1 variant 2		Perna canaliculus (Green-lipped mussel)	432											
+Q2TCK8	unreviewed	Q2TCK8_PERCI	Foot protein 1 variant 1		Perna canaliculus (Green-lipped mussel)	436											
+B2D080	unreviewed	B2D080_PERPR	Foot protein 1	fp-1	Perna perna (Brown mussel)	41											
+Q9NB54	unreviewed	Q9NB54_DREPO	Byssal protein Dpfp1		Dreissena polymorpha (Zebra mussel) (Mytilus polymorpha)	430											

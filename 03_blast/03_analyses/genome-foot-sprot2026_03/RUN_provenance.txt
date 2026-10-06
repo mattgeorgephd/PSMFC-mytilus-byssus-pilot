@@ -1,0 +1,19 @@
+03 step 01: genome CDS blastx against Swiss-Prot and the Mytilus foot proteins
+run                  : 2026-10-04 13:19 UTC
+Swiss-Prot release   : 2026_03 (UniProt records of the same release, REST)
+foot proteins        : 02_data/uniprotkb_mytilus_foot_2026_03_byssal.fasta (241 sequences)
+blastx               : blastx: 2.15.0+; -evalue 1E-20 -max_target_seqs 1 -outfmt 6; 200 part(s), 4 threads
+database             : 575,989 sequences; 209,093,815 total residues
+hits (HSPs)          : 41588
+code commit          : 3644b38fc297
+uncommitted changes  : no
+R                    : R version 4.6.1 (2026-06-24)
+packages             : dplyr 1.2.1, stringr 1.6.0, tidyr 1.3.2
+inputs (md5, repo-relative path):
+  afb706c9c596cae5ea006de3ce5d3a24  03_blast/01_code/01_genome_blast.Rmd
+  47e7271c2ac7cc0cc514c167a0ab727a  03_blast/01_code/_blastx_parts.sh
+  7904e3f596a80d528f9e900fdc4f8b79  03_blast/02_data/uniprotkb_mytilus_foot_2026_03_byssal.fasta
+  a4df841e16db68b41719d564986f706b  04_sequence-alignment/02_data/cds_from_genomic.fasta
+  75a20c7427ff78c941d0cc6fc7751485  /tmp/claude-0/-home-user-PSMFC-mytilus-byssus-pilot/24ceb39b-35d5-5142-9023-bceef80d7b6c/scratchpad/blast2026/work/output/genome_n_foot_blastx_r2026_03.tab
+  51cf972238df7cb080714afaa6b4d6b6  /tmp/claude-0/-home-user-PSMFC-mytilus-byssus-pilot/24ceb39b-35d5-5142-9023-bceef80d7b6c/scratchpad/blast2026/work/data/uniprot_reviewed_r2026_03.tsv
+  878e05e7480dd5681b81e3d5f13a568b  /tmp/claude-0/-home-user-PSMFC-mytilus-byssus-pilot/24ceb39b-35d5-5142-9023-bceef80d7b6c/scratchpad/blast2026/work/data/uniprot_mytilus_foot_r2026_03.tsv

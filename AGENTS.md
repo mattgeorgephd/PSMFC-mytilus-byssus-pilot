@@ -25,22 +25,55 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 ## How to run
 
 - **Everything:** knit `00_run_pipeline.Rmd` at the repository root (open
-  `PSMFC-mytilus-byssus-pilot.Rproj`). About 35 minutes on four cores; on Windows the GO steps
+  `PSMFC-mytilus-byssus-pilot.Rproj`). About 50 minutes on four cores (15 of them `09` step 06's prediction test); on Windows the GO steps
   in `07` run on one core (R cannot fork there), so allow longer. It knits each folder's
-  runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails.
+  runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails,
+  and its error quotes the failed step's own error from that step's log. Before the first
+  stage it compares this R with `renv.lock` (`check_stack()`, `tools/run_steps.R`) and stops
+  within seconds if R's minor version or Bioconductor's differs, if a package the pipeline
+  loads (`PIPELINE_PACKAGES`) is not on R's library path (put the `renv::restore()` library
+  there with `R_LIBS=<library>` in `.Renviron`), or, when `07` or `08` is to run, if `GO.db`
+  does not hold GO release 2026-01-23; its `check_versions: false` skips that check (outputs
+  are then not of record).
 - **One folder:** open the folder's own `.Rproj` and knit `01_code/00_run_*.Rmd`. Its
   `steps` parameter runs a subset; reports and logs go to `03_analyses/knit_html/`.
 - **One script:** open the folder's `.Rproj` first, so `here::here()` resolves to the folder,
   then knit the script. Run the steps before it first.
 - **Requirements:** the packages each folder's README lists (DESeq2, apeglm, ashr, topGO,
   goseq, clusterProfiler, enrichplot, rrvgo, GOSemSim, GO.db, GSEABase, org.Hs.eg.db,
-  tidyverse, readxl, openxlsx, emmeans, here, rmarkdown, among others). Tested with R 4.4.3
-  and Bioconductor 3.20 packages, with `GO.db` and `org.Hs.eg.db` 3.18.0 (GO release
-  2023-07-27); the earlier analyses ran on R 4.2.2. GO results change with the GO release in
-  `GO.db`, so `07` records it with the package versions in
-  `03_analyses/01_go-inputs/RUN_provenance.txt`.
-- **Not run by the pipeline:** `03_blast/` and `04_sequence-alignment` step 01 (HPC, inputs
-  not in the repository), `04` steps 04-06 and step 08's mitochondrial alignment (download the
+  tidyverse, readxl, openxlsx, emmeans, here, rmarkdown, R.utils (for `data.table::fread` on
+  `.gz` files), glmnet and dynamicTreeCut (`09` step 06), among others). Tested with R 4.6.1 and Bioconductor 3.23
+  (`BiocManager::install(version = "3.23")`): DESeq2 1.52.0, apeglm 1.34.0, ashr 2.2.63, topGO
+  2.64.0, goseq 1.64.0, clusterProfiler 4.20.0, rrvgo 1.24.0, GOSemSim 2.38.3, `GO.db` 3.23.1
+  (GO release 2026-01-23) and `org.Hs.eg.db` 3.23.1. The previous runs used R 4.4.3 with
+  Bioconductor 3.20 and, before that, R 4.2.2; on the same inputs R 4.6.1 / Bioconductor 3.23
+  gave the same DEGs, GO terms, GO slims and gene-mechanics results (log2 fold changes within
+  1e-6). GO results change with the GO release in `GO.db`, so `07` and `08` stop unless it is
+  2026-01-23 (`check_go_release()`, `tools/pipeline_checks.R`), and `07` records it with the
+  package versions in `03_analyses/01_go-inputs/RUN_provenance.txt`. `renv.lock` at the root
+  records every package of the library the pipeline last ran with (282, R's recommended packages
+  included: Matrix 1.7-6, MASS 7.3-66, mgcv 1.9-4, survival 3.8-12, ...): with R 4.6.1,
+  `install.packages("renv"); renv::restore(lockfile = "renv.lock", library = "<library>",
+  prompt = FALSE)` rebuilds it (the project does not activate renv, so nothing else changes).
+  System libraries are not in it (on Ubuntu 24.04: libcurl, libssl, libxml2, libfontconfig,
+  libharfbuzz, libfribidi, libfreetype, libpng, libtiff, libjpeg, libwebp, libcairo2, libglpk,
+  libgmp, libicu, libuv, libnlopt, libgit2, ImageMagick and pandoc, as `-dev` packages). On a
+  machine that had an older R, keep the old R's packages off the library path (on Ubuntu,
+  packages in `/usr/lib/R/site-library` built for R 4.3 fail to load in R 4.6), for example
+  `R_LIBS_SITE=/nonexistent R_LIBS=<library>` when installing and running, and upgrade R's
+  recommended packages with R (CRAN's Ubuntu repository builds them for 4.6).
+  `tools/cloud_setup.sh` does all of this on Ubuntu 24.04 (R 4.6.1, the recommended packages,
+  the system libraries, BLAST+ 2.15.0 and `renv::restore()` into `/opt/R/site-library-4.6`); it
+  is the setup script of the Claude Code cloud environment (environment settings, Setup
+  script).
+- **Not run by the pipeline:** `03_blast/` steps 01-03 and `04_sequence-alignment` step 01
+  (HPC or long searches, inputs not in the repository; `03_blast` step 01 ran its 2026 search in
+  the cloud environment in about 31 hours on 4 threads, in resumable parts), `03_blast` step 04
+  (the 2024 hits with UniProt 2026_03 records, a comparison; it runs offline from committed
+  files, and `online: true` fetches the records again, which works only while UniProt serves
+  release 2026_03), `03_blast` step 05 (the foot and byssal proteins searched again with the
+  low-complexity filter off; `run: true` needs BLAST+ and the genome CDS and takes about 2
+  minutes, `run: false` rebuilds its tables offline), `04` steps 04-06 and step 08's mitochondrial alignment (download the
   transcriptome, genome and reads and run minimap2, HISAT2, StringTie and featureCounts; set
   the `04` runner's `online: true`; steps 04-06 make the count matrix of record, which step 07
   takes), `04` step 03's recipe check (its own `online: true`), `06_iso-seq-transcriptome`
@@ -105,6 +138,22 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     step 08: HISAT2 default scoring against NC_007687.1, featureCounts per gene) and tested per
     protein in `05` step 13 with the nuclear genes' size factors; the haplotype covariate and
     a permissive alignment score are sensitivity checks there.
+  - Annotation: each gene's best hit (highest bitscore) in the genome blastx of 2026
+    (Swiss-Prot release 2026_03 plus the 196 proteins of the UniProt query "(mytilus foot)"
+    and 45 byssal proteins it misses, `03_blast/02_data/byssal_additions_2026_03.tsv`;
+    `03_blast` step 01), with the UniProt records of release 2026_03; and, for genes with no hit
+    there, a hit of at least 70% identity to those 241 foot and byssal proteins with blastx's
+    low-complexity filter off (`03_blast` step 05: mfp-3, mfp-5, foot protein 9 and thread
+    matrix protein 2F, six genes the filter had hidden)
+    (`03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`); GO release 2026-01-23
+    (`GO.db` 3.23.1) and its generic GO slim (`08_gene-annotation/02_data/goslim_generic.obo`).
+    Kept for comparison: the search of 2024 (`genome-foot/`) and its hits with the 2026_03
+    records (`genome-foot-uniprot2026_03/`, `03_blast` step 04).
+  - Expression suites (`09` step 06, exploratory): script 05's gene sets, co-expression
+    modules and expression components, each through the within-arm ANCOVA and the same model
+    without treatment; elastic-net prediction of held-out animals (glmnet 5.1) against label
+    permutations, seeded per run so that the result does not depend on the number of workers,
+    with a power check (the treatment's columns added to all the axes, across arms).
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.
@@ -120,7 +169,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   library. T051F and T051G
   were removed at QC; T047 has no foot library. `library_crosswalk.csv` (05) maps every library
   to its RNA isolation record.
-- **Known data issues** (see the folder READMEs): 293 loci on unplaced scaffolds (126
+- **Known data issues** (see the folder READMEs): blastx's low-complexity filter (SEG) hid the
+  hits of six byssal genes in the 2026 search (three mfp-3, mfp-5, foot protein 9, thread
+  matrix protein 2F), which `03_blast` step 05 adds; genes whose hit of record is a weaker
+  repeat match keep it, and two genes RefSeq names "adhesive plaque matrix protein-like"
+  (LOC134723087, LOC134723088, 36 to 37% to mfp-1) have no annotation; 293 loci on unplaced scaffolds (126
   protein-coding LOCs and 167 pseudogenes) are copies of the mitochondrial protein genes and
   take their reads in the genome alignment (`tools/mt_encoded.R`); 12 of the 59 animals carry
   mitochondrial haplotypes that differ from the reference at fixed positions, which the genome
@@ -155,6 +208,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **`_superseded/` folders:** records; do not edit, run or delete them.
 - **`template-oyster-pipeline/`:** reference code from another project, not part of this
   analysis.
-- **Git-ignored files** (`knit_html/`, `dds/*.rds`, BAM/SAM files, the genome and the Iso-Seq
-  FASTA): never force-add them.
+- **Git-ignored files** (`knit_html/`, `dds/*.rds`, BAM/SAM files, the genome, the Iso-Seq
+  FASTA and the tensometer QC plots in `02_thread-strength/03_analyses/02_extract-tensometer-data/QC_plots/`):
+  never force-add them.
 - **Generated tables and figures:** never hand-edit; change the code and rerun.

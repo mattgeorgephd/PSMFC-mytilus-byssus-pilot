@@ -12,27 +12,30 @@ weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus prote
 09_gene-mechanics-correlation/
 ├── gene-mechanics-correlation.Rproj
 ├── 01_code/
-│   ├── 00_run_gene_mechanics_by_tissue.Rmd  batch runner: scripts 01-05 for foot and gill
+│   ├── 00_run_gene_mechanics_by_tissue.Rmd  batch runner: scripts 01-06 for foot and gill
 │   ├── 01_gene_mechanics_correlation.Rmd    paired table, VST, candidate set, per-gene ANCOVA (the reported test)
 │   ├── 02_gene_mechanics_expanded.Rmd       modules, influence, best hits (same ANCOVA)
 │   ├── 03_rna_thread_manifest_and_expression_tables.Rmd
 │   ├── 04_byssus_foot_gene_list_expression.Rmd
 │   ├── 05_go_term_mechanics.Rmd             mechanics against DEG sets, enriched GO terms, mitochondrial share
-│   ├── gene-mechanics-pipeline_DOC.md       how the five chain together; config; checks
+│   ├── 06_expression_suites.Rmd             suites: programs, co-expression modules, expression components between and within arms; multi-gene prediction
+│   ├── gene-mechanics-pipeline_DOC.md       how the six chain together; config; checks
 │   └── _superseded/11-byssal_thread_by_sample.Rmd   Grace's legacy per-sample joining (not in the chain)
 ├── 02_data/
 │   ├── expected_animals.csv   every day-3 animal: in the foot / gill fits, or the reason it is out
 │   └── _superseded/           gene-family count matrices written by the legacy script; not read
 └── 03_analyses/
     ├── gene_mechanics/     scripts 01 and 02, tissue-suffixed
+    │   └── candidate_scatter_F/, candidate_scatter_G/   script 01: one figure per heatmap gene
     ├── expr_tables/        script 03
     ├── byssus_genes/       script 04
     ├── go_mechanics/       script 05
+    ├── expression_suites/  script 06 (README inside)
     ├── knit_html/          reports, logs and run_log.csv from runner 00 (git-ignored)
     └── _superseded/        the legacy script's two PDFs
 ```
 
-Scripts 01 to 05 take a knit parameter `tissue` (`"F"` default, or `"G"`). Knit
+Scripts 01 to 06 take a knit parameter `tissue` (`"F"` default, or `"G"`). Knit
 `00_run_gene_mechanics_by_tissue.Rmd` to run the whole chain for both tissues, after the
 `02_thread-strength`, `05_differential-expression` and `07_enrichment` runners (the
 repository-level `00_run_pipeline.Rmd` runs them in order). Each script reads the previous one's CSV
@@ -61,8 +64,8 @@ folder that contains both `02_thread-strength/` and `05_differential-expression/
 | `05_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv` | mitochondrial protein reads as a share of each library's nuclear reads, 05 script 13 | 05 |
 | `07_enrichment/03_analyses/02_topgo/topgo_enriched.csv` | enriched GO terms of each TC run and the DEGs in each, 07 script 02 | 05 |
 | `07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_<ont>.csv` | terms an FDR-controlled method also enriched, 07 script 06 | 05 |
-| `03_blast/03_analyses/genome-foot/LOC_GO_list.txt` | genome-wide BLAST / UniProt / GO annotation | 01, 04 |
-| `tools/pipeline_checks.R` | `warn_unless()` checks and `RUN_provenance_<T>.txt` | 01, 02, 05 |
+| `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` | genome-wide BLAST (Swiss-Prot 2026_03 plus 241 foot and byssal proteins, and `03_blast` step 05's six genes found with the low-complexity filter off) / UniProt (release 2026_03 records) / GO annotation | 01, 04 |
+| `tools/pipeline_checks.R` | `warn_unless()` checks and `RUN_provenance_<T>.txt` | 01, 02, 05, 06 |
 | `tools/gene_ids.R` | `gene_key()`: count-matrix gene name to LOC key | 01, 03, 04, 05 |
 
 ## Analysis design
@@ -84,8 +87,8 @@ In the current run two genes pass q < 0.1 within their metric, and one of them w
 family too (`best_hits_<T>.csv`):
 
 - **Gill, candidate, plaque area (primary).** Animals that express LOC134718612 more strongly
-  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.034
-  over the 311 candidates, 0.069 over the primary family). It is annotated as heat shock 70 kDa
+  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.036
+  over the 324 gill candidates tested, 0.072 over the primary family). It is annotated as heat shock 70 kDa
   protein 12A, but only from a 32% identity BLAST hit, so it is a distant HSP70-family gene
   rather than a confident ortholog; it is expressed at a low level in gill (DESeq2 base mean
   about 10) and is not a TC DEG. Leaving out its most influential animal (T136) gives p 1.6e-5.
@@ -99,7 +102,12 @@ family too (`best_hits_<T>.csv`):
   the animals with less of it make weaker threads. Robust to leaving out one animal.
 
 The next candidates are glutathione peroxidase 7 with the strongest thread in gill
-(exploratory, q 0.12); the lowest foot candidate q is 0.46, and no module comes near (lowest q 0.59).
+(exploratory, q 0.12); the lowest foot candidate q is 0.49 (262 foot candidates since 2026-10-06, when
+`03_blast` step 05 annotated mefp-5 and two expressed mfp-3 genes: none comes near, p 0.39 or more), and
+no module comes near (lowest q 0.61).
+Until 2026-10-05 the gill's next result was aminoacylase-1 with adhesion (q 0.14), but it was
+a candidate only because the keyword `aminoacyl`, meant for tRNA synthetases, matched its name;
+the keyword is now `aminoacyl[- ]tRNA` (`01_code/gene-mechanics-pipeline_DOC.md`, caveats).
 
 Script 05 puts the sets the expression analysis found through the same ANCOVA: the up- and
 the down-regulated DEGs of each stressor, the genes behind every enriched topGO term of
@@ -109,13 +117,40 @@ component of its genes, as for script 02's modules. BH runs in two families, the
 response-level scores (DEG sets and mitochondrial share) and the GO terms. The sets were
 chosen because they differ between arms and the model removes the arm differences, so a
 slope is an association among animals of the same arm; with 10 to 12 animals per arm it is
-exploratory. In the current run no set passes q < 0.1 (the lowest q is 0.16). The strongest
-signals are in gill: animals scoring higher on the Gill OA up-regulated term "inner
-mitochondrial membrane protein complex" have smaller plaques (pad area, partial r -0.48, p
-0.001, q 0.16; "proton motive force-driven ATP synthesis" r -0.37, p 0.015), and animals with a
-higher mitochondrial share of reads make weaker threads (strongest thread, partial r -0.34, p
-0.028, q 0.19; mean peak force, r -0.33, p 0.034, q 0.24). The mitochondrial share is counted on
+exploratory. In the current run no set passes q < 0.1 (the lowest q is 0.19). The strongest
+signals are in gill: animals with a higher mitochondrial share of reads make weaker threads
+(strongest thread, partial r -0.34, p 0.028, q 0.19; mean peak force, r -0.33, p 0.034, q 0.24),
+and animals scoring higher on the Gill OA up-regulated terms "respiratory chain complex" and
+"proton motive force-driven ATP synthesis" have smaller plaques (pad area, partial r -0.38, p
+0.012, and r -0.37, p 0.015; q 0.94 among the GO terms). Before the annotation and GO release
+of 2026 (2026-10-04), the Gill OA up term "inner mitochondrial membrane protein complex" was
+enriched and gave the lowest q (pad area, r -0.48, p 0.001, q 0.16); with the new records it is
+no longer enriched, and five of its seven DEGs are among the six of "respiratory chain
+complex". The mitochondrial share is counted on
 the mitochondrial genome alone since 2026-10-02 (`05` step 13); with the previous genome count
-the same two associations were r -0.33 and -0.35. Nothing in foot comes near (lowest q 0.59).
+the same two associations were r -0.33 and -0.35. Nothing in foot comes near (lowest q 0.58).
+
+Script 06 asks whether combinations of genes ("suites") go with attachment, and separates the
+two questions an "expression profile" plot mixes up: across arms (an association that can be
+the treatment itself, since warming and hypoxia change both expression and thread strength)
+and within arms (the question of scripts 01, 02 and 05). Its axes are script 05's DEG sets and
+GO terms with at least 10 genes (the DEG sets have tens to hundreds of genes), co-expression
+modules of the 4,000 genes with the largest within-arm variance (arm removed, signed
+correlation, dynamic tree cut) and the first ten principal components of all expressed genes;
+each gets the within-arm ANCOVA, the same model without the treatment term, the correlation of
+its arm means with the arm means of the baseline-adjusted level and a test of differing slopes.
+An elastic net then predicts held-out animals from the candidate genes, the 2,000 most variable
+genes, all the axes and the six DEG programs alone, across and within arms, against label
+permutations, with the treatment alone as a reference and a power check (the treatment added to
+all the axes: can the elastic net find it among them?). It needs `glmnet` and `dynamicTreeCut` (in `renv.lock`) and runs its
+prediction test on a socket cluster of `cores` workers (Windows too), about 8 minutes per tissue
+on 4 workers with 100 permutations. Results (`03_analyses/expression_suites/README.md`): no
+suite tracks force or plaque area within arms (lowest q 0.85 in foot, 0.89 in gill, over 108 and
+89 axes); the warming and hypoxia programs follow the arms' differences in force but are flat
+within arms; the six DEG programs predict held-out animals' force across arms (Q2 0.18 foot,
+0.12 gill; the treatment alone 0.38) and not within arms. The power check shows the limit: with
+the treatment among all the axes, the elastic net recovers Q2 0.05 to 0.07 of the treatment's
+0.38, so 45 or 46 animals per tissue are too few to find signals of that size among a hundred predictors, and
+the large sets' failure to predict says little about modest suites.
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

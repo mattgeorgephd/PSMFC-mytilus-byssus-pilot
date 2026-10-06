@@ -1,0 +1,296 @@
+---
+title: "05 - Foot and byssal proteins searched again without the low-complexity filter"
+output: html_document
+params:
+  run: false            # true: run the search (BLAST+ 2.15.0 and the genome CDS needed); false: rebuild the tables from the committed search
+  blast_bin: "/usr/local/bin"
+  cds_fasta: "04_sequence-alignment/02_data/cds_from_genomic.fasta"   # repo-relative; the genome CDS step 01 searched (git-ignored download)
+  work_dir: ""          # where the search writes its table and database ("" = a folder in tempdir(); set it to resume)
+  threads: 4
+  pident_min: 70        # identity (%) a hit needs to be adopted
+  full_db: ""           # optional, with run: true: step 01's BLAST database, to search the adopted genes' CDSs against it with the filter off
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+Step 01 annotates every gene by its best blastx hit against Swiss-Prot 2026_03 plus 241 foot and
+byssal proteins (`03_analyses/genome-foot-sprot2026_03/`). blastx masks low-complexity stretches
+of the translated query by default (SEG; Wootton and Federhen 1993, *Computers & Chemistry*
+17:149-163), and several mussel adhesive proteins are low-complexity throughout: mfp-3 and mfp-5
+are short and made mostly of DOPA (hydroxylated tyrosine), glycine and basic residues (mfp-3:
+Papov et al. 1995, *J Biol Chem* 270:20183-20192; mfp-5: Waite and Qin 2001, *Biochemistry*
+40:2887-2893). Their genes got no hit: on 2026-10-06 the CDSs of the six genes this step
+adopts, searched against step 01's database with step 01's settings, had best e-values of 7.5e-20
+to 1.8e-9, all above the 1e-20 cut-off; with `-seg no` and nothing else changed, the same
+database gives 5.6e-22 to 1.05e-28, each to a foot protein.
+
+This step searches every CDS again with the filter off, against the 241 foot and byssal proteins
+alone (`02_data/uniprotkb_mytilus_foot_2026_03_byssal.fasta`), with step 01's other settings
+(`-evalue 1E-20 -max_target_seqs 1`) and `-dbsize` set to the total residues of step 01's
+database, so that the e-values and the cut-off are those a search of the whole database would
+give (checked on the six genes: the same proteins, bitscores and e-values). The search took
+about 2 minutes on 4 threads (step 01's took about 31 hours).
+
+With the filter off, low-complexity and repeated sequence also scores: of the 29 genes that have
+no hit in step 01 and a hit here, 23 match at 29 to 45% identity, mostly through repeats: 13
+collagen-like protein-5 or preCOL-NG (Gly-X-Y repeats), 4 mfp-1 (decapeptide repeats; RefSeq
+names two of the genes "adhesive plaque matrix protein-like", at 36 and 37%), 3 mfp-4
+(histidine-rich repeats) and 3 others; the other 6 match mfp-3, mfp-5, foot protein 9 and
+thread matrix protein 2F at 70.5 to 86.7%, each a protein of the same genus. Of the 451 genes that have a hit in step 01, 142 score
+higher here, 105 on the same protein (the filter had masked part of the query) and 37 on another:
+8 on another variant of the same byssal protein (mfp-1, mfp-4, mfp-6, precollagen-P, preCOL-NG),
+LOC134718845 (precollagen-D at 99% in step 01) on preCOL-NG at 63%, and 28 at 27 to 44% identity,
+mostly on collagen-like, tyrosinase and EGF-repeat proteins; three of the 28 would become byssal
+structural proteins (09 step 04's category: two EGF-repeat genes matching mfp-2 instead of notch
+homolog 1 and fibropellin-1, one matching byssal EP-like protein 1 instead of HIP). A hit is therefore adopted only for a gene that
+has no hit in step 01's search (no hit of record is replaced; scores with and without the filter
+are not comparable) and only at an identity of at least `pident_min` (70%); any floor from 46% to
+70% adopts the same six genes. Writes, in `03_analyses/genome-foot-sprot2026_03-noseg/`:
+
+- `LOC_GO_list.txt`: the annotation the analysis reads: step 01's `LOC_GO_list.txt`, line for
+  line, followed by the hits of the adopted genes' CDSs, built as step 01 builds its rows (the
+  same columns in the same order, the hit joined to its UniProt record of release 2026_03 and
+  each CDS to its gene);
+- `noseg_genes.csv`: every gene with a hit in this search: its best hit here (highest bitscore),
+  its best hit in step 01's search if it has one, whether the hit is adopted and why;
+- `foot_noseg_blastx.tab`: the blastx table of this search; `foot_noseg_cds.tsv`: the FASTA
+  header of every CDS in it and of every CDS step 01 found on a foot protein (so that the tables
+  can be rebuilt without the genome CDS);
+- `adopted_full_db_check.tsv` (with `full_db`): the adopted genes' CDSs searched against step 01's
+  whole database with the filter off;
+- `RUN_provenance.txt` (`run: true`): BLAST+ and its settings, the code commit, the input MD5s.
+
+With `run: false` (the default) it rebuilds the tables from the committed search table and
+headers and runs the checks. The UniProt records are those step 01 downloaded for the 241
+proteins (`02_data/uniprot_mytilus_foot_r2026_03.tsv`, release 2026_03; its MD5 is checked
+against step 01's `RUN_provenance.txt`).
+
+```{r paths}
+suppressPackageStartupMessages({ library(dplyr); library(stringr); library(tidyr) })
+repo_root <- normalizePath(file.path(here::here(), ".."))
+rec_dir   <- here::here("03_analyses", "genome-foot-sprot2026_03")       # step 01's search of 2026
+res_dir   <- here::here("03_analyses", "genome-foot-sprot2026_03-noseg")
+foot_fa   <- here::here("02_data", "uniprotkb_mytilus_foot_2026_03_byssal.fasta")
+foot_tsv  <- here::here("02_data", "uniprot_mytilus_foot_r2026_03.tsv")
+cds_fa    <- file.path(repo_root, params$cds_fasta)
+work_dir  <- if (nzchar(params$work_dir)) params$work_dir else file.path(tempdir(), "byssal_noseg")
+blastx_new <- file.path(work_dir, "foot_noseg_blastx.tab")
+dir.create(res_dir, showWarnings = FALSE, recursive = TRUE)
+## step 01's provenance gives its database size and the MD5s of the inputs the two steps share
+prov01 <- readLines(file.path(rec_dir, "RUN_provenance.txt"))
+dbsize <- as.numeric(gsub(",", "", sub("^.*; ([0-9,]+) total residues.*$", "\\1",
+                                        grep("^database", prov01, value = TRUE))))
+stopifnot(length(dbsize) == 1, is.finite(dbsize))
+md5_01 <- local({
+  m <- regmatches(prov01, regexec("^ +([0-9a-f]{32})  (.*)$", prov01))
+  m <- m[lengths(m) == 3]
+  setNames(vapply(m, `[`, "", 2), basename(vapply(m, `[`, "", 3)))
+})
+same_md5 <- function(f) unname(tools::md5sum(f)) == md5_01[[basename(f)]]
+stopifnot("foot FASTA differs from step 01's" = same_md5(foot_fa),
+          "foot records differ from step 01's download" = same_md5(foot_tsv))
+if (params$run) stopifnot("genome CDS differs from step 01's" = same_md5(cds_fa))
+cat("database size of step 01 (residues):", format(dbsize, big.mark = ","), "\n")
+Sys.setenv(BLAST_BIN = params$blast_bin, CDS_FA = cds_fa, FOOT_FA = foot_fa, BLASTX_NEW = blastx_new,
+           THREADS = params$threads, DBSIZE = sprintf("%.0f", dbsize), WORK_DIR = work_dir,
+           HELPER = here::here("01_code", "_blastx_noseg.sh"))
+```
+
+# The search
+
+`_blastx_noseg.sh` makes the database of the 241 proteins and runs
+`blastx -evalue 1E-20 -max_target_seqs 1 -seg no -dbsize <step 01's residues> -outfmt 6` on every
+CDS. It writes its table whole or not at all and does not search again if the table exists.
+
+```{bash search, eval = params$run}
+set -euo pipefail
+mkdir -p "$WORK_DIR"
+bash "$HELPER" "$BLAST_BIN" "$CDS_FA" "$FOOT_FA" "$BLASTX_NEW" "$THREADS" "$DBSIZE"
+```
+
+```{r keep-search, eval = params$run}
+## the search table and the headers of the CDSs the tables need, beside the tables
+stopifnot(file.copy(blastx_new, file.path(res_dir, "foot_noseg_blastx.tab"), overwrite = TRUE))
+foot_acc <- sub("^>[^|]*[|]([^|]*)[|].*$", "\\1", grep("^>", readLines(foot_fa), value = TRUE))
+b01 <- read.delim(file.path(rec_dir, "genome_n_foot_blastx.tab"), header = FALSE, stringsAsFactors = FALSE)
+b05 <- read.delim(blastx_new, header = FALSE, stringsAsFactors = FALSE)
+need <- union(b05$V1, b01$V1[sub("^[^|]*[|]([^|]*)[|].*$", "\\1", b01$V2) %in% foot_acc])
+h <- sub("^>", "", grep("^>", readLines(cds_fa), value = TRUE))
+hd <- data.frame(V1 = sub(" .*$", "", h), V2 = sub("^[^ ]* ?", "", h), stringsAsFactors = FALSE)
+write.table(hd[hd$V1 %in% need, ], file.path(res_dir, "foot_noseg_cds.tsv"), sep = "\t",
+            row.names = FALSE, quote = TRUE)
+```
+
+# The tables
+
+`build_rows()` is step 01's table code (its `tables` chunk, `as_2024: false`), applied to a blastx
+table, with the UniProt records of the foot proteins only (every subject here is one of them).
+The check below applies it to step 01's own hits on the foot proteins that are TrEMBL entries
+(for Swiss-Prot entries step 01 took the Swiss-Prot table's record) and compares the lines it
+writes with step 01's `LOC_GO_list.txt`.
+
+```{r tables}
+cdsftab <- read.delim(file.path(res_dir, "foot_noseg_cds.tsv"), stringsAsFactors = FALSE)
+records <- read.delim(foot_tsv, sep = "\t", header = TRUE)
+records <- subset(records, select = -Gene.Ontology..GO.) %>% rename(uniprot_accession = Entry)
+stopifnot(!anyDuplicated(records$uniprot_accession))
+
+build_rows <- function(blast) {
+  g.spid <- left_join(blast, cdsftab, by = "V1") %>%
+    mutate(gene = str_extract(V2.y, "(?<=\\[gene=)\\w+")) %>%
+    select(gene, V11, V2.x, V1) %>%
+    mutate(uniprot_accession = str_extract(V2.x, "(?<=\\|)[^\\|]*(?=\\|)")) %>%
+    distinct(gene, uniprot_accession, .keep_all = TRUE)
+  colnames(g.spid)[4] <- "transcript"
+  masterID <- blast %>%
+    separate(V2, into = c("sp", "uniprot_accession", "entry_name"), sep = "\\|") %>%
+    separate(entry_name, into = c("geneID", "species"), sep = "_", extra = "merge") %>%
+    rename(transcript = V1, pident = V3, length = V4, mismatch = V5, gapopen = V6, qstart = V7,
+           qend = V8, sstart = V9, send = V10, evalue = V11, bitscore = V12)
+  left_join(left_join(masterID, records, by = "uniprot_accession"), g.spid, by = "transcript")
+}
+as_lines <- function(d) {        # the lines write.table() gives step 01's LOC_GO_list.txt
+  f <- tempfile(); on.exit(unlink(f))
+  write.table(d, f, sep = "\t", row.names = FALSE, quote = TRUE, col.names = FALSE)
+  readLines(f)
+}
+gene_of <- function(cds) str_extract(cdsftab$V2[match(cds, cdsftab$V1)], "(?<=\\[gene=)\\w+")
+best_by <- function(d, key) {   # one row per key: the highest bitscore, ties in table order
+  d <- d[order(d[[key]], -d$bitscore, seq_len(nrow(d))), ]
+  d[!duplicated(d[[key]]), ]
+}
+
+## step 01's table, as the analysis reads it (best hit per gene: highest bitscore, ties in table order)
+rec_file  <- file.path(rec_dir, "LOC_GO_list.txt")
+rec_lines <- readLines(rec_file)
+rec <- read.delim(rec_file, stringsAsFactors = FALSE)
+stopifnot(length(rec_lines) - 1 == nrow(rec))
+rec_best <- best_by(rec[!is.na(rec$gene), c("gene", "uniprot_accession.x", "Protein.names", "pident", "bitscore")], "gene")
+
+## check: step 01's rows on TrEMBL foot proteins, rebuilt
+b01 <- read.delim(file.path(rec_dir, "genome_n_foot_blastx.tab"), header = FALSE, stringsAsFactors = FALSE)
+tr_foot <- startsWith(b01$V2, "tr|") & sub("^[^|]*[|]([^|]*)[|].*$", "\\1", b01$V2) %in% records$uniprot_accession
+rebuilt <- as_lines(build_rows(b01[tr_foot, ]))
+rec_tr  <- rec_lines[-1][rec$sp == "tr" & rec$uniprot_accession.x %in% records$uniprot_accession]
+
+## this search: best hit per gene, and whether it is adopted
+b05 <- read.delim(file.path(res_dir, "foot_noseg_blastx.tab"), header = FALSE, stringsAsFactors = FALSE)
+b05$gene <- gene_of(b05$V1)
+hits <- data.frame(gene = b05$gene, cds = b05$V1, accession = sub("^[^|]*[|]([^|]*)[|].*$", "\\1", b05$V2),
+                   pident = b05$V3, length = b05$V4, evalue = b05$V11, bitscore = b05$V12, stringsAsFactors = FALSE)
+genes <- best_by(hits[!is.na(hits$gene), ], "gene") %>%
+  left_join(count(hits, gene, name = "n_cds_hits"), by = "gene") %>%
+  mutate(protein = records$Protein.names[match(accession, records$uniprot_accession)],
+         organism = records$Organism[match(accession, records$uniprot_accession)],
+         refseq_protein = str_extract(cdsftab$V2[match(cds, cdsftab$V1)], "(?<=\\[protein=)[^\\]]+")) %>%
+  left_join(rec_best %>% rename(record_accession = uniprot_accession.x, record_protein = Protein.names,
+                                record_pident = pident, record_bitscore = bitscore), by = "gene") %>%
+  mutate(adopted = is.na(record_accession) & pident >= params$pident_min,
+         reason = case_when(!is.na(record_accession) ~ "has a hit in step 01's search",
+                            adopted ~ paste0("no hit in step 01's search; identity >= ", params$pident_min, "%"),
+                            TRUE ~ paste0("no hit in step 01's search; identity < ", params$pident_min, "%"))) %>%
+  arrange(desc(adopted), !is.na(record_accession), desc(pident))
+adopted <- genes$gene[genes$adopted]
+
+## the adopted genes' rows, built as step 01 builds its rows, after step 01's lines
+new_rows <- build_rows(b05[b05$gene %in% adopted, setdiff(names(b05), "gene")])
+stopifnot(identical(names(new_rows), names(rec)))
+new_lines <- as_lines(new_rows)
+out_file <- file.path(res_dir, "LOC_GO_list.txt")
+writeLines(c(rec_lines, new_lines), out_file)
+write.csv(genes, file.path(res_dir, "noseg_genes.csv"), row.names = FALSE)
+knitr::kable(genes[genes$adopted, c("gene", "refseq_protein", "accession", "protein", "organism",
+                                    "pident", "length", "evalue", "bitscore")], row.names = FALSE)
+```
+
+# Checks
+
+```{r checks}
+merged <- read.delim(out_file, stringsAsFactors = FALSE)
+m_best <- best_by(merged[merged$gene %in% adopted, c("gene", "uniprot_accession.x", "bitscore")], "gene")
+nohit_rest <- genes[is.na(genes$record_accession) & !genes$adopted, ]
+checks <- data.frame(check = c(
+  "step 01's rows on TrEMBL foot proteins, rebuilt by build_rows(), are its lines byte for byte",
+  "every subject of this search is one of the 241 foot proteins",
+  "no adopted gene has a row in step 01's table",
+  "the merged table holds step 01's rows and then the adopted genes' rows",
+  "each adopted gene's best row in the merged table is its adopted hit",
+  "every adopted hit has e-value <= 1e-20 on step 01's database size"),
+  pass = c(
+    length(rebuilt) > 0 && identical(rebuilt, rec_tr),
+    all(hits$accession %in% records$uniprot_accession),
+    !any(adopted %in% rec$gene),
+    nrow(merged) == nrow(rec) + nrow(new_rows) && identical(readLines(out_file)[seq_along(rec_lines)], rec_lines),
+    nrow(m_best) == length(adopted) &&
+      all(m_best$uniprot_accession.x == genes$accession[match(m_best$gene, genes$gene)] &
+          m_best$bitscore == genes$bitscore[match(m_best$gene, genes$gene)]),
+    all(genes$evalue[genes$adopted] <= 1e-20)))
+knitr::kable(checks)
+if (!all(checks$pass)) stop("check failed: ", paste(checks$check[!checks$pass], collapse = "; "))
+knitr::kable(data.frame(measure = c(
+  "hits (HSPs)", "CDSs with a hit", "genes with a hit", "  of them with a hit in step 01's search",
+  "  with none there", paste0("  adopted (identity >= ", params$pident_min, "%)"),
+  "highest identity among the genes with no hit in step 01 not adopted (%)",
+  "step 01's rows on TrEMBL foot proteins rebuilt", "rows added to step 01's table"),
+  n = c(nrow(b05), length(unique(b05$V1)), nrow(genes), sum(!is.na(genes$record_accession)),
+        sum(is.na(genes$record_accession)), length(adopted),
+        if (nrow(nohit_rest)) max(nohit_rest$pident) else NA, length(rebuilt), nrow(new_rows))))
+```
+
+# The adopted genes against step 01's whole database
+
+With `full_db` (step 01's database, `swissprot_n_mytilusfoot_r2026_03`), the adopted genes' CDSs
+are searched against it with step 01's settings and the filter off: their best hit should be the
+same foot protein, with the same e-value, so that nothing in Swiss-Prot scores higher.
+
+```{r full-db, eval = params$run && nzchar(params$full_db)}
+q <- unique(b05$V1[b05$gene %in% adopted])
+fa <- readLines(cds_fa); starts <- grep("^>", fa)
+keep <- rep(sub("^>([^ ]*).*$", "\\1", fa[starts]) %in% q, diff(c(starts, length(fa) + 1)))
+qf <- tempfile(fileext = ".fna"); writeLines(fa[keep], qf)
+of <- tempfile(fileext = ".tab")
+stopifnot(system2(file.path(params$blast_bin, "blastx"),
+                  c("-query", qf, "-db", shQuote(params$full_db), "-out", of, "-evalue", "1E-20",
+                    "-num_threads", params$threads, "-max_target_seqs", "1", "-seg", "no", "-outfmt", "6"),
+                  stderr = FALSE) == 0)
+full <- read.delim(of, header = FALSE, stringsAsFactors = FALSE)
+full <- full[!duplicated(full$V1), c("V1", "V2", "V3", "V11", "V12")]
+names(full) <- c("cds", "full_subject", "full_pident", "full_evalue", "full_bitscore")
+foot1 <- b05[!duplicated(b05$V1) & b05$V1 %in% q, c("V1", "gene", "V2", "V3", "V11", "V12")]
+names(foot1) <- c("cds", "gene", "foot_subject", "foot_pident", "foot_evalue", "foot_bitscore")
+fc <- left_join(foot1, full, by = "cds") %>%
+  mutate(same_protein = foot_subject == full_subject, same_evalue = foot_evalue == full_evalue)
+write.table(fc, file.path(res_dir, "adopted_full_db_check.tsv"), sep = "\t", row.names = FALSE, quote = FALSE)
+knitr::kable(fc)
+if (!all(fc$same_protein %in% TRUE)) stop("an adopted CDS has a different best hit in step 01's database")
+```
+
+# Provenance
+
+```{r provenance, eval = params$run}
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # provenance_lines()
+blast_version <- system2(file.path(params$blast_bin, "blastx"), "-version", stdout = TRUE)[1]
+writeLines(provenance_lines(
+  c("03 step 05: genome CDS blastx against the foot and byssal proteins, low-complexity filter off",
+    paste0("run                  : ", format(Sys.time(), "%Y-%m-%d %H:%M %Z")),
+    paste0("foot proteins        : 02_data/uniprotkb_mytilus_foot_2026_03_byssal.fasta (",
+           sum(startsWith(readLines(foot_fa), ">")), " sequences); records 02_data/uniprot_mytilus_foot_r2026_03.tsv (release 2026_03)"),
+    paste0("blastx               : ", blast_version, "; -evalue 1E-20 -max_target_seqs 1 -seg no -dbsize ",
+           sprintf("%.0f", dbsize), " -outfmt 6; ", params$threads, " threads"),
+    paste0("hits (HSPs)          : ", nrow(b05), " (", nrow(genes), " genes)"),
+    paste0("adopted              : ", length(adopted), " genes (no hit in step 01's search, identity >= ",
+           params$pident_min, "%): ", paste(adopted, collapse = ", ")),
+    paste0("rows added           : ", nrow(new_rows), " to step 01's ", nrow(rec)),
+    paste0("full-database check  : ", if (nzchar(params$full_db))
+      paste0(basename(params$full_db), ", same best protein for every adopted CDS") else "not run"),
+    paste0("checks               : ", sum(checks$pass), " of ", nrow(checks), " passed")),
+  c(here::here("01_code", "05_byssal_noseg_search.Rmd"), here::here("01_code", "_blastx_noseg.sh"), foot_fa,
+    foot_tsv, cds_fa, file.path(rec_dir, "LOC_GO_list.txt"), file.path(rec_dir, "genome_n_foot_blastx.tab"),
+    file.path(rec_dir, "RUN_provenance.txt"), file.path(res_dir, "foot_noseg_blastx.tab")),
+  repo_root, packages = c("dplyr", "stringr", "tidyr")),
+  file.path(res_dir, "RUN_provenance.txt"))
+```

@@ -138,7 +138,7 @@ knitr::kable(table(region = xw$region, isolation_log_tissue = xw$isolation_log_t
 
 One row per matrix row that is mitochondrial: on the mitogenome (`source = mitogenome`,
 from the StringTie table of `04_sequence-alignment`), or a copy (`source = nuclear copy`): a
-LOC whose best BLAST hit (highest bitscore, `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`)
+LOC whose best BLAST hit (highest bitscore, `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`)
 is a mitochondrially encoded protein, or a locus NCBI names after one
 (`04_sequence-alignment/02_data/annotation_mt_like_loci.csv`; this catches the pseudogene
 copies, which have no CDS to BLAST). The two routes agree on every coding copy, protein
