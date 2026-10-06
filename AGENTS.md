@@ -25,7 +25,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 ## How to run
 
 - **Everything:** knit `00_run_pipeline.Rmd` at the repository root (open
-  `PSMFC-mytilus-byssus-pilot.Rproj`). About 35 minutes on four cores; on Windows the GO steps
+  `PSMFC-mytilus-byssus-pilot.Rproj`). About 55 minutes on four cores (20 of them `09` step 06's prediction test); on Windows the GO steps
   in `07` run on one core (R cannot fork there), so allow longer. It knits each folder's
   runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails,
   and its error quotes the failed step's own error from that step's log. Before the first
@@ -152,7 +152,8 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   - Expression suites (`09` step 06, exploratory): script 05's gene sets, co-expression
     modules and expression components, each through the within-arm ANCOVA and the same model
     without treatment; elastic-net prediction of held-out animals (glmnet 5.1) against label
-    permutations, seeded per run so that the result does not depend on the number of workers.
+    permutations, seeded per run so that the result does not depend on the number of workers,
+    with a power check (the treatment's columns added to all the axes, across arms).
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.

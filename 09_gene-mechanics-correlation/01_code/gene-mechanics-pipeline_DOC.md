@@ -215,7 +215,8 @@ with those of the baseline-adjusted level (`between_r`, descriptive) and an inte
 
 The prediction test fits an elastic net (glmnet, alpha 0.5, lambda.min of an inner 5-fold
 cross-validation with fixed fold IDs) to predict the day-3 level of held-out animals from the
-candidate genes, the `n_top_var` (2,000) most variable genes and all the axes, across arms
+candidate genes, the `n_top_var` (2,000) most variable genes, all the axes and the six DEG
+programs alone, across arms
 (baseline removed inside each training fold) and within arms (arm and baseline removed inside
 each training fold). Out-of-sample Q2 = 1 - SSE / SSE of the training-fold mean, over
 `cv_repeats` (3) repeats of 5 folds balanced by arm. The null is `nperm` (100) label permutations
@@ -223,7 +224,12 @@ per scenario (within arm for the within question), each through the same procedu
 run sets its own seed from `seed`, the scenario and the permutation, so the result does not
 depend on how the runs are spread over the `cores` workers (a socket cluster, which works on
 Windows); a check reruns the first scenario serially. Reference: the same cross-validation with
-the treatment alone as predictor. About 1,200 fits per tissue, 7 minutes on 4 workers.
+the treatment alone as predictor. Power check: the treatment's indicator columns added to all
+the axes, across arms; the treatment is then among the predictors, so the elastic net's Q2 there
+against the treatment-alone Q2 shows whether this many animals can find a signal of that size
+among this many predictors (scenarios are numbered, and seeded, in the order of
+`suite_prediction_<T>.csv`, with the DEG programs and the power check last). About 1,800 fits
+per tissue, 10 minutes on 4 workers.
 
 ### Bioconductor masking
 

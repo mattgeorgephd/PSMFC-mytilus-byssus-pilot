@@ -140,9 +140,10 @@ correlation, dynamic tree cut) and the first ten principal components of all exp
 each gets the within-arm ANCOVA, the same model without the treatment term, the correlation of
 its arm means with the arm means of the baseline-adjusted level and a test of differing slopes.
 An elastic net then predicts held-out animals from the candidate genes, the 2,000 most variable
-genes and all the axes, across and within arms, against label permutations, with the treatment
-alone as a reference. It needs `glmnet` and `dynamicTreeCut` (in `renv.lock`) and runs its
-prediction test on a socket cluster of `cores` workers (Windows too), about 7 minutes per tissue
+genes, all the axes and the six DEG programs alone, across and within arms, against label
+permutations, with the treatment alone as a reference and a power check (the treatment added to
+all the axes: can the elastic net find it among them?). It needs `glmnet` and `dynamicTreeCut` (in `renv.lock`) and runs its
+prediction test on a socket cluster of `cores` workers (Windows too), about 10 minutes per tissue
 on 4 workers with 100 permutations. Results: `03_analyses/expression_suites/README.md`.
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

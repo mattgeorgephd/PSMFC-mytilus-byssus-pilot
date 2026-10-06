@@ -68,8 +68,9 @@ separates two questions that a single "expression profile" plot mixes up:
 
 **Prediction test.** For each primary metric, an elastic net (glmnet; Friedman, Hastie and
 Tibshirani 2010, *J Stat Softw* 33(1):1-22; alpha 0.5, lambda by an inner 5-fold
-cross-validation) predicts the day-3 level from three predictor sets (script 01's candidate
-genes, the `n_top_var` most variable genes and all the axes above), across and within arms.
+cross-validation) predicts the day-3 level from four predictor sets (script 01's candidate
+genes, the `n_top_var` most variable genes, all the axes above and the DEG programs alone, a
+handful of predictors), across and within arms.
 Covariates (the baseline, and the arm for the within question) are removed inside every
 training fold. Out-of-sample Q2 is 1 - SSE(model) / SSE(training-fold mean) over `cv_repeats`
 repeats of a 5-fold split balanced by arm; 0 means no better than the mean. The null is
@@ -77,6 +78,12 @@ repeats of a 5-fold split balanced by arm; 0 means no better than the mean. The 
 through the same procedure; p = (1 + #null >= observed) / (1 + nperm). Every run is seeded from
 `seed`, the scenario and the permutation, so results do not depend on the number of workers.
 For reference, the same cross-validation predicts the across-arm level from the treatment alone.
+
+**Power check.** The elastic net is also given the treatment's indicator columns together with
+all the axes, across arms. The treatment is then among its predictors, so a method with enough
+power for this many predictors and this few animals would come close to the treatment-alone Q2;
+if it does not, a Q2 near 0 for the gene sets says that the sample is too small to find a
+signal of that size among that many predictors, not that there is none.
 
 **How to read it.** The programs were chosen because their genes differ between arms, so
 arms separate along them by construction; the within-arm tests are the informative ones.
@@ -311,16 +318,25 @@ cv_q2 <- function(X, y, D, strata, reps) {               # the RNG stream is set
   1 - sse_m / sse_0
 }
 top_var <- names(sort(apply(X_all, 2, var), decreasing = TRUE))[seq_len(min(N_TOP_VAR, ncol(X_all)))]
-pred_sets <- list(candidates = X_all[, cand, drop = FALSE], top_variable = X_all[, top_var, drop = FALSE], axes = S)
-SCEN <- list(); scen_tab <- tibble()
-for (m in primary) for (ps in names(pred_sets)) for (tg in c("across", "within")) {
+prog_ids <- axes$axis_id[axes$type == "DEG program"]
+pred_sets <- list(candidates = X_all[, cand, drop = FALSE], top_variable = X_all[, top_var, drop = FALSE], axes = S,
+                  programs = S[, prog_ids, drop = FALSE],
+                  axes_with_treatment = cbind(model.matrix(~ arm)[, -1, drop = FALSE], S))   # the power check
+## each scenario's number sets its seeds (run_task), so keep this order
+scen_tab <- bind_rows(
+  expand_grid(metric = primary, predictors = c("candidates", "top_variable", "axes"), target = c("across", "within")),
+  expand_grid(metric = primary, predictors = "programs", target = c("across", "within")),
+  expand_grid(metric = primary, predictors = "axes_with_treatment", target = "across")) %>%
+  mutate(scenario = row_number(), .before = 1)
+SCEN <- lapply(seq_len(nrow(scen_tab)), function(k) {
+  m <- scen_tab$metric[k]; tg <- scen_tab$target[k]
   ok <- is.finite(on_scale(m, paired[[m]])) & is.finite(on_scale(m, paired[[paste0("base_", m)]]))
   b <- on_scale(m, paired[[paste0("base_", m)]])[ok]
-  SCEN[[length(SCEN) + 1]] <- list(X = pred_sets[[ps]][ok, , drop = FALSE], y = on_scale(m, paired[[m]])[ok],
-    D = if (tg == "across") cbind(1, b) else model.matrix(~ arm[ok] + b), strata = as.integer(arm[ok]), within = tg == "within")
-  scen_tab <- bind_rows(scen_tab, tibble(scenario = length(SCEN), metric = m, predictors = ps, target = tg,
-                                         n = sum(ok), n_predictors = ncol(pred_sets[[ps]])))
-}
+  list(X = pred_sets[[scen_tab$predictors[k]]][ok, , drop = FALSE], y = on_scale(m, paired[[m]])[ok],
+       D = if (tg == "across") cbind(1, b) else model.matrix(~ arm[ok] + b), strata = as.integer(arm[ok]), within = tg == "within")
+})
+scen_tab <- scen_tab %>% mutate(n = vapply(SCEN, function(z) length(z$y), 0L),
+                                n_predictors = vapply(predictors, function(ps) ncol(pred_sets[[ps]]), 0L))
 tasks <- expand.grid(perm = 0:NPERM, scenario = seq_along(SCEN))
 run_task <- function(i) {
   sc <- SCEN[[tasks$scenario[i]]]; set.seed(SEED + 10000L * tasks$scenario[i] + tasks$perm[i])
@@ -503,9 +519,12 @@ p3 <- p3 + plot_layout(guides = "collect") +
 ggsave(file.path(OUT_DIR, sprintf("suites_state_space_%s.png", TISSUE)), p3, width = 13, height = 6, dpi = 220)
 
 ## 4. prediction test and the within-arm tests against chance
-pr <- pred %>% mutate(row = sprintf("%s | %s", label_of(metric), c(candidates = sprintf("candidates (%d)", length(cand)),
-                                     top_variable = sprintf("%s most variable genes", format(length(top_var), big.mark = ",")),
-                                     axes = sprintf("all axes (%d)", ncol(S)))[predictors]),
+set_lab <- c(candidates = sprintf("candidates (%d)", length(cand)),
+             top_variable = sprintf("%s most variable genes", format(length(top_var), big.mark = ",")),
+             axes = sprintf("all axes (%d)", ncol(S)), programs = sprintf("DEG programs (%d)", length(prog_ids)),
+             axes_with_treatment = sprintf("power check: treatment + all axes (%d)", ncol(pred_sets$axes_with_treatment)))
+pr <- pred %>% mutate(row = sprintf("%s | %s", label_of(metric), set_lab[predictors]),
+                      row = factor(row, levels = rev(unique(row[order(match(metric, primary), match(predictors, names(set_lab)))]))),
                       target = factor(target, levels = c("across", "within"),
                                       labels = c("Across arms (baseline removed)", "Within arms (arm and baseline removed)")))
 p4a <- ggplot(pr, aes(y = row)) +
@@ -518,7 +537,7 @@ p4a <- ggplot(pr, aes(y = row)) +
   scale_fill_manual(values = c(`TRUE` = "black", `FALSE` = "white"), labels = c(`TRUE` = "beats the permutations (p < 0.05)", `FALSE` = "within the permutation null"), name = NULL, drop = FALSE) +
   labs(x = "Out-of-sample Q2 (elastic net; 0 = no better than the training mean)", y = NULL,
        title = "Do multi-gene profiles predict held-out animals?",
-       subtitle = sprintf("Circle: observed; grey bar: 95%% of %d permutations; grey diamond: the treatment alone as predictor", NPERM)) +
+       subtitle = sprintf("Circle: observed; grey bar: 95%% of %d permutations; grey diamond: the treatment alone as predictor. Power check: the treatment's columns added to all the axes", NPERM)) +
   theme_psmfc(9.5) + theme(legend.position = "bottom", plot.title.position = "plot")
 qq <- tests %>% filter(tier == "primary") %>% group_by(type) %>% arrange(p_lm, .by_group = TRUE) %>%
   mutate(k = row_number(), n = n(), obs = -log10(p_lm), exp = -log10(k / (n + 1)),
@@ -531,8 +550,8 @@ p4b <- ggplot(qq, aes(exp, obs)) +
   labs(x = "expected -log10 p (no association)", y = "observed -log10 p", title = "Within-arm tests against chance, primary metrics",
        subtitle = "Band: 95% of what chance gives") +
   theme_psmfc(9.5) + theme(plot.title.position = "plot")
-p4 <- (p4a / p4b) + plot_layout(heights = c(1, 0.9)) + plot_annotation(title = tissue_name)
-ggsave(file.path(OUT_DIR, sprintf("suites_prediction_%s.png", TISSUE)), p4, width = 12, height = 9, dpi = 220)
+p4 <- (p4a / p4b) + plot_layout(heights = c(1.25, 0.9)) + plot_annotation(title = tissue_name)
+ggsave(file.path(OUT_DIR, sprintf("suites_prediction_%s.png", TISSUE)), p4, width = 12.5, height = 10, dpi = 220)
 p1
 ```
 
@@ -550,8 +569,13 @@ settings <- c(
   paste0("prediction           : elastic net (alpha 0.5, lambda.min of an inner 5-fold CV), ", CV_REPEATS, " x 5-fold CV balanced by arm, ",
          NPERM, " permutations per scenario, seed ", SEED, ", ", CORES, " worker(s)"),
   paste0("lowest within-arm q  : ", signif(min(tests$q_lm), 3), " (", sum(tests$q_lm < FDR_ALPHA), " of ", nrow(tests), " axis x metric tests below ", FDR_ALPHA, ")"),
-  paste0("prediction Q2 range  : ", sprintf("%.3f to %.3f", min(pred$q2), max(pred$q2)), "; lowest permutation p ", signif(min(pred$p_perm), 3),
-         "; treatment alone (across): ", paste(sprintf("%s %.3f", names(arm_q2), arm_q2), collapse = ", ")),
+  with(pred %>% filter(predictors != "axes_with_treatment"),
+       paste0("prediction Q2 range  : ", sprintf("%.3f to %.3f", min(q2), max(q2)), "; lowest permutation p ", signif(min(p_perm), 3),
+              "; treatment alone (across): ", paste(sprintf("%s %.3f", names(arm_q2), arm_q2), collapse = ", "))),
+  with(pred %>% filter(predictors == "programs"),
+       paste0("DEG programs         : ", paste(sprintf("%s %s Q2 %.3f (p %s)", metric, target, q2, signif(p_perm, 2)), collapse = ", "))),
+  with(pred %>% filter(predictors == "axes_with_treatment"),
+       paste0("power check          : treatment + all axes, across arms: ", paste(sprintf("%s Q2 %.3f (treatment alone %.3f)", metric, q2, treatment_only_q2), collapse = ", "))),
   paste0("animals              : ", nrow(X_all)))
 inputs <- c(unname(f_in), file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "06_expression_suites.Rmd"),
             file.path(repo_root, "tools", c("pipeline_checks.R", "plot_style.R")))

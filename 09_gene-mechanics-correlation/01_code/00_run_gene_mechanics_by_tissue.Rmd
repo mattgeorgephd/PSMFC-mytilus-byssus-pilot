@@ -30,7 +30,7 @@ with `run_log.csv`.
 | 03 | `03_rna_thread_manifest_and_expression_tables.Rmd` | `expr_tables/`: RNA x thread manifest, top DEG expression tables |
 | 04 | `04_byssus_foot_gene_list_expression.Rmd` | `byssus_genes/`: byssus/foot gene list and its expression |
 | 05 | `05_go_term_mechanics.Rmd` | `go_mechanics/`: mechanics against DEG sets, enriched GO terms and mitochondrial expression |
-| 06 | `06_expression_suites.Rmd` | `expression_suites/`: programs, co-expression modules and expression components between and within arms; multi-gene prediction of held-out animals (about 7 minutes per tissue on 4 workers) |
+| 06 | `06_expression_suites.Rmd` | `expression_suites/`: programs, co-expression modules and expression components between and within arms; multi-gene prediction of held-out animals with a power check (about 10 minutes per tissue on 4 workers) |
 
 Every output is tissue-suffixed (`_F` / `_G`) except `annotation_map.csv`, a
 tissue-independent LOC-to-protein map. Run after `02_thread-strength`,
