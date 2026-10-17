@@ -370,6 +370,7 @@ flowchart LR
   d2 --> d13
   a5 --> d13
   d2 --> d14
+  d4 --> d14
   b1 --> d14
   d1 --> r1(["06·03, 06·04, 07, 08·01, 09"])
   d4 --> r2(["06·03, 06·04, 07, 09"])
@@ -399,7 +400,7 @@ All 14 steps run in the pipeline.
 | 11 `11_deg_figures_all_contrasts.Rmd` | `05·02` contrasts; `05·04` apeglm tables and DEG counts | `figures/DEG_counts_all_contrasts.png`, `volcano_TC.png`, `volcano_FG.png` |
 | 12 `12_deg_list_cleanup.Rmd` | `05·06` `*_sigs_merged.csv` | `DEG_lists/GOterms_genome/clean_zenodo_files/` |
 | 13 `13_mitochondrial_expression.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·02` contrasts; `04·08` mitogenome counts (default and permissive); `04·02` previous matrix (comparison) | `mitochondrial/*.csv`, `figures/MT_mitochondrial_expression.png`, `MT_haplotypes.png` |
-| 14 `14_pca.Rmd` | `05·01` counts, sample table, mitochondrial list, `library_crosswalk.csv` (RNA isolation dates); `05·02` `contrast_samples.csv`; `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` (protein names of the loadings) | `pca/`: `PCA_arms.png`, `PCA_pairwise_foot.png`, `PCA_pairwise_gill.png`, `PCA_both_tissues.png`, `PCA_all_samples.png`, `PCA_comparison.png`, `PCA_comparison.csv`, `PCA_loadings.csv`, `PCA_scores.csv`, `PCA_isolation_day.csv` |
+| 14 `14_pca.Rmd` | `05·01` counts, sample table, mitochondrial list, `library_crosswalk.csv` (RNA isolation dates); `05·02` `contrast_samples.csv`; `05·04` `<T><X>_TC_apeglm.csv` (isolation-day check); `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` (protein names of the loadings) | `pca/`: `PCA_arms.png`, `PCA_pairwise_foot.png`, `PCA_pairwise_gill.png`, `PCA_both_tissues.png`, `PCA_all_samples.png`, `PCA_comparison.png`, `PCA_comparison.csv`, `PCA_loadings.csv`, `PCA_scores.csv`, `PCA_isolation_day.csv`, `isolation_day_contrasts.csv` |
 
 ## 06_iso-seq-transcriptome
 

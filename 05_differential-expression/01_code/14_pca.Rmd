@@ -49,7 +49,13 @@ compares them:
   animals; DO, OA and OW on 2022-01-09, -10 and -11), so a foot contrast cannot be told apart from
   a difference between isolation days. In gill the controls and DO share a day and OA and OW each
   span two, so the isolation day can be tested within arms there: the same PERMANOVA for the day
-  within each arm, after the arm, with the days permuted among the libraries of each arm.
+  within each arm, after the arm, with the days permuted among the libraries of each arm. In foot
+  only an indirect check is possible: the three stressor contrasts compare each arm with the same
+  controls, so a difference between the controls' isolation day and the others' would be shared by
+  all three, as genes DE in all three contrasts in the same direction and as agreement between
+  their fold changes (step 04's apeglm tables). Gill, whose controls share their day with DO, is
+  the comparison; a shared reference also makes the fold changes agree a little by itself, in
+  both tissues.
 
 **The lab control** (the twelve day-0 animals) is not a control anywhere in the analysis: their
 feet were dissected differently (two pieces at day 0, one at day 3) and they were sampled three
@@ -71,7 +77,8 @@ Writes, in `03_analyses/pca/`: `PCA_arms.png`, `PCA_pairwise_foot.png`, `PCA_pai
 per sample set: groups, variance of PC1 and PC2, the byssal share of each, PERMANOVA in the top
 genes and in all genes, the spread test), `PCA_loadings.csv` (the 25 genes with the largest
 loadings on PC1 and PC2 of each set), `PCA_scores.csv` (PC1 and PC2 of every library in every
-set, with its RNA isolation date) and `PCA_isolation_day.csv` (the isolation day within arms).
+set, with its RNA isolation date), `PCA_isolation_day.csv` (the isolation day within arms) and
+`isolation_day_contrasts.csv` (what the three stressor contrasts of each tissue share).
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
@@ -249,6 +256,26 @@ iso <- do.call(rbind, lapply(names(TISSUES), function(t) {
   }))
 }))
 knitr::kable(transform(iso, R2_day_within_arm = round(R2_day_within_arm, 3), null_median = round(null_median, 3)), row.names = FALSE)
+
+## what the three stressor contrasts of a tissue share (step 04's apeglm tables; tested genes: padj not missing)
+shared <- do.call(rbind, lapply(names(TISSUES), function(t) {
+  tab <- lapply(setNames(nm = c("OA", "OW", "DO")), function(x) {
+    d <- read.csv(file.path(deg, TISSUES[[t]], sprintf("%s%s_TC_apeglm.csv", t, x)))
+    d[!is.na(d$padj), c("gene", "log2FoldChange", "padj")] })
+  g <- Reduce(intersect, lapply(tab, `[[`, "gene"))
+  L <- sapply(tab, function(d) d$log2FoldChange[match(g, d$gene)])
+  de <- sapply(tab, function(d) d$padj[match(g, d$gene)] < 0.05)
+  all3 <- rowSums(de) == 3; r <- cor(L)
+  ctl_day <- unique(ti$isolation_date[ti$tissue == t & ti$day == "3" & ti$treatment == "control"])
+  data.frame(tissue = t, controls_isolated = paste(ctl_day, collapse = "+"),
+             controls_share_day_with = (function(x) if (length(x)) paste(x, collapse = ", ") else "none")(
+               setdiff(unique(ti$group[ti$tissue == t & ti$day == "3" & ti$isolation_date %in% ctl_day]), "control")),
+             DEGs_OA = sum(tab$OA$padj < 0.05), DEGs_OW = sum(tab$OW$padj < 0.05), DEGs_DO = sum(tab$DO$padj < 0.05),
+             genes_tested_in_all_three = length(g),
+             DE_in_all_three = sum(all3), same_direction = sum(all3 & abs(rowSums(sign(L))) == 3),
+             r_lfc_OA_OW = r["OA", "OW"], r_lfc_OA_DO = r["OA", "DO"], r_lfc_OW_DO = r["OW", "DO"], stringsAsFactors = FALSE)
+}))
+knitr::kable(transform(shared, r_lfc_OA_OW = round(r_lfc_OA_OW, 2), r_lfc_OA_DO = round(r_lfc_OA_DO, 2), r_lfc_OW_DO = round(r_lfc_OW_DO, 2)), row.names = FALSE)
 ```
 
 # Figures
@@ -376,6 +403,7 @@ loadings <- do.call(rbind, lapply(seq_along(sets), function(i) do.call(rbind, la
 }))))
 write.csv(loadings, file.path(pca_dir, "PCA_loadings.csv"), row.names = FALSE)
 write.csv(iso, file.path(pca_dir, "PCA_isolation_day.csv"), row.names = FALSE)
+write.csv(shared, file.path(pca_dir, "isolation_day_contrasts.csv"), row.names = FALSE)
 ## this step writes no provenance file, so a failed check stops it (and the runner reports it)
 cat(sprintf("checks: %d run, %d failed\n", .checks$n_run, length(.checks$failed)))
 if (length(.checks$failed)) stop("check failed: ", paste(.checks$failed, collapse = "; "))
