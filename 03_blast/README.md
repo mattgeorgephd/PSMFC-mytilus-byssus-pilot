@@ -4,9 +4,9 @@ Sequence-similarity searches used to annotate genes and to compare the Iso-Seq
 transcriptome to the genome. Two lines of work:
 
 - Genome CDS vs Swiss-Prot + Mytilus-foot proteins (`01_genome_blast.Rmd`), producing the
-  gene-to-GO mapping (`LOC_GO_list.txt`, `g.spid.txt`), with six genes added by step 05 (below).
+  gene-to-GO mapping (`LOC_GO_list.txt`, `g.spid.txt`), with eight genes added by step 05 (below).
   The analysis reads `03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` (the 2026
-  search plus those six): `04_sequence-alignment` steps 04 and 05 and `05_differential-expression`
+  search plus those eight): `04_sequence-alignment` steps 04 and 05 and `05_differential-expression`
   step 01 (the mitochondrial loci, through `tools/mt_encoded.R`), `05_differential-expression`
   step 06, `06_iso-seq-transcriptome` step 04, `07_enrichment` step 01 and
   `09_gene-mechanics-correlation` steps 01 and 04. The search ran on the lab server in June to
@@ -34,8 +34,11 @@ transcriptome to the genome. Two lines of work:
   the e-values are step 01's), a hit adopted only for a gene with no hit in step 01 and at 70%
   identity or more. Six genes: three of mfp-3 and one of mfp-5 (together on NC_086378.1), foot
   protein 9 and thread matrix protein 2F (70.5 to 86.7%); the other 23 genes without a hit match
-  through repeats at 45% or less. Its `LOC_GO_list.txt` is step 01's followed by their 6 rows
-  (`03_analyses/genome-foot-sprot2026_03-noseg/`, README inside).
+  through repeats at 45% or less. Two of those 23, which RefSeq itself names "adhesive plaque
+  matrix protein-like" (LOC134723087 and LOC134723088, mfp-1 at 37 and 36% over 555 and 777
+  residues), are adopted too, for completeness, by a second rule (`refseq_byssal`: RefSeq names a
+  byssal protein; 2026-10-17). Its `LOC_GO_list.txt` is step 01's followed by the eight genes'
+  rows (`03_analyses/genome-foot-sprot2026_03-noseg/`, README inside).
   `04_refresh_uniprot_records.Rmd` keeps the comparison that separates the new search from the
   new records: the 2024 blastx table (committed) joined to the records of UniProt release
   2026_03 for its 10,740 hit proteins, in `03_analyses/genome-foot-uniprot2026_03/` (every
@@ -62,7 +65,7 @@ outputs are in `03_analyses/`.
 │   ├── 02_genome_blast_uniprot_check.Rmd  checks of a SwissProt-only genome blastx (HPC); writes nothing
 │   ├── 03_isoseq_vs_genome_blast.Rmd      Iso-Seq transcriptome vs genome (HPC)
 │   ├── 04_refresh_uniprot_records.Rmd     the genome hits with UniProt 2026_03 records (offline)
-│   ├── 05_byssal_noseg_search.Rmd         foot and byssal proteins without the low-complexity filter; adds 6 genes (run: true)
+│   ├── 05_byssal_noseg_search.Rmd         foot and byssal proteins without the low-complexity filter; adds 8 genes (run: true)
 │   ├── _blastx_noseg.sh                   step 05's blastx
 │   ├── _blastx_parts.sh                   step 01's blastx in resumable parts
 │   ├── _build_foot_fasta.R                one-off: the 2026 search's foot proteins (196 + 45 byssal)
@@ -73,7 +76,7 @@ outputs are in `03_analyses/`.
     ├── transcriptome-uniprot/       isoseq-transcriptome vs UniProt blastx + GO/SPID tables
     ├── genome-foot/                 LOC_GO_list.txt, g.spid.txt, blastx table (genome blast of 2024, 2024 records)
     ├── genome-foot-sprot2026_03/    the same tables of the genome blast of 2026
-    ├── genome-foot-sprot2026_03-noseg/  the 2026 table plus step 05's six genes (read by the analysis)
+    ├── genome-foot-sprot2026_03-noseg/  the 2026 table plus step 05's eight genes (read by the analysis)
     └── genome-foot-uniprot2026_03/  the 2024 hits with UniProt 2026_03 records (step 04, a comparison)
 ```
 

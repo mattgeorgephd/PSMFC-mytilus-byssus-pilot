@@ -8,6 +8,7 @@ params:
   work_dir: ""          # where the search writes its table and database ("" = a folder in tempdir(); set it to resume)
   threads: 4
   pident_min: 70        # identity (%) a hit needs to be adopted
+  refseq_byssal: "adhesive plaque|foot protein|byssal|byssus|precollagen|thread matrix"   # RefSeq protein names (regex, any case) whose genes take their hit here at any identity
   full_db: ""           # optional, with run: true: step 01's BLAST database, to search the adopted genes' CDSs against it with the filter off
 ---
 
@@ -49,14 +50,24 @@ structural proteins (09 step 04's category: two EGF-repeat genes matching mfp-2 
 homolog 1 and fibropellin-1, one matching byssal EP-like protein 1 instead of HIP). A hit is therefore adopted only for a gene that
 has no hit in step 01's search (no hit of record is replaced; scores with and without the filter
 are not comparable) and only at an identity of at least `pident_min` (70%); any floor from 46% to
-70% adopts the same six genes. Writes, in `03_analyses/genome-foot-sprot2026_03-noseg/`:
+70% adopts the same six genes. One exception, added for completeness on 2026-10-17: a gene with no
+hit in step 01 also takes its hit here, whatever the identity, when RefSeq's own name for it names a
+byssal protein (`refseq_byssal`). Two genes qualify, LOC134723087 and LOC134723088, which RefSeq
+names "adhesive plaque matrix protein-like": their best hits are mfp-1 of *M. californianus*
+(37.5% over 555 residues, e-value 1.7e-38) and *M. coruscus* (35.8% over 777 residues, 1.5e-46),
+and in step 01's whole database with the filter off they hit the same proteins (checked
+2026-10-17). mfp-1 is built from variable decapeptide repeats (Waite et al. 1985, *Biochemistry*
+24:5010-5014), so a low identity does not argue against it; `noseg_genes.csv` marks them with
+`rule` = "RefSeq name", and their low identity stays visible in `pident` (09 step 04's `hi_conf`
+is FALSE for them). Writes, in `03_analyses/genome-foot-sprot2026_03-noseg/`:
 
 - `LOC_GO_list.txt`: the annotation the analysis reads: step 01's `LOC_GO_list.txt`, line for
   line, followed by the hits of the adopted genes' CDSs, built as step 01 builds its rows (the
   same columns in the same order, the hit joined to its UniProt record of release 2026_03 and
   each CDS to its gene);
 - `noseg_genes.csv`: every gene with a hit in this search: its best hit here (highest bitscore),
-  its best hit in step 01's search if it has one, whether the hit is adopted and why;
+  its best hit in step 01's search if it has one, whether the hit is adopted, by which rule
+  (`rule`: "identity" or "RefSeq name") and why;
 - `foot_noseg_blastx.tab`: the blastx table of this search; `foot_noseg_cds.tsv`: the FASTA
   header of every CDS in it and of every CDS step 01 found on a foot protein (so that the tables
   can be rebuilt without the genome CDS);
@@ -189,10 +200,18 @@ genes <- best_by(hits[!is.na(hits$gene), ], "gene") %>%
          refseq_protein = str_extract(cdsftab$V2[match(cds, cdsftab$V1)], "(?<=\\[protein=)[^\\]]+")) %>%
   left_join(rec_best %>% rename(record_accession = uniprot_accession.x, record_protein = Protein.names,
                                 record_pident = pident, record_bitscore = bitscore), by = "gene") %>%
-  mutate(adopted = is.na(record_accession) & pident >= params$pident_min,
+  mutate(refseq_byssal = grepl(params$refseq_byssal, refseq_protein, ignore.case = TRUE),
+         rule = case_when(!is.na(record_accession) ~ NA_character_,
+                          pident >= params$pident_min ~ "identity",
+                          refseq_byssal ~ "RefSeq name",
+                          TRUE ~ NA_character_),
+         adopted = !is.na(rule),
          reason = case_when(!is.na(record_accession) ~ "has a hit in step 01's search",
-                            adopted ~ paste0("no hit in step 01's search; identity >= ", params$pident_min, "%"),
+                            rule == "identity" ~ paste0("no hit in step 01's search; identity >= ", params$pident_min, "%"),
+                            rule == "RefSeq name" ~ paste0("no hit in step 01's search; identity < ", params$pident_min,
+                                                           "%, but RefSeq names it a byssal protein"),
                             TRUE ~ paste0("no hit in step 01's search; identity < ", params$pident_min, "%"))) %>%
+  select(-refseq_byssal) %>%
   arrange(desc(adopted), !is.na(record_accession), desc(pident))
 adopted <- genes$gene[genes$adopted]
 
@@ -203,7 +222,7 @@ new_lines <- as_lines(new_rows)
 out_file <- file.path(res_dir, "LOC_GO_list.txt")
 writeLines(c(rec_lines, new_lines), out_file)
 write.csv(genes, file.path(res_dir, "noseg_genes.csv"), row.names = FALSE)
-knitr::kable(genes[genes$adopted, c("gene", "refseq_protein", "accession", "protein", "organism",
+knitr::kable(genes[genes$adopted, c("gene", "rule", "refseq_protein", "accession", "protein", "organism",
                                     "pident", "length", "evalue", "bitscore")], row.names = FALSE)
 ```
 
@@ -219,7 +238,8 @@ checks <- data.frame(check = c(
   "no adopted gene has a row in step 01's table",
   "the merged table holds step 01's rows and then the adopted genes' rows",
   "each adopted gene's best row in the merged table is its adopted hit",
-  "every adopted hit has e-value <= 1e-20 on step 01's database size"),
+  "every adopted hit has e-value <= 1e-20 on step 01's database size",
+  "every gene adopted by its RefSeq name has a byssal RefSeq name and no hit in step 01"),
   pass = c(
     length(rebuilt) > 0 && identical(rebuilt, rec_tr),
     all(hits$accession %in% records$uniprot_accession),
@@ -228,16 +248,18 @@ checks <- data.frame(check = c(
     nrow(m_best) == length(adopted) &&
       all(m_best$uniprot_accession.x == genes$accession[match(m_best$gene, genes$gene)] &
           m_best$bitscore == genes$bitscore[match(m_best$gene, genes$gene)]),
-    all(genes$evalue[genes$adopted] <= 1e-20)))
+    all(genes$evalue[genes$adopted] <= 1e-20),
+    with(genes[genes$rule %in% "RefSeq name", ], all(grepl(params$refseq_byssal, refseq_protein, ignore.case = TRUE) &
+                                                    is.na(record_accession) & pident < params$pident_min))))
 knitr::kable(checks)
 if (!all(checks$pass)) stop("check failed: ", paste(checks$check[!checks$pass], collapse = "; "))
 knitr::kable(data.frame(measure = c(
   "hits (HSPs)", "CDSs with a hit", "genes with a hit", "  of them with a hit in step 01's search",
-  "  with none there", paste0("  adopted (identity >= ", params$pident_min, "%)"),
+  "  with none there", paste0("  adopted (identity >= ", params$pident_min, "%)"), "  adopted (RefSeq names a byssal protein)",
   "highest identity among the genes with no hit in step 01 not adopted (%)",
   "step 01's rows on TrEMBL foot proteins rebuilt", "rows added to step 01's table"),
   n = c(nrow(b05), length(unique(b05$V1)), nrow(genes), sum(!is.na(genes$record_accession)),
-        sum(is.na(genes$record_accession)), length(adopted),
+        sum(is.na(genes$record_accession)), sum(genes$rule %in% "identity"), sum(genes$rule %in% "RefSeq name"),
         if (nrow(nohit_rest)) max(nohit_rest$pident) else NA, length(rebuilt), nrow(new_rows))))
 ```
 
@@ -282,8 +304,11 @@ writeLines(provenance_lines(
     paste0("blastx               : ", blast_version, "; -evalue 1E-20 -max_target_seqs 1 -seg no -dbsize ",
            sprintf("%.0f", dbsize), " -outfmt 6; ", params$threads, " threads"),
     paste0("hits (HSPs)          : ", nrow(b05), " (", nrow(genes), " genes)"),
-    paste0("adopted              : ", length(adopted), " genes (no hit in step 01's search, identity >= ",
-           params$pident_min, "%): ", paste(adopted, collapse = ", ")),
+    paste0("adopted              : ", length(adopted), " genes with no hit in step 01's search: ",
+           sum(genes$rule %in% "identity"), " at identity >= ", params$pident_min, "% (",
+           paste(genes$gene[genes$rule %in% "identity"], collapse = ", "), "), ",
+           sum(genes$rule %in% "RefSeq name"), " whose RefSeq name matches \"", params$refseq_byssal, "\" (",
+           paste(genes$gene[genes$rule %in% "RefSeq name"], collapse = ", "), ")"),
     paste0("rows added           : ", nrow(new_rows), " to step 01's ", nrow(rec)),
     paste0("full-database check  : ", if (nzchar(params$full_db))
       paste0(basename(params$full_db), ", same best protein for every adopted CDS") else "not run"),

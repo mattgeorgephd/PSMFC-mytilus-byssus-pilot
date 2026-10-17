@@ -144,7 +144,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     `03_blast` step 01), with the UniProt records of release 2026_03; and, for genes with no hit
     there, a hit of at least 70% identity to those 241 foot and byssal proteins with blastx's
     low-complexity filter off (`03_blast` step 05: mfp-3, mfp-5, foot protein 9 and thread
-    matrix protein 2F, six genes the filter had hidden)
+    matrix protein 2F, six genes the filter had hidden), and at any identity for the two genes
+    RefSeq names "adhesive plaque matrix protein-like" (mfp-1 at 36 to 37%, included for
+    completeness)
     (`03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`); GO release 2026-01-23
     (`GO.db` 3.23.1) and its generic GO slim (`08_gene-annotation/02_data/goslim_generic.obo`).
     Kept for comparison: the search of 2024 (`genome-foot/`) and its hits with the 2026_03
@@ -172,8 +174,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 - **Known data issues** (see the folder READMEs): blastx's low-complexity filter (SEG) hid the
   hits of six byssal genes in the 2026 search (three mfp-3, mfp-5, foot protein 9, thread
   matrix protein 2F), which `03_blast` step 05 adds; genes whose hit of record is a weaker
-  repeat match keep it, and two genes RefSeq names "adhesive plaque matrix protein-like"
-  (LOC134723087, LOC134723088, 36 to 37% to mfp-1) have no annotation; 293 loci on unplaced scaffolds (126
+  repeat match keep it; two genes RefSeq names "adhesive plaque matrix protein-like"
+  (LOC134723087, LOC134723088) carry mfp-1 at only 36 to 37% identity (adopted by their RefSeq
+  name for completeness; almost no reads at day 3); 293 loci on unplaced scaffolds (126
   protein-coding LOCs and 167 pseudogenes) are copies of the mitochondrial protein genes and
   take their reads in the genome alignment (`tools/mt_encoded.R`); 12 of the 59 animals carry
   mitochondrial haplotypes that differ from the reference at fixed positions, which the genome

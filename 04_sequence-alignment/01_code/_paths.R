@@ -25,7 +25,7 @@ READS_URL   <- paste0("https://gannet.fish.washington.edu/panopea/PSMFC-mytilus-
 
 ## the annotation's mitochondrial loci (steps 04 and 05, through tools/mt_encoded.R): 03 step 05's
 ## table, which is 03 step 01's (the one the committed outputs of steps 04 and 05 were made from)
-## plus six byssal genes, so the mitochondrial loci are the same
+## plus eight byssal genes, so the mitochondrial loci are the same
 blast_go <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03-noseg", "LOC_GO_list.txt")
 t_data   <- here::here("03_analyses", "hisat", "t_data.ctab")
 mt_annot <- here::here("02_data", "annotation_mt_like_loci.csv")
