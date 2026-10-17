@@ -6,8 +6,13 @@ Plaque adhesion strength and thread mechanics from tensometer pull tests, before
 Self-contained and reproducible from this repository apart from one manual input, the
 plaque measurements, noted below. It reads one file from outside this folder
 (`../01_mussel-measurements/mussel-size-measurements.xlsx`, script 01) and sources the shared
-`../tools/pipeline_checks.R` (scripts 04 and 05, for `RUN_provenance.txt`) and
-`../tools/plot_style.R` (scripts 04 and 05, the figure colours).
+`../tools/pipeline_checks.R` (scripts 04 to 06, for `RUN_provenance.txt`) and
+`../tools/plot_style.R` (scripts 04 to 06, the figure colours).
+
+Packages: tidyverse and here (every script), readxl (scripts 01 and 03 to 06), openxlsx (scripts
+02 and 03), EnvStats (script 02), emmeans and broom (scripts 04 and 05), colorspace (script 04),
+patchwork (script 06), and rmarkdown to knit. Scripts 01 to 05 install any of theirs that are
+missing; script 06 loads its packages from the library (`renv.lock`).
 
 ## Layout
 

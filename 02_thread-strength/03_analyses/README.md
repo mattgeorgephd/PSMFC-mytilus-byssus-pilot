@@ -1,7 +1,7 @@
 # 03_analyses
 
 Generated outputs, one numbered folder per script. Everything here is regenerable by scripts
-01 to 05 from the inputs in `../02_data/` and the mussel workbook in
+01 to 06 from the inputs in `../02_data/` and the mussel workbook in
 `../../01_mussel-measurements/`; the one hand-maintained input is
 `../02_data/pad_area_measurements.xlsx`. The runner's reports and logs go to `knit_html/`
 (git-ignored).
