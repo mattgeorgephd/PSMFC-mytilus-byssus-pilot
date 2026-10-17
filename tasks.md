@@ -287,7 +287,9 @@ the other sections use the new ones.
   day-3 levels of the two per animal, without and with the day-0 lab reference (which has no
   baseline, so no change). `09` step 07 keeps the talk's first two mfp heatmaps, drawn with the
   talk's code (pixel for pixel the talk's figures on their own data), beside its heatmaps by mfp
-  expression and by mussel ID. `AGENTS.md` (Figures) records the rule.
+  expression and by mussel ID. `AGENTS.md` (Figures) records the rule. A figure that changes only
+  because its inputs changed (the `09` candidate scatter plots after the keyword fix, for example)
+  is redrawn in place, and its earlier versions stay in git history (Matt's choice, 2026-10-17).
 
 ## In progress
 
