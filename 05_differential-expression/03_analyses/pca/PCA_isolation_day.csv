@@ -1,0 +1,5 @@
+"tissue","genes","isolation_days","arms_with_two_days","R2_day_within_arm","p","null_median"
+"F","500 most variable","control 20211223; OA 20220110; OW 20220111; DO 20220109","none: each arm isolated on one day, not testable",NA,NA,NA
+"F","all","control 20211223; OA 20220110; OW 20220111; DO 20220109","none: each arm isolated on one day, not testable",NA,NA,NA
+"G","500 most variable","control 20220109; OA 20220110+20220111; OW 20220111+20220112; DO 20220109","OA, OW",0.0421169703082452,0.466,0.0419028658662987
+"G","all","control 20220109; OA 20220110+20220111; OW 20220111+20220112; DO 20220109","OA, OW",0.0414129492011768,0.876,0.0431170696581224

@@ -10654,6 +10654,7 @@ LOC134698118,Acid-sensing ion channel 4 (ASIC4) (Amiloride-sensitive cation chan
 LOC134700441,Small glutamine-rich tetratricopeptide repeat-containing protein alpha (Alpha-SGT),45.122,1.18e-54,genome_blast,FALSE,TRUE
 LOC134701217,Peroxisomal membrane protein PEX14 (PTS1 receptor-docking protein) (Peroxin-14) (Peroxisomal membrane anchor protein PEX14),40.086,1.85e-53,genome_blast,FALSE,TRUE
 LOC134701421,Tenascin (TN) (Cytotactin) (GMEM) (GP 150-225) (Glioma-associated-extracellular matrix antigen) (Hexabrachion) (JI) (Myotendinous antigen) (Neuronectin) (P230) (Tenascin-C) (TN-C),48.876,3.56e-49,genome_blast,FALSE,TRUE
+LOC134723088,Adhesive plaque matrix protein (Foot protein 1) (MCFP1),35.779,1.5e-46,genome_blast,FALSE,TRUE
 LOC134706958,Plexin-A4,29.263,1.7899999999999998e-48,genome_blast,FALSE,TRUE
 LOC134725116,Nucleolar protein 8,42.793,1.49e-45,genome_blast,FALSE,TRUE
 LOC134680823,Carnosine synthase 1 (EC 6.3.2.11) (ATP-grasp domain-containing protein 1),28.062,2.28e-49,genome_blast,FALSE,TRUE
@@ -12544,6 +12545,7 @@ LOC134701805,Dual specificity protein phosphatase 3 (EC 3.1.3.16) (EC 3.1.3.48) 
 LOC134702051,Acetylcholine receptor subunit alpha-like 2 (Nicotinic acetylcholine receptor alpha 2),31.405,4.82e-40,genome_blast,FALSE,TRUE
 LOC134702102,Byssal metalloproteinase inhibitor-like protein 1,63.889,3.9499999999999996e-47,genome_blast,FALSE,TRUE
 ND4L,NADH-ubiquinone oxidoreductase chain 4L (EC 7.1.1.2) (NADH dehydrogenase subunit 4L),84.946,5e-49,genome_blast,FALSE,TRUE
+LOC134723087,Foot protein 1 variant 1,37.477,1.66e-38,genome_blast,FALSE,TRUE
 LOC134705050,Neuroligin-2,37.727,5.6099999999999995e-42,genome_blast,FALSE,TRUE
 LOC134707126,Neurogenic differentiation factor 1 (NeuroD1),76.596,8.939999999999999e-42,genome_blast,FALSE,TRUE
 LOC134705756,Acetylcholine receptor subunit alpha,26.887,2.88e-40,genome_blast,FALSE,TRUE

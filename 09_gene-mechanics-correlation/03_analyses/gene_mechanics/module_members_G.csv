@@ -87,7 +87,6 @@ oxidative_detox,LOC134725897,Glyoxalase 3 (EC 4.2.1.130) (Glutathione-independen
 oxidative_detox,LOC134707468,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein),30.466,9.44e-29,genome_blast,TRUE,TRUE
 oxidative_detox,LOC134706727,Glutathione S-transferase (PfGST) (EC 2.5.1.18),32.227,1.8e-21,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134681253,Transcription elongation factor SPT6 (hSPT6) (Histone chaperone suppressor of Ty6) (Tat-cotransactivator 2 protein) (Tat-CT2 protein),55.072,0,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134693874,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide],36.864,0,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134724473,Tubulin-specific chaperone D (Beta-tubulin cofactor D) (tfcD) (SSD-1) (Tubulin-folding cofactor D),53.269,0,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134706748,Byssal HSP-like protein 1,98.116,0,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134708353,Heat shock cognate 71 kDa protein (EC 3.6.4.10) (Heat shock 70 kDa protein 8),89.655,0,genome_blast,TRUE,TRUE
@@ -96,16 +95,13 @@ HSP_proteostasis,LOC134715138,"Stress-70 protein, mitochondrial (EC 3.6.4.10) (7
 HSP_proteostasis,LOC134714516,"Lon protease homolog, mitochondrial (EC 3.4.21.53) (LONHs) (Lon protease-like protein) (LONP) (Mitochondrial ATP-dependent protease Lon) (Mitochondrial chaperone LONP1) (EC 3.6.4.10) (Serine protease 15)",69.242,0,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134682955,Endoplasmin (EC 3.6.4.-) (94 kDa glucose-regulated protein) (GRP-94) (Heat shock protein 90 kDa beta member 1),68,0,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134696794,Heat shock protein 70 B2,73.783,0,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134716333,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)",52.598,0,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134706576,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)",75.226,0,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134697396,"Heat shock protein 75 kDa, mitochondrial (HSP 75) (TNFR-associated protein 1) (Tumor necrosis factor type 1 receptor-associated protein) (TRAP-1)",59.416,0,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134695667,Heat shock protein 70 A1,65.798,0,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134695781,97 kDa heat shock protein (Heat shock protein 110),49.022,0,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134716273,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),53.182,0,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134709977,Heat shock protein HSP 90-alpha,82.207,0,genome_blast,TRUE,TRUE
-HSP_proteostasis,LOC134715627,Eukaryotic translation initiation factor 2-alpha kinase 3 (EC 2.7.11.1) (PRKR-like endoplasmic reticulum kinase) (Pancreatic eIF2-alpha kinase) (HsPEK) (Protein tyrosine kinase EIF2AK3) (EC 2.7.10.2),37.084,0,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134712250,"Atypical kinase COQ8A, mitochondrial (EC 2.7.-.-) (Chaperone activity of bc1 complex-like) (Chaperone-ABC1-like) (Coenzyme Q protein 8A) (aarF domain-containing protein kinase 3)",59.414,0,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134725629,Sphingosine-1-phosphate lyase 1 (S1PL) (SP-lyase 1) (SPL 1) (hSPL) (EC 4.1.2.27) (Sphingosine-1-phosphate aldolase),52.453,0,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134728189,RING-type E3 ubiquitin-protein ligase PPIL2 (EC 2.3.2.27) (CYC4) (Cyclophilin-60) (Cyclophilin-like protein Cyp-60) (Cyp60) (hCyP-60) (Probable inactive peptidyl-prolyl cis-trans isomerase-like 2) (PPIase) (Rotamase PPIL2),55.388,0,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134695157,Peptidyl-prolyl cis-trans isomerase E (PPIase E) (EC 5.2.1.8) (Cyclophilin E) (Cyclophilin-33) (Rotamase E),71.854,6.4099999999999984e-164,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134718954,DnaJ homolog subfamily A member 1 (DnaJ protein homolog 2) (HSDJ) (Heat shock 40 kDa protein 4) (Heat shock protein J2) (HSJ-2) (Human DnaJ protein 2) (hDj-2),70.38,1.6199999999999994e-159,genome_blast,FALSE,TRUE
@@ -116,7 +112,6 @@ HSP_proteostasis,LOC134716289,Heat shock 70 kDa protein 13 (Stress-70 protein ch
 HSP_proteostasis,LOC134684257,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1.8) (52 kDa FK506-binding protein) (52 kDa FKBP) (FKBP-52) (FK506-binding protein 4) (FKBP-4) (HSP-binding immunophilin) (HBI) (Immunophilin FKBP52) (Rotamase) [Cleaved into: Peptidyl-prolyl cis-trans isomerase FKBP4, N-terminally processed]",53.846,8.999999999999997e-146,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134710470,Tubulin-specific chaperone E (Tubulin-folding cofactor E),43.103,1.12e-138,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134697166,Peptidyl-prolyl cis-trans isomerase D (PPIase D) (EC 5.2.1.8) (40 kDa peptidyl-prolyl cis-trans isomerase) (Cyclophilin-40) (CYP-40) (Rotamase D),55.22,1.1399999999999996e-143,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134711684,Serine/threonine-protein kinase Nek2 (EC 2.7.11.1) (HSPK 21) (Never in mitosis A-related kinase 2) (NimA-related protein kinase 2) (NimA-like protein kinase 1),67.803,9.369999999999999e-132,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134695793,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.438,6.79e-120,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134686763,Hsp90 co-chaperone Cdc37 (Hsp90 chaperone protein kinase-targeting subunit) (p50Cdc37),57.925,6.839999999999999e-125,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134695612,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.968,2.739999999999999e-118,genome_blast,TRUE,TRUE
@@ -128,7 +123,6 @@ HSP_proteostasis,LOC134697114,Heat shock 70 kDa protein 12A,36.48,2.489999999999
 HSP_proteostasis,LOC134697127,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.807,1.7e-109,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134698154,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.905,5.97e-108,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134697060,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.587,3.529999999999999e-107,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134712049,"3'(2'),5'-bisphosphate nucleotidase 1 (EC 3.1.3.7) (3'-phosphoadenosine 5'-phosphate phosphatase) (PAP phosphatase) (Bisphosphate 3'-nucleotidase 1) (BPntase 1) (HsPIP) (Inositol-polyphosphate 1-phosphatase) (EC 3.1.3.57)",52.597,4.71e-114,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134721801,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),35.113,7.059999999999997e-106,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134696926,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),32.698,7.92e-102,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134724896,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),32.258,5.65e-105,genome_blast,FALSE,TRUE
@@ -164,10 +158,8 @@ HSP_proteostasis,LOC134692067,Heat shock 70 kDa protein 12B,32.591,5.82e-92,geno
 HSP_proteostasis,LOC134718612,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),32.227,2.6800000000000004e-91,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134680609,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),30.769,1.69e-89,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134685977,uS5 assembly chaperone PDCD2 (Programmed cell death protein 2),42.818,5.1699999999999996e-96,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134711410,Spermatogenesis-defective protein 39 homolog (hSPE-39) (VPS33B-interacting protein in apical-basolateral polarity regulator) (VPS33B-interacting protein in polarity and apical restriction),37.849,1.5600000000000001e-91,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134691039,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),30.269,4.239999999999999e-88,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134721919,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),31.28,5.27e-88,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134721362,Serine hydrolase BPHL (EC 3.1.-.-) (Biphenyl hydrolase-like protein) (L-homocysteine-thiolactonase BPHL) (Valacyclovir hydrolase) (VACVase) (Valacyclovirase),50.98,8.189999999999999e-96,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134696058,Heat shock 70 kDa protein 12B,29.459,1.22e-86,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134696389,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),32.201,1.9399999999999993e-87,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134687234,Probable inactive peptidyl-prolyl cis-trans isomerase-like 6 (PPIase) (Cyclophilin-like protein PPIL6),47.635,2.6099999999999993e-95,genome_blast,FALSE,TRUE
@@ -209,10 +201,8 @@ HSP_proteostasis,LOC134706981,Heat shock 70 kDa protein 12A (Heat shock protein 
 HSP_proteostasis,LOC134722197,Proteasome assembly chaperone 2 (Tumor necrosis factor superfamily member 5-induced protein 1 homolog),41.392,5.86e-71,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134710131,Peptidyl-prolyl cis-trans isomerase FKBP2 (PPIase FKBP2) (EC 5.2.1.8) (13 kDa FK506-binding protein) (13 kDa FKBP) (FKBP-13) (FK506-binding protein 2) (FKBP-2) (Immunophilin FKBP13) (Rotamase),73.759,4.13e-74,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134701377,Peptidyl-prolyl cis-trans isomerase FKBP2 (PPIase FKBP2) (EC 5.2.1.8) (13 kDa FK506-binding protein) (13 kDa FKBP) (FKBP-13) (FK506-binding protein 2) (FKBP-2) (Immunophilin FKBP13) (Rotamase),73.759,3.91e-74,genome_blast,TRUE,TRUE
-HSP_proteostasis,LOC134710182,Sphingosine-1-phosphate phosphatase 1 (SPPase1) (Spp1) (hSPP1) (hSPPase1) (EC 3.1.3.-) (Sphingosine-1-phosphatase 1) (Sphingosine-1-phosphate phosphohydrolase 1) (SPP-1),32.949,2.27e-65,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134706604,Heat shock 70 kDa protein 12B,28.832,1.31e-59,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134687564,Heat shock 70 kDa protein (HSP70) (Heat shock protein 70) (OvHSP70),67.647,3.16e-56,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134708209,Protein LZIC (Leucine zipper and CTNNBIP1 domain-containing protein) (Leucine zipper and ICAT homologous domain-containing protein),66.316,6.34e-68,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134728195,Inactive peptidyl-prolyl cis-trans isomerase FKBP6 (Inactive PPIase FKBP6) (36 kDa FK506-binding protein) (FK506-binding protein 6) (FKBP-6) (Immunophilin FKBP36),36.242,2.12e-61,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134715693,Peptidyl-prolyl cis-trans isomerase FKBP8 (PPIase FKBP8) (EC 5.2.1.8) (38 kDa FK506-binding protein) (38 kDa FKBP) (FKBP-38) (mFKBP38) (FK506-binding protein 8) (FKBP-8) (FKBPR38) (Rotamase),40.727,3.59e-59,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134715691,Peptidyl-prolyl cis-trans isomerase FKBP8 (PPIase FKBP8) (EC 5.2.1.8) (38 kDa FK506-binding protein) (38 kDa FKBP) (FKBP-38) (mFKBP38) (FK506-binding protein 8) (FKBP-8) (FKBPR38) (Rotamase),40.727,7.38e-59,genome_blast,FALSE,TRUE
@@ -229,7 +219,6 @@ HSP_proteostasis,LOC134721142,Peptidyl-prolyl cis-trans isomerase FKBP1A (PPIase
 HSP_proteostasis,LOC134710195,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.962,1.99e-44,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134717772,Heat shock 70 kDa protein 12A,29.747,2.4599999999999993e-43,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134714797,Peptidyl-prolyl cis-trans isomerase B (PPIase B) (EC 5.2.1.8) (CYP-S1) (Cyclophilin B) (Rotamase B) (S-cyclophilin) (SCYLP),46.512,2.03e-46,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134725540,Calcium-regulated heat-stable protein 1 (Calcium-regulated heat-stable protein of 24 kDa) (CRHSP-24),64.423,3.74e-45,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134706577,"10 kDa heat shock protein, mitochondrial (Hsp10) (10 kDa chaperonin) (Chaperonin 10) (CPN10)",65.657,4.79e-43,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134722801,Peptidyl-prolyl cis-trans isomerase Fkbp12 (PPIase Fkbp12) (EC 5.2.1.8) (12 kDa FK506-binding protein) (12 kDa FKBP) (Macrolide-binding protein) (Peptidyl-prolyl cis-trans isomerase) (PPIase) (Rotamase),68.817,1.2599999999999999e-42,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134693664,Intraflagellar transport protein 25 homolog (Heat shock protein beta-11) (Hspb11) (Heat shock protein family B member 11) (Placental protein 25) (PP25),49.624,2.04e-41,genome_blast,FALSE,TRUE
@@ -238,7 +227,6 @@ HSP_proteostasis,LOC134724943,uS5 assembly chaperone PDCD2L (Programmed cell dea
 HSP_proteostasis,LOC134690882,Ubiquinol-cytochrome-c reductase complex assembly factor 1 (Basic FGF-repressed Zic-binding protein homolog) (Ubiquinol-cytochrome c reductase complex chaperone CBP3 homolog) (Zic3-binding protein),34.444,1.6100000000000002e-33,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134721949,BAG family molecular chaperone regulator 1 (BAG-1) (Bcl-2-associated athanogene 1),35.751,3.3800000000000003e-29,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134686963,Probable assembly chaperone of rpl4,32.857,2.9200000000000003e-26,genome_blast,FALSE,TRUE
-HSP_proteostasis,LOC134691320,HCLS1-binding protein 3 (HS1-binding protein 3) (HSP1BP-3),35.252,9.17e-25,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134690949,Tubulin-specific chaperone cofactor E-like protein (EL) (Leucine-rich repeat-containing protein 35),32.759,1.27e-21,genome_blast,FALSE,TRUE
 HSP_proteostasis,LOC134720973,Heat shock factor-binding protein 1 (Nasopharyngeal carcinoma-associated antigen 13) (NPC-A-13),79.032,7.39e-29,genome_blast,TRUE,TRUE
 HSP_proteostasis,LOC134692652,DNL-type zinc finger protein (Hsp70-escort protein 1) (HEP1) (mtHsp70-escort protein),57.692,8.8e-26,genome_blast,FALSE,TRUE

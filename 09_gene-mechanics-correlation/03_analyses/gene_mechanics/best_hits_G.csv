@@ -1,10 +1,10 @@
 gene_set,metric,tier,feature,protein_name,n,slope,p_lm,q_lm,q_family,floor_flag,most_influential_mussel,influence_flag
-candidate,mean_force,primary,LOC134712267,"Methionine--tRNA ligase, mitochondrial (EC 6.1.1.10) (Methionyl-tRNA synthetase 2) (Mitochondrial methionyl-tRNA synthetase) (MtMetRS)",46,-1.1722427581995676,0.00136633364273658,0.2723260175166468,0.34484143658765204,ok,T111,robust
-candidate,pad_area,primary,LOC134718612,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),46,-0.27105730723573346,1.106311984391547e-4,0.03584450829428612,0.07168901658857224,ok,T136,robust
-candidate,max_force,exploratory,LOC134681328,Protein peroxidase GPX7 (GPx-7) (GSHPx-7) (EC 5.3.4.1),46,-0.3991848384836084,3.843996146704944e-4,0.1245454751532402,0.24909095030648035,ok,T039,robust
-candidate,adhesion_kpa,exploratory,LOC134718614,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),46,0.41964902596403,0.00246866549191927,0.4824864719246202,0.4944275737658528,ok,T030,robust
+candidate,mean_force,primary,LOC134712267,"Methionine--tRNA ligase, mitochondrial (EC 6.1.1.10) (Methionyl-tRNA synthetase 2) (Mitochondrial methionyl-tRNA synthetase) (MtMetRS)",46,-1.1722427581995676,0.00136633364273658,0.262239868719734,0.3320695315288501,ok,T111,robust
+candidate,pad_area,primary,LOC134718612,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),46,-0.27105730723573346,1.106311984391547e-4,0.03451693391301626,0.06903386782603253,ok,T136,robust
+candidate,max_force,exploratory,LOC134681328,Protein peroxidase GPX7 (GPx-7) (GSHPx-7) (EC 5.3.4.1),46,-0.3991848384836084,3.843996146704944e-4,0.11993267977719424,0.2398653595543885,ok,T039,robust
+candidate,adhesion_kpa,exploratory,LOC134718614,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),46,0.41964902596403,0.00246866549191927,0.4646166025940787,0.47611544140415457,ok,T030,robust
 module,mean_force,primary,HIF_hypoxia,11-gene module,46,-0.05232641984380735,0.2798805990994358,0.609158623399329,0.7387381665325172,NA,NA,NA
-module,pad_area,primary,byssal_collagen,71-gene module,46,-0.01697592412347911,0.4097076503400642,0.7419661404687401,0.7387381665325172,NA,NA,NA
+module,pad_area,primary,byssal_collagen,71-gene module,46,-0.01697592412347911,0.4097076503400642,0.8124708218970345,0.7387381665325172,NA,NA,NA
 module,max_force,exploratory,oxidative_detox,76-gene module,46,-0.04255351233138344,0.23205209637168495,0.7488565125961956,0.8833362638489932,NA,NA,NA
 module,adhesion_kpa,exploratory,byssal_structural,11-gene module,46,0.05380607393870176,0.22322722862706657,0.852914509148736,0.8833362638489932,NA,NA,NA
 DEG_union,mean_force,primary,LOC134725581,Group XIIA secretory phospholipase A2 (GXII sPLA2) (sPLA2-XII) (EC 3.1.1.4) (Phosphatidylcholine 2-acylhydrolase 12A),46,-0.514989963110557,6.963520550631827e-4,0.6821454090697029,0.6902905328169354,ok,T021,robust

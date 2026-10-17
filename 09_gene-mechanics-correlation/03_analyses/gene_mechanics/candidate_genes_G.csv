@@ -3,7 +3,6 @@ LOC134711783,Bifunctional glutamate/proline--tRNA ligase (Bifunctional aminoacyl
 LOC134681253,Transcription elongation factor SPT6 (hSPT6) (Histone chaperone suppressor of Ty6) (Tat-cotransactivator 2 protein) (Tat-CT2 protein),55.072,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134692000,"Isoleucine--tRNA ligase, cytoplasmic (EC 6.1.1.5) (Isoleucyl-tRNA synthetase) (IRS) (IleRS)",59.242,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134724501,ATP-binding cassette sub-family C member 1 (EC 7.6.2.-) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter) (Multidrug resistance-associated protein 1) (EC 7.6.2.2),52.511,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
-LOC134693874,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide],36.864,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134685659,"Leucine--tRNA ligase, cytoplasmic (EC 6.1.1.4) (Leucyl-tRNA synthetase) (LeuRS) (cLRS)",62.5,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134720928,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter),49.329,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134706569,Multidrug resistance-associated protein 1 (EC 7.6.2.2) (ATP-binding cassette sub-family C member 1) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter),48.094,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
@@ -33,7 +32,6 @@ LOC134696794,Heat shock protein 70 B2,73.783,0,genome_blast,FALSE,TRUE,FALSE,0.0
 LOC134682928,"Cysteine--tRNA ligase, cytoplasmic (EC 6.1.1.16) (Cysteinyl-tRNA synthetase) (CysRS)",60.054,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134711913,"Isoleucine--tRNA ligase, mitochondrial (EC 6.1.1.5) (Isoleucyl-tRNA synthetase) (IleRS)",46.354,0,genome_blast,FALSE,TRUE,FALSE,0.021,ok,TRUE
 LOC134697661,"Arginine--tRNA ligase, cytoplasmic (EC 6.1.1.19) (Arginyl-tRNA synthetase) (ArgRS)",64.23,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
-LOC134716333,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)",52.598,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134706576,"60 kDa heat shock protein, mitochondrial (EC 5.6.1.7) (60 kDa chaperonin) (Chaperonin 60) (CPN60) (Heat shock protein 60) (HSP-60) (Hsp60)",75.226,0,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134697396,"Heat shock protein 75 kDa, mitochondrial (HSP 75) (TNFR-associated protein 1) (Tumor necrosis factor type 1 receptor-associated protein) (TRAP-1)",59.416,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134695667,Heat shock protein 70 A1,65.798,0,genome_blast,FALSE,TRUE,FALSE,0.362,caution,TRUE
@@ -60,11 +58,9 @@ LOC134710209,Putative ABC transporter C family member 15 (ABC transporter ABCC.1
 LOC134724488,ATP-binding cassette sub-family C member 1 (EC 7.6.2.-) (Glutathione-S-conjugate-translocating ATPase ABCC1) (EC 7.6.2.3) (Leukotriene C(4) transporter) (LTC4 transporter) (Multidrug resistance-associated protein 1) (EC 7.6.2.2),49.194,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134725830,Protein disulfide-isomerase (PDI) (EC 5.3.4.1) (Cellular thyroid hormone-binding protein) (Prolyl 4-hydroxylase subunit beta) (p55),63.053,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134688249,tRNA ligase complex-associated NAD(P)H dehydrogenase PYROXD1 (EC 1.6.99.1) (Pyridine nucleotide-disulfide oxidoreductase domain-containing protein 1),58.025,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
-LOC134715627,Eukaryotic translation initiation factor 2-alpha kinase 3 (EC 2.7.11.1) (PRKR-like endoplasmic reticulum kinase) (Pancreatic eIF2-alpha kinase) (HsPEK) (Protein tyrosine kinase EIF2AK3) (EC 2.7.10.2),37.084,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134712250,"Atypical kinase COQ8A, mitochondrial (EC 2.7.-.-) (Chaperone activity of bc1 complex-like) (Chaperone-ABC1-like) (Coenzyme Q protein 8A) (aarF domain-containing protein kinase 3)",59.414,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134714798,"Aryl hydrocarbon receptor nuclear translocator (ARNT protein) (Dioxin receptor, nuclear translocator) (Hypoxia-inducible factor 1-beta) (HIF-1-beta) (HIF1-beta)",63.573,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134712292,"Glutathione reductase, mitochondrial (GR) (GRase) (EC 1.8.1.7)",62.391,0,genome_blast,FALSE,TRUE,FALSE,0.021,ok,TRUE
-LOC134725629,Sphingosine-1-phosphate lyase 1 (S1PL) (SP-lyase 1) (SPL 1) (hSPL) (EC 4.1.2.27) (Sphingosine-1-phosphate aldolase),52.453,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134724787,Alcohol dehydrogenase class-3 chain H (EC 1.1.1.1) (Alcohol dehydrogenase class-III chain H) (Glutathione-dependent formaldehyde dehydrogenase) (FALDH) (FDH) (GSH-FDH) (EC 1.1.1.-) (S-(hydroxymethyl)glutathione dehydrogenase) (EC 1.1.1.284),76.8,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134693971,Catalase (EC 1.11.1.6),69.293,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134714846,Ceramide transfer protein (CERT) (Collagen type IV alpha-3-binding protein),50.825,0,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
@@ -89,7 +85,6 @@ LOC134684257,"Peptidyl-prolyl cis-trans isomerase FKBP4 (PPIase FKBP4) (EC 5.2.1
 LOC134710470,Tubulin-specific chaperone E (Tubulin-folding cofactor E),43.103,1.12e-138,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134706002,Foot protein 11,77.152,8.329999999999999e-140,genome_blast,TRUE,TRUE,TRUE,0.383,caution,TRUE
 LOC134715434,Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1),72.566,5.96e-127,genome_blast,FALSE,TRUE,TRUE,0.064,ok,TRUE
-LOC134711684,Serine/threonine-protein kinase Nek2 (EC 2.7.11.1) (HSPK 21) (Never in mitosis A-related kinase 2) (NimA-related protein kinase 2) (NimA-like protein kinase 1),67.803,9.369999999999999e-132,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134716385,Byssal EP-like protein 1 (EP-protein-1),87.712,4.86e-139,genome_blast,TRUE,TRUE,TRUE,0,ok,TRUE
 LOC134725910,Hypoxia-inducible factor 1-alpha inhibitor (EC 1.14.11.30) (EC 1.14.11.n4) (Factor inhibiting HIF-1) (FIH-1) (Hypoxia-inducible factor asparagine hydroxylase),59.434,6.59e-135,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134695793,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),33.438,6.79e-120,genome_blast,FALSE,TRUE,FALSE,0.213,caution,TRUE
@@ -112,7 +107,6 @@ LOC134697127,Heat shock 70 kDa protein 12B (Heat shock protein family A member 1
 LOC134686782,Peroxiredoxin-4 (EC 1.11.1.24) (Antioxidant enzyme AOE372) (AOE37-2) (Peroxiredoxin IV) (Prx-IV) (Thioredoxin peroxidase AO372) (Thioredoxin-dependent peroxide reductase A0372) (Thioredoxin-dependent peroxiredoxin 4),74.429,3.489999999999999e-119,genome_blast,FALSE,TRUE,FALSE,0.043,ok,TRUE
 LOC134698154,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.905,5.97e-108,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134697060,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),31.587,3.5299999999999995e-107,genome_blast,FALSE,TRUE,FALSE,0.021,ok,TRUE
-LOC134712049,"3'(2'),5'-bisphosphate nucleotidase 1 (EC 3.1.3.7) (3'-phosphoadenosine 5'-phosphate phosphatase) (PAP phosphatase) (Bisphosphate 3'-nucleotidase 1) (BPntase 1) (HsPIP) (Inositol-polyphosphate 1-phosphatase) (EC 3.1.3.57)",52.597,4.71e-114,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134721801,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),35.113,7.059999999999999e-106,genome_blast,FALSE,TRUE,FALSE,0.191,ok,TRUE
 LOC134696926,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),32.698,7.92e-102,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134724896,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),32.258,5.65e-105,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
@@ -159,10 +153,8 @@ LOC134712215,Egl nine homolog 1 (EC 1.14.11.29) (Hypoxia-inducible factor prolyl
 LOC134680609,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),30.769,1.69e-89,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134685977,uS5 assembly chaperone PDCD2 (Programmed cell death protein 2),42.818,5.1699999999999996e-96,genome_blast,FALSE,TRUE,FALSE,0.021,ok,TRUE
 LOC134707678,Byssal peroxidase-like protein 1,34.068,1.24e-87,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
-LOC134711410,Spermatogenesis-defective protein 39 homolog (hSPE-39) (VPS33B-interacting protein in apical-basolateral polarity regulator) (VPS33B-interacting protein in polarity and apical restriction),37.849,1.5600000000000001e-91,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134691039,Heat shock 70 kDa protein 12B (Heat shock protein family A member 12B),30.269,4.2399999999999995e-88,genome_blast,FALSE,TRUE,FALSE,0.064,ok,TRUE
 LOC134721919,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),31.28,5.27e-88,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
-LOC134721362,Serine hydrolase BPHL (EC 3.1.-.-) (Biphenyl hydrolase-like protein) (L-homocysteine-thiolactonase BPHL) (Valacyclovir hydrolase) (VACVase) (Valacyclovirase),50.98,8.189999999999999e-96,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134725173,Glutathione hydrolase-like YwrD proenzyme (EC 2.3.2.2) (Putative gamma-glutamyltransferase YwrD) (EC 3.4.19.13) [Cleaved into: Glutathione hydrolase-like YwrD large chain; Glutathione hydrolase-like YwrD small chain],35.478,2.5e-89,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134696058,Heat shock 70 kDa protein 12B,29.459,1.22e-86,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134696389,Heat shock 70 kDa protein 12A (Heat shock protein family A member 12A),32.201,1.9399999999999997e-87,genome_blast,FALSE,TRUE,FALSE,0.17,ok,TRUE
@@ -214,7 +206,6 @@ LOC134721632,Protease inhibitor-like protein-1,27.506,1.27e-57,genome_blast,FALS
 LOC134682488,Collagen alpha-5(VI) chain (Collagen alpha-1(XXIX) chain),30.756,7.39e-60,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134722197,Proteasome assembly chaperone 2 (Tumor necrosis factor superfamily member 5-induced protein 1 homolog),41.392,5.86e-71,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134721315,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM4-4) (Glutathione transferase GSTM7-7) (Leukotriene C4 synthase GSTM4) (EC 4.4.1.20),48.372,3.14e-71,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
-LOC134710182,Sphingosine-1-phosphate phosphatase 1 (SPPase1) (Spp1) (hSPP1) (hSPPase1) (EC 3.1.3.-) (Sphingosine-1-phosphatase 1) (Sphingosine-1-phosphate phosphohydrolase 1) (SPP-1),32.949,2.27e-65,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134706604,Heat shock 70 kDa protein 12B,28.832,1.31e-59,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134716640,Ficolin-2 (37 kDa elastin-binding protein) (EBP-37) (Collagen/fibrinogen domain-containing protein 2) (Ficolin-B) (Ficolin-beta) (Hucolin) (L-ficolin) (Serum lectin p35),50,3.67e-64,genome_blast,FALSE,TRUE,FALSE,0.17,ok,TRUE
 LOC134687560,Superoxide dismutase [Cu-Zn] (EC 1.15.1.1) (Superoxide dismutase 1),67.974,4.74e-70,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
@@ -222,7 +213,6 @@ LOC134687564,Heat shock 70 kDa protein (HSP70) (Heat shock protein 70) (OvHSP70)
 LOC134705706,Collagen alpha-1(V) chain,38.346,3.91e-53,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134710997,"Peroxiredoxin-5, mitochondrial (EC 1.11.1.24) (Alu corepressor 1) (Antioxidant enzyme B166) (AOEB166) (Liver tissue 2D-page spot 71B) (PLP) (Peroxiredoxin V) (Prx-V) (Peroxisomal antioxidant enzyme) (TPx type VI) (Thioredoxin peroxidase PMP20) (Thioredoxin-dependent peroxiredoxin 5)",58.48,3.28e-68,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134698935,Glutathione S-transferase kappa 1 (EC 2.5.1.18) (GST 13-13) (GST class-kappa) (GSTK1-1) (hGSTK1) (Glutathione S-transferase subunit 13),48.357,6.29e-67,genome_blast,TRUE,TRUE,FALSE,0.191,ok,TRUE
-LOC134708209,Protein LZIC (Leucine zipper and CTNNBIP1 domain-containing protein) (Leucine zipper and ICAT homologous domain-containing protein),66.316,6.34e-68,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134694760,Phospholipid hydroperoxide glutathione peroxidase (PHGPx) (EC 1.11.1.12) (Glutathione peroxidase 4) (GPx-4) (GSHPx-4) (EC 1.11.1.9),56.021,1.8e-67,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134680970,Collagen alpha-6(VI) chain,28.824,9.069999999999998e-55,genome_blast,TRUE,TRUE,FALSE,0.021,ok,TRUE
 LOC134694200,Collagen alpha-1(XV) chain [Cleaved into: Restin (Endostatin-XV) (Related to endostatin) (Restin-I); Restin-2 (Restin-II); Restin-3 (Restin-III); Restin-4 (Restin-IV)],42.146,3.0299999999999997e-52,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
@@ -275,7 +265,6 @@ LOC134718845,Precollagen D,99.038,1.7100000000000002e-36,genome_blast,FALSE,TRUE
 LOC134715354,Glutathione S-transferase 1 (EC 2.5.1.18) (GST class-sigma),39.336,4.21e-44,genome_blast,TRUE,TRUE,FALSE,0,ok,TRUE
 LOC134716638,Ficolin-2 (37 kDa elastin-binding protein) (EBP-37) (Collagen/fibrinogen domain-containing protein 2) (Ficolin-B) (Ficolin-beta) (Hucolin) (L-ficolin) (Serum lectin p35),39.535,8.07e-43,genome_blast,FALSE,TRUE,FALSE,0.191,ok,TRUE
 LOC134686131,Mussel byssus collagen-like protein 3,45.856,1.8e-43,genome_blast,TRUE,TRUE,FALSE,0.043,ok,TRUE
-LOC134725540,Calcium-regulated heat-stable protein 1 (Calcium-regulated heat-stable protein of 24 kDa) (CRHSP-24),64.423,3.7399999999999996e-45,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134686081,Mussel byssus collagen-like protein 3,44.162,4.3299999999999996e-43,genome_blast,FALSE,TRUE,FALSE,0.064,ok,TRUE
 LOC134680969,Collagen alpha-4(VI) chain,31.486,2.28e-36,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134707837,Collagen alpha-2(I) chain (Alpha-2 type I collagen),32.4,3.43e-34,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
@@ -312,7 +301,6 @@ LOC134682159,Byssal metalloproteinase inhibitor-like protein 1,34.031,4.17999999
 LOC134721949,BAG family molecular chaperone regulator 1 (BAG-1) (Bcl-2-associated athanogene 1),35.751,3.3800000000000003e-29,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134686963,Probable assembly chaperone of rpl4,32.857,2.9200000000000003e-26,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134694726,"Prolyl 4-hydroxylase subunit alpha-2 (4-PH alpha-2) (EC 1.14.11.2) (Procollagen-proline,2-oxoglutarate-4-dioxygenase subunit alpha-2)",21.013,3.2099999999999997e-24,genome_blast,FALSE,TRUE,FALSE,0.021,ok,TRUE
-LOC134691320,HCLS1-binding protein 3 (HS1-binding protein 3) (HSP1BP-3),35.252,9.17e-25,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134707598,"Serine--tRNA ligase, mitochondrial (EC 6.1.1.11) (SerRSmt) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)",24.928,1.61e-22,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE
 LOC134718846,Precollagen-P,95.556,5.420000000000001e-21,genome_blast,FALSE,TRUE,TRUE,0,ok,TRUE
 LOC134690949,Tubulin-specific chaperone cofactor E-like protein (EL) (Leucine-rich repeat-containing protein 35),32.759,1.27e-21,genome_blast,FALSE,TRUE,FALSE,0,ok,TRUE

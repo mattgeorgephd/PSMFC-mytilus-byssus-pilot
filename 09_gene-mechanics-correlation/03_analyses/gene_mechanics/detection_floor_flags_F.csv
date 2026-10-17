@@ -117,7 +117,6 @@ LOC134707467,Dual oxidase 1 (EC 1.-.-.-) (EC 1.11.1.-) (EC 1.6.3.1),candidate,46
 LOC134707468,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein),candidate,46,1,0.022,ok,TRUE
 LOC134707598,"Serine--tRNA ligase, mitochondrial (EC 6.1.1.11) (SerRSmt) (Seryl-tRNA synthetase) (SerRS) (Seryl-tRNA(Ser/Sec) synthetase)",candidate,46,1,0.022,ok,TRUE
 LOC134708000,Foot protein 13,candidate,46,1,0.022,ok,TRUE
-LOC134708209,Protein LZIC (Leucine zipper and CTNNBIP1 domain-containing protein) (Leucine zipper and ICAT homologous domain-containing protein),candidate,46,1,0.022,ok,TRUE
 LOC134709193,NA,DEG_union,46,1,0.022,ok,TRUE
 LOC134710563,TSP_1 domain containing protein-1,candidate,46,1,0.022,ok,TRUE
 LOC134710785,YGH-rich protein-3,candidate,46,1,0.022,ok,TRUE
@@ -418,7 +417,6 @@ LOC134693796,NA,DEG_union,46,0,0,ok,TRUE
 LOC134693823,NA,DEG_union,46,0,0,ok,TRUE
 LOC134693841,Eukaryotic translation initiation factor 4 gamma 3 (eIF-4-gamma 3) (eIF-4G 3) (eIF4G 3) (eIF-4-gamma II) (eIF4GII),DEG_union,46,0,0,ok,TRUE
 LOC134693842,Forkhead-associated domain-containing protein 1 (FHA domain-containing protein 1),DEG_union,46,0,0,ok,TRUE
-LOC134693874,Basement membrane-specific heparan sulfate proteoglycan core protein (HSPG) (Perlecan) (PLC) [Cleaved into: Endorepellin; LG3 peptide],candidate,46,0,0,ok,TRUE
 LOC134693887,Outer dynein arm-docking complex subunit 1,DEG_union,46,0,0,ok,TRUE
 LOC134693917,NA,DEG_union,46,0,0,ok,TRUE
 LOC134693929,Collagen alpha-4(VI) chain,candidate,46,0,0,ok,TRUE
@@ -686,7 +684,6 @@ LOC134710032,Basal body-orientation factor 1 (Coiled-coil domain-containing prot
 LOC134710063,Serine/threonine-protein phosphatase 4 regulatory subunit 3 (SMEK homolog 1),DEG_union,46,0,0,ok,TRUE
 LOC134710081,Centrosomal protein 128 (Cep128) (Centrosomal protein of 128 kDa),DEG_union,46,0,0,ok,TRUE
 LOC134710092,UBX domain-containing protein 1 (SAPK substrate protein 1),DEG_union,46,0,0,ok,TRUE
-LOC134710182,Sphingosine-1-phosphate phosphatase 1 (SPPase1) (Spp1) (hSPP1) (hSPPase1) (EC 3.1.3.-) (Sphingosine-1-phosphatase 1) (Sphingosine-1-phosphate phosphohydrolase 1) (SPP-1),candidate,46,0,0,ok,TRUE
 LOC134710209,Putative ABC transporter C family member 15 (ABC transporter ABCC.15) (AtABCC15) (EC 7.6.2.2) (ATP-energized glutathione S-conjugate pump 15) (Glutathione S-conjugate-transporting ATPase 15) (Putative multidrug resistance-associated protein 15),candidate,46,0,0,ok,TRUE
 LOC134710215,AT-rich interactive domain-containing protein 4B (ARID domain-containing protein 4B) (180 kDa Sin3-associated polypeptide) (Sin3-associated polypeptide p180) (Breast cancer-associated antigen BRCAA1) (Histone deacetylase complex subunit SAP180) (Retinoblastoma-binding protein 1-like 1),DEG_union,46,0,0,ok,TRUE
 LOC134710226,Eukaryotic translation initiation factor 5 (eIF-5),DEG_union,46,0,0,ok,TRUE
@@ -731,7 +728,6 @@ LOC134711517,Collagen alpha-1(IV) chain,candidate,46,0,0,ok,TRUE
 LOC134711532,Zinc finger C2HC domain-containing protein 1C,DEG_union,46,0,0,ok,TRUE
 LOC134711580,NA,DEG_union,46,0,0,ok,TRUE
 LOC134711637,Spectrin beta chain,DEG_union,46,0,0,ok,TRUE
-LOC134711684,Serine/threonine-protein kinase Nek2 (EC 2.7.11.1) (HSPK 21) (Never in mitosis A-related kinase 2) (NimA-related protein kinase 2) (NimA-like protein kinase 1),candidate,46,0,0,ok,TRUE
 LOC134711700,"Serine/arginine-rich splicing factor 4 (Splicing factor, arginine/serine-rich 4)",DEG_union,46,0,0,ok,TRUE
 LOC134711718,Dynein axonemal light chain 1,DEG_union,46,0,0,ok,TRUE
 LOC134711730,"Tryptophan--tRNA ligase, cytoplasmic (EC 6.1.1.2) (Tryptophanyl-tRNA synthetase) (TrpRS) [Cleaved into: T1-TrpRS; T2-TrpRS]",candidate,46,0,0,ok,TRUE
@@ -885,7 +881,6 @@ LOC134715512,NA,DEG_union,46,0,0,ok,TRUE
 LOC134715562,Ras-like protein family member 12 (EC 3.6.5.2) (RAS-like protein Ris),DEG_union,46,0,0,ok,TRUE
 LOC134715581,NA,DEG_union,46,0,0,ok,TRUE
 LOC134715595,NA,DEG_union,46,0,0,ok,TRUE
-LOC134715627,Eukaryotic translation initiation factor 2-alpha kinase 3 (EC 2.7.11.1) (PRKR-like endoplasmic reticulum kinase) (Pancreatic eIF2-alpha kinase) (HsPEK) (Protein tyrosine kinase EIF2AK3) (EC 2.7.10.2),candidate,46,0,0,ok,TRUE
 LOC134715630,Cilia- and flagella-associated protein 99,DEG_union,46,0,0,ok,TRUE
 LOC134715632,Uncharacterized protein ZK1073.1,DEG_union,46,0,0,ok,TRUE
 LOC134715647,NA,DEG_union,46,0,0,ok,TRUE
@@ -915,7 +910,7 @@ LOC134716168,Dynactin subunit 1 (150 kDa dynein-associated polypeptide) (DAP-150
 LOC134716189,Putative aminopeptidase W07G4.4 (EC 3.4.11.-),DEG_union,46,0,0,ok,TRUE
 LOC134716268,NA,DEG_union,46,0,0,ok,TRUE
 LOC134716289,Heat shock 70 kDa protein 13 (Stress-70 protein chaperone microsome-associated 60 kDa protein),candidate,46,0,0,ok,TRUE
-LOC134716333,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)",candidate,46,0,0,ok,TRUE
+LOC134716333,"High affinity cAMP-specific and IBMX-insensitive 3',5'-cyclic phosphodiesterase 8B (HsPDE8B) (EC 3.1.4.53) (Cell proliferation-inducing gene 22 protein)",DEG_union,46,0,0,ok,TRUE
 LOC134716407,Sacsin (DnaJ homolog subfamily C member 29),DEG_union,46,0,0,ok,TRUE
 LOC134716418,Ankyrin repeat domain-containing protein 26,DEG_union,46,0,0,ok,TRUE
 LOC134716854,"Hexokinase-1 (EC 2.7.1.1) (Hexokinase type I) (HK I) (Hexokinase, tumor isozyme)",DEG_union,46,0,0,ok,TRUE
@@ -988,7 +983,6 @@ LOC134721315,Glutathione S-transferase Mu 4 (EC 2.5.1.18) (GST class-mu 4) (GSTM
 LOC134721316,F-box only protein 15,DEG_union,46,0,0,ok,TRUE
 LOC134721338,Catechol oxidase (EC 1.10.3.1),candidate,46,0,0,ok,TRUE
 LOC134721343,Coiled-coil domain-containing protein 149,DEG_union,46,0,0,ok,TRUE
-LOC134721362,Serine hydrolase BPHL (EC 3.1.-.-) (Biphenyl hydrolase-like protein) (L-homocysteine-thiolactonase BPHL) (Valacyclovir hydrolase) (VACVase) (Valacyclovirase),candidate,46,0,0,ok,TRUE
 LOC134721368,NA,DEG_union,46,0,0,ok,TRUE
 LOC134721377,"Alanine--tRNA ligase, cytoplasmic (EC 6.1.1.7) (Alanyl-tRNA synthetase) (AlaRS) (Protein lactyltransferase AARS1) (EC 6.-.-.-) (Renal carcinoma antigen NY-REN-42)",candidate,46,0,0,ok,TRUE
 LOC134721387,DAZ-associated protein 1 (Deleted in azoospermia-associated protein 1) (Proline-rich Vg1 mRNA-binding protein),DEG_union,46,0,0,ok,TRUE
@@ -1099,13 +1093,11 @@ LOC134725486,NA,DEG_union,46,0,0,ok,TRUE
 LOC134725490,NA,DEG_union,46,0,0,ok,TRUE
 LOC134725495,Lethal(2) giant larvae protein homolog 1 (LLGL) (Mgl-1) (Mlgl),DEG_union,46,0,0,ok,TRUE
 LOC134725503,NA,DEG_union,46,0,0,ok,TRUE
-LOC134725540,Calcium-regulated heat-stable protein 1 (Calcium-regulated heat-stable protein of 24 kDa) (CRHSP-24),candidate,46,0,0,ok,TRUE
 LOC134725544,NA,DEG_union,46,0,0,ok,TRUE
 LOC134725551,NA,DEG_union,46,0,0,ok,TRUE
 LOC134725558,Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein),candidate,46,0,0,ok,TRUE
 LOC134725606,Golgi apparatus membrane protein TVP23 homolog B,DEG_union,46,0,0,ok,TRUE
 LOC134725611,Leukocyte receptor cluster member 9,DEG_union,46,0,0,ok,TRUE
-LOC134725629,Sphingosine-1-phosphate lyase 1 (S1PL) (SP-lyase 1) (SPL 1) (hSPL) (EC 4.1.2.27) (Sphingosine-1-phosphate aldolase),candidate,46,0,0,ok,TRUE
 LOC134725633,Zinc finger SWIM domain-containing protein 8,DEG_union,46,0,0,ok,TRUE
 LOC134725656,"Aconitate hydratase, mitochondrial (Aconitase) (EC 4.2.1.3) (Citrate hydro-lyase)",DEG_union,46,0,0,ok,TRUE
 LOC134725661,Eukaryotic translation initiation factor 4E-binding protein 1 (4E-BP1) (eIF4E-binding protein 1) (Phosphorylated heat- and acid-stable protein regulated by insulin 1) (PHAS-I),DEG_union,46,0,0,ok,TRUE
