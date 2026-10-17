@@ -22,3 +22,16 @@ ANCOVAs, so that the ellipses are fitted there.
 Each animal is summarised as scripts 04 and 05 summarise animals: the arithmetic mean of its
 threads' peak forces and the mean of their plaque areas, the per-animal values of script 05's
 table (the ANCOVAs use geometric means).
+
+## What the figures show (run of 0532bf9, 2026-10-17; descriptive)
+
+- **Change.** The OW and DO ellipses sit below zero on force: median change in mean peak force
+  -57% in both (10 and 8 of 12 animals weaker on force and adhesion), against +6% in the
+  controls and -5% in OA. On plaque area the arms overlap more (medians -22% DO, -11% OW, +12%
+  OA, +8% control), and the control ellipse is the widest along area.
+- **Day-3 levels.** OW and DO reach lower forces than the controls and OA (median mean peak force
+  0.11 and 0.10 N, against 0.23 and 0.21 N). The day-0 lab reference (median 0.23 N, plaque area
+  2.8 mm2) lies on the day-3 controls, in force and in plaque area.
+
+The arm comparisons of record, adjusted for each animal's baseline, are in
+`../05_decompose-adhesion/STATS_ancova_vs_control.csv` and `../04_analyze-thread-strength/`.
