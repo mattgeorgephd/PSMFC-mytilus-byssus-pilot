@@ -180,8 +180,9 @@ genes as heatmaps with the animals in one order in every panel: by mussel ID wit
 by mean mfp expression within each arm (the order of the first heatmaps of these genes, drawn
 outside the pipeline without mussel IDs), for the byssal
 structural genes (split into mfp-1 to -6, thread core and other structural) and for every byssal
-gene. Exploratory. In foot the mfp genes are on or off: 11 of 46 animals express them (two to
-four per arm, the same share in every arm), about 30-fold above the rest, and those animals are
+gene, and keeps the talk's first two heatmaps as they were drawn (foot). Exploratory. In foot
+the mfp genes are on or off: 11 of 46 animals express them (two to four per arm, the same share
+in every arm), about 30-fold above the rest, and those animals are
 high for every mfp gene and for the other plaque and cuticle genes. Genome-wide only 21 genes
 follow them, 15 of them byssal; the state does not follow library size or RNA yield, nor threads
 made, peak force or plaque area. Whether it is secretion or the make-up of the hand-cut foot piece

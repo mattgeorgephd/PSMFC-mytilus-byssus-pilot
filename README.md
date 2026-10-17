@@ -212,6 +212,9 @@ flowchart LR
   pad(["02_data/pad_area_measurements.xlsx"])
   t1["01 mussel key"] --> t2["02 extract traces"] --> t3["03 thread summary"] --> t4["04 ANCOVA"] --> t5["05 decompose adhesion"]
   t3 --> t5
+  t5 --> t6["06 force vs area, ellipses"]
+  t3 --> t6
+  t4 --> t6
   meas --> t1
   tens --> t1
   tens --> t2
@@ -223,7 +226,7 @@ flowchart LR
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef run fill:#e8f4ec,stroke:#2f7a4a,color:#1b2730
   class meas,tens,pad,o9,o93,o91 ext
-  class t1,t2,t3,t4,t5 run
+  class t1,t2,t3,t4,t5,t6 run
 ```
 
 | step | in pipeline | reads | writes (`03_analyses/`) |
@@ -233,6 +236,7 @@ flowchart LR
 | 03 `03_assemble_thread_summary.Rmd` | yes | `02·02` workbook; `02_data/pad_area_measurements.xlsx` (hand-entered plaque areas) | `03_assemble-thread-summary/thread-summary.xlsx` |
 | 04 `04_analyze_thread_strength.Rmd` | yes | `02·03` summary; `_ancova.R`, `tools/plot_style.R`, `tools/pipeline_checks.R` | `04_analyze-thread-strength/`: `STATS_ancova_*.csv`, `DATA_ancova_animals.csv`, `DESC_*.csv`, `BP_*`, `LineBox_*` and `DIAG_*` figures, `RUN_provenance.txt` |
 | 05 `05_decompose_adhesion.Rmd` | yes | `02·03` summary; `02·04` `STATS_ancova_vs_control.csv`; the same helpers | `05_decompose-adhesion/`: `STATS_ancova_*.csv`, `DATA_ancova_animals.csv`, `mussel_response_classification.csv`, `STATS_failure_mode.csv`, `FIG_*` figures, `RUN_provenance.txt` |
+| 06 `06_force_area_figures.Rmd` | yes | `02·05` `mussel_response_classification.csv`; `02·03` summary (lab reference); `02·04` `DESC_lab_reference.csv` (check); `tools/plot_style.R`, `tools/pipeline_checks.R` | `06_force-area-figures/`: `FIG_force_vs_area_change_ellipses.png`, `FIG_force_vs_area_day3_levels.png`, `RUN_provenance.txt` |
 
 ## 03_blast (HPC record; not a pipeline stage)
 
@@ -389,7 +393,7 @@ All 14 steps run in the pipeline.
 |---|---|---|
 | 01 `01_clean_count_matrix.Rmd` | `04·07` `featurecounts/gene_count_matrix.csv`; `02_data/` sample sheet and RNA summary; for the mitochondrial list, `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`, `04·01` `hisat/t_data.ctab` and `04_sequence-alignment/02_data/annotation_mt_like_loci.csv` (`tools/mt_encoded.R`) | `count_matrix/`: `gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`, `library_crosswalk.csv`, `mitochondrial_loci.csv` |
 | 02 `02_define_contrasts.Rmd` | `05·01` sample table | `DEG_lists/contrasts.csv`, `contrast_samples.csv` |
-| 03 `03_deseq_contrasts.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·02` contrasts | `dds/*.rds` (git-ignored), `DEG_lists/filter_summary.csv` |
+| 03 `03_deseq_contrasts.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·02` contrasts | `dds/*.rds` (git-ignored), `DEG_lists/filter_summary.csv`, `figures/PCA_*.png` (the original PCA plots) |
 | 04 `04_shrinkage_filtration.Rmd` | `05·02` contrasts; `05·03` fits and filter summary | `DEG_lists/{Foot,Gill,Foot_vs_Gill}/<code>_{apeglm,siggene,filter_counts}.csv` and MA plots; `DEG_lists/DEG_counts.csv` |
 | 05 `05_fourlevel_sensitivity.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·04` DEG lists | `DEG_lists/sensitivity_fourlevel/` |
 | 06 `06_join_annotation.Rmd` | `05·04` DEG lists; `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`; `05·01` mitochondrial list | `DEG_lists/GOterms_genome/<code>_sigs_{merged,ID,unID}.csv`, `DEG_lists/DEG_join_summary.csv` |
@@ -574,7 +578,7 @@ the tissue suffix `<T>`.
 | 04 `04_byssus_foot_gene_list_expression.Rmd` | `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`; `05·04` TC DEG lists; `09·03` manifest; `02·03` summary; `05·01` counts | `byssus_genes/`: `byssus_gene_expression_<T>.csv`, `sample_metadata_<T>.csv`, `byssus_category_scores_<T>.csv` |
 | 05 `05_go_term_mechanics.Rmd` | `09·01` manifest, VST and metrics; `05·04` TC DEG lists; `07·02` `topgo_enriched.csv`; `07·06` `consensus_terms_TC_*.csv`; `05·13` `mt_share_by_sample.csv` | `go_mechanics/`: `mechanics_sets_<T>.csv`, `mechanics_set_associations_<T>.csv`, `go_mechanics_<T>.png`, `RUN_provenance_<T>.txt` |
 | 06 `06_expression_suites.Rmd` | `09·01` `metrics_config_<T>`, `paired_sample_manifest_<T>`, `vst_paired_<T>`, `candidate_genes_<T>` (csv) and `annotation_map.csv`; `09·05` `mechanics_sets_<T>.csv` and `mechanics_set_associations_<T>.csv` (a check) | `expression_suites/`: `suite_axes_<T>`, `suite_axis_tests_<T>`, `suite_axis_members_<T>`, `suite_scores_<T>`, `suite_prediction_<T>`, `suite_prediction_null_<T>` (csv); `suites_between_within_<T>`, `suites_axes_map_<T>`, `suites_state_space_<T>`, `suites_prediction_<T>` (png); `RUN_provenance_<T>.txt` |
-| 07 `07_byssal_individuals.Rmd` | `09·04` `byssus_gene_expression_<T>.csv` and `sample_metadata_<T>.csv`; `09·01` `paired_sample_manifest_<T>.csv`; `05·01` counts, sample table, mitochondrial list and `library_crosswalk.csv`; `05/02_data/psmfc_mussel_rna_summary.csv` (RNA yield); `05·14` `PCA_scores.csv`; `03·05` `LOC_GO_list.txt` (protein names); `01_mussel-measurements/mussel-thread-production.xlsx` | `byssus_individuals/`: `byssal_animals_<T>`, `byssal_coordination_<T>`, `byssal_group_correlations_<T>`, `byssal_mfp_tests_<T>`, `byssal_mfp_genome_<T>` (csv; the last foot only); `byssal_heatmap_{structural,all}_{by_id,by_mfp}_<T>.png`, `byssal_individuals_<T>.png`, `byssal_mfp_genome_<T>.png` (foot only); `RUN_provenance_<T>.txt` |
+| 07 `07_byssal_individuals.Rmd` | `09·04` `byssus_gene_expression_<T>.csv` and `sample_metadata_<T>.csv`; `09·01` `paired_sample_manifest_<T>.csv`; `05·01` counts, sample table, mitochondrial list and `library_crosswalk.csv`; `05/02_data/psmfc_mussel_rna_summary.csv` (RNA yield); `05·14` `PCA_scores.csv`; `03·05` `LOC_GO_list.txt` (protein names); `01_mussel-measurements/mussel-thread-production.xlsx` | `byssus_individuals/`: `byssal_animals_<T>`, `byssal_coordination_<T>`, `byssal_group_correlations_<T>`, `byssal_mfp_tests_<T>`, `byssal_mfp_genome_<T>` (csv; the last foot only); `byssal_heatmap_{structural,all}_{by_id,by_mfp}_<T>.png`, `byssal_heatmap_original_v{1,2}_F.png` (the talk's heatmaps, foot), `byssal_individuals_<T>.png`, `byssal_mfp_genome_<T>.png` (foot only); `RUN_provenance_<T>.txt` |
 
 Every folder runner also writes its reports and logs to its own `03_analyses/knit_html/`
 (git-ignored).

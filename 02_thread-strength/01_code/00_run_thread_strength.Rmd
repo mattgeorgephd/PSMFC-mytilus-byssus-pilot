@@ -26,6 +26,7 @@ Knit this file from inside `thread-strength.Rproj`, or let the repository-level
 | 03 | `03_assemble_thread_summary.Rmd` | script 02's extraction, `02_data/pad_area_measurements.xlsx` | `03_assemble-thread-summary/` |
 | 04 | `04_analyze_thread_strength.Rmd` | the thread summary | `04_analyze-thread-strength/` |
 | 05 | `05_decompose_adhesion.Rmd` | the thread summary, script 04's ANCOVA | `05_decompose-adhesion/` |
+| 06 | `06_force_area_figures.Rmd` | script 05's per-animal table, the thread summary, script 04's lab-reference table | `06_force-area-figures/` |
 
 The whole run takes about a minute; script 02 draws one QC plot per trace.
 

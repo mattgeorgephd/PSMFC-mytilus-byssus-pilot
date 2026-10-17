@@ -251,8 +251,9 @@ the other sections use the new ones.
   and 36%; mfp-1 is built from variable decapeptide repeats, Waite et al. 1985, so a low identity
   does not argue against it). They join `09` step 04's byssal tables below the expression filter
   (almost no reads at day 3); no test changes.
-- **PCA of every sample set** (2026-10-17, `05` step 14, Matt's request). Step 03's four PCA plots
-  are retired (`figures/_superseded/`). Step 14 draws every sample set the original analysis
+- **PCA of every sample set** (2026-10-17, `05` step 14, Matt's request). Step 03 keeps drawing
+  its four original PCA plots (retired for a few hours, restored at Matt's request: keep the code
+  of the original version of every updated plot). Step 14 draws every sample set the original analysis
   fitted (each arm, each stressor against the controls, the lab control against the controls,
   both tissues, every library), each tissue on its own, without and with the lab control, with
   95% ellipses, and compares them by PERMANOVA and the spread test. Foot arms barely separate
@@ -278,6 +279,15 @@ the other sections use the new ones.
   would be shared by the three stressor contrasts, but they share fewer DEGs (7, against 21 in
   gill) and agree less in fold change (r 0.18 to 0.50, against 0.29 to 0.62). Documented in
   `AGENTS.md` (known data issues) and `05/03_analyses/pca/README.md`.
+- **Original versions of the updated plots kept** (2026-10-17, Matt's request: keep the code that
+  produces the original version of every updated plot). `05` step 03 draws its four original PCA
+  plots again (`figures/PCA_*.png`) beside step 14's. `02` step 05's figure of each animal's change
+  in force against plaque area stays as drawn; a new `02` step 06 draws it with a 95% ellipse
+  around each arm, on the log scale of the change (where an ellipse cannot cross -100%), and the
+  day-3 levels of the two per animal, without and with the day-0 lab reference (which has no
+  baseline, so no change). `09` step 07 keeps the talk's first two mfp heatmaps, drawn with the
+  talk's code (pixel for pixel the talk's figures on their own data), beside its heatmaps by mfp
+  expression and by mussel ID. `AGENTS.md` (Figures) records the rule.
 
 ## In progress
 

@@ -15,12 +15,13 @@ plaque measurements, noted below. It reads one file from outside this folder
 02_thread-strength/
 ├── thread-strength.Rproj               open this first; it anchors here::here()
 ├── 01_code/
-│   ├── 00_run_thread_strength.Rmd      batch runner: scripts 01-05 in order
+│   ├── 00_run_thread_strength.Rmd      batch runner: scripts 01-06 in order
 │   ├── 01_build_mussel_key.Rmd         mussel workbook -> mussel key
 │   ├── 02_extract_tensometer_data.Rmd  raw traces     -> trace-level extraction
 │   ├── 03_assemble_thread_summary.Rmd  extraction + plaque areas -> thread summary
 │   ├── 04_analyze_thread_strength.Rmd  thread summary -> adhesion plots + ANCOVA
 │   ├── 05_decompose_adhesion.Rmd       thread summary -> force and area ANCOVA
+│   ├── 06_force_area_figures.Rmd       force against plaque area with ellipses, without and with the lab reference
 │   ├── _ancova.R                       the per-animal ANCOVA scripts 04 and 05 source
 │   └── *_DOC.md                        companion documentation, one per script
 ├── 02_data/
@@ -33,6 +34,7 @@ plaque measurements, noted below. It reads one file from outside this folder
     ├── 03_assemble-thread-summary/          script 03: thread-summary.xlsx, input to 04, 05 and 09
     ├── 04_analyze-thread-strength/          script 04: figures + STATS_ancova_*.csv
     ├── 05_decompose-adhesion/               script 05: force and area ANCOVA
+    ├── 06_force-area-figures/               script 06: force against plaque area, with ellipses (README inside)
     └── knit_html/                           runner reports and logs (git-ignored)
 ```
 
@@ -80,7 +82,7 @@ binary before/after would pool them and contaminate every paired contrast.
 
 Open `thread-strength.Rproj` in RStudio (not the repository-root `.Rproj`; `here::here()`
 must resolve to this folder) and knit `01_code/00_run_thread_strength.Rmd`. It runs scripts
-01 to 05 in order, each in a fresh R process, and leaves an HTML report and a log per script
+01 to 06 in order, each in a fresh R process, and leaves an HTML report and a log per script
 plus `run_log.csv` in `03_analyses/knit_html/`. Its `steps` parameter runs a subset (for
 example `[4, 5]`). The repository-level `00_run_pipeline.Rmd` calls it as the first stage.
 
@@ -98,6 +100,11 @@ The scripts, in run order:
    ANCOVA (day-3 level adjusted for the animal's baseline; each arm vs control).
 5. `05_decompose_adhesion.Rmd`: the same ANCOVA on mean peak force, maximum peak force and
    plaque area separately. Read this alongside script 04; it reads script 04's output.
+6. `06_force_area_figures.Rmd`: script 05's figure of each animal's change in mean peak force
+   against its change in plaque area, drawn again with a 95% ellipse around each arm on the
+   log scale of the change (script 05's own figure is kept as drawn), and the animals' day-3
+   levels of the two, without and with the day-0 lab reference. Descriptive; reads script
+   05's per-animal table and the thread summary.
 
 `09_gene-mechanics-correlation` reads this folder's outputs (the thread summary, script 05's
 `mussel_response_classification.csv`, both `DATA_ancova_animals.csv` files and script 02's

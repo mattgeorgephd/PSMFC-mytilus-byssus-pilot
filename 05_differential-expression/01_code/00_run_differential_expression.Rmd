@@ -23,7 +23,7 @@ Knit this file from inside `differential-expression.Rproj`, or let the repositor
 |---|---|---|
 | 01 | `01_clean_count_matrix.Rmd` | clean counts, sample table, isolation-log crosswalk and the list of mitochondrial loci |
 | 02 | `02_define_contrasts.Rmd` | the 7 contrasts (6 TC of record, foot vs gill in the day-3 controls) and their samples |
-| 03 | `03_deseq_contrasts.Rmd` | one DESeq2 fit per contrast on the nuclear genes, saved to `03_analyses/dds/` |
+| 03 | `03_deseq_contrasts.Rmd` | one DESeq2 fit per contrast on the nuclear genes, saved to `03_analyses/dds/`; the original PCA plots |
 | 04 | `04_shrinkage_filtration.Rmd` | apeglm shrinkage, full tables, DEG lists, MA plots, DEG counts |
 | 05 | `05_fourlevel_sensitivity.Rmd` | one four-level model per tissue vs the pairwise lists |
 | 06 | `06_join_annotation.Rmd` | TC DEG lists joined to the BLAST / UniProt / GO annotation |

@@ -43,7 +43,7 @@ differ strongly in expression, byssal genes included.
 isolation log); the day-3 feet were sampled as one (`F_PG` only). The part of the foot behind a
 day-0 library is therefore not the part behind a day-3 library, and the experimenter confirms
 the day-0 animals are not true lab controls. No contrast uses the day-0 libraries; they stay in
-the count matrix and appear only in the PCA of every library (step 14).
+the count matrix and appear only in the PCAs of every library (steps 03 and 14).
 
 **Mitochondrial loci.** The reference holds the female-type mitochondrial genome
 (NC_007687.1: 12 protein genes and their tRNAs), and 293 loci on unplaced scaffolds are copies

@@ -270,7 +270,10 @@ over genes. With fewer than 3 expressed mfp genes (gill) the mfp tests are skipp
 heatmaps are ordered by the byssal structural genes. Heatmaps: the byssal structural genes and
 every byssal gene of script 04, animals by mussel ID within each arm or by mean mfp expression
 within each arm, in the same order in every panel; a top row counts, per animal, the expressed mfp
-genes on which it is in its arm's top third, and outlines the mfp-on animals. Caveat: the foot
+genes on which it is in its arm's top third, and outlines the mfp-on animals. The first two
+heatmaps of these genes, drawn for the talk (animals by mean expression, no IDs), are kept as
+drawn with the talk's code (`byssal_heatmap_original_v1_F.png`, `_v2_F.png`; foot only), with their
+pooled Kruskal-Wallis and Spearman tests. Caveat: the foot
 pieces were cut by hand, so an animal whose piece held more of the plaque and cuticle glands
 would show the same pattern; RNA yield checks the size of the piece, not its make-up.
 
@@ -344,7 +347,8 @@ and its nulls (`suite_prediction_<T>.csv`, `suite_prediction_null_<T>.csv`), fou
 Per animal (`byssal_animals_<T>.csv`), the coordination of each gene group
 (`byssal_coordination_<T>.csv`), the group-score correlations (`byssal_group_correlations_<T>.csv`),
 the mfp tests (`byssal_mfp_tests_<T>.csv`), the genome-wide test against the mfp score
-(`byssal_mfp_genome_<T>.csv` and `.png`, foot), four heatmaps, a summary figure and
+(`byssal_mfp_genome_<T>.csv` and `.png`, foot), four heatmaps, the talk's two original heatmaps
+(foot), a summary figure and
 `RUN_provenance_<T>.txt`; the folder's README lists every file.
 
 ---

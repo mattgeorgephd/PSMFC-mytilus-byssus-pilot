@@ -11,6 +11,9 @@ not a control anywhere (its feet were dissected differently). Ellipses are 95% f
 (multivariate t, `ggplot2::stat_ellipse(type = "t")`); PERMANOVA (Anderson 2001) and the spread
 test (PERMDISP, centroid form; Anderson 2006) compare the groups of each set. Axes are not
 comparable between panels, except the two tissue panels of one row of `PCA_both_tissues.png`.
+Step 03's four original PCA plots, without ellipses or the lab control, are still drawn as they
+were (`../figures/PCA_foot_day3.png`, `PCA_gill_day3.png`, `PCA_both_tissues_day3.png`,
+`PCA_all_samples.png`), for comparison.
 
 | File | Contents |
 |---|---|

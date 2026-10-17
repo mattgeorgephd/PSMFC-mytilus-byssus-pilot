@@ -23,7 +23,7 @@ About fourteen minutes (run of 2026-10-17): six in script 13, two or three in sc
 |---|---|---|---|
 | 01 | `01_clean_count_matrix.Rmd` | `04_sequence-alignment/03_analyses/featurecounts/gene_count_matrix.csv` and `hisat/t_data.ctab`, `04_sequence-alignment/02_data/annotation_mt_like_loci.csv`, `02_data/` sample sheets, the BLAST table | `count_matrix/`, including `mitochondrial_loci.csv` |
 | 02 | `02_define_contrasts.Rmd` | the sample table | `DEG_lists/contrasts.csv`, `contrast_samples.csv` |
-| 03 | `03_deseq_contrasts.Rmd` | counts (without the mitochondrial loci), contrasts | `dds/` (fitted objects, git-ignored), `DEG_lists/filter_summary.csv` |
+| 03 | `03_deseq_contrasts.Rmd` | counts (without the mitochondrial loci), contrasts | `dds/` (fitted objects, git-ignored), `DEG_lists/filter_summary.csv`, the original PCA plots in `figures/` |
 | 04 | `04_shrinkage_filtration.Rmd` | `dds/` | `DEG_lists/<Foot,Gill,Foot_vs_Gill>/`: apeglm tables, DEG lists, MA plots; `DEG_lists/DEG_counts.csv` |
 | 05 | `05_fourlevel_sensitivity.Rmd` | counts, sample table, `mitochondrial_loci.csv`, TC DEG lists | `DEG_lists/sensitivity_fourlevel/` |
 | 06 | `06_join_annotation.Rmd` | TC DEG lists, `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` (genome blast of 2026 plus `03_blast` step 05's eight genes, UniProt 2026_03 records) | `DEG_lists/GOterms_genome/`, `DEG_lists/DEG_join_summary.csv` |

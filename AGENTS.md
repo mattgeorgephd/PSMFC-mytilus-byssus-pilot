@@ -114,7 +114,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   DO purple (thread strength adds baseline blue and lab reference light grey); red up, blue
   down; neutral greys for significance scales and set categories; one brown ramp, light to dark,
   for expression level in heatmaps. The palette is checked for colour-vision deficiency; keep a
-  legend or labels on every figure.
+  legend or labels on every figure. When a figure is redrawn or redesigned, keep the code that
+  draws its original version, still run by the pipeline, beside the new one (Matt, 2026-10-17):
+  `05` step 03's PCA plots beside step 14's, `02` step 05's force-against-area figure beside step
+  06's, the talk's heatmaps beside `09` step 07's.
 - **Statistics of record.**
   - Control: the day-3 treatment control (TC), the only one. The day-0 "lab control"
     animals are not a control anywhere: their feet were dissected differently (two pieces at

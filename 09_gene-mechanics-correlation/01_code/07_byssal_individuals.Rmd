@@ -92,7 +92,8 @@ open into the distal depression of the foot and form the plaque; Waite (2017, *J
 
 Writes, in `03_analyses/byssus_individuals/`: `byssal_animals_<T>.csv`, `byssal_coordination_<T>.csv`,
 `byssal_group_correlations_<T>.csv`, `byssal_mfp_tests_<T>.csv`, `byssal_mfp_genome_<T>.csv` and
-`byssal_mfp_genome_<T>.png` (foot only), four heatmaps
+`byssal_mfp_genome_<T>.png` (foot only), four heatmaps, the two first heatmaps as drawn for the talk
+(`byssal_heatmap_original_v1_F.png`, `byssal_heatmap_original_v2_F.png`; foot only)
 (`byssal_heatmap_<structural|all>_<by_mfp|by_id>_<T>.png`), `byssal_individuals_<T>.png` and
 `RUN_provenance_<T>.txt`.
 
@@ -451,6 +452,159 @@ for (o in names(orders)) {
 heatmap(structural, orders$by_id, sprintf("%s: byssal structural genes, by mussel ID", TISSUE_LABELS[[TISSUE]]))
 ```
 
+# The first heatmaps, as drawn for the talk (foot)
+
+The first two heatmaps of these genes were drawn for the talk of October 2026, with the animals
+ordered within each arm by their mean expression and without mussel IDs: the first of script 04's
+byssal structural genes that pass its expression filter (19 genes then; 22 since `03_blast` step 05
+added mfp-3, mfp-5 and others on 2026-10-06), the second of a list chosen for the talk (every
+mfp-1 to -6 gene with reads, marked `+` below the filter and `*` when found by `03_blast` step 05;
+the thread core and the other byssal genes that pass the filter), ordered by mean mfp expression.
+Each came with the animals' mean expression by arm (Kruskal-Wallis) and against the threads made
+(Spearman). They are drawn here with the talk's code, for comparison with the heatmaps above. Their
+tests are the talk's, pooled over the arms, not this script's within-arm tests.
+
+```{r talk-heatmaps, fig.height = 5.25}
+ARM_LAB4 <- c(control = "Control", OA = "OA", OW = "OW", DO = "DO")
+TALK_SHAPES <- c(control = 21, OA = 22, OW = 24, DO = 23)
+## the talk's gene labels: protein name, duplicated names get (a), (b), ... in LOC order
+name_genes <- function(loc, name, width = 30) {
+  d <- tibble(loc = loc, s = short_name(name, width)) %>% distinct() %>% arrange(loc) %>%
+    group_by(s) %>% mutate(lab = if (n() > 1) paste0(s, " (", letters[seq_len(n())], ")") else s) %>% ungroup()
+  d$lab[match(loc, d$loc)]
+}
+talk_side_panels <- function(sc, ylab, kw_p, ct, base = 12) {
+  pB <- ggplot(sc, aes(treatment, score)) +
+    geom_boxplot(aes(colour = treatment), outlier.shape = NA, width = 0.55) +
+    geom_point(aes(fill = treatment, shape = treatment), size = 2.2, colour = "black", stroke = 0.3,
+               position = position_jitter(width = 0.12, seed = 1)) +
+    scale_colour_manual(values = TREATMENT_COLORS, guide = "none") +
+    scale_fill_manual(values = TREATMENT_COLORS, guide = "none") +
+    scale_shape_manual(values = TALK_SHAPES, guide = "none") + scale_x_discrete(labels = ARM_LAB4) +
+    scale_y_continuous(expand = expansion(mult = c(0.05, 0.16))) +
+    annotate("text", x = 2.5, y = Inf, vjust = 1.4, label = sprintf("Kruskal-Wallis p = %.2f", kw_p), size = 3.6) +
+    labs(x = NULL, y = ylab, title = if (kw_p >= 0.05) "B. No difference among arms" else "B. Mean expression by arm") +
+    theme_psmfc(base) + theme(plot.title.position = "plot", plot.title = element_text(face = "bold", size = base + 1))
+  pC <- ggplot(sc %>% filter(!is.na(threads)), aes(threads, score)) +
+    geom_point(aes(fill = treatment, shape = treatment), size = 2.2, colour = "black", stroke = 0.3) +
+    scale_fill_manual(values = TREATMENT_COLORS, labels = ARM_LAB4, name = NULL) +
+    scale_shape_manual(values = TALK_SHAPES, labels = ARM_LAB4, name = NULL) +
+    scale_y_continuous(expand = expansion(mult = c(0.05, 0.16))) +
+    annotate("text", x = Inf, y = Inf, hjust = 1.05, vjust = 1.4,
+             label = sprintf("Spearman rho = %.2f, p = %.2f", ct$estimate, ct$p.value), size = 3.6) +
+    labs(x = "Threads made in the 3 days", y = ylab,
+         title = if (ct$p.value >= 0.05) "C. Not tied to threads made" else "C. Against threads made") +
+    theme_psmfc(base) + theme(plot.title.position = "plot", plot.title = element_text(face = "bold", size = base + 1),
+                              legend.position = "bottom", legend.margin = margin(0, 0, 0, 0), legend.box.spacing = unit(2, "pt"))
+  list(pB = pB, pC = pC)
+}
+talk_score_tests <- function(sc) list(kw_p = kruskal.test(score ~ treatment, sc)$p.value,
+                                      ct = cor.test(sc$score, sc$threads, method = "spearman", exact = FALSE))
+## 1. script 04's byssal structural genes (its table's VST), genes by mean, animals by mean
+talk_v1 <- function(tab, samp, meta, thr, base = 12) {
+  st <- tab %>% filter(category == "byssal_structural")
+  if ("expressed" %in% names(st)) st <- st %>% filter(expressed)        # the table held no other genes then
+  st <- st %>% mutate(gene = name_genes(LOC_ID, protein_name, 30))
+  long <- st %>% select(LOC_ID, gene, all_of(samp)) %>% pivot_longer(all_of(samp), names_to = "sample", values_to = "vst") %>%
+    left_join(meta %>% select(sample, mussel, treatment), by = "sample") %>% mutate(treatment = factor(treatment, levels = ARMS))
+  sc <- long %>% group_by(sample, mussel, treatment) %>% summarise(score = mean(vst), .groups = "drop") %>% left_join(thr, by = "mussel")
+  tst <- talk_score_tests(sc)
+  ord <- sc %>% arrange(treatment, desc(score))
+  gene_ord <- long %>% group_by(gene) %>% summarise(m = mean(vst)) %>% arrange(m) %>% pull(gene)
+  long <- long %>% mutate(sample = factor(sample, levels = ord$sample), gene = factor(gene, levels = gene_ord))
+  pA <- ggplot(long, aes(sample, gene, fill = vst)) + geom_tile() +
+    facet_grid(. ~ treatment, scales = "free_x", space = "free_x", labeller = as_labeller(ARM_LAB4)) +
+    scale_fill_gradient(low = EXPRESSION_COLORS[["low"]], high = EXPRESSION_COLORS[["high"]], name = "Expression\n(VST, log2)",
+                        guide = guide_colourbar(barheight = unit(6, "lines"))) +
+    labs(x = "Animals, ordered within each arm by mean expression", y = NULL,
+         title = sprintf("A. %d byssal structural genes, every day-3 foot", nrow(st))) +
+    theme_psmfc(base) +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid = element_blank(),
+          strip.text = element_text(face = "bold", size = base), axis.text.y = element_text(size = base - 2),
+          plot.title.position = "plot", plot.title = element_text(face = "bold", size = base + 1),
+          legend.position = "right", legend.title = element_text(size = base - 2), legend.text = element_text(size = base - 3))
+  side <- talk_side_panels(sc, "Mean VST", tst$kw_p, tst$ct, base)
+  list(plot = (pA | (side$pB / side$pC)) + plot_layout(widths = c(1.9, 1)), genes = nrow(st),
+       kw_p = tst$kw_p, rho = unname(tst$ct$estimate), p = tst$ct$p.value)
+}
+## 2. the talk's list: mfp-1 to -6 (every gene with reads), thread core and other byssal genes
+## (those that pass script 04's filter), animals by mean mfp expression
+TALK_V2_GENES <- tribble(
+  ~LOC_ID, ~group, ~label, ~note,
+  "LOC134715434", "mfp", "mfp-1", "",
+  "LOC134719757", "mfp", "mfp-2", "",
+  "LOC134721759", "mfp", "mfp-3 (a)", "new",
+  "LOC134721760", "mfp", "mfp-3 (b)", "new",
+  "LOC134721758", "mfp", "mfp-3 (c)", "new",
+  "LOC134709805", "mfp", "mfp-4 (a)", "",
+  "LOC134711107", "mfp", "mfp-4 (b)", "",
+  "LOC134721757", "mfp", "mfp-5", "new",
+  "LOC134706023", "mfp", "mfp-6", "",
+  "LOC134718845", "core", "Precollagen D", "",
+  "LOC134718846", "core", "Precollagen P", "",
+  "LOC134718847", "core", "Precollagen NG", "",
+  "LOC134717947", "core", "Proximal thread matrix protein 1", "",
+  "LOC134709324", "core", "Thread matrix protein 2F-like", "new",
+  "LOC134711496", "other", "Foot protein 10 (a)", "",
+  "LOC134709435", "other", "Foot protein 10 (b)", "",
+  "LOC134710788", "other", "Foot protein 10 (c)", "",
+  "LOC134706002", "other", "Foot protein 11", "",
+  "LOC134711495", "other", "Foot protein 12", "",
+  "LOC134708000", "other", "Foot protein 13", "",
+  "LOC134719453", "other", "Foot protein 15 (a)", "",
+  "LOC134719452", "other", "Foot protein 15 (b)", "",
+  "LOC134705410", "other", "Foot protein 9-like", "new",
+  "LOC134711497", "other", "YGH-rich protein-1", "",
+  "LOC134710785", "other", "YGH-rich protein-3", "",
+  "LOC134716385", "other", "Byssal EP-like protein 1", "",
+  "LOC134683831", "other", "Byssal protein-1 (a)", "",
+  "LOC134683864", "other", "Byssal protein-1 (b)", "")
+talk_v2 <- function(V, K, samp, meta, thr, base = 12) {
+  genes <- TALK_V2_GENES %>% filter(LOC_ID %in% rownames(V)) %>%
+    mutate(n_gt5 = rowSums(K[LOC_ID, samp, drop = FALSE] > 5), pass = n_gt5 >= ceiling(length(samp) / 3)) %>%
+    filter(group == "mfp" | pass) %>%                                  # every mfp gene with reads; the others by script 04's rule
+    mutate(flag = paste0(ifelse(note == "new", "*", ""), ifelse(!pass, "+", "")),
+           row_lab = paste0(label, ifelse(nzchar(flag), paste0(" ", flag), "")))
+  grp_lab <- c(mfp = "Foot proteins\nmfp-1 to -6", core = "Thread\ncore", other = "Other byssal\nproteins")
+  long <- bind_rows(lapply(seq_len(nrow(genes)), function(i)
+    tibble(LOC_ID = genes$LOC_ID[i], row_lab = genes$row_lab[i], group = genes$group[i], sample = samp, vst = V[genes$LOC_ID[i], samp]))) %>%
+    left_join(meta %>% select(sample, mussel, treatment), by = "sample") %>%
+    mutate(treatment = factor(treatment, levels = ARMS), group = factor(group, levels = names(grp_lab), labels = grp_lab))
+  sc <- long %>% group_by(sample, mussel, treatment) %>% summarise(score = mean(vst[group == grp_lab[["mfp"]]]), .groups = "drop") %>%
+    left_join(thr, by = "mussel")
+  tst <- talk_score_tests(sc)
+  ord <- sc %>% arrange(treatment, desc(score))
+  long <- long %>% mutate(sample = factor(sample, levels = ord$sample), row_lab = factor(row_lab, levels = rev(genes$row_lab)))
+  pA <- ggplot(long, aes(sample, row_lab, fill = vst)) + geom_tile() +
+    facet_grid(group ~ treatment, scales = "free", space = "free", labeller = labeller(treatment = as_labeller(ARM_LAB4))) +
+    scale_fill_gradient(low = EXPRESSION_COLORS[["low"]], high = EXPRESSION_COLORS[["high"]], name = "Expression\n(VST, log2)",
+                        guide = guide_colourbar(barheight = unit(6, "lines"))) +
+    labs(x = "Animals, ordered within each arm by mean mfp expression", y = NULL,
+         title = sprintf("A. %d byssal genes, every day-3 foot", nrow(genes))) +
+    theme_psmfc(base) +
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.grid = element_blank(),
+          strip.text.x = element_text(face = "bold", size = base), strip.text.y = element_text(size = base - 3, angle = 0, hjust = 0),
+          axis.text.y = element_text(size = base - 3.5), plot.title.position = "plot", plot.title = element_text(face = "bold", size = base + 1),
+          legend.position = "right", legend.title = element_text(size = base - 2), legend.text = element_text(size = base - 3),
+          panel.spacing.y = unit(4, "pt"))
+  side <- talk_side_panels(sc, "Mean mfp VST", tst$kw_p, tst$ct, base)
+  list(plot = (pA | (side$pB / side$pC)) + plot_layout(widths = c(1.9, 1)), genes = nrow(genes),
+       kw_p = tst$kw_p, rho = unname(tst$ct$estimate), p = tst$ct$p.value)
+}
+if (TISSUE == "F") {
+  K_counts <- as.matrix(cm[, samp]); rownames(K_counts) <- gene_key(rownames(cm))
+  stopifnot(!anyDuplicated(rownames(K_counts)))
+  talk1 <- talk_v1(byss, samp, meta, thr)
+  talk2 <- talk_v2(V, K_counts, samp, meta, thr)
+  ggsave(file.path(OUT_DIR, sprintf("byssal_heatmap_original_v1_%s.png", TISSUE)), talk1$plot, width = 12.4, height = 5.25, dpi = 220, bg = "white")
+  ggsave(file.path(OUT_DIR, sprintf("byssal_heatmap_original_v2_%s.png", TISSUE)), talk2$plot, width = 12.4, height = 5.25, dpi = 220, bg = "white")
+  print(knitr::kable(tibble(figure = c("v1, byssal structural genes", "v2, the talk's list"), genes = c(talk1$genes, talk2$genes),
+                            kruskal_wallis_p = c(talk1$kw_p, talk2$kw_p), spearman_rho = c(talk1$rho, talk2$rho),
+                            spearman_p = c(talk1$p, talk2$p)), digits = 3))
+  talk2$plot
+} else cat("The talk's heatmaps were drawn for the foot only.\n")
+```
+
 # Summary figure
 
 ```{r summary-figure, fig.height = 9}
@@ -550,6 +704,8 @@ settings <- c(
   paste0("genome-wide          : ", if (HAS_MFP) sprintf("%d genes tested against the mfp score within arms; q < 0.05: %d rise (%d of them byssal), %d fall (%d byssal)",
                                                         length(tested), genome_summary$genes_q05[1], genome_summary$of_which_byssal[1],
                                                         genome_summary$genes_q05[2], genome_summary$of_which_byssal[2]) else "not tested"),
+  paste0("talk heatmaps        : ", if (TISSUE == "F") sprintf("v1 %d genes (KW p %.2f; threads rho %.2f, p %.2f); v2 %d genes (KW p %.2f; threads rho %.2f, p %.2f)",
+                                                              talk1$genes, talk1$kw_p, talk1$rho, talk1$p, talk2$genes, talk2$kw_p, talk2$rho, talk2$p) else "foot only"),
   paste0("permutations         : ", NPERM, " within arms, seed ", SEED))
 inputs <- c(unname(f_in), file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "07_byssal_individuals.Rmd"),
             file.path(repo_root, "tools", c("pipeline_checks.R", "plot_style.R", "gene_ids.R")))
