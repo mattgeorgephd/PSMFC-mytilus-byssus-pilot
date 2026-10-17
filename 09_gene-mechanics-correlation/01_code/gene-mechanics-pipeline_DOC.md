@@ -1,16 +1,17 @@
-# Gene-mechanics correlation pipeline, scripts 01 to 06
+# Gene-mechanics correlation pipeline, scripts 01 to 07
 
 Links foot or gill gene expression at day 3 to the same animal's byssal thread mechanics.
-Six chained scripts, each reading the previous one's CSV handoffs rather than sharing an R
-session, parameterised by tissue. Run in order **01 → 02 → 03 → 04 → 05 → 06**, after the
+Seven chained scripts, each reading the previous ones' CSV handoffs rather than sharing an R
+session, parameterised by tissue. Run in order **01 → 02 → 03 → 04 → 05 → 06 → 07**, after the
 `02_thread-strength`, `05_differential-expression` and `07_enrichment` runners, or knit
-**00_run_gene_mechanics_by_tissue.Rmd**, which renders all six for foot and gill. Script 05
-(DEG sets, enriched GO terms and mitochondrial expression against mechanics) and script 06
-(expression suites, below) are described in their own headers and in the folder README.
+**00_run_gene_mechanics_by_tissue.Rmd**, which renders all seven for foot and gill. Script 05
+(DEG sets, enriched GO terms and mitochondrial expression against mechanics), script 06
+(expression suites) and script 07 (byssal expression by individual) are described below, in
+their own headers and in the folder README.
 
 ## Running for a tissue
 
-Each of 01 to 06 has a knit parameter in its YAML header:
+Each of 01 to 07 has a knit parameter in its YAML header:
 
 ```yaml
 params:
@@ -54,6 +55,11 @@ count-matrix column is dropped with a message rather than a hard stop.
 06  expression suites: 05's sets, co-expression
     modules and expression components between and
     within arms; multi-gene prediction (reads 01, 05) ->  03_analyses/expression_suites/
+07  byssal expression by individual within arms;
+    which animals express the mfp genes; what else
+    goes with them; heatmaps in a fixed mussel order
+    (reads 01, 04, 05 step 14's PCA scores, threads
+    made, RNA yield)                                ->  03_analyses/byssus_individuals/
 ```
 
 ---
@@ -231,6 +237,43 @@ among this many predictors (scenarios are numbered, and seeded, in the order of
 `suite_prediction_<T>.csv`, with the DEG programs and the power check last). About 1,800 fits
 per tissue, 8 minutes on 4 workers.
 
+### Script 07: byssal expression by individual
+
+Script 07 asks whether the few animals per arm that express the foot proteins strongly are in
+one state across the byssal genes, within arms. It recomputes script 04's VST (every library of
+the tissue but the rest-of-foot ones, blind; a check confirms script 04's values) so that the
+day-0 lab control can be shown as a reference, splits script 04's byssal structural genes by
+protein name into mfp-1 to -6 (adhesive plaque matrix protein / foot protein 1, foot proteins 2
+to 6, mefp-5), thread core (precollagens, thread matrix proteins) and other structural (foot
+proteins 9 to 17, YGH-rich, byssal EP-like protein, byssal protein-1), and keeps script 04's
+other categories as groups. Each gene is turned into a z-score within each arm; a group's score
+for an animal is the mean over its expressed genes. Coordination: the mean pairwise correlation
+of a group's genes, against `nperm` (2,000) permutations that shuffle each gene among the
+animals of each arm separately. mfp-high: in the arm's top third for more than half of the
+expressed mfp genes; the count of such animals (and of animals high for every mfp gene) against
+the same permutations. The top third holds about four animals of each arm for each gene, so the
+count per arm follows from the rule; the test is whether the same animals are on top for most
+genes. mfp-on: mean mfp expression is either near the floor of the transform or far above it, so
+a two-component normal mixture with a common SD (EM; Dempster, Laird and Rubin 1977) is fitted to
+the animals' mean mfp VST, pooled over arms, and compared with one normal by BIC (Schwarz 1978);
+an animal is mfp-on when its posterior for the upper component is above 0.5, and a Fisher exact
+test asks whether the share of mfp-on animals differs between arms. The mfp score is also
+correlated with library size, genes detected and PC1 of `05` step 14's day-3 PCA, and regressed
+against threads made in the 3 days (`log(1 + threads) ~ score + arm`, from
+`01_mussel-measurements/mussel-thread-production.xlsx`), against day-3 mean peak force and plaque
+area with the baseline (script 01's ANCOVA) and, as a technical check, against the RNA yield of
+the animal's isolation (`05`'s crosswalk to the isolation log; the only record of how much tissue
+the piece held). Genome-wide: every nuclear gene with at least 10 counts in a third of the animals
+(the expressed mfp genes left out) against the mfp score within arms (`VST ~ score + arm`, as the
+partial correlation from the residuals on arm; a check compares three genes' p with `lm`), BH q
+over genes. With fewer than 3 expressed mfp genes (gill) the mfp tests are skipped and the
+heatmaps are ordered by the byssal structural genes. Heatmaps: the byssal structural genes and
+every byssal gene of script 04, animals by mussel ID within each arm or by mean mfp expression
+within each arm, in the same order in every panel; a top row counts, per animal, the expressed mfp
+genes on which it is in its arm's top third, and outlines the mfp-on animals. Caveat: the foot
+pieces were cut by hand, so an animal whose piece held more of the plaque and cuticle glands
+would show the same pattern; RNA yield checks the size of the piece, not its make-up.
+
 ### Bioconductor masking
 
 `S4Vectors` and `IRanges`, loaded by DESeq2, mask `dplyr::rename`, `count`, `first` and
@@ -296,9 +339,23 @@ The axes (`suite_axes_<T>.csv`), their tests (`suite_axis_tests_<T>.csv`), membe
 and its nulls (`suite_prediction_<T>.csv`, `suite_prediction_null_<T>.csv`), four figures and
 `RUN_provenance_<T>.txt`; the folder's README lists every column.
 
+### `03_analyses/byssus_individuals/` (script 07)
+
+Per animal (`byssal_animals_<T>.csv`), the coordination of each gene group
+(`byssal_coordination_<T>.csv`), the group-score correlations (`byssal_group_correlations_<T>.csv`),
+the mfp tests (`byssal_mfp_tests_<T>.csv`), the genome-wide test against the mfp score
+(`byssal_mfp_genome_<T>.csv` and `.png`, foot), four heatmaps, a summary figure and
+`RUN_provenance_<T>.txt`; the folder's README lists every file.
+
 ---
 
 ## Checks
+
+Script 07 checks that its VST reproduces script 04's table (to 6e-4, the table's rounding), that
+every gene of its mfp-1 to -6 group is one of script 04's mfp genes, that each coordination
+null is centred near 0, that threads made are known for at least nine in ten animals and RNA
+yield for every animal, that the two-component mixture converged, and that the genome-wide
+partial correlations give `lm`'s p (three genes, to a relative 1e-6).
 
 Script 06 checks that its axis scores are complete, that at least one module was found and
 each has at least `min_module` genes, that script 05's sets reproduce script 05's within-arm

@@ -17,13 +17,13 @@ Open `differential-expression.Rproj` and knit `01_code/00_run_differential_expre
 (or let the repository-level `00_run_pipeline.Rmd` do it). It runs the numbered scripts in
 order, each in a fresh R process, with an HTML report and a log per step in
 `03_analyses/knit_html/` (git-ignored) and `run_log.csv`; its `steps` parameter runs a subset.
-About fifteen minutes, six of them in script 03 and four in script 13.
+About seventeen minutes, six of them in script 03, four in script 13 and two in script 14.
 
 | step | script | reads | writes to `03_analyses/` |
 |---|---|---|---|
 | 01 | `01_clean_count_matrix.Rmd` | `04_sequence-alignment/03_analyses/featurecounts/gene_count_matrix.csv` and `hisat/t_data.ctab`, `04_sequence-alignment/02_data/annotation_mt_like_loci.csv`, `02_data/` sample sheets, the BLAST table | `count_matrix/`, including `mitochondrial_loci.csv` |
 | 02 | `02_define_contrasts.Rmd` | the sample table | `DEG_lists/contrasts.csv`, `contrast_samples.csv` |
-| 03 | `03_deseq_contrasts.Rmd` | counts (without the mitochondrial loci), contrasts | `dds/` (fitted objects, git-ignored), `DEG_lists/filter_summary.csv`, PCA plots in `figures/` |
+| 03 | `03_deseq_contrasts.Rmd` | counts (without the mitochondrial loci), contrasts | `dds/` (fitted objects, git-ignored), `DEG_lists/filter_summary.csv` |
 | 04 | `04_shrinkage_filtration.Rmd` | `dds/` | `DEG_lists/<Foot,Gill,Foot_vs_Gill>/`: apeglm tables, DEG lists, MA plots; `DEG_lists/DEG_counts.csv` |
 | 05 | `05_fourlevel_sensitivity.Rmd` | counts, sample table, `mitochondrial_loci.csv`, TC DEG lists | `DEG_lists/sensitivity_fourlevel/` |
 | 06 | `06_join_annotation.Rmd` | TC DEG lists, `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` (genome blast of 2026 plus `03_blast` step 05's eight genes, UniProt 2026_03 records) | `DEG_lists/GOterms_genome/`, `DEG_lists/DEG_join_summary.csv` |
@@ -32,9 +32,10 @@ About fifteen minutes, six of them in script 03 and four in script 13.
 | 11 | `11_deg_figures_all_contrasts.Rmd` | every contrast's tables | `figures/DEG_counts_all_contrasts.png`, `volcano_TC.png`, `volcano_FG.png` |
 | 12 | `12_deg_list_cleanup.Rmd` | annotated TC DEGs | `DEG_lists/GOterms_genome/clean_zenodo_files/`: one row per DEG with its best-hit protein |
 | 13 | `13_mitochondrial_expression.Rmd` | `04_sequence-alignment/03_analyses/mitogenome/` (the mitochondrial genes counted on the mitogenome alone), counts, `mitochondrial_loci.csv`, contrasts, the previous `prepDE` matrix (for comparison) | `mitochondrial/` and `figures/MT_mitochondrial_expression.png` (manuscript figure), `figures/MT_haplotypes.png` |
+| 14 | `14_pca.Rmd` | counts (without the mitochondrial loci), sample table, RNA isolation dates (`library_crosswalk.csv`), contrast samples, the BLAST table (protein names of the loadings) | `pca/`: the PCA of every sample set of the original analysis, each tissue on its own and without and with the day-0 lab control, with 95% ellipses; PERMANOVA and spread of each set compared (`PCA_comparison.csv`, `.png`), loadings and scores; the RNA isolation day within arms (`PCA_isolation_day.csv`) |
 
-Packages: DESeq2, apeglm, ashr, tidyverse, gridExtra, ggvenn (installed by step 08 if
-missing), here, rmarkdown.
+Packages: DESeq2, apeglm, ashr, tidyverse, gridExtra, patchwork (step 14), ggvenn (installed
+by step 08 if missing), here, rmarkdown.
 
 ## Contrasts
 
@@ -162,7 +163,7 @@ tyrosinases and collagens over a thousand-fold), and there is no day-3 FX librar
 ├── differential-expression.Rproj
 ├── 01_code/
 │   ├── 00_run_differential_expression.Rmd   batch runner
-│   ├── 01_...Rmd ... 13_...Rmd              the steps above
+│   ├── 01_...Rmd ... 14_...Rmd              the steps above
 │   ├── _paths.R                             paths every script sources
 │   └── _superseded/                         the previous scripts (README inside)
 ├── 02_data/                                 the raw sample sheets
@@ -171,7 +172,8 @@ tyrosinases and collagens over a thousand-fold), and there is no day-3 FX librar
     ├── DEG_lists/           contrast definitions, DESeq2 tables and DEG lists (steps 02-06, 12)
     ├── mitochondrial/       the mitochondrial proteins on their own (step 13)
     ├── dds/                 fitted DESeq2 objects (step 03; git-ignored)
-    ├── figures/             PCA, DEG counts, volcano, Venn and mitochondrial figures (steps 03, 08-11, 13)
+    ├── figures/             DEG counts, volcano, Venn and mitochondrial figures (steps 08-11, 13)
+    ├── pca/                 PCA of every sample set, with and without the lab control, compared (step 14)
     ├── top_DEGs/            top-50 DEGs per TC contrast (step 07)
     ├── _superseded/         per-contrast inputs written by the old scripts; the retired LC contrasts
     └── knit_html/           runner reports and logs (git-ignored)

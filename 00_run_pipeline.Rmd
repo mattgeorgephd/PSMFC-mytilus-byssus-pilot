@@ -27,11 +27,11 @@ its folder's `03_analyses/knit_html/`; this file leaves one per stage, and `run_
 |---|---|---|---|
 | 02 | `02_thread-strength/01_code/00_run_thread_strength.Rmd` | `01_mussel-measurements/` | 1 min |
 | 04 | `04_sequence-alignment/01_code/00_run_sequence_alignment.Rmd` | committed StringTie and FastQC tables, its committed featureCounts and mitogenome counts | 1 min |
-| 05 | `05_differential-expression/01_code/00_run_differential_expression.Rmd` | 04, `03_blast/` | 10 min |
+| 05 | `05_differential-expression/01_code/00_run_differential_expression.Rmd` | 04, `03_blast/` | 12 min |
 | 06 | `06_iso-seq-transcriptome/01_code/00_run_isoseq.Rmd` | 05, committed Iso-Seq and recount gene counts | 12 min |
 | 07 | `07_enrichment/01_code/00_run_enrichment.Rmd` | 05, 04, `03_blast/` | 8 min |
 | 08 | `08_gene-annotation/01_code/00_run_gene_annotation.Rmd` | 05 | 1 min |
-| 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 05, 07, `03_blast/` | 4 min |
+| 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 05, 07, `03_blast/`, `01_mussel-measurements/` | 22 min (15 of them step 06's prediction test) |
 
 The stages run in folder order: every folder reads only lower-numbered folders.
 

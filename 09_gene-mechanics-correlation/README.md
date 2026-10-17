@@ -4,7 +4,9 @@ Cross-cutting analysis linking gene expression to byssal thread mechanics, the b
 manuscript gene/mechanics interaction results (Section 3.4). Within each arm, and with the
 animal's own baseline held constant, it asks whether animals that express a gene, a DEG set,
 the genes of an enriched GO term, or their mitochondrial genes more strongly make stronger or
-weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus proteins.
+weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus proteins. Script 07
+asks which individual mussels express the byssal genes within each arm, and draws them in a
+fixed mussel order.
 
 ## Layout
 
@@ -12,14 +14,15 @@ weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus prote
 09_gene-mechanics-correlation/
 ├── gene-mechanics-correlation.Rproj
 ├── 01_code/
-│   ├── 00_run_gene_mechanics_by_tissue.Rmd  batch runner: scripts 01-06 for foot and gill
+│   ├── 00_run_gene_mechanics_by_tissue.Rmd  batch runner: scripts 01-07 for foot and gill
 │   ├── 01_gene_mechanics_correlation.Rmd    paired table, VST, candidate set, per-gene ANCOVA (the reported test)
 │   ├── 02_gene_mechanics_expanded.Rmd       modules, influence, best hits (same ANCOVA)
 │   ├── 03_rna_thread_manifest_and_expression_tables.Rmd
 │   ├── 04_byssus_foot_gene_list_expression.Rmd
 │   ├── 05_go_term_mechanics.Rmd             mechanics against DEG sets, enriched GO terms, mitochondrial share
 │   ├── 06_expression_suites.Rmd             suites: programs, co-expression modules, expression components between and within arms; multi-gene prediction
-│   ├── gene-mechanics-pipeline_DOC.md       how the six chain together; config; checks
+│   ├── 07_byssal_individuals.Rmd            byssal expression by individual within arms; heatmaps in a fixed mussel order
+│   ├── gene-mechanics-pipeline_DOC.md       how the seven chain together; config; checks
 │   └── _superseded/11-byssal_thread_by_sample.Rmd   Grace's legacy per-sample joining (not in the chain)
 ├── 02_data/
 │   ├── expected_animals.csv   every day-3 animal: in the foot / gill fits, or the reason it is out
@@ -31,11 +34,12 @@ weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus prote
     ├── byssus_genes/       script 04
     ├── go_mechanics/       script 05
     ├── expression_suites/  script 06 (README inside)
+    ├── byssus_individuals/ script 07 (README inside)
     ├── knit_html/          reports, logs and run_log.csv from runner 00 (git-ignored)
     └── _superseded/        the legacy script's two PDFs
 ```
 
-Scripts 01 to 06 take a knit parameter `tissue` (`"F"` default, or `"G"`). Knit
+Scripts 01 to 07 take a knit parameter `tissue` (`"F"` default, or `"G"`). Knit
 `00_run_gene_mechanics_by_tissue.Rmd` to run the whole chain for both tissues, after the
 `02_thread-strength`, `05_differential-expression` and `07_enrichment` runners (the
 repository-level `00_run_pipeline.Rmd` runs them in order). Each script reads the previous one's CSV
@@ -56,17 +60,21 @@ folder that contains both `02_thread-strength/` and `05_differential-expression/
 | `02_thread-strength/03_analyses/05_decompose-adhesion/mussel_response_classification.csv` | per-animal response, 02 script 05 | 01 |
 | `02_thread-strength/03_analyses/0{4,5}_*/DATA_ancova_animals.csv` | per-animal ANCOVA rows, 02 scripts 04 and 05 | 01 (agreement check) |
 | `02_thread-strength/03_analyses/02_extract-tensometer-data/thread-summary-raw-output.xlsx` | every extracted trace, 02 script 02 | 03 |
-| `05_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv` | counts, 05 script 01 | 01, 03, 04 |
-| `05_differential-expression/03_analyses/count_matrix/treatmentinfo_clean.csv` | treatment, day and region per library, 05 script 01 | 01, 03 |
+| `05_differential-expression/03_analyses/count_matrix/gene_count_matrix_clean.csv` | counts, 05 script 01 | 01, 03, 04, 07 |
+| `05_differential-expression/03_analyses/count_matrix/treatmentinfo_clean.csv` | treatment, day and region per library, 05 script 01 | 01, 03, 07 |
+| `05_differential-expression/03_analyses/pca/PCA_scores.csv` | PC1 of each tissue's day-3 PCA, 05 script 14 (compared with the mfp score) | 07 |
+| `01_mussel-measurements/mussel-thread-production.xlsx` | threads made during the 3-day exposure (raw workbook, read only) | 07 |
 | `05_differential-expression/03_analyses/DEG_lists/<Foot or Gill>/<T><X>_TC_siggene.csv` | TC DEG lists, 05 script 04 | 01, 03, 04 |
 | `05_differential-expression/03_analyses/DEG_lists/GOterms_genome/*_sigs_ID.csv` | annotated TC DEGs, 05 script 06 | 01 |
-| `05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` | the mitochondrial loci, left out of every gene universe here | 01 |
+| `05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv` | the mitochondrial loci, left out of every gene universe here | 01, 07 |
+| `05_differential-expression/03_analyses/count_matrix/library_crosswalk.csv` | each library's row in the RNA isolation log, 05 script 01 | 07 |
+| `05_differential-expression/02_data/psmfc_mussel_rna_summary.csv` | RNA isolation log: RNA yield of each isolation (raw sheet, read only) | 07 |
 | `05_differential-expression/03_analyses/mitochondrial/mt_share_by_sample.csv` | mitochondrial protein reads as a share of each library's nuclear reads, 05 script 13 | 05 |
 | `07_enrichment/03_analyses/02_topgo/topgo_enriched.csv` | enriched GO terms of each TC run and the DEGs in each, 07 script 02 | 05 |
 | `07_enrichment/03_analyses/06_method-comparison/consensus_terms_TC_<ont>.csv` | terms an FDR-controlled method also enriched, 07 script 06 | 05 |
-| `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` | genome-wide BLAST (Swiss-Prot 2026_03 plus 241 foot and byssal proteins, and `03_blast` step 05's eight genes found with the low-complexity filter off) / UniProt (release 2026_03 records) / GO annotation | 01, 04 |
-| `tools/pipeline_checks.R` | `warn_unless()` checks and `RUN_provenance_<T>.txt` | 01, 02, 05, 06 |
-| `tools/gene_ids.R` | `gene_key()`: count-matrix gene name to LOC key | 01, 03, 04, 05 |
+| `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` | genome-wide BLAST (Swiss-Prot 2026_03 plus 241 foot and byssal proteins, and `03_blast` step 05's eight genes found with the low-complexity filter off) / UniProt (release 2026_03 records) / GO annotation | 01, 04, 07 |
+| `tools/pipeline_checks.R` | `warn_unless()` checks and `RUN_provenance_<T>.txt` | 01, 02, 05, 06, 07 |
+| `tools/gene_ids.R` | `gene_key()`: count-matrix gene name to LOC key | 01, 03, 04, 05, 07 |
 
 ## Analysis design
 
@@ -152,5 +160,23 @@ within arms; the six DEG programs predict held-out animals' force across arms (Q
 the treatment among all the axes, the elastic net recovers Q2 0.05 to 0.07 of the treatment's
 0.38, so 45 or 46 animals per tissue are too few to find signals of that size among a hundred predictors, and
 the large sets' failure to predict says little about modest suites.
+
+Script 07 follows an observation in script 04's byssal tables: in every arm a few animals
+express the foot proteins strongly and the rest barely do. Within arms (each gene turned into a
+z-score within its arm, so no treatment effect enters), it asks whether that is one state of the
+animal or gene by gene (the mean correlation between a group's genes across the animals of an
+arm, against permutations that shuffle each gene among the animals of each arm separately), which
+mussels are in their arm's top third for most of the expressed mussel foot protein (mfp-1 to -6)
+genes, whether the same animals stand out in the other byssal gene groups, and whether the state
+goes with library size, RNA yield, the threads made in the 3 days or thread strength. Because mean
+mfp expression is either near the floor or far above it, a two-component normal mixture calls
+which animals express the mfp genes at all ("mfp-on"), and a Fisher exact test asks whether that
+share differs between arms. Every other gene is then tested against the mfp score within arms,
+to see how far the state reaches beyond the byssal genes. It draws script 04's
+genes as heatmaps with the animals in one order in every panel: by mussel ID within each arm, and
+by mean mfp expression within each arm (the order of the first heatmaps of these genes, drawn
+outside the pipeline without mussel IDs), for the byssal
+structural genes (split into mfp-1 to -6, thread core and other structural) and for every byssal
+gene. Exploratory. Results: `03_analyses/byssus_individuals/README.md`.
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

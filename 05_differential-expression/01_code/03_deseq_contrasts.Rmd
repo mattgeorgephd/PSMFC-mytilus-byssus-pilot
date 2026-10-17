@@ -24,13 +24,12 @@ contrast, exactly as the original analysis did:
    after fitting, as before).
 
 Writes `03_analyses/dds/<contrast>.rds` (the filtered `DESeqDataSet`; git-ignored, rebuilt by
-this script), `03_analyses/DEG_lists/filter_summary.csv`, and PCA plots of the variance-
-stabilised counts to `03_analyses/figures/`.
+this script) and `03_analyses/DEG_lists/filter_summary.csv`. The PCA plots this script drew until
+2026-10-17 are now step 14's (every sample set, with and without the lab control).
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
-source(file.path(repo_root, "tools", "plot_style.R"))
-suppressPackageStartupMessages({ library(DESeq2); library(ggplot2) })
+suppressPackageStartupMessages(library(DESeq2))
 gcm <- as.matrix(read.csv(file.path(cnt, "gene_count_matrix_clean.csv"), row.names = 1, check.names = FALSE))
 mtl <- read.csv(file.path(cnt, "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
 stopifnot(all(mtl$gene %in% rownames(gcm)))
@@ -62,63 +61,4 @@ fit_one <- function(row) {
 summary_tbl <- do.call(rbind, lapply(seq_len(nrow(contrasts)), function(i) fit_one(contrasts[i, ])))
 write.csv(summary_tbl, file.path(deg, "filter_summary.csv"), row.names = FALSE)
 knitr::kable(summary_tbl)
-```
-
-# PCA of the variance-stabilised counts
-
-Blind variance-stabilising transform (`vst(blind = TRUE)`), top 500 most variable nuclear
-genes, as `DESeq2::plotPCA`. The original analysis drew the day-3 panels. The all-sample panel shows
-how tissue dominates the variation, which is why every contrast stays within one tissue, and
-that the day-0 libraries of the rest of the foot (no phenol gland) separate from the
-phenol-gland-to-tip libraries of the same animals. It is the only place the day-0 libraries
-appear: they enter no contrast (scripts 01 and 02).
-
-```{r pca}
-pca_data <- function(samples) {
-  cd <- ti[samples, ]
-  dds <- DESeqDataSetFromMatrix(gcm[, samples], cd, ~ 1)
-  v <- vst(dds, blind = TRUE)
-  d <- plotPCA(v, intgroup = c("tissue", "region", "treatment", "day"), returnData = TRUE)
-  d$treatment <- factor(d$treatment, levels = names(TREATMENT_COLORS))
-  list(data = d, var = round(100 * attr(d, "percentVar")))
-}
-axis_labs <- function(p) labs(x = sprintf("PC1 (%d%% of variance)", p$var[1]),
-                              y = sprintf("PC2 (%d%% of variance)", p$var[2]))
-save_fig <- function(plot, name, w = 7, h = 5) {
-  ggsave(file.path(figs, name), plot, width = w, height = h, dpi = 300); print(plot)
-}
-
-## day 3, one tissue at a time: treatment by colour and shape
-for (tcode in c("F", "G")) {
-  t <- TISSUE_LABELS[[tcode]]
-  p <- pca_data(rownames(ti)[ti$tissue == tcode & ti$day == "3"])
-  save_fig(ggplot(p$data, aes(PC1, PC2, colour = treatment, shape = treatment)) +
-             geom_point(size = 2.6, alpha = 0.9) +
-             scale_colour_manual(values = TREATMENT_COLORS, labels = TREATMENT_LABELS, name = NULL) +
-             scale_shape_manual(values = TREATMENT_SHAPES, labels = TREATMENT_LABELS, name = NULL) +
-             axis_labs(p) + labs(title = sprintf("%s, day 3", t)) + theme_psmfc(),
-           sprintf("PCA_%s_day3.png", tolower(t)))
-}
-
-## day 3, both tissues: treatment by colour, tissue by shape
-p <- pca_data(rownames(ti)[ti$tissue %in% c("F", "G") & ti$day == "3"])
-save_fig(ggplot(p$data, aes(PC1, PC2, colour = treatment, shape = tissue)) +
-           geom_point(size = 2.6, alpha = 0.9) +
-           scale_colour_manual(values = TREATMENT_COLORS, labels = TREATMENT_LABELS, name = NULL) +
-           scale_shape_manual(values = c(F = 16, G = 17), labels = TISSUE_LABELS, name = NULL) +
-           guides(colour = guide_legend(order = 1), shape = guide_legend(order = 2)) +  # untitled legends are otherwise ordered at random
-           axis_labs(p) + labs(title = "Foot and gill, day 3") + theme_psmfc(),
-         "PCA_both_tissues_day3.png")
-
-## every sample: sampled region by colour, day by shape
-p <- pca_data(rownames(ti))
-p$data$day <- factor(paste("day", p$data$day))
-p$data$region <- factor(p$data$region, levels = names(REGION_COLORS))
-save_fig(ggplot(p$data, aes(PC1, PC2, colour = region, shape = day)) +
-           geom_point(size = 2.4, alpha = 0.85) +
-           scale_colour_manual(values = REGION_COLORS, labels = REGION_LABELS, name = NULL) +
-           scale_shape_manual(values = c("day 0" = 1, "day 3" = 16), name = NULL) +
-           guides(colour = guide_legend(order = 1), shape = guide_legend(order = 2)) +
-           axis_labs(p) + labs(title = "All samples") + theme_psmfc(),
-         "PCA_all_samples.png")
 ```

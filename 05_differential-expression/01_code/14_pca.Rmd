@@ -1,0 +1,383 @@
+---
+title: "14 - PCA of the variance-stabilised counts: every sample set, with and without the lab control"
+output: html_document
+params:
+  ntop: 500       # genes with the largest variance in each PCA (DESeq2::plotPCA's default)
+  nperm: 999      # label permutations for each PERMANOVA
+  seed: 20261017
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.width = 10, fig.height = 9)
+```
+
+# What this does
+
+The original analysis drew a PCA for every model it fitted, with a 95% ellipse around each
+treatment: each stressor against its control, every arm of a tissue, both tissues together,
+and the same sets with the day-0 lab control (`01_code/_superseded/02_5_DESeq_*`). Step 03
+kept four of them. This step draws every one of those sample sets again, the same way, and
+compares them:
+
+- **Each sample set on its own.** A blind variance-stabilising transform of the set's
+  libraries (`DESeq2::vst(blind = TRUE)`; Anders and Huber 2010, *Genome Biol* 11:R106; Love,
+  Huber and Anders 2014, *Genome Biol* 15:550), nuclear genes only (step 01's mitochondrial
+  loci left out, as in the DESeq2 fits), and a principal component analysis of the `ntop` (500)
+  genes with the largest variance in that set, exactly as `DESeq2::plotPCA` does (a check
+  compares the scores). Each set has its own transform and components, so axes are not
+  comparable between sets, except within the figure of both tissues, which is one PCA.
+- **Ellipses.** 95% for each group, from a multivariate t distribution fitted to its points
+  (`ggplot2::stat_ellipse`, type "t", which uses `MASS::cov.trob`; Venables and Ripley 2002,
+  *Modern Applied Statistics with S*, 4th ed.), as the original figures drew them.
+- **What drives each component.** The 25 genes with the largest loadings on PC1 and PC2 of each
+  set, with the protein name of their best hit in the annotation of record (`03_blast` step 05's
+  `LOC_GO_list.txt`, highest bitscore), and the share of each component's squared loadings on
+  genes named as byssal proteins (foot, adhesive plaque, byssal, precollagen, thread matrix,
+  YGH-rich and collagen-like proteins and the three *M. coruscus* byssus proteins `09` step 04
+  counts as byssal accessory; the loadings of a component square-sum to 1).
+- **The comparison.** How much of the variation the groups explain: PERMANOVA on the Euclidean
+  distances between the libraries in the same `ntop` genes, and in all genes (R², pseudo-F and a
+  permutation p from `nperm` label permutations; Anderson 2001, *Austral Ecology* 26:32-46). A
+  difference in spread between groups also raises PERMANOVA's R², so each set also gets the
+  distance of each library to its group's centroid, compared between groups by ANOVA (the
+  centroid form of PERMDISP; Anderson 2006, *Biometrics* 62:245-253). Both give the statistics of
+  `vegan::adonis2` and `vegan::betadisper(type = "centroid")` exactly (checked on 2026-10-17 on
+  five of the sets with vegan 2.7.6); they are computed here so that the pipeline does not need
+  vegan.
+- **RNA isolation day.** RNA was isolated arm by arm (step 01's `library_crosswalk.csv`, from the
+  isolation log): in foot each arm on its own day (the controls on 2021-12-23, with the day-0
+  animals; DO, OA and OW on 2022-01-09, -10 and -11), so a foot contrast cannot be told apart from
+  a difference between isolation days. In gill the controls and DO share a day and OA and OW each
+  span two, so the isolation day can be tested within arms there: the same PERMANOVA for the day
+  within each arm, after the arm, with the days permuted among the libraries of each arm.
+
+**The lab control** (the twelve day-0 animals) is not a control anywhere in the analysis: their
+feet were dissected differently (two pieces at day 0, one at day 3) and they were sampled three
+days earlier, so a difference between them and the day-3 animals cannot be put down to the
+laboratory or to the exposure. The versions with the lab control show where those animals fall.
+Foot panels use their phenol-gland-to-tip libraries, the region of every day-3 foot library; the
+libraries of the rest of the foot appear only in the figure of every library.
+
+**Sample sets**, each tissue on its own, without and with the lab control:
+
+1. every day-3 arm (control, OA, OW, DO);
+2. each stressor with the day-3 controls (the samples of the contrasts of record, step 02), the
+   same with the lab control added, and the lab control against the day-3 controls;
+3. both tissues in one PCA, each tissue drawn in its own panel on the same axes;
+4. every library, by sampled region.
+
+Writes, in `03_analyses/pca/`: `PCA_arms.png`, `PCA_pairwise_foot.png`, `PCA_pairwise_gill.png`,
+`PCA_both_tissues.png`, `PCA_all_samples.png`, `PCA_comparison.png`, `PCA_comparison.csv` (one row
+per sample set: groups, variance of PC1 and PC2, the byssal share of each, PERMANOVA in the top
+genes and in all genes, the spread test), `PCA_loadings.csv` (the 25 genes with the largest
+loadings on PC1 and PC2 of each set), `PCA_scores.csv` (PC1 and PC2 of every library in every
+set, with its RNA isolation date) and `PCA_isolation_day.csv` (the isolation day within arms).
+
+```{r paths}
+source(here::here("01_code", "_paths.R"))
+source(file.path(repo_root, "tools", "plot_style.R"))
+source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless()
+suppressPackageStartupMessages({ library(DESeq2); library(ggplot2); library(patchwork) })
+NTOP <- params$ntop; NPERM <- params$nperm; SEED <- params$seed
+pca_dir <- here::here("03_analyses", "pca")
+dir.create(pca_dir, recursive = TRUE, showWarnings = FALSE)
+
+gcm <- as.matrix(read.csv(file.path(cnt, "gene_count_matrix_clean.csv"), row.names = 1, check.names = FALSE))
+mtl <- read.csv(file.path(cnt, "mitochondrial_loci.csv"), stringsAsFactors = FALSE)
+stopifnot(all(mtl$gene %in% rownames(gcm)))
+gcm <- gcm[!rownames(gcm) %in% mtl$gene, ]                 # nuclear genes only
+ti  <- read.csv(file.path(cnt, "treatmentinfo_clean.csv"), row.names = 1, colClasses = "character")
+cs  <- read.csv(file.path(deg, "contrast_samples.csv"), colClasses = "character")
+cw  <- read.csv(file.path(cnt, "library_crosswalk.csv"), colClasses = "character")
+ti$isolation_date <- cw$isolation_date[match(rownames(ti), cw$sample.1)]
+warn_unless(all(rownames(ti) %in% colnames(gcm)), "A library of the sample table is missing from the count matrix.")
+warn_unless(!anyNA(ti$isolation_date) && all(ti$isolation_date != ""), "A library has no RNA isolation date in the crosswalk.")
+cat("nuclear genes:", nrow(gcm), "| libraries:", nrow(ti), "\n")
+
+## protein name of each gene's best hit (highest bitscore, ties in table order), joined by gene_key()
+source(file.path(repo_root, "tools", "gene_ids.R"))
+ann <- read.delim(file.path(blast_go, "LOC_GO_list.txt"), sep = "\t", header = TRUE)[, c("gene", "Protein.names", "bitscore")]
+ann <- ann[!is.na(ann$gene) & ann$gene != "", ]
+ann <- ann[order(ann$gene, -ann$bitscore, seq_len(nrow(ann))), ]
+ann <- ann[!duplicated(ann$gene), ]
+## names of byssal proteins: 09 step 04's byssal structural and accessory names, and the collagen-like
+## proteins of the M. coruscus byssus proteome
+BYSSAL_RX <- paste("foot protein", "adhesive plaque", "polyphenolic", "byssal", "byssus", "\\bmefp", "precollagen",
+                   "preCol", "thread matrix protein", "YGH-rich protein", "collagen-like protein",
+                   "protease inhibitor-like protein-1", "C1q-domain-containing protein-1",
+                   "TSP_1 domain containing protein-1", sep = "|")
+
+## group of each library: its arm at day 3, "LC" for the day-0 lab control
+ti$group <- ifelse(ti$day == "0", "LC", ti$treatment)
+GROUPS <- c("LC", names(TREATMENT_COLORS))
+GROUP_COLORS <- c(LC = THREAD_TRT_COLORS[["lab_control"]], TREATMENT_COLORS)
+GROUP_SHAPES <- c(LC = 21, control = 21, OA = 22, OW = 24, DO = 23)   # filled shapes; LC and control differ by fill and ellipse line
+GROUP_LABELS <- c(LC = "Lab control (day 0)", control = "Control (day 3)", OA = "OA", OW = "OW", DO = "DO")
+TISSUES <- c(F = "Foot", G = "Gill")
+```
+
+# The sample sets
+
+```{r sets}
+lab_control <- function(t) rownames(ti)[ti$tissue == t & ti$day == "0" & ti$region != "foot (without phenol gland)"]
+day3 <- function(t, arms = names(TREATMENT_COLORS)) rownames(ti)[ti$tissue == t & ti$day == "3" & ti$treatment %in% arms]
+sets <- list()
+add_set <- function(tissue, comparison, lc, samples)
+  sets[[length(sets) + 1]] <<- list(tissue = tissue, comparison = comparison, lab_control = lc, samples = samples)
+for (t in names(TISSUES)) {
+  add_set(t, "every arm", FALSE, day3(t))
+  add_set(t, "every arm", TRUE, c(day3(t), lab_control(t)))
+  for (s in c("OA", "OW", "DO")) {
+    smp <- cs$sample.1[cs$code == sprintf("%s%s_TC", t, s)]
+    stopifnot("contrast samples differ from the sample table" = setequal(smp, day3(t, c("control", s))))
+    add_set(t, sprintf("%s vs control", s), FALSE, smp)
+    add_set(t, sprintf("%s vs control", s), TRUE, c(smp, lab_control(t)))
+  }
+  add_set(t, "lab control vs control", TRUE, c(day3(t, "control"), lab_control(t)))
+}
+add_set("F+G", "both tissues", FALSE, c(day3("F"), day3("G")))
+add_set("F+G", "both tissues", TRUE, c(day3("F"), day3("G"), lab_control("F"), lab_control("G")))
+for (i in seq_along(sets)) sets[[i]]$id <- sprintf("%s | %s%s", sets[[i]]$tissue, sets[[i]]$comparison,
+                                                  if (sets[[i]]$lab_control) " | with lab control" else "")
+n_min <- min(unlist(lapply(sets, function(s) table(paste(ti[s$samples, "tissue"], ti[s$samples, "group"])))))
+warn_unless(n_min >= 3, "A group has fewer than 3 libraries in some sample set (an ellipse needs at least 3).")
+knitr::kable(data.frame(set = vapply(sets, `[[`, "", "id"),
+                        libraries = vapply(sets, function(s) length(s$samples), 0L)))
+```
+
+# PCA, PERMANOVA and spread of each set
+
+```{r compute}
+pca_of <- function(samples) {
+  dds <- DESeqDataSetFromMatrix(gcm[, samples], ti[samples, c("tissue", "treatment", "day")], ~ 1)
+  v <- assay(vst(dds, blind = TRUE))
+  rv <- apply(v, 1, var)
+  top <- order(rv, decreasing = TRUE)[seq_len(min(NTOP, length(rv)))]   # as DESeq2::plotPCA
+  pc <- prcomp(t(v[top, ]))
+  rot <- pc$rotation[, 1:2]; rownames(rot) <- gene_key(rownames(v)[top])
+  list(scores = pc$x[, 1:2], var = pc$sdev^2 / sum(pc$sdev^2), v = v, top = top, rot = rot)
+}
+byssal_share <- function(rot, k) {
+  nm <- ann$Protein.names[match(rownames(rot), ann$gene)]
+  sum(rot[grepl(BYSSAL_RX, nm, ignore.case = TRUE, perl = TRUE), k]^2)
+}
+## PERMANOVA from squared Euclidean distances (Anderson 2001): SS_total = sum_{i<j} d2 / n and
+## SS_within = sum over groups of sum_{i<j in group} d2 / n_group
+perm_stats <- function(D2, g) {
+  n <- length(g); k <- nlevels(g); sst <- sum(D2[upper.tri(D2)]) / n
+  ssw <- sum(vapply(levels(g), function(l) { i <- which(g == l); sum(D2[i, i][upper.tri(D2[i, i])]) / length(i) }, 0))
+  c(R2 = (sst - ssw) / sst, F = ((sst - ssw) / (k - 1)) / (ssw / (n - k)))
+}
+permanova <- function(X, g, seed) {
+  g <- droplevels(factor(g)); D2 <- as.matrix(dist(X))^2
+  obs <- perm_stats(D2, g)
+  set.seed(seed)
+  Fp <- vapply(seq_len(NPERM), function(b) perm_stats(D2, g[sample.int(length(g))])[["F"]], 0)
+  c(obs, p = (1 + sum(Fp >= obs[["F"]])) / (1 + NPERM))
+}
+## spread: distance of each library to its group's centroid, ANOVA between groups (PERMDISP, centroid form)
+spread <- function(X, g) {
+  g <- droplevels(factor(g))
+  d <- vapply(seq_len(nrow(X)), function(i) sqrt(sum((X[i, ] - colMeans(X[g == g[i], , drop = FALSE]))^2)), 0)
+  a <- anova(lm(d ~ g))
+  c(F = a$`F value`[1], p = a$`Pr(>F)`[1])
+}
+## groups for the statistics: the arm (or LC); in the set of both tissues, tissue and arm
+group_of <- function(s) if (s$tissue == "F+G") paste(ti[s$samples, "tissue"], ti[s$samples, "group"]) else ti[s$samples, "group"]
+
+res <- lapply(seq_along(sets), function(i) {
+  s <- sets[[i]]; p <- pca_of(s$samples); g <- group_of(s)
+  top <- permanova(t(p$v[p$top, ]), g, SEED + i)
+  all <- permanova(t(p$v), g, SEED + 1000 + i)
+  sp  <- spread(t(p$v[p$top, ]), g)
+  list(pca = p, stats = data.frame(
+    set = s$id, tissue = s$tissue, comparison = s$comparison, lab_control = s$lab_control,
+    groups = paste(sprintf("%s %d", names(table(g)), as.integer(table(g))), collapse = "; "),
+    libraries = length(s$samples), ntop = length(p$top),
+    pc1_pct = round(100 * p$var[1], 1), pc2_pct = round(100 * p$var[2], 1),
+    pc1_byssal_share = round(byssal_share(p$rot, 1), 3), pc2_byssal_share = round(byssal_share(p$rot, 2), 3),
+    permanova_R2 = top[["R2"]], permanova_F = top[["F"]], permanova_p = top[["p"]],
+    permanova_R2_all_genes = all[["R2"]], permanova_p_all_genes = all[["p"]],
+    spread_F = sp[["F"]], spread_p = sp[["p"]], stringsAsFactors = FALSE))
+})
+cmp <- do.call(rbind, lapply(res, `[[`, "stats"))
+
+## check: the scores are DESeq2::plotPCA's (up to the sign of each component)
+chk <- function(i) {
+  s <- sets[[i]]; dds <- DESeqDataSetFromMatrix(gcm[, s$samples], ti[s$samples, c("tissue", "treatment", "day")], ~ 1)
+  d <- plotPCA(vst(dds, blind = TRUE), intgroup = "tissue", ntop = NTOP, returnData = TRUE)
+  max(abs(abs(as.matrix(d[s$samples, c("PC1", "PC2")])) - abs(res[[i]]$pca$scores[s$samples, ])))
+}
+warn_unless(max(vapply(c(1, length(sets)), chk, 0)) < 1e-8, "PCA scores differ from DESeq2::plotPCA's.")
+warn_unless(all(cmp$permanova_R2 > 0 & cmp$permanova_R2 < 1 & cmp$permanova_p > 0 & cmp$permanova_p <= 1),
+            "A PERMANOVA statistic is out of range.")
+knitr::kable(transform(cmp[, c("set", "groups", "pc1_pct", "pc2_pct", "pc1_byssal_share", "permanova_R2", "permanova_p",
+                               "permanova_R2_all_genes", "permanova_p_all_genes", "spread_p")],
+                       permanova_R2 = round(permanova_R2, 3), permanova_R2_all_genes = round(permanova_R2_all_genes, 3),
+                       spread_p = signif(spread_p, 2)), row.names = FALSE)
+```
+
+# RNA isolation day
+
+```{r isolation-day}
+d3 <- ti[ti$day == "3", ]
+knitr::kable(as.data.frame.matrix(table(paste(TISSUES[d3$tissue], d3$isolation_date), d3$group)[, names(TREATMENT_COLORS)]))
+## the day within arms, after the arm (sequential sums of squares, Anderson 2001), the days permuted among
+## the libraries of each arm; with SS_total and SS_arm fixed by that permutation, R2 orders as pseudo-F does
+day_within_arm <- function(X, arm, day, seed) {
+  D2 <- as.matrix(dist(X))^2
+  ss_in <- function(g) sum(vapply(unique(g), function(l) { i <- which(g == l)
+    if (length(i) < 2) 0 else sum(D2[i, i][upper.tri(D2[i, i])]) / length(i) }, 0))
+  sst <- sum(D2[upper.tri(D2)]) / length(arm); ss_arm <- ss_in(arm)
+  r2 <- function(d) (ss_arm - ss_in(paste(arm, d))) / sst
+  set.seed(seed)
+  null <- replicate(NPERM, { d <- day; for (a in unique(arm)) { i <- which(arm == a); d[i] <- d[i][sample.int(length(i))] }; r2(d) })
+  c(R2 = r2(day), p = (1 + sum(null >= r2(day))) / (1 + NPERM), null_median = median(null))
+}
+iso <- do.call(rbind, lapply(names(TISSUES), function(t) {
+  i <- which(vapply(sets, function(s) s$tissue == t && s$comparison == "every arm" && !s$lab_control, TRUE))
+  smp <- sets[[i]]$samples; arm <- ti[smp, "group"]; day <- ti[smp, "isolation_date"]
+  split_arms <- names(which(tapply(day, arm, function(x) length(unique(x))) > 1))
+  per_arm <- paste(sprintf("%s %s", names(TREATMENT_COLORS),
+                           vapply(names(TREATMENT_COLORS), function(a) paste(sort(unique(day[arm == a])), collapse = "+"), "")), collapse = "; ")
+  do.call(rbind, lapply(c("top", "all"), function(w) {
+    v <- res[[i]]$pca$v; X <- t(if (w == "top") v[res[[i]]$pca$top, ] else v)
+    st <- if (length(split_arms)) day_within_arm(X, arm, day, SEED + 2000 + 10 * match(t, names(TISSUES)) + (w == "all")) else c(R2 = NA, p = NA, null_median = NA)
+    data.frame(tissue = t, genes = if (w == "top") sprintf("%d most variable", NTOP) else "all", isolation_days = per_arm,
+               arms_with_two_days = if (length(split_arms)) paste(split_arms, collapse = ", ") else "none: each arm isolated on one day, not testable",
+               R2_day_within_arm = st[["R2"]], p = st[["p"]], null_median = st[["null_median"]], stringsAsFactors = FALSE)
+  }))
+}))
+knitr::kable(transform(iso, R2_day_within_arm = round(R2_day_within_arm, 3), null_median = round(null_median, 3)), row.names = FALSE)
+```
+
+# Figures
+
+```{r figures}
+fmt_p <- function(p) ifelse(p < 0.001, "< 0.001", formatC(p, format = "fg", digits = 2))
+stats_line <- function(st) sprintf("PERMANOVA R2 %.2f, p %s; spread p %s", st$permanova_R2, fmt_p(st$permanova_p), fmt_p(st$spread_p))
+scales_groups <- list(
+  scale_fill_manual(values = GROUP_COLORS, labels = GROUP_LABELS, limits = GROUPS, drop = FALSE, name = NULL),
+  scale_colour_manual(values = GROUP_COLORS, labels = GROUP_LABELS, limits = GROUPS, drop = FALSE, name = NULL),
+  scale_shape_manual(values = GROUP_SHAPES, labels = GROUP_LABELS, limits = GROUPS, drop = FALSE, name = NULL),
+  scale_linetype_manual(values = c(LC = "dashed", control = "solid", OA = "solid", OW = "solid", DO = "solid"),
+                        limits = GROUPS, guide = "none"))
+pca_panel <- function(i, title, facet = FALSE) {
+  r <- res[[i]]; s <- sets[[i]]
+  d <- data.frame(r$pca$scores, sample = s$samples, tissue = TISSUES[ti[s$samples, "tissue"]],
+                  group = factor(ti[s$samples, "group"], levels = GROUPS))
+  g <- ggplot(d, aes(PC1, PC2)) +
+    ## show.legend = TRUE: every panel draws a key for every group, so the collected legends are
+    ## identical and merge into one (by default a panel draws keys only for the groups it holds)
+    stat_ellipse(aes(fill = group, colour = group, linetype = group), geom = "polygon", type = "t",
+                 level = 0.95, alpha = 0.12, linewidth = 0.45, show.legend = TRUE) +
+    geom_point(aes(fill = group, shape = group), colour = "grey15", size = 2.1, stroke = 0.3, show.legend = TRUE) +
+    scales_groups +
+    labs(x = sprintf("PC1 (%.0f%%)", 100 * r$pca$var[1]), y = sprintf("PC2 (%.0f%%)", 100 * r$pca$var[2]),
+         title = title, subtitle = stats_line(r$stats)) +
+    theme_psmfc(9) + theme(aspect.ratio = 1, plot.title = element_text(face = "bold", size = 9.5),
+                           plot.subtitle = element_text(size = 7.5), legend.position = "bottom")
+  if (facet) g + facet_wrap(~ tissue, scales = "free") + theme(aspect.ratio = 1) else g   # one PCA, each tissue zoomed to its own range
+}
+which_set <- function(tissue, comparison, lc) which(vapply(sets, function(s) s$tissue == tissue && s$comparison == comparison && s$lab_control == lc, TRUE))
+save_fig <- function(p, name, w, h) { ggsave(file.path(pca_dir, name), p, width = w, height = h, dpi = 220, bg = "white"); print(p) }
+caption <- paste0("Each panel is its own PCA: blind VST of its libraries, the ", NTOP, " genes with the largest variance; ellipses 95% (multivariate t).",
+                  "\nPERMANOVA: Euclidean distances in the same genes, ", NPERM, " permutations; spread: distance to the group centroid, ANOVA. Axes not to scale.")
+
+## 1. every arm, each tissue on its own, without and with the lab control
+p1 <- (pca_panel(which_set("F", "every arm", FALSE), "Foot, day 3") | pca_panel(which_set("G", "every arm", FALSE), "Gill, day 3")) /
+      (pca_panel(which_set("F", "every arm", TRUE), "Foot, day 3 and lab control") | pca_panel(which_set("G", "every arm", TRUE), "Gill, day 3 and lab control")) +
+  plot_layout(guides = "collect") + plot_annotation(title = "Every arm, without (top) and with (bottom) the lab control", caption = caption) &
+  theme(legend.position = "bottom")
+save_fig(p1, "PCA_arms.png", 9, 10)
+
+## 2. each stressor against the day-3 controls, without and with the lab control, one figure per tissue
+for (t in names(TISSUES)) {
+  top <- lapply(c("OA", "OW", "DO"), function(x) pca_panel(which_set(t, paste(x, "vs control"), FALSE), sprintf("%s vs control", x)))
+  bot <- lapply(c("OA", "OW", "DO"), function(x) pca_panel(which_set(t, paste(x, "vs control"), TRUE), sprintf("%s vs control, with lab control", x)))
+  lc  <- pca_panel(which_set(t, "lab control vs control", TRUE), "Lab control vs control")
+  p2 <- (wrap_plots(c(top, list(plot_spacer())), nrow = 1) / wrap_plots(c(bot, list(lc)), nrow = 1)) +
+    plot_layout(guides = "collect") +
+    plot_annotation(title = sprintf("%s: each stressor against the day-3 controls (the samples of the contrasts of record), without (top) and with (bottom) the lab control", TISSUES[[t]]),
+                    caption = caption) & theme(legend.position = "bottom")
+  save_fig(p2, sprintf("PCA_pairwise_%s.png", tolower(TISSUES[[t]])), 15, 8.6)
+}
+
+## 3. both tissues in one PCA, each tissue in its own panel on the same axes
+p3 <- pca_panel(which_set("F+G", "both tissues", FALSE), "Foot and gill, day 3: one PCA", facet = TRUE) /
+      pca_panel(which_set("F+G", "both tissues", TRUE), "Foot and gill, day 3 and lab control: one PCA", facet = TRUE) +
+  plot_layout(guides = "collect") +
+  plot_annotation(title = "Both tissues in one PCA (tissue is PC1), each tissue in its own panel, zoomed to its own range",
+                  caption = sub("Each panel is its own PCA", "Each row is one PCA of both tissues", caption)) &
+  theme(legend.position = "bottom")
+save_fig(p3, "PCA_both_tissues.png", 9, 10)
+
+## 4. every library, by sampled region
+pa <- pca_of(rownames(ti))
+da <- data.frame(pa$scores, region = factor(ti$region, levels = names(REGION_COLORS)), day = factor(paste("day", ti$day)))
+p4 <- ggplot(da, aes(PC1, PC2)) +
+  stat_ellipse(aes(fill = region, colour = region), geom = "polygon", type = "t", level = 0.95, alpha = 0.10, linewidth = 0.45) +
+  geom_point(aes(colour = region, shape = day), size = 2.2, alpha = 0.9) +
+  scale_colour_manual(values = REGION_COLORS, labels = REGION_LABELS, name = NULL) +
+  scale_fill_manual(values = REGION_COLORS, labels = REGION_LABELS, guide = "none") +
+  scale_shape_manual(values = c("day 0" = 1, "day 3" = 16), name = NULL) +
+  guides(colour = guide_legend(order = 1), shape = guide_legend(order = 2)) +
+  labs(x = sprintf("PC1 (%.0f%%)", 100 * pa$var[1]), y = sprintf("PC2 (%.0f%%)", 100 * pa$var[2]),
+       title = "Every library, by sampled region", caption = sub("Each panel is its own PCA", "One PCA of every library", caption)) +
+  theme_psmfc(10) + theme(aspect.ratio = 1, legend.position = "bottom", legend.box = "vertical")
+save_fig(p4, "PCA_all_samples.png", 7.5, 8)
+
+## 5. the comparison: how much the groups explain in each set, in the 500 most variable genes and in all genes
+long <- rbind(data.frame(cmp, genes = sprintf("%d most variable genes", NTOP), R2 = cmp$permanova_R2, p = cmp$permanova_p),
+              data.frame(cmp, genes = "all genes", R2 = cmp$permanova_R2_all_genes, p = cmp$permanova_p_all_genes))
+long$genes <- factor(long$genes, levels = c(sprintf("%d most variable genes", NTOP), "all genes"))
+long$panel <- factor(c(F = "Foot", G = "Gill", "F+G" = "Both tissues")[long$tissue], levels = c("Foot", "Gill", "Both tissues"))
+long$row <- factor(long$comparison, levels = rev(c("every arm", "OA vs control", "OW vs control", "DO vs control",
+                                                  "lab control vs control", "both tissues")))
+long$version <- factor(ifelse(long$lab_control, "with lab control", "without lab control"), levels = c("without lab control", "with lab control"))
+p5 <- ggplot(long, aes(R2, row)) +
+  geom_point(aes(shape = version, fill = p < 0.05), size = 2.8, colour = "grey15", stroke = 0.4,
+             position = position_dodge(width = 0.6)) +
+  geom_text(aes(label = fmt_p(p), group = version), size = 2.4, hjust = -0.35, colour = "grey30",
+            position = position_dodge(width = 0.6)) +
+  facet_grid(genes ~ panel, scales = "free_x") +
+  scale_shape_manual(values = c("without lab control" = 21, "with lab control" = 22), name = NULL) +
+  scale_fill_manual(values = c(`TRUE` = "grey20", `FALSE` = "white"), labels = c(`TRUE` = "p < 0.05", `FALSE` = "p >= 0.05"), name = NULL) +
+  scale_x_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.3))) +
+  guides(shape = guide_legend(order = 1), fill = guide_legend(order = 2, override.aes = list(shape = 21))) +
+  labs(x = "Share of the variation the groups explain (PERMANOVA R2); label: permutation p", y = NULL,
+       title = "Every PCA sample set compared",
+       caption = paste("The set of both tissues tests tissue and arm together; x axes differ between columns.",
+                       "A difference in spread between groups also raises R2 (spread_p in PCA_comparison.csv).")) +
+  theme_psmfc(9.5) + theme(legend.position = "bottom", plot.title.position = "plot")
+save_fig(p5, "PCA_comparison.png", 12, 7)
+```
+
+# Outputs
+
+```{r write}
+write.csv(cmp, file.path(pca_dir, "PCA_comparison.csv"), row.names = FALSE)
+scores <- do.call(rbind, lapply(seq_along(sets), function(i) {
+  s <- sets[[i]]; sc <- res[[i]]$pca$scores
+  data.frame(set = s$id, tissue = ti[s$samples, "tissue"], sample = s$samples, mussel = sub("(F|FX|G)$", "", s$samples),
+             group = ti[s$samples, "group"], isolation_date = ti[s$samples, "isolation_date"],
+             PC1 = round(sc[s$samples, 1], 4), PC2 = round(sc[s$samples, 2], 4))
+}))
+scores <- rbind(scores, data.frame(set = "every library", tissue = ti$tissue, sample = rownames(ti),
+                                   mussel = sub("(F|FX|G)$", "", rownames(ti)), group = ti$group, isolation_date = ti$isolation_date,
+                                   PC1 = round(pa$scores[rownames(ti), 1], 4), PC2 = round(pa$scores[rownames(ti), 2], 4)))
+write.csv(scores, file.path(pca_dir, "PCA_scores.csv"), row.names = FALSE)
+loadings <- do.call(rbind, lapply(seq_along(sets), function(i) do.call(rbind, lapply(1:2, function(k) {
+  rot <- res[[i]]$pca$rot; o <- order(abs(rot[, k]), decreasing = TRUE)[1:25]
+  nm <- ann$Protein.names[match(rownames(rot)[o], ann$gene)]
+  data.frame(set = sets[[i]]$id, component = paste0("PC", k), rank = 1:25, LOC_ID = rownames(rot)[o],
+             loading = round(rot[o, k], 4), byssal_name = grepl(BYSSAL_RX, nm, ignore.case = TRUE, perl = TRUE),
+             protein_name = nm)
+}))))
+write.csv(loadings, file.path(pca_dir, "PCA_loadings.csv"), row.names = FALSE)
+write.csv(iso, file.path(pca_dir, "PCA_isolation_day.csv"), row.names = FALSE)
+## this step writes no provenance file, so a failed check stops it (and the runner reports it)
+cat(sprintf("checks: %d run, %d failed\n", .checks$n_run, length(.checks$failed)))
+if (length(.checks$failed)) stop("check failed: ", paste(.checks$failed, collapse = "; "))
+cat("sample sets:", length(sets), "| scores:", nrow(scores), "rows\n")
+```

@@ -112,8 +112,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   have their own or are listed in their parent's. Update them in the same change as the code.
 - **Figures.** Colours come only from `tools/plot_style.R`: control grey, OA green, OW orange,
   DO purple (thread strength adds baseline blue and lab reference light grey); red up, blue
-  down; neutral greys for significance scales and set categories. The palette is checked for
-  colour-vision deficiency; keep a legend or labels on every figure.
+  down; neutral greys for significance scales and set categories; one brown ramp, light to dark,
+  for expression level in heatmaps. The palette is checked for colour-vision deficiency; keep a
+  legend or labels on every figure.
 - **Statistics of record.**
   - Control: the day-3 treatment control (TC), the only one. The day-0 "lab control"
     animals are not a control anywhere: their feet were dissected differently (two pieces at
@@ -156,6 +157,16 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     without treatment; elastic-net prediction of held-out animals (glmnet 5.1) against label
     permutations, seeded per run so that the result does not depend on the number of workers,
     with a power check (the treatment's columns added to all the axes, across arms).
+  - PCA (`05` step 14, descriptive): each sample set on its own (blind VST of its libraries,
+    nuclear genes, the 500 genes with the largest variance), each tissue on its own, without and
+    with the day-0 lab control; 95% ellipses (multivariate t); PERMANOVA and the spread test
+    (distance to the group centroid) on Euclidean distances, 999 permutations; the RNA isolation
+    day within arms, where an arm spans two days (gill OA and OW).
+  - Byssal expression by individual (`09` step 07, exploratory): each gene as a z-score within its
+    arm; the coordination of a gene group and the count of mfp-high animals (top third of the arm
+    for most expressed mfp genes) against permutations within arms; which animals express the mfp
+    genes at all from a two-component normal mixture on mean mfp VST (posterior > 0.5), and a
+    Fisher exact test of arm; every other gene against the mfp score within arms (BH q).
   - GO enrichment: each contrast's tested genes (non-missing padj) are its universe; up- and
     down-regulated genes are tested separately; topGO `weight01` p < 0.01 is of record, goseq
     and clusterProfiler (BH < 0.05) are comparisons.
@@ -181,8 +192,14 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   take their reads in the genome alignment (`tools/mt_encoded.R`); 12 of the 59 animals carry
   mitochondrial haplotypes that differ from the reference at fixed positions, which the genome
   alignment undercounts (both handled by counting on the mitogenome alone, as above;
-  `05` step 13); byssal plaque genes are expressed in the day-0 libraries and mostly
-  absent at day 3, which the different day-0 dissection may explain; the analysed reads are
+  `05` step 13); byssal plaque genes are expressed in every day-0 library, which the different
+  day-0 dissection may explain, and at day 3 in a few animals of every arm only, the same
+  animals for every mfp gene (`09` step 07); RNA was isolated arm by arm, in foot each arm on its
+  own day (the controls on 2021-12-23 with the day-0 animals, eluted in 50 µL; DO, OA and OW on
+  2022-01-09, -10 and -11, in 100 µL), so a foot contrast cannot be told apart from a difference
+  between isolation days, while in gill the controls and DO share a day and the isolation day
+  within the OA and OW arms, which span two days each, explains no more than chance (`05`
+  step 14, `PCA_isolation_day.csv`); the analysed reads are
   leader-clipped and PCR-deduplicated Tag-seq reads (`04` README, "The reads"), whose raw
   reads are on owl (`nightingales/M_trossulus/`); the Iso-Seq branch (`06`, a sensitivity
   analysis) replicates most genome DEGs (58 to 71%) and finds 1.2 to 1.6 times as many; against

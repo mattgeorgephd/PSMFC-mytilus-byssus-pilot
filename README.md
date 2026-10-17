@@ -38,7 +38,7 @@ own folder's `03_analyses/`; later folders read earlier ones.
 | `06_iso-seq-transcriptome/` | sensitivity branch: the TC contrasts repeated with the reads quantified against the Iso-Seq transcriptome (salmon, tximport, on `04`'s isoform-to-gene map) and compared with `05`; and the comparison of `04`'s genome recounts with the previous record, the evidence for the count matrix of record | runner `01_code/00_run_isoseq.Rmd` (steps 03 and 04 by default; steps 02-04 with `online: true`) |
 | `07_enrichment/` | GO enrichment: topGO (of record), goseq, clusterProfiler, rrvgo, method comparison | `01_code/00_run_enrichment.Rmd` |
 | `08_gene-annotation/` | GO slims of the TC DEGs; NCBI summaries and orthologs for the top DEGs (network) | `01_code/00_run_gene_annotation.Rmd` |
-| `09_gene-mechanics-correlation/` | per-animal ANCOVA of day-3 thread mechanics on genes, DEG sets, enriched GO terms and mitochondrial expression, foot and gill; expression suites (programs, co-expression modules, expression components) between and within arms, and multi-gene prediction of held-out animals | `01_code/00_run_gene_mechanics_by_tissue.Rmd` |
+| `09_gene-mechanics-correlation/` | per-animal ANCOVA of day-3 thread mechanics on genes, DEG sets, enriched GO terms and mitochondrial expression, foot and gill; expression suites (programs, co-expression modules, expression components) between and within arms, and multi-gene prediction of held-out animals; byssal expression by individual, with heatmaps in a fixed mussel order | `01_code/00_run_gene_mechanics_by_tissue.Rmd` |
 
 Run order is the folder numbers: every folder reads only lower-numbered folders (and
 `tools/`), and within a folder every step reads only earlier steps. `02_thread-strength` and
@@ -341,7 +341,7 @@ flowchart LR
   sh(["02_data sample sheets"])
   a4(["04·07 count matrix of record"])
   a1(["04·01 t_data.ctab;<br>04/02_data mt-like loci"])
-  b1(["03·01 LOC_GO_list.txt (2026)"])
+  b1(["03·05 LOC_GO_list.txt (2026)"])
   d1["01 clean counts, mitochondrial list"]
   d2["02 contrasts"]
   d3["03 DESeq2 fits"]
@@ -353,6 +353,7 @@ flowchart LR
   d11["11 all-contrast figures"]
   d12["12 Zenodo lists"]
   d13["13 mitochondrial proteins"]
+  d14["14 PCA, every sample set"]
   a5(["04·08 mitogenome counts;<br>04·02 previous matrix"])
   sh --> d1
   a4 --> d1
@@ -368,6 +369,8 @@ flowchart LR
   d4 --> d11
   d2 --> d13
   a5 --> d13
+  d2 --> d14
+  b1 --> d14
   d1 --> r1(["06·03, 06·04, 07, 08·01, 09"])
   d4 --> r2(["06·03, 06·04, 07, 09"])
   d6 --> r3(["08·01, 09·01"])
@@ -376,16 +379,16 @@ flowchart LR
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef run fill:#e8f4ec,stroke:#2f7a4a,color:#1b2730
   class a4,a1,b1,sh,a5,r1,r2,r3,r4,r5 ext
-  class d1,d2,d3,d4,d5,d6,d7,d8,d11,d12,d13 run
+  class d1,d2,d3,d4,d5,d6,d7,d8,d11,d12,d13,d14 run
 ```
 
-All 13 steps run in the pipeline.
+All 14 steps run in the pipeline.
 
 | step | reads | writes (`03_analyses/`) |
 |---|---|---|
 | 01 `01_clean_count_matrix.Rmd` | `04·07` `featurecounts/gene_count_matrix.csv`; `02_data/` sample sheet and RNA summary; for the mitochondrial list, `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`, `04·01` `hisat/t_data.ctab` and `04_sequence-alignment/02_data/annotation_mt_like_loci.csv` (`tools/mt_encoded.R`) | `count_matrix/`: `gene_count_matrix_clean.csv`, `treatmentinfo_clean.csv`, `library_crosswalk.csv`, `mitochondrial_loci.csv` |
 | 02 `02_define_contrasts.Rmd` | `05·01` sample table | `DEG_lists/contrasts.csv`, `contrast_samples.csv` |
-| 03 `03_deseq_contrasts.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·02` contrasts | `dds/*.rds` (git-ignored), `DEG_lists/filter_summary.csv`, `figures/PCA_*.png` |
+| 03 `03_deseq_contrasts.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·02` contrasts | `dds/*.rds` (git-ignored), `DEG_lists/filter_summary.csv` |
 | 04 `04_shrinkage_filtration.Rmd` | `05·02` contrasts; `05·03` fits and filter summary | `DEG_lists/{Foot,Gill,Foot_vs_Gill}/<code>_{apeglm,siggene,filter_counts}.csv` and MA plots; `DEG_lists/DEG_counts.csv` |
 | 05 `05_fourlevel_sensitivity.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·04` DEG lists | `DEG_lists/sensitivity_fourlevel/` |
 | 06 `06_join_annotation.Rmd` | `05·04` DEG lists; `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`; `05·01` mitochondrial list | `DEG_lists/GOterms_genome/<code>_sigs_{merged,ID,unID}.csv`, `DEG_lists/DEG_join_summary.csv` |
@@ -396,6 +399,7 @@ All 13 steps run in the pipeline.
 | 11 `11_deg_figures_all_contrasts.Rmd` | `05·02` contrasts; `05·04` apeglm tables and DEG counts | `figures/DEG_counts_all_contrasts.png`, `volcano_TC.png`, `volcano_FG.png` |
 | 12 `12_deg_list_cleanup.Rmd` | `05·06` `*_sigs_merged.csv` | `DEG_lists/GOterms_genome/clean_zenodo_files/` |
 | 13 `13_mitochondrial_expression.Rmd` | `05·01` counts, sample table, mitochondrial list; `05·02` contrasts; `04·08` mitogenome counts (default and permissive); `04·02` previous matrix (comparison) | `mitochondrial/*.csv`, `figures/MT_mitochondrial_expression.png`, `MT_haplotypes.png` |
+| 14 `14_pca.Rmd` | `05·01` counts, sample table, mitochondrial list, `library_crosswalk.csv` (RNA isolation dates); `05·02` `contrast_samples.csv`; `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt` (protein names of the loadings) | `pca/`: `PCA_arms.png`, `PCA_pairwise_foot.png`, `PCA_pairwise_gill.png`, `PCA_both_tissues.png`, `PCA_all_samples.png`, `PCA_comparison.png`, `PCA_comparison.csv`, `PCA_loadings.csv`, `PCA_scores.csv`, `PCA_isolation_day.csv` |
 
 ## 06_iso-seq-transcriptome
 
@@ -518,12 +522,16 @@ flowchart LR
   d(["05·01 counts, samples, mitochondrial list;<br>05·04 DEG lists; 05·06 *_sigs_ID.csv"])
   g(["07·02 topgo_enriched.csv;<br>07·06 consensus terms"])
   d13(["05·13 mt_share_by_sample.csv"])
+  d14(["05·14 PCA_scores.csv"])
+  thr(["01_mussel-measurements<br>thread production"])
+  rna(["05/02_data<br>RNA isolation log"])
   m1["01 per-gene ANCOVA"]
   m2["02 modules, influence, best hits"]
   m3["03 expression tables"]
   m4["04 byssal genes"]
   m5["05 DEG sets, GO terms, mt share"]
   m6["06 expression suites, prediction"]
+  m7["07 byssal expression by individual, heatmaps"]
   ex --> m1
   t --> m1
   b1 --> m1
@@ -541,13 +549,20 @@ flowchart LR
   d13 --> m5
   m1 -- "manifest, VST, candidates" --> m6
   m5 -- "mechanics_sets" --> m6
+  m4 -- "byssal tables" --> m7
+  m1 -- "paired manifest" --> m7
+  d --> m7
+  d14 --> m7
+  thr --> m7
+  rna --> m7
+  b1 --> m7
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef run fill:#e8f4ec,stroke:#2f7a4a,color:#1b2730
-  class t,d,b1,ex,g,d13 ext
-  class m1,m2,m3,m4,m5,m6 run
+  class t,d,b1,ex,g,d13,d14,thr,rna ext
+  class m1,m2,m3,m4,m5,m6,m7 run
 ```
 
-All six steps run in the pipeline, once for foot (`F`) and once for gill (`G`); outputs carry
+All seven steps run in the pipeline, once for foot (`F`) and once for gill (`G`); outputs carry
 the tissue suffix `<T>`.
 
 | step | reads | writes (`03_analyses/`) |
@@ -558,6 +573,7 @@ the tissue suffix `<T>`.
 | 04 `04_byssus_foot_gene_list_expression.Rmd` | `03·05` `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`; `05·04` TC DEG lists; `09·03` manifest; `02·03` summary; `05·01` counts | `byssus_genes/`: `byssus_gene_expression_<T>.csv`, `sample_metadata_<T>.csv`, `byssus_category_scores_<T>.csv` |
 | 05 `05_go_term_mechanics.Rmd` | `09·01` manifest, VST and metrics; `05·04` TC DEG lists; `07·02` `topgo_enriched.csv`; `07·06` `consensus_terms_TC_*.csv`; `05·13` `mt_share_by_sample.csv` | `go_mechanics/`: `mechanics_sets_<T>.csv`, `mechanics_set_associations_<T>.csv`, `go_mechanics_<T>.png`, `RUN_provenance_<T>.txt` |
 | 06 `06_expression_suites.Rmd` | `09·01` `metrics_config_<T>`, `paired_sample_manifest_<T>`, `vst_paired_<T>`, `candidate_genes_<T>` (csv) and `annotation_map.csv`; `09·05` `mechanics_sets_<T>.csv` and `mechanics_set_associations_<T>.csv` (a check) | `expression_suites/`: `suite_axes_<T>`, `suite_axis_tests_<T>`, `suite_axis_members_<T>`, `suite_scores_<T>`, `suite_prediction_<T>`, `suite_prediction_null_<T>` (csv); `suites_between_within_<T>`, `suites_axes_map_<T>`, `suites_state_space_<T>`, `suites_prediction_<T>` (png); `RUN_provenance_<T>.txt` |
+| 07 `07_byssal_individuals.Rmd` | `09·04` `byssus_gene_expression_<T>.csv` and `sample_metadata_<T>.csv`; `09·01` `paired_sample_manifest_<T>.csv`; `05·01` counts, sample table, mitochondrial list and `library_crosswalk.csv`; `05/02_data/psmfc_mussel_rna_summary.csv` (RNA yield); `05·14` `PCA_scores.csv`; `03·05` `LOC_GO_list.txt` (protein names); `01_mussel-measurements/mussel-thread-production.xlsx` | `byssus_individuals/`: `byssal_animals_<T>`, `byssal_coordination_<T>`, `byssal_group_correlations_<T>`, `byssal_mfp_tests_<T>`, `byssal_mfp_genome_<T>` (csv; the last foot only); `byssal_heatmap_{structural,all}_{by_id,by_mfp}_<T>.png`, `byssal_individuals_<T>.png`, `byssal_mfp_genome_<T>.png` (foot only); `RUN_provenance_<T>.txt` |
 
 Every folder runner also writes its reports and logs to its own `03_analyses/knit_html/`
 (git-ignored).

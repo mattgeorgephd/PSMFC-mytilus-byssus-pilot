@@ -15,7 +15,8 @@ Everything here is written by the scripts in `../01_code/` and rebuilt by
 | `DEG_lists/DEG_join_summary.csv` | `06_join_annotation` | per TC contrast: DEGs, annotated and unannotated genes, mitochondrial DEGs (a check, 0). Report `n_DEG_genes`, not merged rows |
 | `mitochondrial/` | `13_mitochondrial_expression` | the 12 mitochondrial proteins on their own, counted on the mitochondrial genome alone: counts, DESeq2 per TC contrast and its sensitivity fits, haplotype groups, mitochondrial share per library (README inside) |
 | `dds/` | `03_deseq_contrasts` | the fitted, filtered `DESeqDataSet` of each contrast (git-ignored) |
-| `figures/` | `03`, `08`-`11`, `13` | PCA, DEG counts, volcano, Venn and mitochondrial figures |
+| `figures/` | `08`-`11`, `13` | DEG counts, volcano, Venn and mitochondrial figures |
+| `pca/` | `14_pca` | PCA of every sample set (each tissue, without and with the lab control; each stressor against the day-3 controls; both tissues; every library) with 95% ellipses, and their comparison: PERMANOVA, spread, loadings, scores; the RNA isolation day within arms (README inside) |
 | `top_DEGs/Top_50_genes/` | `07_top_degs` | per TC contrast, the 25 most up- and 25 most down-regulated annotated DEGs, as a table and a bar plot labelled by gene symbol |
 | `_superseded/` | the previous scripts | per-contrast count and sample tables; the retired LC contrasts (`LC_contrasts/`); kept as a record |
 | `knit_html/` | the runner | HTML reports and logs (git-ignored) |
