@@ -195,9 +195,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   `05` step 13); byssal plaque genes are expressed in every day-0 library, which the different
   day-0 dissection may explain, and at day 3 in a few animals of every arm only, the same
   animals for every mfp gene (`09` step 07); RNA was isolated arm by arm, in foot each arm on its
-  own day (the controls on 2021-12-23 with the day-0 animals, eluted in 50 µL; DO, OA and OW on
-  2022-01-09, -10 and -11, in 100 µL), so a foot contrast cannot be told apart from a difference
-  between isolation days, while in gill the controls and DO share a day and the isolation day
+  own day (the controls on 2021-12-23, beside the day-0 animals of 2021-12-22 and -23, eluted in
+  50 µL; DO, OA and OW on 2022-01-09, -10 and -11, in 100 µL), so a foot contrast cannot be told
+  apart from a difference between isolation days, while in gill the controls and DO share a day and the isolation day
   within the OA and OW arms, which span two days each, explains no more than chance, and the
   three foot contrasts, which share their controls, share fewer DEGs and agree less in fold
   change than gill's (`05` step 14, `PCA_isolation_day.csv`, `isolation_day_contrasts.csv`); the

@@ -269,9 +269,9 @@ the other sections use the new ones.
   force or plaque area. Heatmaps of the byssal genes with the animals by mussel ID within each arm,
   the same order in every panel, and by mfp expression (the order of the first heatmaps).
 - **RNA isolation day** (2026-10-17, found while reviewing the PCA). RNA was isolated arm by arm:
-  in foot each arm on its own day (the controls on 2021-12-23 with the day-0 animals, eluted in
-  50 µL; DO, OA and OW on 2022-01-09, -10 and -11, in 100 µL), so the foot contrasts cannot be
-  told apart from isolation day. `05` step 14 tests what can be tested: in gill, isolation day
+  in foot each arm on its own day (the controls on 2021-12-23, beside the day-0 animals of
+  2021-12-22 and -23, eluted in 50 µL; DO, OA and OW on 2022-01-09, -10 and -11, in 100 µL), so
+  the foot contrasts cannot be told apart from isolation day. `05` step 14 tests what can be tested: in gill, isolation day
   within the OA and OW arms (two days each) explains no more than chance (R² 0.042 against a
   null median of 0.042, p 0.47), and the controls and DO, isolated on the same day, separate as
   much as OA from the controls; in foot, a difference between the controls' day and the others'

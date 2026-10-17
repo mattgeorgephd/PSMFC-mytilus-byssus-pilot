@@ -45,9 +45,9 @@ compares them:
   five of the sets with vegan 2.7.6); they are computed here so that the pipeline does not need
   vegan.
 - **RNA isolation day.** RNA was isolated arm by arm (step 01's `library_crosswalk.csv`, from the
-  isolation log): in foot each arm on its own day (the controls on 2021-12-23, with the day-0
-  animals; DO, OA and OW on 2022-01-09, -10 and -11), so a foot contrast cannot be told apart from
-  a difference between isolation days. In gill the controls and DO share a day and OA and OW each
+  isolation log): in foot each arm on its own day (the controls on 2021-12-23, beside the day-0
+  animals of 2021-12-22 and -23; DO, OA and OW on 2022-01-09, -10 and -11), so a foot contrast
+  cannot be told apart from a difference between isolation days. In gill the controls and DO share a day and OA and OW each
   span two, so the isolation day can be tested within arms there: the same PERMANOVA for the day
   within each arm, after the arm, with the days permuted among the libraries of each arm. In foot
   only an indirect check is possible: the three stressor contrasts compare each arm with the same
