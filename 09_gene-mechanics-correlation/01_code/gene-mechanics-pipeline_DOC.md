@@ -340,12 +340,22 @@ after writing `run_log.csv`, if any step failed.
 - The candidate keywords are regexes on UniProt names, matched without regard to case, so a
   short keyword can match inside an unrelated name. `aminoacyl` matched aminoacylase-1 and
   acylaminoacyl-peptidase until 2026-10-05; it is now `aminoacyl[- ]tRNA` (scripts 01 and 02).
-  `Hsp` still matches abbreviations inside names ("HSPG", "HsPDE8B", "hSPL", "HSPK 21",
-  "CRHSP-24"), which brings in 6 foot and 9 gill candidates with no heat-shock role (perlecan,
-  phosphodiesterase 8B, sphingosine-1-phosphate lyase and phosphatase, Nek2, and others) and
-  PERK, an ER-stress kinase, by its abbreviation "HsPEK"; and `chaperone` pulls in histone
-  and assembly chaperones, so the `HSP_proteostasis` module is broad. Tighten
-  `CANDIDATE_KEYWORDS` or raise `CANDIDATE_MIN_PIDENT` if a narrower family is wanted.
+  `Hsp` matched abbreviations inside names until 2026-10-17 ("HSPG", "HsPDE8B", "HsPEK",
+  "hSPL", "hSPP1", "HSPK 21", "CRHSP-24", and in gill also "HsPIP", "hSPE-39", "HSP1BP-3"), and
+  `BiP` matched "Biphenyl hydrolase-like" and "CTNNBIP1": 9 foot and 12 gill candidates with no
+  heat-shock role (perlecan, phosphodiesterase 8B, PERK, sphingosine-1-phosphate lyase and
+  phosphatase, Nek2, calcium-regulated heat-stable protein 24, a serine hydrolase, LZIC and others).
+  `Hsp` now has to start a word and be followed by a size ("Hsp70", "HSP 90", "HSP-60"), a family
+  letter and number ("HSPA5", "HSPB1"), "BP" and a number ("HspBP1"), "-binding" or "-like", and
+  `BiP` has to be a whole word (both scripts, matched with `perl = TRUE`); every heat-shock
+  protein and co-chaperone stays (among them HOP, the mitochondrial Hsp70 escort protein and
+  FKBP4, the "HSP-binding immunophilin"). PERK, the ER-stress kinase, entered only through
+  "HsPEK" and is no longer a candidate; name it explicitly if unfolded-protein-response sensors
+  are wanted. `chaperone` still pulls in histone chaperones (SPT6, NAP1L1, ASF1), ribosome and
+  respiratory-complex assembly factors and the acetylcholine receptor chaperone besides the
+  protein-folding ones (tubulin-folding cofactors, Lon, ClpX, BAG-1, MESD), so the candidates and
+  the `HSP_proteostasis` module stay broad there; raise `CANDIDATE_MIN_PIDENT` or narrow
+  `chaperone` if a narrower family is wanted.
 
 ---
 

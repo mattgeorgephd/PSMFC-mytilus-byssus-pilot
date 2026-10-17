@@ -162,7 +162,7 @@ building, not strength" is its own row.
 modules <- list(
   HIF_hypoxia       = "hypoxia-inducible|Egl nine|prolyl 4-hydroxylase|prolyl hydroxylase|hypoxia up-regulated",
   oxidative_detox   = "superoxide|glutathione|catalase|peroxiredoxin|dual oxidase|peroxidase",
-  HSP_proteostasis  = "heat shock|Hsp|stress-70|chaperone|BiP|peptidyl-prolyl",
+  HSP_proteostasis  = "heat shock|\\bhsps?(?:[- ]?[0-9]+(?![a-z])|[abcdh][0-9]|bp[0-9]|-binding|-like)|stress-70|chaperone|\\bBiP\\b|peptidyl-prolyl",   # Hsp and BiP as script 01's keywords
   tRNA_translation  = "--tRNA|tRNA ligase|aminoacyl[- ]tRNA",   # as script 01's keywords: not aminoacylase-1 or acylaminoacyl-peptidase
   byssal_collagen   = "collagen|byss|foot protein|adhesive plaque|polyphenolic|thread matrix protein|YGH-rich protein|protease inhibitor-like protein-1|C1q-domain-containing protein-1|TSP_1 domain containing protein-1",
   byssal_structural = "foot protein|adhesive plaque|polyphenolic|byssal protein-|preCol|precollagen|byssal EP|ACDC|thread matrix protein|nongradient byssal|YGH-rich protein"
@@ -170,7 +170,7 @@ modules <- list(
 
 if (!"blast_ok" %in% names(annot)) annot$blast_ok <- TRUE   # older script-20 handoff
 module_score <- function(rx) {
-  locs <- annot %>% filter(blast_ok, grepl(rx, protein_name, ignore.case = TRUE)) %>% pull(LOC_ID)
+  locs <- annot %>% filter(blast_ok, grepl(rx, protein_name, ignore.case = TRUE, perl = TRUE)) %>% pull(LOC_ID)
   locs <- intersect(locs, rownames(vp))
   if (length(locs) < 3) return(NULL)
   z <- t(scale(t(vp[locs, paired$sample, drop = FALSE])))   # standardise each gene

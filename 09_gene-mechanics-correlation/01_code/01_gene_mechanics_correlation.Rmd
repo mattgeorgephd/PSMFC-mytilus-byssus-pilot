@@ -149,9 +149,13 @@ CANDIDATE_KEYWORDS <- paste(
   "collagen",
   # plaque-curing / cross-linking enzymes
   "tyrosinase", "peroxidase", "amine oxidase", "catechol oxidase", "lysyl oxidase",
-  # proteostasis / heat-shock
-  "heat shock", "Hsp", "stress-70", "BiP", "chaperone",
-  "endoplasmic reticulum chaperone", "hypoxia up-regulated",
+  # proteostasis / heat-shock. "Hsp" and "BiP" as bare text also matched abbreviations inside
+  # unrelated names (HSPG perlecan, HsPDE8B, HsPEK, hSPL, hSPP1, HSPK 21 Nek2, CRHSP-24, HsPIP,
+  # hSPE-39, HSP1BP-3; Biphenyl hydrolase-like, CTNNBIP1). "Hsp" must now start a word and be
+  # followed by a size (Hsp70, HSP 90, HSP-60), a family letter and number (HSPA5, HSPB1), BP and
+  # a number (HspBP1), "-binding" or "-like"; BiP must be a whole word (2026-10-17)
+  "heat shock", "\\bhsps?(?:[- ]?[0-9]+(?![a-z])|[abcdh][0-9]|bp[0-9]|-binding|-like)", "stress-70",
+  "\\bBiP\\b", "chaperone", "endoplasmic reticulum chaperone", "hypoxia up-regulated",
   # hypoxia signalling
   "hypoxia-inducible", "Egl nine", "prolyl 4-hydroxylase", "prolyl hydroxylase",
   # translational machinery (aminoacyl-tRNA synthetases and their complex). "aminoacyl" alone
@@ -578,7 +582,7 @@ cat("Annotation map (", CANDIDATE_ANNOTATION, "):", nrow(annot), "LOCs, of which
 
 ## candidate gene set = annotated, expressed genes whose protein name matches the keyword list
 candidates <- annot %>% filter(blast_ok) %>%
-  filter(grepl(CANDIDATE_KEYWORDS, protein_name, ignore.case = TRUE)) %>%
+  filter(grepl(CANDIDATE_KEYWORDS, protein_name, ignore.case = TRUE, perl = TRUE)) %>%   # perl: the Hsp pattern's look-ahead
   filter(LOC_ID %in% rownames(vp)) %>%
   mutate(byssal_structural = grepl(BYSSAL_STRUCTURAL_REGEX, protein_name, ignore.case = TRUE))
 candidates <- candidates %>% left_join(floor_flag_of(candidates$LOC_ID), by = "LOC_ID")
