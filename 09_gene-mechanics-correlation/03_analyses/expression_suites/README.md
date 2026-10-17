@@ -20,7 +20,11 @@ strong or weak attachment, across arms (which includes the treatment effect) and
 | `suites_prediction_<T>.png` | the prediction test against its permutations and the treatment alone, with the power check; the within-arm tests of each axis type against chance (QQ plots) |
 | `RUN_provenance_<T>.txt` | settings, axis counts, the lowest within-arm q, the prediction Q2 range, the DEG programs' and the power check's Q2, `checks` (script 05's sets reproduce its partial correlations; the prediction test is the same serially as on the workers; and others), commit, input MD5s, R and package versions |
 
-## Results (run of 73f8c4e, 2026-10-06)
+## Results (run of 610f1dc, 2026-10-17)
+
+The rerun of 2026-10-17 changed only the candidate scenarios (fewer candidates after the
+`Hsp` and `BiP` keywords were tightened in script 01); every other number is that of 73f8c4e.
+
 
 - **Axes.** Foot: 108 (6 DEG programs, 44 GO terms, 48 co-expression modules of 30 to 425
   genes, 10 expression components), 10 to 10,017 genes each, 45 animals. Gill: 89 (6, 15, 58
@@ -36,11 +40,12 @@ strong or weak attachment, across arms (which includes the treatment effect) and
   while their slopes within arms are flat (`suites_between_within_<T>.png`).
 - **Prediction.** The six DEG programs predict the force of held-out animals across arms
   (foot Q2 0.18, permutation p 0.02; gill 0.12, p 0.05), less than the treatment alone (0.38
-  in both), and not within arms (-0.01 and -0.04). The larger sets (262 or 324 candidate genes,
+  in both), and not within arms (-0.01 and -0.04). The larger sets (253 or 312 candidate genes,
   the 2,000 most variable genes, all the axes) give Q2 from -1.00 to 0.03. One within-arm
-  scenario beats its permutations: the gill candidates with plaque area (Q2 0.03, p 0.0099,
-  the smallest p 100 permutations give), in line with script 01's HSP70-family gene (q 0.036);
-  it is one of 32 scenarios (power checks aside), so it does not survive a correction over them.
+  scenario beats its permutations: the gill candidates with plaque area (Q2 0.03, p 0.020: 1 of
+  100 permutations does as well; it was p 0.0099 with the 324 candidates before 2026-10-17), in
+  line with script 01's HSP70-family gene (q 0.035); it is one of 32 scenarios (power checks
+  aside), so it does not survive a correction over them.
 - **Power check.** Given the treatment's columns together with all the axes, the elastic net
   predicts force with Q2 0.05 in foot and 0.07 in gill, against 0.38 for the treatment alone.
   With 45 or 46 animals it cannot find a signal of the treatment's size among about a hundred

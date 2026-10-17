@@ -17,7 +17,7 @@ Open `differential-expression.Rproj` and knit `01_code/00_run_differential_expre
 (or let the repository-level `00_run_pipeline.Rmd` do it). It runs the numbered scripts in
 order, each in a fresh R process, with an HTML report and a log per step in
 `03_analyses/knit_html/` (git-ignored) and `run_log.csv`; its `steps` parameter runs a subset.
-About seventeen minutes, six of them in script 03, four in script 13 and two in script 14.
+About fourteen minutes (run of 2026-10-17): six in script 13, two or three in script 03 and two in script 14.
 
 | step | script | reads | writes to `03_analyses/` |
 |---|---|---|---|

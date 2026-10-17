@@ -1,7 +1,7 @@
 # tasks.md
 
 Current sprint: make the analysis run end to end, from thread strength and Tag-seq counts
-to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-06.
+to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-17.
 Conventions and how to run are in `AGENTS.md`.
 
 The analysis folders were renumbered on 2026-10-03 so that their numbers are the run order:
@@ -231,6 +231,53 @@ the other sections use the new ones.
   one of 32), in line with the HSP70-family gene of step 01. Exploratory; about 15 minutes on 4
   workers, on a socket cluster that also runs on Windows; `glmnet` and `dynamicTreeCut` added to
   `renv.lock` and to the runner's package check.
+- **Heat-shock keywords** (2026-10-17, pull request GO-db-2026, Matt's request). In `09` scripts 01
+  and 02 the keyword `Hsp` also matched abbreviations inside unrelated names (perlecan's "HSPG",
+  "HsPDE8B", PERK's "HsPEK", "hSPL", "hSPP1", "HSPK 21", "CRHSP-24", "HsPIP", "hSPE-39",
+  "HSP1BP-3") and `BiP` matched "Biphenyl hydrolase-like" and "CTNNBIP1". `Hsp` must now start a
+  word and be followed by a size (Hsp70, HSP 90), a family letter and number (HSPA5, HSPB1), BP
+  and a number (HspBP1), "-binding" or "-like"; `BiP` must be a whole word. 9 foot and 12 gill
+  genes leave the candidates (253 foot and 312 gill tested, from 262 and 324), every one of them
+  tested before and none near significance (lowest q 0.89). p-values are unchanged and q-values
+  move by at most 0.03: the gill HSP70-family gene with plaque area q 0.036 to 0.035 (family q
+  0.072 to 0.069), glutathione peroxidase 7 q 0.12, the lowest foot candidate q 0.47 (0.49). In
+  `09` step 06 only the candidate scenarios change: the gill candidates with plaque area within
+  arms Q2 0.034 to 0.026, p 0.0099 to 0.020. PERK left with "HsPEK"; name it if the
+  unfolded-protein-response sensors are wanted.
+- **mfp-1-like genes annotated** (2026-10-17, Matt's request). `03_blast` step 05 also adopts a
+  gene with no hit in step 01 whose RefSeq protein name names a byssal protein ("adhesive
+  plaque", "foot protein", "byssal", "byssus", "precollagen", "thread matrix"), at any identity:
+  LOC134723087 and LOC134723088 ("adhesive plaque matrix protein-like") take their mfp-1 hits (37
+  and 36%; mfp-1 is built from variable decapeptide repeats, Waite et al. 1985, so a low identity
+  does not argue against it). They join `09` step 04's byssal tables below the expression filter
+  (almost no reads at day 3); no test changes.
+- **PCA of every sample set** (2026-10-17, `05` step 14, Matt's request). Step 03's four PCA plots
+  are retired (`figures/_superseded/`). Step 14 draws every sample set the original analysis
+  fitted (each arm, each stressor against the controls, the lab control against the controls,
+  both tissues, every library), each tissue on its own, without and with the lab control, with
+  95% ellipses, and compares them by PERMANOVA and the spread test. Foot arms barely separate
+  (R² 0.08, p 0.13 in the 500 most variable genes); foot PC1 (21%) is the byssal axis, which
+  follows the individual mussel, not the arm; gill arms separate (R² 0.10, p 0.001); the lab
+  control stands apart in both tissues, most in foot (R² 0.35), as its different dissection
+  predicts.
+- **Byssal expression by individual** (2026-10-17, `09` step 07, Matt's request). Within arms, the
+  mfp genes are on or off: 11 of 46 day-3 feet express them, two to four per arm (the same share
+  in every arm, Fisher p 0.73), about 30-fold above the rest, and those animals are high for all
+  six mfp genes (10 in the top third of their arm for all six, 0.1 by chance) and for the other
+  plaque and cuticle genes. Genome-wide only 21 genes follow the mfp score, 15 of them byssal and
+  5 with no BLAST hit. The state does not follow library size or RNA yield, nor threads made, peak
+  force or plaque area. Heatmaps of the byssal genes with the animals by mussel ID within each arm,
+  the same order in every panel, and by mfp expression (the order of the first heatmaps).
+- **RNA isolation day** (2026-10-17, found while reviewing the PCA). RNA was isolated arm by arm:
+  in foot each arm on its own day (the controls on 2021-12-23 with the day-0 animals, eluted in
+  50 µL; DO, OA and OW on 2022-01-09, -10 and -11, in 100 µL), so the foot contrasts cannot be
+  told apart from isolation day. `05` step 14 tests what can be tested: in gill, isolation day
+  within the OA and OW arms (two days each) explains no more than chance (R² 0.042 against a
+  null median of 0.042, p 0.47), and the controls and DO, isolated on the same day, separate as
+  much as OA from the controls; in foot, a difference between the controls' day and the others'
+  would be shared by the three stressor contrasts, but they share fewer DEGs (7, against 21 in
+  gill) and agree less in fold change (r 0.18 to 0.50, against 0.29 to 0.62). Documented in
+  `AGENTS.md` (known data issues) and `05/03_analyses/pca/README.md`.
 
 ## In progress
 
@@ -244,11 +291,17 @@ the other sections use the new ones.
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
+| Foot contrasts and RNA isolation day | each foot arm's RNA was isolated on its own day, the controls 17 to 19 days before the stressors (Done, above); the checks that are possible find no sign of a shared effect, but only re-isolating a subset of foot samples across arms on one day (or qPCR of a few DEGs on such RNA) could measure it. Options: state it as a limitation; re-isolate; give the gill results more weight where the two tissues disagree | Matt |
+| `chaperone` keyword in `09` | it brings in 18 foot and 21 gill candidates that no other keyword matches, most of them not stress chaperones: tubulin-folding cofactors, proteasome and ribosome assembly chaperones, histone chaperones (ASF1, NAP1L1, SPT6), MESD and NACHO, with BAG1 and mitochondrial Lon and ClpX the protein-folding ones. Options: keep; drop the histone, tubulin and assembly chaperones; or drop the bare keyword (heat shock, Hsp, BiP and ER chaperone names stay). Either change moves the candidate q-values again | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,022 of 7,367 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
 | `03_blast/` and `04` step 01 | not pipeline stages; committed outputs are used. `04` step 01 is HPC only (inputs and binaries not in the repository). `01_genome_blast.Rmd` runs again since 2026-10-03 (the 2024 version is in `01_code/_superseded/`); its search of 2026 ran in the cloud environment (BLAST+ 2.15.0, about 31 hours on 4 threads, in resumable parts), and steps 02 and 03 still need the HPC | HPC user |
 
 ## Known limitations (documented, not blocking)
+
+- **What the mfp-on state is.** `09` step 07 cannot tell an animal secreting new plaque material
+  from a hand-cut foot piece that held more of the plaque and cuticle glands; RNA yield measures
+  the size of the piece, not its make-up, and the mfp-on animals made no more threads.
 
 - **Software environment only partly locked.** The pipeline was tested with R 4.6.1 and
   Bioconductor 3.23; `renv.lock` (2026-10-03) records all 277 R packages of that library, and each

@@ -25,7 +25,7 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
 ## How to run
 
 - **Everything:** knit `00_run_pipeline.Rmd` at the repository root (open
-  `PSMFC-mytilus-byssus-pilot.Rproj`). About 50 minutes on four cores (15 of them `09` step 06's prediction test); on Windows the GO steps
+  `PSMFC-mytilus-byssus-pilot.Rproj`). About 50 minutes on four cores (14 of them `09` step 06's prediction test); on Windows the GO steps
   in `07` run on one core (R cannot fork there), so allow longer. It knits each folder's
   runner in a fresh R process and writes `knit_html/run_log.csv`; it fails if any stage fails,
   and its error quotes the failed step's own error from that step's log. Before the first
@@ -198,8 +198,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   own day (the controls on 2021-12-23 with the day-0 animals, eluted in 50 µL; DO, OA and OW on
   2022-01-09, -10 and -11, in 100 µL), so a foot contrast cannot be told apart from a difference
   between isolation days, while in gill the controls and DO share a day and the isolation day
-  within the OA and OW arms, which span two days each, explains no more than chance (`05`
-  step 14, `PCA_isolation_day.csv`); the analysed reads are
+  within the OA and OW arms, which span two days each, explains no more than chance, and the
+  three foot contrasts, which share their controls, share fewer DEGs and agree less in fold
+  change than gill's (`05` step 14, `PCA_isolation_day.csv`, `isolation_day_contrasts.csv`); the
+  analysed reads are
   leader-clipped and PCR-deduplicated Tag-seq reads (`04` README, "The reads"), whose raw
   reads are on owl (`nightingales/M_trossulus/`); the Iso-Seq branch (`06`, a sensitivity
   analysis) replicates most genome DEGs (58 to 71%) and finds 1.2 to 1.6 times as many; against

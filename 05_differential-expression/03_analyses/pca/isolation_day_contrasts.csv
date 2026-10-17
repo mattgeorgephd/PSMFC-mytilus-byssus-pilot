@@ -1,0 +1,3 @@
+"tissue","controls_isolated","controls_share_day_with","DEGs_OA","DEGs_OW","DEGs_DO","genes_tested_in_all_three","DE_in_all_three","same_direction","r_lfc_OA_OW","r_lfc_OA_DO","r_lfc_OW_DO"
+"F","20211223","none",161,211,678,6188,7,7,0.176837301640412,0.504703342594162,0.232406390931895
+"G","20220109","DO",584,227,404,9813,21,20,0.292807965331765,0.615685592888054,0.427966185931581

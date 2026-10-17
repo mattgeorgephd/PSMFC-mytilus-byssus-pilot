@@ -95,8 +95,8 @@ In the current run two genes pass q < 0.1 within their metric, and one of them w
 family too (`best_hits_<T>.csv`):
 
 - **Gill, candidate, plaque area (primary).** Animals that express LOC134718612 more strongly
-  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.036
-  over the 324 gill candidates tested, 0.072 over the primary family). It is annotated as heat shock 70 kDa
+  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.035
+  over the 312 gill candidates tested, 0.069 over the primary family). It is annotated as heat shock 70 kDa
   protein 12A, but only from a 32% identity BLAST hit, so it is a distant HSP70-family gene
   rather than a confident ortholog; it is expressed at a low level in gill (DESeq2 base mean
   about 10) and is not a TC DEG. Leaving out its most influential animal (T136) gives p 1.6e-5.
@@ -110,9 +110,12 @@ family too (`best_hits_<T>.csv`):
   the animals with less of it make weaker threads. Robust to leaving out one animal.
 
 The next candidates are glutathione peroxidase 7 with the strongest thread in gill
-(exploratory, q 0.12); the lowest foot candidate q is 0.49 (262 foot candidates since 2026-10-06, when
-`03_blast` step 05 annotated mefp-5 and two expressed mfp-3 genes: none comes near, p 0.39 or more), and
-no module comes near (lowest q 0.61).
+(exploratory, q 0.12); the lowest foot candidate q is 0.47 over the 253 foot candidates tested
+(mefp-5 and two expressed mfp-3 genes among them since 2026-10-06, none near, p 0.39 or more), and
+no module comes near (lowest q 0.61). Since 2026-10-17 `Hsp` and `BiP` match heat-shock names
+only: 9 foot and 12 gill genes whose names merely contained those letters (perlecan's "HSPG",
+"HsPDE8B", PERK's "HsPEK", S1P lyase's "hSPL" and others) left the candidates, none of them near
+significance; the p-values of the others are unchanged and their q-values move by at most 0.03.
 Until 2026-10-05 the gill's next result was aminoacylase-1 with adhesion (q 0.14), but it was
 a candidate only because the keyword `aminoacyl`, meant for tRNA synthetases, matched its name;
 the keyword is now `aminoacyl[- ]tRNA` (`01_code/gene-mechanics-pipeline_DOC.md`, caveats).
@@ -177,6 +180,11 @@ genes as heatmaps with the animals in one order in every panel: by mussel ID wit
 by mean mfp expression within each arm (the order of the first heatmaps of these genes, drawn
 outside the pipeline without mussel IDs), for the byssal
 structural genes (split into mfp-1 to -6, thread core and other structural) and for every byssal
-gene. Exploratory. Results: `03_analyses/byssus_individuals/README.md`.
+gene. Exploratory. In foot the mfp genes are on or off: 11 of 46 animals express them (two to
+four per arm, the same share in every arm), about 30-fold above the rest, and those animals are
+high for every mfp gene and for the other plaque and cuticle genes. Genome-wide only 21 genes
+follow them, 15 of them byssal; the state does not follow library size or RNA yield, nor threads
+made, peak force or plaque area. Whether it is secretion or the make-up of the hand-cut foot piece
+cannot be told from these data. Results: `03_analyses/byssus_individuals/README.md`.
 
 Details in `01_code/gene-mechanics-pipeline_DOC.md`.

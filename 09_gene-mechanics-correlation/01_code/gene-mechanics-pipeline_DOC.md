@@ -408,7 +408,8 @@ after writing `run_log.csv`, if any step failed.
   protein and co-chaperone stays (among them HOP, the mitochondrial Hsp70 escort protein and
   FKBP4, the "HSP-binding immunophilin"). PERK, the ER-stress kinase, entered only through
   "HsPEK" and is no longer a candidate; name it explicitly if unfolded-protein-response sensors
-  are wanted. `chaperone` still pulls in histone chaperones (SPT6, NAP1L1, ASF1), ribosome and
+  are wanted. `chaperone` alone brings in 18 foot and 21 gill candidates that no other keyword
+  matches (2026-10-17): histone chaperones (SPT6, NAP1L1, ASF1), ribosome and
   respiratory-complex assembly factors and the acetylcholine receptor chaperone besides the
   protein-folding ones (tubulin-folding cofactors, Lon, ClpX, BAG-1, MESD), so the candidates and
   the `HSP_proteostasis` module stay broad there; raise `CANDIDATE_MIN_PIDENT` or narrow

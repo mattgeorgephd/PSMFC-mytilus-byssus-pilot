@@ -24,3 +24,43 @@ comparable between panels, except the two tissue panels of one row of `PCA_both_
 | `PCA_isolation_day.csv` | the RNA isolation day within arms, by tissue, in the 500 most variable genes and in all genes: `isolation_days` (the day or days of each arm), `arms_with_two_days`, `R2_day_within_arm` (the day's share of the variation after the arm), `p` (the days permuted among the libraries of each arm), `null_median`. In foot each arm was isolated on one day, so it cannot be tested there |
 | `isolation_day_contrasts.csv` | the indirect check for foot: what the three stressor contrasts of each tissue share, since all three compare with the same controls (a difference between the controls' isolation day and the others' would be shared): `controls_isolated`, `controls_share_day_with`, `DEGs_OA` to `DEGs_DO`, `genes_tested_in_all_three`, `DE_in_all_three`, `same_direction`, and the correlations of the three contrasts' apeglm fold changes (`r_lfc_OA_OW`, `r_lfc_OA_DO`, `r_lfc_OW_DO`); gill, whose controls share their day with DO, is the comparison |
 | `PCA_loadings.csv` | the 25 genes with the largest loadings on PC1 and PC2 of each set: `LOC_ID`, `loading`, `byssal_name` (named as a byssal protein), `protein_name` (best hit) |
+
+## Results (run of 610f1dc, 2026-10-17; `isolation_day_contrasts.csv` from b275fc2)
+
+PERMANOVA R² (share of the variation between the groups) and permutation p (999 permutations;
+0.001 is the smallest possible), in the 500 most variable genes and in all genes:
+
+| set | foot R² (p) | foot, all genes | gill R² (p) | gill, all genes |
+|---|---|---|---|---|
+| every day-3 arm | 0.077 (0.13) | 0.093 (0.001) | 0.102 (0.001) | 0.097 (0.001) |
+| OA vs control | 0.046 (0.28) | 0.056 (0.004) | 0.094 (0.001) | 0.077 (0.001) |
+| OW vs control | 0.048 (0.24) | 0.054 (0.017) | 0.051 (0.037) | 0.057 (0.001) |
+| DO vs control | 0.055 (0.20) | 0.075 (0.001) | 0.088 (0.001) | 0.076 (0.001) |
+| lab control vs control | 0.346 (0.001) | 0.212 (0.001) | 0.120 (0.001) | 0.166 (0.001) |
+| every arm with the lab control | 0.271 (0.001) | 0.167 (0.001) | 0.137 (0.001) | 0.152 (0.001) |
+
+- **Foot.** The arms do not separate in the 500 most variable genes, and only weakly in all
+  genes (R² 0.05 to 0.09). Foot PC1 (21% of the variance) is the byssal axis: 56% of its squared
+  loadings fall on genes named as byssal proteins (foot proteins 2, 10, 12 and 15, YGH-rich
+  proteins, collagen-like proteins 5 to 7), and its scores follow the animals' mean mfp
+  expression (Spearman 0.92, `09` step 07). The largest source of variation among day-3 feet is
+  which animals express the byssal genes, not the treatment.
+- **Gill.** The arms separate (R² 0.10, p 0.001), OA and DO from the controls more than OW
+  (0.094 and 0.088 against 0.051). The spread differs between the arms (p 0.018), which also
+  raises R². Gill PC1 (7%) is driven by five adjacent genes with no BLAST hit (LOC134690918 to
+  LOC134690922).
+- **The lab control** separates from the day-3 controls in both tissues, most in foot (R² 0.35,
+  PC1 47%), as the different day-0 dissection predicts; with it, PC1 of every foot set is the
+  day-0 against day-3 axis.
+- **Both tissues together:** tissue is PC1 (79%; R² 0.80 for tissue and arm together).
+- **RNA isolation day** (`PCA_isolation_day.csv`). In gill, where OA and OW each span two
+  isolation days, the day within those arms explains 4.2% of the variation, exactly what
+  shuffling the days gives (null median 4.2%; p 0.47 in the top 500 genes, 0.88 in all genes),
+  and the controls and DO, isolated on the same day, separate as much as OA from the controls.
+  In foot each arm was isolated on its own day (the controls on 2021-12-23, 17 to 19 days before the
+  others), so no direct test is possible. The indirect check (`isolation_day_contrasts.csv`)
+  finds no sign of a shared difference: a difference between the foot controls' isolation and
+  the others' would show in all three foot contrasts, but only 7 genes are DE in all three (all
+  in the same direction), against 21 in gill (20), and the foot contrasts' fold changes agree
+  less than gill's (r 0.18, 0.50 and 0.23 for OA with OW, OA with DO and OW with DO, against
+  0.29, 0.62 and 0.43). A modest effect of the isolation day on some genes cannot be excluded.
