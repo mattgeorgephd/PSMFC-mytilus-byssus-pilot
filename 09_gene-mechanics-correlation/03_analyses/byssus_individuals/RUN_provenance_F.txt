@@ -1,5 +1,5 @@
 [07_byssal_individuals.Rmd]
-generated            : 2026-10-17 21:21:03
+generated            : 2026-10-18 04:16:56
 tissue               : F (46 day-3 animals, 12 lab-control libraries as reference)
 genes                : 154 byssal genes of script 04, 140 expressed; groups scored: mfp-1 to -6, Thread core, Other byssal structural, Byssal accessory, Cross-linking and curing, Collagen, Collagen biosynthesis, ECM and adhesion
 coordination         : mfp-1 to -6 r 0.81 (p 5e-04); Thread core r 0.26 (p 0.006); Other byssal structural r 0.56 (p 5e-04); Byssal accessory r 0.08 (p 0.0055); Cross-linking and curing r 0.08 (p 5e-04); Collagen r 0.09 (p 5e-04); Collagen biosynthesis r 0.12 (p 5e-04); ECM and adhesion r 0.02 (p 0.003)
@@ -12,7 +12,7 @@ genome-wide          : 7791 genes tested against the mfp score within arms; q < 
 talk heatmaps        : v1 22 genes (KW p 0.35; threads rho -0.22, p 0.14); v2 25 genes (KW p 0.72; threads rho -0.10, p 0.52)
 permutations         : 2000 within arms, seed 20261017
 checks               : 7 run, 0 failed
-code commit          : 0532bf9f9797
+code commit          : 2988a72c6f33
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : DESeq2 1.52.0, dplyr 1.2.1, ggplot2 4.0.3, patchwork 1.3.2, ggrepel 0.9.8, readxl 1.5.0.1

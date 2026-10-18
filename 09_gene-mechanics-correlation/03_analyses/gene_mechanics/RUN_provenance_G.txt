@@ -1,5 +1,5 @@
 [01_gene_mechanics_correlation.Rmd]
-generated            : 2026-10-17 20:37:52
+generated            : 2026-10-18 04:18:16
 tissue               : G
 INCLUDE_CONTROL_ARM  : TRUE
 reported test        : ANCOVA level_day3 ~ expression + treatment + level_baseline (log scale; per-animal geometric mean, largest thread for max_force)
@@ -10,13 +10,14 @@ paired animals       : 47 (control 12, OA 12, OW 12, DO 11)
 in the fits          : 46 (control 12, OA 12, OW 11, DO 11)
 genes passing expression filter: 13017
 CANDIDATE_ANNOTATION : genome (evalue <= 1e-10, pident >= 0)
-candidate genes      : 314 (byssal structural 11; named in TC DEG tables 80)
+candidate genes      : 378 (byssal structural 11; named in TC DEG tables 105)
+chaperone families   : 187 candidates (ER folding 17, Hsp100/Clp 1, Hsp70 co-chaperone 10, Hsp70/Hsp110 83, Hsp90 3, Hsp90 co-chaperone 11, J-domain protein 40, chaperonin 10, prefoldin 6, small HSP 1, stress regulator 5)
 EXCLUDE_FLOOR_GENES  : TRUE (exclude > 0.4, caution > 0.2)
-candidates tested    : 312 (2 at the detection floor)
+candidates tested    : 375 (3 at the detection floor)
 DEG union tested     : 982 of 982
-family sizes (tests) : candidate x primary 624, candidate x exploratory 624, DEG union 3928
+family sizes (tests) : candidate x primary 750, candidate x exploratory 750, DEG union 3928
 checks               : 17 run, 0 failed
-code commit          : 610f1dc9d59b
+code commit          : 2988a72c6f33
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : DESeq2 1.52.0, dplyr 1.2.1, readr 2.2.0
@@ -39,32 +40,34 @@ inputs (md5, repo-relative path):
   7da841b3313cf82c53a736624a4f7906  05_differential-expression/03_analyses/DEG_lists/Gill/GOA_TC_siggene.csv
   880a0a97c4e7fbc7c7c6f045d7db3d1c  05_differential-expression/03_analyses/DEG_lists/Gill/GOW_TC_siggene.csv
   cc18dcfb6a09bd221d3a9a5edd0b5240  05_differential-expression/03_analyses/DEG_lists/Gill/GDO_TC_siggene.csv
-  b30c1044619b358fa6563099647658ec  09_gene-mechanics-correlation/01_code/01_gene_mechanics_correlation.Rmd
+  c689efbc05e63f1631e1839554b85482  09_gene-mechanics-correlation/01_code/01_gene_mechanics_correlation.Rmd
+  8f662308ac1a07e33e4dcbd27f6a54ab  09_gene-mechanics-correlation/01_code/_chaperone_families.R
   a0591028d5c3be67cb4d0daaa8562161  tools/pipeline_checks.R
   f6fb7d46a027ca4ec9c0be27c9ff17de  tools/gene_ids.R
 
 [02_gene_mechanics_expanded.Rmd]
-generated            : 2026-10-17 20:37:55
+generated            : 2026-10-18 04:18:19
 reported test        : script 01's ANCOVA (assoc_candidate_G.csv, assoc_DEGunion_G.csv)
 metrics [scale, tier]: mean_force [log, primary], pad_area [log, primary], max_force [log, exploratory], adhesion_kpa [log, exploratory]
 primary metrics      : mean_force, pad_area
 nuisance covariates  : treatment
-modules              : HIF_hypoxia (11), oxidative_detox (76), HSP_proteostasis (147), tRNA_translation (35), byssal_collagen (71), byssal_structural (11)
+modules              : HIF_hypoxia (11), oxidative_detox (76), HSP_proteostasis (187), tRNA_translation (35), byssal_collagen (71), byssal_structural (11)
 FDR_ALPHA            : 0.1
-candidates tested    : 312 of 314 (floor filter in script 01)
+candidates tested    : 375 of 378 (floor filter in script 01)
 N_INFLUENCE_HITS     : 3
-checks               : 1 run, 0 failed
-code commit          : 610f1dc9d59b
+checks               : 2 run, 0 failed
+code commit          : 2988a72c6f33
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : dplyr 1.2.1, readr 2.2.0
 inputs (md5, repo-relative path):
   df07d0f61d5e1404032d9f65f47d9b1b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/metrics_config_G.csv
   166f20feb303f1525b39cf66f778c765  09_gene-mechanics-correlation/03_analyses/gene_mechanics/paired_sample_manifest_G.csv
-  23a83f380e377582a4575e588e55533b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/candidate_genes_G.csv
-  b8b6ce806ceca6416c8c05510cc8cb2f  09_gene-mechanics-correlation/03_analyses/gene_mechanics/detection_floor_flags_G.csv
+  25f0eff4eb7616975f757bb1c0696a1d  09_gene-mechanics-correlation/03_analyses/gene_mechanics/candidate_genes_G.csv
+  fe9b95d98dc1cb4efac4c3b54274c4dd  09_gene-mechanics-correlation/03_analyses/gene_mechanics/detection_floor_flags_G.csv
   5c792518aa0003c3f4ee27b665e86e8b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/vst_paired_G.csv
-  53ed202951ed0ba122de80dd9dcfd59d  09_gene-mechanics-correlation/03_analyses/gene_mechanics/assoc_candidate_G.csv
+  fa6555d98c7ac1c4a917fff6d6422bc6  09_gene-mechanics-correlation/03_analyses/gene_mechanics/assoc_candidate_G.csv
   7e8463d0b78e1cbddf562bc767a3f56d  09_gene-mechanics-correlation/03_analyses/gene_mechanics/assoc_DEGunion_G.csv
   114e427020bbd86f1682f90b18d451f2  09_gene-mechanics-correlation/03_analyses/gene_mechanics/annotation_map.csv
-  e7fe5503e05f2f5cd43b7aa0af7eb857  09_gene-mechanics-correlation/01_code/02_gene_mechanics_expanded.Rmd
+  42b174bc9e3429f8db9c0ad45646a884  09_gene-mechanics-correlation/01_code/02_gene_mechanics_expanded.Rmd
+  8f662308ac1a07e33e4dcbd27f6a54ab  09_gene-mechanics-correlation/01_code/_chaperone_families.R

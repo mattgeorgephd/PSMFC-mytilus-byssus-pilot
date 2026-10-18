@@ -1,5 +1,5 @@
 [06_expression_suites.Rmd]
-generated            : 2026-10-17 20:45:27
+generated            : 2026-10-18 04:26:13
 tissue               : G
 axes                 : Co-expression module 58, DEG program 6, Expression PC 10, GO term 15
 modules              : 58 from the 4000 genes with the largest within-arm variance (min 30 genes)
@@ -11,7 +11,7 @@ DEG programs         : mean_force across Q2 0.121 (p 0.05), mean_force within Q2
 power check          : treatment + all axes, across arms: mean_force Q2 0.074 (treatment alone 0.379), pad_area Q2 -0.189 (treatment alone -0.008)
 animals              : 47
 checks               : 7 run, 0 failed
-code commit          : 610f1dc9d59b
+code commit          : 2988a72c6f33
 uncommitted changes  : no
 R                    : R version 4.6.1 (2026-06-24)
 packages             : glmnet 5.1, dynamicTreeCut 1.63.1, dplyr 1.2.1, ggplot2 4.0.3, patchwork 1.3.2, ggrepel 0.9.8
@@ -19,7 +19,7 @@ inputs (md5, repo-relative path):
   df07d0f61d5e1404032d9f65f47d9b1b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/metrics_config_G.csv
   166f20feb303f1525b39cf66f778c765  09_gene-mechanics-correlation/03_analyses/gene_mechanics/paired_sample_manifest_G.csv
   5c792518aa0003c3f4ee27b665e86e8b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/vst_paired_G.csv
-  23a83f380e377582a4575e588e55533b  09_gene-mechanics-correlation/03_analyses/gene_mechanics/candidate_genes_G.csv
+  25f0eff4eb7616975f757bb1c0696a1d  09_gene-mechanics-correlation/03_analyses/gene_mechanics/candidate_genes_G.csv
   114e427020bbd86f1682f90b18d451f2  09_gene-mechanics-correlation/03_analyses/gene_mechanics/annotation_map.csv
   766b2ebd563e72164ab42b19de5452ea  09_gene-mechanics-correlation/03_analyses/go_mechanics/mechanics_sets_G.csv
   dac54d191e461d473bdb96bdfd5a63ec  09_gene-mechanics-correlation/03_analyses/go_mechanics/mechanics_set_associations_G.csv
