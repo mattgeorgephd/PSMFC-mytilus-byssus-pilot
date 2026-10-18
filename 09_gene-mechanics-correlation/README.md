@@ -4,7 +4,9 @@ Cross-cutting analysis linking gene expression to byssal thread mechanics, the b
 manuscript gene/mechanics interaction results (Section 3.4). Within each arm, and with the
 animal's own baseline held constant, it asks whether animals that express a gene, a DEG set,
 the genes of an enriched GO term, or their mitochondrial genes more strongly make stronger or
-weaker plaques. Candidate gene families: HIF, HSP, peroxidase, foot/byssus proteins. Script 07
+weaker plaques. Candidate gene families: foot/byssus proteins and collagens, plaque-curing
+enzymes, HIF signalling, molecular chaperones (by family), tRNA synthetases and oxidative
+stress. Script 07
 asks which individual mussels express the byssal genes within each arm, and draws them in a
 fixed mussel order.
 
@@ -22,6 +24,7 @@ fixed mussel order.
 │   ├── 05_go_term_mechanics.Rmd             mechanics against DEG sets, enriched GO terms, mitochondrial share
 │   ├── 06_expression_suites.Rmd             suites: programs, co-expression modules, expression components between and within arms; multi-gene prediction
 │   ├── 07_byssal_individuals.Rmd            byssal expression by individual within arms; heatmaps in a fixed mussel order
+│   ├── _chaperone_families.R                the chaperone families, scripts 01 and 02's stress-protein genes
 │   ├── gene-mechanics-pipeline_DOC.md       how the seven chain together; config; checks
 │   └── _superseded/11-byssal_thread_by_sample.Rmd   Grace's legacy per-sample joining (not in the chain)
 ├── 02_data/
@@ -87,7 +90,11 @@ exploratory (`METRICS` in script 01, `tier` column in every output). Extension i
 analysed (threads were cut near the plaque, so the length under test was not controlled).
 Animals without baseline threads are not in the fits. BH is applied within each metric
 (`q_lm`) and within each tier family (`q_family`). Candidates are the keyword matches in the
-genome-wide BLAST annotation that are above the detection floor. The mitochondrial loci are
+genome-wide BLAST annotation and, for the stress proteins, the genes whose best hit's
+recommended name places them in a chaperone family (`01_code/_chaperone_families.R`, since
+2026-10-18: Hsp70/Hsp110, Hsp90, small HSPs, chaperonins, J-domain proteins, Hsp100/Clp,
+prefoldin, Hsp70 and Hsp90 co-chaperones, ER folding factors, and the regulators of the
+heat-shock and unfolded-protein responses), above the detection floor. The mitochondrial loci are
 in no gene universe. Script 02 adds six pathway modules, the leave-one-animal-out influence
 check and `best_hits_<T>.csv`, all through the same ANCOVA.
 

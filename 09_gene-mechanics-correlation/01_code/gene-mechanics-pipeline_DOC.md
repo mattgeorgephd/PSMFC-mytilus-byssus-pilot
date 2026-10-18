@@ -128,8 +128,9 @@ also absorbs any between-animal baseline differences the arm assignment did not 
 `CANDIDATE_ANNOTATION = "genome"`: every gene in the count matrix is annotated with its best
 UniProt hit (highest bitscore) from `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`, with
 `blast_pident` and `blast_evalue` carried along, and any expressed gene whose name matches
-`CANDIDATE_KEYWORDS` (byssal / collagen / plaque-curing / HSP / hypoxia / tRNA-synthetase /
-oxidative-stress terms) and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-10`,
+`CANDIDATE_KEYWORDS` (byssal / collagen / plaque-curing / hypoxia / tRNA-synthetase /
+oxidative-stress terms), or whose best hit's recommended name places it in a chaperone family
+(below), and passes the BLAST floor (`CANDIDATE_MAX_EVALUE = 1e-10`,
 `CANDIDATE_MIN_PIDENT = 0`) is a candidate. The alternative `"TC_DEG"` restricts candidates
 to genes named in the treatment-vs-control DEG tables plus the byssal structural genes; it
 made "already a DEG in some contrast" a hidden entry condition and is kept only for comparison. `in_TC_DEG_annotation` marks the
@@ -142,6 +143,44 @@ protein 12), and "protease inhibitor-like protein-1", "C1q-domain-containing pro
 "TSP_1 domain containing protein-1" as byssal accessory (candidates in script 01, the
 `byssal_collagen` module in script 02, `byssal_accessory` in script 04). These names occur
 only on *M. coruscus* entries in the BLAST tables.
+
+### The chaperone families (the stress proteins)
+
+Since 2026-10-18 the stress-protein candidates are not keyword matches but the families of
+`_chaperone_families.R`, sourced by scripts 01 and 02 (Matt's choice, option d). A gene's family
+comes from its best hit's recommended UniProt name, the text before the first parenthesis, so an
+alternative name cannot place it; J-domain proteins are also recognised by the HGNC alias "DnaJ
+homolog subfamily A/B/C member N", which UniProt keeps for J-proteins with other names.
+
+| family | members (recommended names) | source |
+|---|---|---|
+| Hsp70/Hsp110 | heat shock 70 kDa proteins (the bivalve HSPA12 expansion among them), heat shock cognate 71 kDa protein, BiP, stress-70 (mtHsp70), Hsp105/110, 97 kDa heat shock protein, hypoxia up-regulated protein 1 | Kampinga et al. 2009, Cell Stress Chaperones 14:105 |
+| Hsp90 | HSP 90, endoplasmin (GRP94), TRAP1 | Kampinga et al. 2009 |
+| small HSP | heat shock protein beta-1 to -10, alpha-crystallins, small heat shock proteins (not IFT25, the former HSPB11) | Kampinga et al. 2009 |
+| chaperonin | 60 and 10 kDa heat shock proteins, the eight CCT subunits | Kampinga et al. 2009 |
+| J-domain protein | DnaJ homologs, and by alias sacsin, GAK, SEC63, TIM14, HSCB, auxilin | Kampinga and Craig 2010, Nat Rev Mol Cell Biol 11:579 |
+| Hsp100/Clp | ClpX, ClpB | Schirmer et al. 1996, Trends Biochem Sci 21:289 |
+| prefoldin | prefoldin subunits | Vainberg et al. 1998, Cell 93:863 |
+| Hsp70 co-chaperone | BAG proteins, HspBP1, GrpE, HIP, HOP, CHIP, SGT, the mtHsp70 escort protein (Hep1) | Bracher and Verghese 2015, Front Mol Biosci 2:10; Hartl et al. 2011, Nature 475:324 |
+| Hsp90 co-chaperone | Cdc37, p23, Aha1, Chp-1, Sgt1, AIP, FKBP4, FKBP5, Cyp40, Unc45, Cns1, NudC, PP5 | Rohl et al. 2013, Trends Biochem Sci 38:253 |
+| ER folding | calnexin, calreticulin, calmegin, the protein disulfide isomerases (PDI, PDIA3 to PDIA6, ERp46, TMX3, ERp29, ERp44), UGGT, cyclophilin B, the ER FKBPs, HSP47 | Ellgaard and Helenius 2003, Nat Rev Mol Cell Biol 4:181 |
+| stress regulator | heat-shock factor and its binding protein; IRE1, PERK, ATF6 and XBP1 | Richter et al. 2010, Mol Cell 40:253; Walter and Ron 2011, Science 334:1081 |
+
+Left out on purpose: chaperones of a single client or complex (tubulin-folding cofactors, MESD,
+NACHO, phosducin-like 3, histone chaperones, ribosomal-protein, proteasome and
+respiratory-complex assembly chaperones), proteases (Lon, ClpP, YME1L, HtrA2), cytosolic and
+spliceosomal peptidyl-prolyl isomerases, the PDI oxidases ERO1 and QSOX1, torsins, and proteins
+whose chaperone partnership is not their main role (FKBP8, TOM70, TSC1, FNIP1, the R2TP
+complex). Script 02's `HSP_proteostasis` module is the same genes (a check), so the module and
+the candidates no longer differ by the peptidyl-prolyl isomerases the module's old regex took.
+
+The keywords they replace ("heat shock", "Hsp", "stress-70", "BiP", "chaperone", "endoplasmic
+reticulum chaperone", "hypoxia up-regulated") matched any part of a name. They caught chaperones
+of tubulin, histones and ribosome assembly, Lon, a coenzyme Q kinase whose alias is "chaperone
+activity of bc1 complex" and IFT25 by its old HSPB11 alias, and they missed most DnaJ proteins,
+CCT, prefoldin, calnexin, calreticulin and the protein disulfide isomerases. GO alone was
+considered and not used: "protein folding" and the chaperone terms of the 2026_03 records also
+cover apoptosis regulators, clathrin and huntingtin, and none of the HSPA12 genes has them.
 
 ### Gene keys and the mitochondrial loci
 
@@ -401,23 +440,16 @@ after writing `run_log.csv`, if any step failed.
 - The candidate keywords are regexes on UniProt names, matched without regard to case, so a
   short keyword can match inside an unrelated name. `aminoacyl` matched aminoacylase-1 and
   acylaminoacyl-peptidase until 2026-10-05; it is now `aminoacyl[- ]tRNA` (scripts 01 and 02).
-  `Hsp` matched abbreviations inside names until 2026-10-17 ("HSPG", "HsPDE8B", "HsPEK",
-  "hSPL", "hSPP1", "HSPK 21", "CRHSP-24", and in gill also "HsPIP", "hSPE-39", "HSP1BP-3"), and
-  `BiP` matched "Biphenyl hydrolase-like" and "CTNNBIP1": 9 foot and 12 gill candidates with no
-  heat-shock role (perlecan, phosphodiesterase 8B, PERK, sphingosine-1-phosphate lyase and
-  phosphatase, Nek2, calcium-regulated heat-stable protein 24, a serine hydrolase, LZIC and others).
-  `Hsp` now has to start a word and be followed by a size ("Hsp70", "HSP 90", "HSP-60"), a family
-  letter and number ("HSPA5", "HSPB1"), "BP" and a number ("HspBP1"), "-binding" or "-like", and
-  `BiP` has to be a whole word (both scripts, matched with `perl = TRUE`); every heat-shock
-  protein and co-chaperone stays (among them HOP, the mitochondrial Hsp70 escort protein and
-  FKBP4, the "HSP-binding immunophilin"). PERK, the ER-stress kinase, entered only through
-  "HsPEK" and is no longer a candidate; name it explicitly if unfolded-protein-response sensors
-  are wanted. `chaperone` alone brings in 18 foot and 21 gill candidates that no other keyword
-  matches (2026-10-17): histone chaperones (SPT6, NAP1L1, ASF1), ribosome and
-  respiratory-complex assembly factors and the acetylcholine receptor chaperone besides the
-  protein-folding ones (tubulin-folding cofactors, Lon, ClpX, BAG-1, MESD), so the candidates and
-  the `HSP_proteostasis` module stay broad there; raise `CANDIDATE_MIN_PIDENT` or narrow
-  `chaperone` if a narrower family is wanted.
+  The stress-protein keywords had the same problem (`Hsp` matched "HSPG", "HsPDE8B", "HsPEK"
+  and other abbreviations until 2026-10-17; `chaperone` matched histone, tubulin and
+  ribosome-assembly chaperones), which is why they became the chaperone families of
+  2026-10-18 (above).
+- The chaperone families are assigned by the best hit's name, as every annotation here is: a
+  gene is an Hsp70 or a J-domain protein because its best hit is. The 74 gill (32 foot) HSPA12
+  genes, a bivalve expansion of the Hsp70 family (the oyster genome has 88 Hsp70 genes; Zhang et
+  al. 2012, Nature 490:49), carry no protein-folding GO term, and the 13 sacsin genes (11 in foot) enter as
+  J-domain proteins by their HGNC alias (DNAJC29) without the annotation showing their J-domain.
+  PERK, IRE1, ATF6 and XBP1 are candidates as regulators of the unfolded-protein response.
 
 ---
 
@@ -433,7 +465,8 @@ after writing `run_log.csv`, if any step failed.
 | 01 | `BYSSAL_STRUCTURAL_REGEX` | foot protein, preCol, ACDC, ... | flags the byssal structural genes |
 | 01, 02 | `FDR_ALPHA` | 0.10 | BH threshold for flagging (`q_lm`, `q_family`) |
 | 02 | `N_INFLUENCE_HITS` | 3 | candidate hits per metric that get the leave-one-animal-out refit |
-| 02 | `modules` | six regexes | includes `byssal_structural` |
+| 01, 02 | `CHAPERONE_FAMILIES` (`_chaperone_families.R`) | eleven families | the stress-protein candidates and the `HSP_proteostasis` module |
+| 02 | `modules` | five regexes and the chaperone families | includes `byssal_structural` |
 | 03 | `USE_RAW_THREAD_SET` | TRUE | any extracted trace vs thread-summary mussels only |
 | 04 | `USE_RAW_THREAD_SET` | FALSE | |
 | 01-04 | `params$tissue` | "F" | foot or gill |

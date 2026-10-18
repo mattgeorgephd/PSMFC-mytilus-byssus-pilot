@@ -157,6 +157,14 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     (`GO.db` 3.23.1) and its generic GO slim (`08_gene-annotation/02_data/goslim_generic.obo`).
     Kept for comparison: the search of 2024 (`genome-foot/`) and its hits with the 2026_03
     records (`genome-foot-uniprot2026_03/`, `03_blast` step 04).
+  - Candidate genes (`09` steps 01 and 02): keyword groups on the best hit's UniProt names
+    (byssal proteins, collagens, plaque-curing enzymes, hypoxia signalling, tRNA synthetases,
+    oxidative stress) and, for the stress proteins, the chaperone families of
+    `09_gene-mechanics-correlation/01_code/_chaperone_families.R` by the best hit's recommended
+    name (Hsp70/Hsp110, Hsp90, small HSPs, chaperonins, J-domain proteins, Hsp100/Clp, prefoldin,
+    Hsp70 and Hsp90 co-chaperones, ER folding factors, and the regulators of the heat-shock and
+    unfolded-protein responses; Matt, 2026-10-18); script 02's `HSP_proteostasis` module is the
+    same chaperones; BH within each metric and within each tier.
   - Expression suites (`09` step 06, exploratory): script 05's gene sets, co-expression
     modules and expression components, each through the within-arm ANCOVA and the same model
     without treatment; elastic-net prediction of held-out animals (glmnet 5.1) against label

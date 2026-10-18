@@ -290,6 +290,17 @@ the other sections use the new ones.
   expression and by mussel ID. `AGENTS.md` (Figures) records the rule. A figure that changes only
   because its inputs changed (the `09` candidate scatter plots after the keyword fix, for example)
   is redrawn in place, and its earlier versions stay in git history (Matt's choice, 2026-10-17).
+- **The stress proteins by chaperone family** (2026-10-18, Matt's choice, option d). The keyword
+  `chaperone` had brought in 18 foot and 21 gill candidates that no other keyword matched, most of
+  them not stress chaperones (tubulin-folding cofactors, histone, ribosome and proteasome assembly
+  chaperones, MESD, NACHO, a coenzyme Q kinase by its alias), while the name keywords missed most
+  DnaJ proteins, the chaperonin CCT, prefoldin, calnexin, calreticulin and the disulfide
+  isomerases. `09` scripts 01 and 02 now take the stress proteins from the chaperone families of
+  `01_code/_chaperone_families.R` (by the best hit's recommended name; Hsp70/Hsp110, Hsp90, small
+  HSPs, chaperonins, J-domain proteins, Hsp100/Clp, prefoldin, Hsp70 and Hsp90 co-chaperones, ER
+  folding factors, and the regulators of the heat-shock and unfolded-protein responses, each with
+  its source in the DOC). Script 02's `HSP_proteostasis` module is the same genes. Foot candidates
+  255 to 319 (137 chaperones), gill 314 to 378 (187).
 
 ## In progress
 
@@ -304,7 +315,6 @@ the other sections use the new ones.
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Foot contrasts and RNA isolation day | each foot arm's RNA was isolated on its own day, the controls 17 to 19 days before the stressors (Done, above); the checks that are possible find no sign of a shared effect, but only re-isolating a subset of foot samples across arms on one day (or qPCR of a few DEGs on such RNA) could measure it. Options: state it as a limitation; re-isolate; give the gill results more weight where the two tissues disagree | Matt |
-| `chaperone` keyword in `09` | it brings in 18 foot and 21 gill candidates that no other keyword matches, most of them not stress chaperones: tubulin-folding cofactors, proteasome and ribosome assembly chaperones, histone chaperones (ASF1, NAP1L1, SPT6), MESD and NACHO, with BAG1 and mitochondrial Lon and ClpX the protein-folding ones. Options: keep; drop the histone, tubulin and assembly chaperones; or drop the bare keyword (heat shock, Hsp, BiP and ER chaperone names stay). Either change moves the candidate q-values again | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,022 of 7,367 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
 | `03_blast/` and `04` step 01 | not pipeline stages; committed outputs are used. `04` step 01 is HPC only (inputs and binaries not in the repository). `01_genome_blast.Rmd` runs again since 2026-10-03 (the 2024 version is in `01_code/_superseded/`); its search of 2026 ran in the cloud environment (BLAST+ 2.15.0, about 31 hours on 4 threads, in resumable parts), and steps 02 and 03 still need the HPC | HPC user |
