@@ -102,8 +102,9 @@ In the current run two genes pass q < 0.1 within their metric, and one of them w
 family too (`best_hits_<T>.csv`):
 
 - **Gill, candidate, plaque area (primary).** Animals that express LOC134718612 more strongly
-  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.035
-  over the 312 gill candidates tested, 0.069 over the primary family). It is annotated as heat shock 70 kDa
+  have smaller day-3 plaques (partial r -0.56, 95% interval -0.74 to -0.31, p 1.1e-4, q 0.041
+  over the 375 gill candidates tested, 0.083 over the primary family; 0.035 and 0.069 over the 312
+  keyword candidates before 2026-10-18). It is annotated as heat shock 70 kDa
   protein 12A, but only from a 32% identity BLAST hit, so it is a distant HSP70-family gene
   rather than a confident ortholog; it is expressed at a low level in gill (DESeq2 base mean
   about 10) and is not a TC DEG. Leaving out its most influential animal (T136) gives p 1.6e-5.
@@ -116,16 +117,28 @@ family too (`best_hits_<T>.csv`):
   DEG (log2 fold change -0.52) in the Foot DO down-regulated cilium and dynein-arm assembly terms (`07`); within arms,
   the animals with less of it make weaker threads. Robust to leaving out one animal.
 
-The next candidates are glutathione peroxidase 7 with the strongest thread in gill
-(exploratory, q 0.12); the lowest foot candidate q is 0.47 over the 253 foot candidates tested
-(mefp-5 and two expressed mfp-3 genes among them since 2026-10-06, none near, p 0.39 or more), and
-no module comes near (lowest q 0.61). Since 2026-10-17 `Hsp` and `BiP` match heat-shock names
-only: 9 foot and 12 gill genes whose names merely contained those letters (perlecan's "HSPG",
-"HsPDE8B", PERK's "HsPEK", S1P lyase's "hSPL" and others) left the candidates, none of them near
-significance; the p-values of the others are unchanged and their q-values move by at most 0.03.
-Until 2026-10-05 the gill's next result was aminoacylase-1 with adhesion (q 0.14), but it was
-a candidate only because the keyword `aminoacyl`, meant for tRNA synthetases, matched its name;
-the keyword is now `aminoacyl[- ]tRNA` (`01_code/gene-mechanics-pipeline_DOC.md`, caveats).
+The next candidates are FKBP2, an ER peptidyl-prolyl isomerase, with the strongest thread in foot
+(exploratory: animals with more of it make weaker strongest threads, partial r -0.53, p 3.6e-4,
+q 0.11, family q 0.23; 74% BLAST identity), one of the genes that entered with the chaperone
+families, and glutathione peroxidase 7 with the strongest thread in gill (exploratory, q 0.14).
+The lowest foot candidate q in the primary metrics is 0.48 over the 316 foot candidates tested
+(ERp29, another entering ER folding factor, and prolyl 4-hydroxylase alpha-2, both with mean
+peak force; mefp-5 and two expressed mfp-3 genes among the candidates since 2026-10-06, none
+near, p 0.39 or more), and no module comes near (lowest q 0.65).
+
+Since 2026-10-18 the stress proteins are the chaperone families of `01_code/_chaperone_families.R`
+instead of keywords (above): 80 foot and 84 gill genes entered the tested candidates (DnaJ
+proteins, CCT, prefoldin, calnexin, calreticulin, the protein disulfide isomerases, the Hsp70 and
+Hsp90 co-chaperones, the unfolded-protein-response sensors) and 17 foot and 21 gill left
+(tubulin-folding cofactors, histone, ribosome and proteasome assembly chaperones, MESD, NACHO,
+Lon, IFT25, HSPB1-associated protein 1, a coenzyme Q kinase). The genes in both runs keep their
+p-values; with more tests the gill q-values rise slightly, while in foot the entering ER folding
+factors, which carry some of the lowest p-values, lower several q-values. The definition was
+chosen after the keyword results had been seen, so the keyword results are quoted beside it.
+Before that, `Hsp` and `BiP` had matched abbreviations inside unrelated names (perlecan's "HSPG",
+PERK's "HsPEK" and others, until 2026-10-17), and the keyword `aminoacyl`, meant for tRNA
+synthetases, aminoacylase-1, until 2026-10-05 the gill's next result (q 0.14)
+(`01_code/gene-mechanics-pipeline_DOC.md`, caveats).
 
 Script 05 puts the sets the expression analysis found through the same ANCOVA: the up- and
 the down-regulated DEGs of each stressor, the genes behind every enriched topGO term of

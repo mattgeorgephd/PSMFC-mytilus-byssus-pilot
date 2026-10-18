@@ -351,7 +351,7 @@ score into `paired_sample_manifest_<T>.csv` for inspection; they enter no model.
 | `metrics_config_<T>.csv` | metric list with `scale` (log / raw), `tier` (primary / exploratory) and label, arm levels, covariates, the `EXCLUDE_FLOOR_GENES` setting |
 | `vst_paired_<T>.csv` | handoff: VST expression of the paired samples |
 | `annotation_map.csv` | genome-wide best UniProt hit per LOC with `blast_pident`, `blast_evalue`, `blast_ok`, `in_TC_DEG_annotation` |
-| `candidate_genes_<T>.csv` | the candidate set with `byssal_structural`, `frac_at_floor`, `floor_flag`, `tested` |
+| `candidate_genes_<T>.csv` | the candidate set with `chaperone_family` (NA for the keyword matches), `byssal_structural`, `frac_at_floor`, `floor_flag`, `tested` |
 | `detection_floor_flags_<T>.csv` | every candidate and DEG-union gene: fraction of paired samples at the VST floor, `floor_flag`, `tested` |
 | `assoc_candidate_<T>.csv`, `assoc_DEGunion_<T>.csv` | **the reported test**: script 01 ANCOVA per gene x metric with `scale`, `tier`, `n`, `slope`, `se`, `p_lm`, `baseline_slope`, `partial_r` with its marginal 95% interval (`partial_r_lo`, `partial_r_hi`), `q_lm`, `q_family`, floor flag |
 | `module_associations_<T>.csv`, `module_members_<T>.csv` | six pathway modules x four metrics (ANCOVA); the member genes |

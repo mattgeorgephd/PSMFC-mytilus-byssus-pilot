@@ -300,7 +300,13 @@ the other sections use the new ones.
   HSPs, chaperonins, J-domain proteins, Hsp100/Clp, prefoldin, Hsp70 and Hsp90 co-chaperones, ER
   folding factors, and the regulators of the heat-shock and unfolded-protein responses, each with
   its source in the DOC). Script 02's `HSP_proteostasis` module is the same genes. Foot candidates
-  255 to 319 (137 chaperones), gill 314 to 378 (187).
+  255 to 319 (137 chaperones; 316 tested), gill 314 to 378 (187; 375 tested); run 71a7f3e. The
+  genes in both runs keep their p-values. Gill HSP70-12A with plaque area stays the one candidate
+  association (q 0.035 to 0.041, family q 0.069 to 0.083); foot's lowest candidate q is now an
+  entering ER folding factor, FKBP2, with the strongest thread (exploratory, q 0.11); the module
+  has 137 and 187 genes and no association (p 0.69 or more); in step 06 the gill within-arm
+  plaque-area candidate scenario keeps p 0.020 (Q2 0.03 to 0.06). The definition was chosen after
+  the keyword results had been seen, so they are quoted beside it.
 
 ## In progress
 
