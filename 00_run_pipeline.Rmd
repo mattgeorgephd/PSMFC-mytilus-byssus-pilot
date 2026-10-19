@@ -110,7 +110,8 @@ finish_run(run_log, html_dir, "Pipeline")
 # Where the results are
 
 - Thread strength: `02_thread-strength/03_analyses/04_analyze-thread-strength/` and
-  `05_decompose-adhesion/`.
+  `05_decompose-adhesion/`; thread production and condition: `07_thread-production/` and
+  `08_condition/` there.
 - Differential expression: `05_differential-expression/03_analyses/DEG_lists/DEG_counts.csv`
   and `figures/`.
 - Iso-Seq reference (sensitivity): `06_iso-seq-transcriptome/03_analyses/03_isoseq-de/`

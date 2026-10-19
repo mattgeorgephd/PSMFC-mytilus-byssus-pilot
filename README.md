@@ -30,8 +30,8 @@ own folder's `03_analyses/`; later folders read earlier ones.
 |---|---|---|
 | `00_experiment_plan/` | experimental design slides and photos | reference only |
 | `00_treatment_conditions/` | tank DO, pH, temperature and salinity record and summary table | reference only |
-| `01_mussel-measurements/` | mussel size, condition and thread-production workbooks | input: `mussel-size-measurements.xlsx` feeds `02_thread-strength` script 01 |
-| `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, mean and maximum peak force and plaque area | `01_code/00_run_thread_strength.Rmd` |
+| `01_mussel-measurements/` | mussel size, condition and thread-production workbooks | input: `mussel-size-measurements.xlsx` feeds `02_thread-strength` script 01, `mussel-thread-production.xlsx` its script 07 (and `09` step 07), `mussel-condition.xlsx` its script 08 |
+| `02_thread-strength/` | tensometer trace extraction, thread summary, per-animal ANCOVA on adhesion, mean and maximum peak force and plaque area; the same ANCOVA on the threads made in 3 days; condition and gonad index of 60 mussels of their own | `01_code/00_run_thread_strength.Rmd` |
 | `03_blast/` | BLAST annotation of the genome CDS and the Iso-Seq transcriptome; the genome search of 2026 (Swiss-Prot 2026_03 plus 241 Mytilus foot and byssal proteins, with the UniProt 2026_03 records), with eight genes added by step 05 (six its low-complexity filter had hidden, two mfp-1-like genes adopted by their RefSeq name; `genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`), the gene-to-GO table used downstream; the 2024 search and its hits with the 2026_03 records kept for comparison | not a pipeline stage; outputs committed; step 01 ran in the cloud environment (about 31 h on 4 threads), step 05 too (about 2 min); steps 04 and 05 (`run: false`) run offline |
 | `04_sequence-alignment/` | read QC and trimming record, the previous HISAT2 + StringTie count matrices (HPC record), the Iso-Seq isoforms placed on the genome, the RefSeq annotation with Iso-Seq-extended 3' ends, the reads realigned and counted with featureCounts on it (**the count matrix of record**), and the mitochondrial genes counted on the mitochondrial genome alone | `01_code/00_run_sequence_alignment.Rmd` (steps 02, 03, 07 and 08 by default; 02-08 with `online: true`) |
 | `05_differential-expression/` | DESeq2 for 7 contrasts (each stressor vs the day-3 treatment control, and foot vs gill), DEG annotation, figures; the mitochondrial proteins on their own (with the mitochondrial haplotype groups) | `01_code/00_run_differential_expression.Rmd` |
@@ -117,7 +117,7 @@ flowchart TB
   end
   subgraph RUN["Pipeline stages (run order 02, 04, 05, 06, 07, 08, 09)"]
     direction TB
-    s02["stage 02: thread strength"]
+    s02["stage 02: thread strength,<br>thread production, condition"]
     s04["stage 04: count matrix of record (04 step 07),<br>mitochondrial genome counts (04 step 08)"]
     s05["stage 05: differential expression"]
     s06["stage 06: Iso-Seq and recount comparisons<br>(06 steps 03, 04)"]
@@ -208,6 +208,8 @@ flowchart TB
 ```mermaid
 flowchart LR
   meas(["01_mussel-measurements/<br>mussel-size-measurements.xlsx"])
+  prod(["01_mussel-measurements/<br>mussel-thread-production.xlsx"])
+  cond(["01_mussel-measurements/<br>mussel-condition.xlsx"])
   tens(["02_data/tensometer_output/"])
   pad(["02_data/pad_area_measurements.xlsx"])
   t1["01 mussel key"] --> t2["02 extract traces"] --> t3["03 thread summary"] --> t4["04 ANCOVA"] --> t5["05 decompose adhesion"]
@@ -215,6 +217,10 @@ flowchart LR
   t5 --> t6["06 force vs area, ellipses"]
   t3 --> t6
   t4 --> t6
+  t1 --> t7["07 thread production"]
+  t1 --> t8["08 condition"]
+  prod --> t7
+  cond --> t8
   meas --> t1
   tens --> t1
   tens --> t2
@@ -225,8 +231,8 @@ flowchart LR
   t5 --> o91
   classDef ext fill:#eef3f7,stroke:#5b7a8c,color:#1b2730
   classDef run fill:#e8f4ec,stroke:#2f7a4a,color:#1b2730
-  class meas,tens,pad,o9,o93,o91 ext
-  class t1,t2,t3,t4,t5,t6 run
+  class meas,prod,cond,tens,pad,o9,o93,o91 ext
+  class t1,t2,t3,t4,t5,t6,t7,t8 run
 ```
 
 | step | in pipeline | reads | writes (`03_analyses/`) |
@@ -237,6 +243,8 @@ flowchart LR
 | 04 `04_analyze_thread_strength.Rmd` | yes | `02·03` summary; `_ancova.R`, `tools/plot_style.R`, `tools/pipeline_checks.R` | `04_analyze-thread-strength/`: `STATS_ancova_*.csv`, `DATA_ancova_animals.csv`, `DESC_*.csv`, `BP_*`, `LineBox_*` and `DIAG_*` figures, `RUN_provenance.txt` |
 | 05 `05_decompose_adhesion.Rmd` | yes | `02·03` summary; `02·04` `STATS_ancova_vs_control.csv`; the same helpers | `05_decompose-adhesion/`: `STATS_ancova_*.csv`, `DATA_ancova_animals.csv`, `mussel_response_classification.csv`, `STATS_failure_mode.csv`, `FIG_*` figures, `RUN_provenance.txt` |
 | 06 `06_force_area_figures.Rmd` | yes | `02·05` `mussel_response_classification.csv`; `02·03` summary (lab reference); `02·04` `DESC_lab_reference.csv` (check); `tools/plot_style.R`, `tools/pipeline_checks.R` | `06_force-area-figures/`: `FIG_force_vs_area_change_ellipses.png`, `FIG_force_vs_area_day3_levels.png`, `RUN_provenance.txt` |
+| 07 `07_thread_production.Rmd` | yes | `01_mussel-measurements/mussel-thread-production.xlsx`; `02·01` key (check); `_ancova.R`, `tools/plot_style.R`, `tools/pipeline_checks.R` | `07_thread-production/`: `DATA_thread_counts.csv`, `DESC_thread_counts.csv`, `STATS_ancova_*.csv`, `DATA_ancova_animals.csv`, `DIAG_ancova_residuals.png`, `STATS_negbin_*.csv`, `FIG_thread_production_{boxes,paired}.png`, `RUN_provenance.txt` |
+| 08 `08_condition.Rmd` | yes | `01_mussel-measurements/mussel-condition.xlsx`; `02·01` key (check); the same helpers | `08_condition/`: `DATA_condition.csv`, `DESC_condition.csv`, `STATS_condition_{tests,vs_control}.csv`, `DIAG_condition_residuals.png`, `FIG_condition_index.png`, `FIG_gonad_index.png`, `RUN_provenance.txt` |
 
 ## 03_blast (HPC record; not a pipeline stage)
 

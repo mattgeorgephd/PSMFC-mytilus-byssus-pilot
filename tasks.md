@@ -1,7 +1,7 @@
 # tasks.md
 
 Current sprint: make the analysis run end to end, from thread strength and Tag-seq counts
-to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-17.
+to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-19.
 Conventions and how to run are in `AGENTS.md`.
 
 The analysis folders were renumbered on 2026-10-03 so that their numbers are the run order:
@@ -307,6 +307,18 @@ the other sections use the new ones.
   has 137 and 187 genes and no association (p 0.69 or more); in step 06 the gill within-arm
   plaque-area candidate scenario keeps p 0.020 (Q2 0.03 to 0.06). The definition was chosen after
   the keyword results had been seen, so they are quoted beside it.
+- **Thread production and condition** (2026-10-19, Matt's request: no *M. galloprovincialis* in
+  the manuscript, and its thread production, condition and gonad index figures redrawn for
+  *M. trossulus* from the repository's workbooks). `02` step 07 fits the thread-strength ANCOVA
+  (`_ancova.R`) to the threads made in the 3 days of the exposure, adjusted for those made in the
+  3 days before it, with a negative binomial GLM as the sensitivity analysis: hypoxia 45% fewer
+  threads than the control (ratio 0.55, Dunnett p = 0.019; GLM 0.55, p = 0.009), OA +49% and OW
+  +14% (Dunnett p 0.20 and 0.84). `02` step 08 compares the condition index and gonad index of 60
+  mussels sampled for condition only (not the thread or gene-expression mussels) with the day-3
+  control: no arm differs in either index under any of four analyses (lowest Dunnett p 0.38, OA
+  gonad index). The manuscript draft's figures had compared each arm before and after the
+  exposure without the day-3 control, and drew both species; the before-and-after comparison is
+  not repeated. The workbook does not say whether the condition masses are dry or wet.
 
 ## In progress
 

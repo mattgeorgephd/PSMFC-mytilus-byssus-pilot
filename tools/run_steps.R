@@ -91,11 +91,12 @@ finish_run <- function(run_log, html_dir, what) {
 
 ## The packages the pipeline's scripts load (library(), require(), requireNamespace() or
 ## pkg::), from a scan of 02 to 09 and tools/ on 2026-10-05 (dynamicTreeCut, ggrepel and glmnet
-## added on 2026-10-06 for 09 step 06). Add a package here when a script starts using one;
-## check_stack() stops when any of them is missing.
+## added on 2026-10-06 for 09 step 06; MASS, one of R's recommended packages, on 2026-10-19 for
+## 02 step 07). Add a package here when a script starts using one; check_stack() stops when any
+## of them is missing.
 PIPELINE_PACKAGES <- c(
   "AnnotationDbi", "BiocManager", "Biostrings", "DESeq2", "DT", "EnvStats", "GO.db", "GOSemSim",
-  "GSEABase", "GenomicAlignments", "GenomicRanges", "RColorBrewer", "apeglm", "ashr", "broom",
+  "GSEABase", "GenomicAlignments", "GenomicRanges", "MASS", "RColorBrewer", "apeglm", "ashr", "broom",
   "clusterProfiler", "colorspace", "data.table", "dplyr", "dynamicTreeCut", "emmeans",
   "enrichplot", "forcats", "ggplot2", "ggrepel", "ggvenn", "glmnet", "goseq", "gridExtra",
   "here", "httr", "jsonlite", "kableExtra", "knitr", "openxlsx", "org.Hs.eg.db", "patchwork",

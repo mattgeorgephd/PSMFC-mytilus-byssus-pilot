@@ -1,18 +1,22 @@
 # 02_thread-strength
 
 Plaque adhesion strength and thread mechanics from tensometer pull tests, before and after a
-3-day stress exposure (control, OA, OW, DO), plus a lab-reference group.
+3-day stress exposure (control, OA, OW, DO), plus a lab-reference group; the number of threads
+each mussel made before and during the exposure (script 07); and the condition and gonad indices
+of 60 mussels of their own at the end of the exposure (script 08).
 
 Self-contained and reproducible from this repository apart from one manual input, the
-plaque measurements, noted below. It reads one file from outside this folder
-(`../01_mussel-measurements/mussel-size-measurements.xlsx`, script 01) and sources the shared
-`../tools/pipeline_checks.R` (scripts 04 to 06, for `RUN_provenance.txt`) and
-`../tools/plot_style.R` (scripts 04 to 06, the figure colours).
+plaque measurements, noted below. It reads three workbooks from outside this folder, in
+`../01_mussel-measurements/` (`mussel-size-measurements.xlsx`, script 01;
+`mussel-thread-production.xlsx`, script 07; `mussel-condition.xlsx`, script 08), and sources the
+shared `../tools/pipeline_checks.R` (scripts 04 to 08, for `RUN_provenance.txt`) and
+`../tools/plot_style.R` (scripts 04 to 08, the figure colours).
 
-Packages: tidyverse and here (every script), readxl (scripts 01 and 03 to 06), openxlsx (scripts
-02 and 03), EnvStats (script 02), emmeans and broom (scripts 04 and 05), colorspace (script 04),
-patchwork (script 06), and rmarkdown to knit. Scripts 01 to 05 install any of theirs that are
-missing; script 06 loads its packages from the library (`renv.lock`).
+Packages: tidyverse and here (every script), readxl (scripts 01 and 03 to 08), openxlsx (scripts
+02 and 03), EnvStats (script 02), emmeans (scripts 04, 05, 07 and 08), broom (scripts 04, 05 and
+07), colorspace (script 04), patchwork (script 06), MASS (script 07; one of R's recommended
+packages), and rmarkdown to knit. Scripts 01 to 05 install any of theirs that are missing;
+scripts 06 to 08 load theirs from the library (`renv.lock`).
 
 ## Layout
 
@@ -20,15 +24,17 @@ missing; script 06 loads its packages from the library (`renv.lock`).
 02_thread-strength/
 ├── thread-strength.Rproj               open this first; it anchors here::here()
 ├── 01_code/
-│   ├── 00_run_thread_strength.Rmd      batch runner: scripts 01-06 in order
+│   ├── 00_run_thread_strength.Rmd      batch runner: scripts 01-08 in order
 │   ├── 01_build_mussel_key.Rmd         mussel workbook -> mussel key
 │   ├── 02_extract_tensometer_data.Rmd  raw traces     -> trace-level extraction
 │   ├── 03_assemble_thread_summary.Rmd  extraction + plaque areas -> thread summary
 │   ├── 04_analyze_thread_strength.Rmd  thread summary -> adhesion plots + ANCOVA
 │   ├── 05_decompose_adhesion.Rmd       thread summary -> force and area ANCOVA
 │   ├── 06_force_area_figures.Rmd       force against plaque area with ellipses, without and with the lab reference
-│   ├── _ancova.R                       the per-animal ANCOVA scripts 04 and 05 source
-│   └── *_DOC.md                        companion documentation, one per script
+│   ├── 07_thread_production.Rmd        thread counts -> ANCOVA on threads made in 3 days
+│   ├── 08_condition.Rmd                condition workbook -> condition and gonad index by arm
+│   ├── _ancova.R                       the per-animal ANCOVA scripts 04, 05 and 07 source (08: its constants)
+│   └── *_DOC.md                        companion documentation, scripts 01 to 05
 ├── 02_data/
 │   ├── tensometer_output/<phase folders>/   raw force/displacement .txt traces
 │   └── pad_area_measurements.xlsx           hand-measured plaque area + failure mode, per trace
@@ -40,6 +46,8 @@ missing; script 06 loads its packages from the library (`renv.lock`).
     ├── 04_analyze-thread-strength/          script 04: figures + STATS_ancova_*.csv
     ├── 05_decompose-adhesion/               script 05: force and area ANCOVA
     ├── 06_force-area-figures/               script 06: force against plaque area, with ellipses (README inside)
+    ├── 07_thread-production/                script 07: thread counts, ANCOVA, figures (README inside)
+    ├── 08_condition/                        script 08: condition and gonad index, figures (README inside)
     └── knit_html/                           runner reports and logs (git-ignored)
 ```
 
@@ -87,7 +95,7 @@ binary before/after would pool them and contaminate every paired contrast.
 
 Open `thread-strength.Rproj` in RStudio (not the repository-root `.Rproj`; `here::here()`
 must resolve to this folder) and knit `01_code/00_run_thread_strength.Rmd`. It runs scripts
-01 to 06 in order, each in a fresh R process, and leaves an HTML report and a log per script
+01 to 08 in order, each in a fresh R process, and leaves an HTML report and a log per script
 plus `run_log.csv` in `03_analyses/knit_html/`. Its `steps` parameter runs a subset (for
 example `[4, 5]`). The repository-level `00_run_pipeline.Rmd` calls it as the first stage.
 
@@ -110,6 +118,17 @@ The scripts, in run order:
    log scale of the change (script 05's own figure is kept as drawn), and the animals' day-3
    levels of the two, without and with the day-0 lab reference. Descriptive; reads script
    05's per-animal table and the thread summary.
+7. `07_thread_production.Rmd`: the threads each mussel made in the 3 days before the exposure
+   (the baseline) and in the 3 days of the exposure, from
+   `../01_mussel-measurements/mussel-thread-production.xlsx`; the per-animal ANCOVA of
+   `_ancova.R` (day-3 count adjusted for the baseline count, log scale, each arm vs control)
+   with a negative binomial GLM as the sensitivity analysis, and two figures. Writes
+   `03_analyses/07_thread-production/`.
+8. `08_condition.Rmd`: the condition index (dry tissue mass over the cube of shell length) and
+   gonad index (gonad share of the tissue mass) of 60 mussels sampled for condition only, from
+   `../01_mussel-measurements/mussel-condition.xlsx`; each arm against the day-3 control
+   (Dunnett), with the log index, an allometric ANCOVA and a Kruskal-Wallis test as
+   sensitivity analyses, and two figures. Writes `03_analyses/08_condition/`.
 
 `09_gene-mechanics-correlation` reads this folder's outputs (the thread summary, script 05's
 `mussel_response_classification.csv`, both `DATA_ancova_animals.csv` files and script 02's
@@ -125,6 +144,26 @@ count, by scripts 04 and 05.
 
 `adhesion_kpa = max_force / pad_area * 1000` is recomputed per thread by script 04 rather
 than trusted from a cached spreadsheet formula.
+
+## Thread production and condition (scripts 07 and 08)
+
+**Thread production.** Every mussel spent 3 days on a mica plate in the shared holding system
+before the exposure, and the threads it made were counted and cut (`thread_count_before`, the
+baseline; the threads the baseline pulls came from). The exposed mussels then spent the 3 days of
+the exposure on mica plates in their arm and their new threads were counted
+(`thread_count_after`). The ANCOVA takes the 66 exposed mussels (control 12, OA 13, OW 22, DO
+19; more than the 61 with day-3 pulls, because five DO mussels, T113 to T117, have thread
+counts but no tensometer pull at either time). The 12 day-0 lab-reference mussels and the 29 mussels assigned to an arm that never
+entered it (`group` "control", `days_in_trt` 0) have a baseline count only and are described,
+not tested. `09_gene-mechanics-correlation` step 07 reads the same workbook for the threads
+made during the exposure.
+
+**Condition.** `mussel-condition.xlsx` holds 60 mussels of their own: 15 day-0 lab-reference
+mussels (T074 to T088) and, at day 3, 15 controls (T150 to T164) and 10 per stressor arm (T165
+to T194). None is a thread or gene-expression mussel (script 08 checks this against the mussel
+key). The workbook does not say whether its masses are dry or wet; the manuscript's Methods
+describe dry masses. The indices are recomputed from the masses and the shell length, and agree
+with the workbook's rounded columns.
 
 ## Force metrics and what is not measured
 

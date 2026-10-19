@@ -10,10 +10,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   byssal thread attachment in *Mytilus trossulus*, and which genes in the foot (and gill) track
   those changes? Mussels were pulled on a tensometer before and after a 3-day exposure and
   sampled for Tag-seq.
-- **Analysis.** One reproducible chain, runnable from the committed data: thread mechanics
-  (`02`) and the Tag-seq counts (`04`) through differential expression (`05`), GO enrichment
-  across treatments (`07`, `08`) and the per-animal associations of thread mechanics with
-  genes, DEG sets, enriched GO terms and mitochondrial expression (`09`). The counts of record
+- **Analysis.** One reproducible chain, runnable from the committed data: thread mechanics,
+  thread production and condition (`02`) and the Tag-seq counts (`04`) through differential
+  expression (`05`), GO enrichment across treatments (`07`, `08`) and the per-animal
+  associations of thread mechanics with genes, DEG sets, enriched GO terms and mitochondrial
+  expression (`09`). The counts of record
   are featureCounts counts on the RefSeq annotation with Iso-Seq-extended 3' ends (made by
   `04_sequence-alignment` steps 04-06, taken by its step 07; adopted 2026-10-02). The
   Iso-Seq branch (`06` steps 01-03) repeats `05`'s contrasts on the Iso-Seq transcriptome as a
@@ -190,6 +191,17 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     (exploratory). Extension and the area under the force-time curve are not analysed:
     threads were cut near the plaque, so the length of distal thread under test was not
     standardized. Peak force is the only quantity taken from a trace.
+  - Thread production (`02` step 07): the threads each mussel made in the 3 days before the
+    exposure (baseline) and in the 3 days of it; the thread-strength ANCOVA (`_ancova.R`) on
+    the log counts, the day-3 count adjusted for the baseline count, each arm against control,
+    Dunnett; a negative binomial GLM (MASS 7.3-66, `glm.nb`) is the sensitivity analysis. The
+    day-0 lab reference and the 29 mussels assigned to an arm they never entered have a baseline
+    count only and are described, not tested.
+  - Condition (`02` step 08): 60 mussels of their own (T074 to T088 at day 0, T150 to T194 at
+    day 3); condition index 1000 x tissue mass (g) / shell length (cm)^3 and gonad index
+    100 x gonad mass / tissue mass; a one-way linear model of the index, each arm against the
+    day-3 control, Dunnett; the log index, an allometric ANCOVA and a Kruskal-Wallis test are
+    sensitivity analyses; the day-0 lab reference is described only.
 - **Samples.** `F` libraries are the phenol gland to the tip of the foot (every animal); `FX`
   are the rest of the foot (day-0 animals only); `G` are gill. No contrast uses a day-0
   library. T051F and T051G
@@ -220,7 +232,11 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   analysis) replicates most genome DEGs (58 to 71%) and finds 1.2 to 1.6 times as many; against
   the previous StringTie + prepDE counts it had found about twice as many, mostly because of
   the counter (prepDE's read-base estimates), less because the RefSeq gene models end before
-  many Tag-seq 3' ends (`06` README, option B).
+  many Tag-seq 3' ends (`06` README, option B); five DO mussels (T113 to T117) have thread
+  counts but no tensometer pull, so the DO arm of the thread-production analysis has 19 mussels
+  and that of the thread mechanics 14; the condition workbook does not say whether its masses
+  are dry or wet (the manuscript's Methods say dry), and its mussels are not the thread or
+  gene-expression mussels.
 - **Secrets.** API keys go in environment variables (`ENTREZ_KEY` in `~/.Renviron`), never in
   a file in the repository.
 - **Writing.** READMEs and comments in plain language, with commas or semicolons rather than

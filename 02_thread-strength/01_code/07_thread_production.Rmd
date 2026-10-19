@@ -1,0 +1,326 @@
+---
+title: "07_thread_production"
+author: "PSMFC Mytilus byssus pilot"
+date: "2026-10-19"
+output: html_document
+---
+
+<!--
+PURPOSE
+  How many byssal threads each mussel made before and during the 3-day exposure. Every mussel
+  spent 3 days on a mica plate in the shared holding system before the exposure, and the threads
+  it made were counted and cut (thread_count_before, the baseline); the exposed mussels then spent
+  the 3 days of the exposure on mica plates in their arm, and the threads they made were counted
+  again (thread_count_after). Both counts are threads made in 3 days.
+
+  The analysis of record is the per-animal ANCOVA of the thread mechanics, run by the same code
+  (01_code/_ancova.R, fit_ancova()): the day-3 count adjusted for the animal's own baseline count,
+  on the log scale, each arm against the day-3 treatment control, unadjusted and
+  Dunnett-adjusted over the three comparisons (emmeans, multivariate t, seeded):
+
+      log(threads made during the exposure) ~ arm + log(threads made at baseline)
+
+  Every count is at least 1, so the log needs no offset; arm effects are ratios of geometric
+  means. Log-transformed counts can bias estimates when counts are small (O'Hara and Kotze 2010,
+  Methods Ecol Evol 1:118-122) but test regression coefficients well (Ives 2015, Methods Ecol
+  Evol 6:828-835), so a negative binomial GLM of the day-3 count (log link, the same terms;
+  MASS::glm.nb, Venables and Ripley 2002, Modern Applied Statistics with S, 4th ed.) is the
+  sensitivity analysis: it models the counts themselves, whose variance exceeds a Poisson's
+  (the Poisson dispersion is in STATS_negbin_tests.csv), and its arm effects are ratios of
+  arithmetic means. Its tests are likelihood-ratio tests between glm.nb fits with and without the
+  term, each with its own dispersion.
+
+  Only mussels with both counts enter: the four day-3 arms. The day-0 lab reference (T001 to T012,
+  never in the experimental system) and the 29 mussels assigned to an arm that never entered it
+  (group "control", days_in_trt 0 in the workbook; 01_build_mussel_key_DOC.md) have a baseline
+  count only: they are described, not tested. Under random assignment a baseline difference
+  between arms is chance, and the ANCOVA adjusts for it, so the baseline table carries no test.
+
+INPUT
+  ../01_mussel-measurements/mussel-thread-production.xlsx, sheet "data"   the thread counts (raw
+                                       workbook, read only)
+  03_analyses/01_build-mussel-key/mussel-treatment-key.csv   every mussel's arm, group and days
+                                       (script 01; a check)
+
+OUTPUT  03_analyses/07_thread-production/
+  DATA_thread_counts.csv            every mussel: group, arm, days in treatment, the two counts,
+                                    whether it is in the ANCOVA
+  DESC_thread_counts.csv            n, mean, SD, median, quartiles, range and geometric mean of
+                                    each count, by group and arm (no tests)
+  STATS_ancova_tests.csv            F for arm and for baseline, each adjusted for the other (drop1)
+  STATS_ancova_coefficients.csv     lm coefficients with 95% CI
+  STATS_ancova_adjusted_means.csv   arm geometric means at the mean log baseline
+  STATS_ancova_vs_control.csv       each arm vs control: ratio, 95% CI, p unadjusted and Dunnett
+  DATA_ancova_animals.csv           the per-animal rows the model was fitted to
+  DIAG_ancova_residuals.png         Q-Q and residuals vs fitted
+  STATS_negbin_tests.csv            likelihood-ratio tests for arm and baseline; theta; Poisson
+                                    dispersion
+  STATS_negbin_vs_control.csv       each arm vs control: ratio of means, 95% CI, p unadjusted and
+                                    Dunnett
+  FIG_thread_production_boxes.png   threads made at baseline and during the exposure, by arm: box
+                                    plots with every mussel, and the ANCOVA result vs control
+  FIG_thread_production_paired.png  the same counts, a line per mussel
+  RUN_provenance.txt
+-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Packages, theme, palette, inputs
+```{r message=FALSE, warning=FALSE}
+suppressPackageStartupMessages({ library(readxl); library(tidyverse); library(emmeans); library(broom) })
+
+# Scripts 04 to 06's theme
+my_theme <- theme(line             = element_line(linewidth = 1.0),
+                  rect             = element_rect(linewidth = 1.0),
+                  text             = element_text(size = 13, color = "black"),
+                  panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text        = element_text(size = 12, color = "black"),
+                  panel.border     = element_rect(color = "black", fill = NA, linewidth = 1.0),
+                  strip.background = element_rect(fill = "grey92", color = "black"),
+                  strip.text       = element_text(size = 12, face = "bold"),
+                  legend.key       = element_blank(),
+                  legend.position  = "none")
+
+source(file.path(here::here(), "..", "tools", "plot_style.R"))       # colours
+source(file.path(here::here(), "..", "tools", "pipeline_checks.R"))  # warn_unless(), provenance_lines()
+# fit_ancova(), ANCOVA_ARMS, DUNNETT_SEED: the thread mechanics' ANCOVA. Sourced into this chunk's
+# environment so that the thread_count metric added to THREAD_METRICS below is the one its
+# functions see, however the script is knitted.
+source(here::here("01_code", "_ancova.R"), local = TRUE)
+
+repo_root   <- psmfc_repo_root(here::here())
+counts_xlsx <- file.path(repo_root, "01_mussel-measurements", "mussel-thread-production.xlsx")
+key_csv     <- here::here("03_analyses", "01_build-mussel-key", "mussel-treatment-key.csv")
+out_dir     <- here::here("03_analyses", "07_thread-production")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+if (!file.exists(counts_xlsx)) stop("Missing ", counts_xlsx, ".")
+if (!file.exists(key_csv)) stop("Missing ", key_csv, ": run script 01 first.")
+
+fmt_p <- function(p) ifelse(p < 0.001, "< 0.001", ifelse(p > 0.99, "> 0.99", formatC(p, digits = 2, format = "fg", flag = "#")))
+p_eq  <- function(p) { f <- fmt_p(p); ifelse(grepl("^[<>]", f), paste("p", f), paste("p =", f)) }   # "p = 0.019", "p > 0.99"
+```
+
+### The counts
+```{r}
+raw <- read_excel(counts_xlsx, sheet = "data", na = c("", "NA"))
+need <- c("species", "mussel_ID", "group", "mussel_trt", "days_in_trt", "thread_count_before", "thread_count_after")
+if (length(setdiff(need, names(raw))))
+  stop("mussel-thread-production.xlsx lacks column(s) ", paste(setdiff(need, names(raw)), collapse = ", "))
+norm_id <- function(x) {                       # scripts 01 and 04 to 06's mussel ID normalisation
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
+}
+counts <- raw %>%
+  transmute(mussel = norm_id(mussel_ID), species = trimws(species), group = trimws(group),
+            mussel_trt = trimws(mussel_trt), days_in_trt = trimws(as.character(days_in_trt)),
+            threads_baseline = as.numeric(thread_count_before), threads_exposure = as.numeric(thread_count_after))
+if (anyNA(counts$mussel) || anyDuplicated(counts$mussel)) stop("A mussel ID does not parse or is duplicated.")
+n_all <- c(counts$threads_baseline, counts$threads_exposure)
+n_all <- n_all[!is.na(n_all)]
+if (any(n_all < 0 | n_all != round(n_all))) stop("A thread count is negative or not a whole number.")
+
+counts <- counts %>%
+  mutate(set = case_when(mussel_trt == "lab_control"                 ~ "lab reference, day 0",
+                         days_in_trt == "0"                          ~ "assigned, not exposed",
+                         days_in_trt == "3" & mussel_trt %in% ANCOVA_ARMS ~ "exposed, day 3",
+                         TRUE                                        ~ NA_character_),
+         in_ancova = set %in% "exposed, day 3" & !is.na(threads_baseline) & !is.na(threads_exposure)) %>%
+  arrange(factor(set, levels = c("lab reference, day 0", "assigned, not exposed", "exposed, day 3")),
+          factor(mussel_trt, levels = c("lab_control", ANCOVA_ARMS)), mussel)
+
+## checks: one species; every mussel's arm, group and days are script 01's key; every exposed
+## mussel has both counts, and no unexposed one has a day-3 count
+key <- read_csv(key_csv, col_types = cols(.default = "c"))
+kj  <- counts %>% left_join(key %>% transmute(mussel, k_trt = mussel_trt, k_group = group, k_days = days_in_trt), by = "mussel")
+warn_unless(all(counts$species == "mytilus trossulus"), "A mussel in the thread counts is not M. trossulus.")
+warn_unless(!anyNA(counts$set), "A mussel in the thread counts fits none of the groups.")
+warn_unless(all(!is.na(kj$k_trt) & kj$k_trt == kj$mussel_trt & kj$k_group == kj$group & kj$k_days == kj$days_in_trt),
+            "The thread counts' arm, group or days differ from script 01's mussel key for: ",
+            paste(kj$mussel[is.na(kj$k_trt) | kj$k_trt != kj$mussel_trt | kj$k_group != kj$group | kj$k_days != kj$days_in_trt], collapse = ", "))
+warn_unless(all(counts$in_ancova == (counts$set %in% "exposed, day 3")), "An exposed mussel lacks a thread count.")
+warn_unless(all(is.na(counts$threads_exposure[counts$days_in_trt == "0"])), "A mussel that was not exposed has a day-3 count.")
+warn_unless(all(!is.na(counts$threads_baseline)), "A mussel has no baseline count.")
+
+counts %>% count(set, mussel_trt, in_ancova) %>% knitr::kable()
+write.csv(counts %>% select(mussel, species, group, mussel_trt, days_in_trt, set, threads_baseline, threads_exposure, in_ancova),
+          file.path(out_dir, "DATA_thread_counts.csv"), row.names = FALSE, na = "")
+```
+
+### Description: each count by group and arm (no tests)
+```{r}
+describe <- function(x) tibble(n = length(x), mean = mean(x), sd = sd(x), median = median(x),
+                                q1 = unname(quantile(x, 0.25)), q3 = unname(quantile(x, 0.75)),
+                                min = min(x), max = max(x), geometric_mean = exp(mean(log(x))))
+desc <- counts %>%
+  pivot_longer(c(threads_baseline, threads_exposure), names_to = "count", values_to = "threads",
+               names_prefix = "threads_") %>%
+  filter(!is.na(threads)) %>%
+  group_by(set, arm = mussel_trt, count) %>%
+  reframe(describe(threads)) %>%
+  arrange(factor(set, levels = c("lab reference, day 0", "assigned, not exposed", "exposed, day 3")),
+          factor(arm, levels = c("lab_control", ANCOVA_ARMS)), count)
+knitr::kable(desc, digits = 2)
+write.csv(desc, file.path(out_dir, "DESC_thread_counts.csv"), row.names = FALSE)
+```
+
+### Statistics: per-animal ANCOVA on the thread count (the analysis of record)
+```{r warning=FALSE}
+# The count is one value per mussel and period; fit_ancova() takes a thread-level table, so each
+# count enters as one row per period ("pre" = baseline, "post" = during the exposure) and its
+# per-animal mean of logs is the log count.
+THREAD_METRICS <- rbind(THREAD_METRICS,
+                        data.frame(metric = "thread_count", column = "thread_count", agg = "mean", scale = "log",
+                                   label = "Threads made in 3 days", stringsAsFactors = FALSE))
+long <- counts %>%
+  filter(in_ancova) %>%
+  pivot_longer(c(threads_baseline, threads_exposure), names_to = "phase", values_to = "thread_count") %>%
+  mutate(phase = recode(phase, threads_baseline = "pre", threads_exposure = "post"))
+tc <- fit_ancova(long, "thread_count", "log")
+
+## the per-animal table: the counts themselves instead of fit_ancova()'s thread numbers (one row
+## per period here, so always 1)
+tc$data <- tc$data %>%
+  select(mussel, arm, y, baseline) %>%
+  left_join(counts %>% select(mussel, threads_baseline, threads_exposure), by = "mussel")
+
+## checks: every mussel with both counts is in the model; the model is the direct lm of the log counts
+direct <- lm(log(threads_exposure) ~ factor(mussel_trt, levels = ANCOVA_ARMS) + log(threads_baseline),
+             data = counts %>% filter(in_ancova))
+warn_unless(nrow(tc$data) == sum(counts$in_ancova) && setequal(tc$data$mussel, counts$mussel[counts$in_ancova]),
+            "The ANCOVA did not take every mussel with both counts.")
+warn_unless(max(abs(tc$data$y - log(tc$data$threads_exposure)), abs(tc$data$baseline - log(tc$data$threads_baseline))) < 1e-12 &&
+              max(abs(unname(coef(direct)) - unname(coef(tc$fit)))) < 1e-10,
+            "fit_ancova()'s model differs from the direct lm of the log counts.")
+
+cat("Mussels in the ANCOVA:", nrow(tc$data), "\n")
+print(tc$data %>% count(arm, name = "mussels"))
+knitr::kable(tc$tests, digits = 4)
+knitr::kable(tc$adjusted_means, digits = 3)
+knitr::kable(tc$vs_control %>% select(arm, estimate, pct_change, ci_low, ci_high, p_unadjusted,
+                                      ci_low_dunnett, ci_high_dunnett, p_dunnett), digits = 4)
+
+write_ancova_tables(list(tc), out_dir)
+save_ancova_diagnostics(list(tc), file.path(out_dir, "DIAG_ancova_residuals.png"))
+```
+
+### Sensitivity: negative binomial GLM of the day-3 count
+```{r warning=FALSE}
+nb_data <- counts %>%
+  filter(in_ancova) %>%
+  mutate(arm = factor(mussel_trt, levels = ANCOVA_ARMS), log_baseline = log(threads_baseline))
+nb_fit <- MASS::glm.nb(threads_exposure ~ arm + log_baseline, data = nb_data)
+po_fit <- glm(threads_exposure ~ arm + log_baseline, family = poisson, data = nb_data)
+poisson_dispersion <- sum(residuals(po_fit, type = "pearson")^2) / po_fit$df.residual
+
+## likelihood-ratio test of a term: the glm.nb fit with and without it, each with its own theta
+nb_lrt <- function(term) {
+  reduced <- MASS::glm.nb(update(formula(nb_fit), as.formula(paste(". ~ . -", term))), data = nb_data)
+  ll1 <- logLik(nb_fit); ll0 <- logLik(reduced)
+  stat <- 2 * (as.numeric(ll1) - as.numeric(ll0))
+  df <- attr(ll1, "df") - attr(ll0, "df")
+  tibble(term = if (term == "log_baseline") "baseline" else term, df = df, LR = stat,
+         p = pchisq(stat, df, lower.tail = FALSE))
+}
+nb_tests <- bind_rows(nb_lrt("arm"), nb_lrt("log_baseline")) %>%
+  mutate(model = "negative binomial GLM, log link: threads ~ arm + log(baseline threads)",
+         theta = nb_fit$theta, theta_SE = nb_fit$SE.theta, poisson_dispersion = poisson_dispersion,
+         n_animals = nrow(nb_data), .before = 1)
+
+nb_con <- contrast(emmeans(nb_fit, ~ arm), method = "trt.vs.ctrl", ref = 1)
+un <- as.data.frame(summary(nb_con, infer = c(TRUE, TRUE), adjust = "none", type = "response"))
+set.seed(DUNNETT_SEED)
+du <- as.data.frame(summary(nb_con, infer = c(TRUE, TRUE), adjust = "mvt", type = "response"))
+stopifnot(identical(as.character(un$contrast), as.character(du$contrast)))
+lo <- intersect(c("asymp.LCL", "lower.CL"), names(un))[1]
+hi <- intersect(c("asymp.UCL", "upper.CL"), names(un))[1]
+nb_vs <- tibble(model = "negative binomial GLM, log link",
+                contrast = as.character(un$contrast), arm = sub(" .*$", "", as.character(un$contrast)),
+                estimate_type = "ratio of means arm / control", estimate = un$ratio,
+                pct_change = 100 * (un$ratio - 1), SE = un$SE, z = un$z.ratio,
+                ci_low = un[[lo]], ci_high = un[[hi]], p_unadjusted = un$p.value,
+                ci_low_dunnett = du[[lo]], ci_high_dunnett = du[[hi]], p_dunnett = du$p.value)
+knitr::kable(nb_tests, digits = 4)
+knitr::kable(nb_vs %>% select(arm, estimate, pct_change, ci_low, ci_high, p_unadjusted, p_dunnett), digits = 4)
+write.csv(nb_tests, file.path(out_dir, "STATS_negbin_tests.csv"), row.names = FALSE)
+write.csv(nb_vs, file.path(out_dir, "STATS_negbin_vs_control.csv"), row.names = FALSE)
+
+## the two models side by side: same direction, and the same arms below Dunnett p 0.05?
+agree <- tc$vs_control %>% select(arm, ancova = estimate, ancova_p = p_dunnett) %>%
+  left_join(nb_vs %>% select(arm, negbin = estimate, negbin_p = p_dunnett), by = "arm") %>%
+  mutate(same_direction = sign(log(ancova)) == sign(log(negbin)),
+         same_call = (ancova_p < 0.05) == (negbin_p < 0.05))
+knitr::kable(agree, digits = 4)
+models_agree <- all(agree$same_direction & agree$same_call)
+cat("ANCOVA and negative binomial GLM agree (direction and Dunnett p < 0.05 for every arm):", models_agree, "\n")
+```
+
+### Figures: threads made at baseline and during the exposure, by arm
+```{r fig.width=7.5, fig.height=7.8, warning=FALSE}
+fig_d <- counts %>%
+  filter(in_ancova) %>%
+  mutate(arm = factor(mussel_trt, levels = ANCOVA_ARMS)) %>%
+  pivot_longer(c(threads_baseline, threads_exposure), names_to = "period", values_to = "threads") %>%
+  mutate(period = factor(if_else(period == "threads_baseline", "Baseline", "Exposure"), levels = c("Baseline", "Exposure")),
+         fill_key = if_else(period == "Baseline", "baseline", as.character(arm)))
+n_arm <- fig_d %>% distinct(mussel, arm) %>% count(arm)
+strip <- setNames(sprintf("%s\nn = %d", TREATMENT_LABELS[as.character(n_arm$arm)], n_arm$n), as.character(n_arm$arm))
+y_top <- 5 * ceiling(max(fig_d$threads) * 1.25 / 5)
+ann <- bind_rows(tibble(arm = "control", label = "reference arm"),
+                 tc$vs_control %>% transmute(arm, label = sprintf("%s%.0f%% vs control\nDunnett %s", if_else(pct_change < 0, "\u2212", "+"),
+                                                                  abs(pct_change), p_eq(p_dunnett)))) %>%
+  mutate(arm = factor(arm, levels = ANCOVA_ARMS))
+fill_vals <- c(baseline = THREAD_TRT_COLORS[["baseline"]], TREATMENT_COLORS)
+fill_labs <- c(baseline = "Baseline: 3 days before the exposure", TREATMENT_LABELS)
+production_plot <- function(layer) {
+  ggplot(fig_d, aes(period, threads)) +
+    layer +
+    geom_text(data = ann, aes(x = 1.5, y = y_top, label = label), size = 3.6, vjust = 1, lineheight = 0.95) +
+    facet_wrap(~ arm, nrow = 2, labeller = as_labeller(strip)) +
+    scale_fill_manual(values = fill_vals, breaks = names(fill_labs), labels = fill_labs, name = NULL,
+                      guide = guide_legend(nrow = 3, byrow = TRUE)) +
+    scale_y_continuous(limits = c(0, y_top), breaks = seq(0, y_top, 5), expand = expansion(mult = c(0, 0.02))) +
+    labs(x = NULL, y = "Threads made in 3 days") +
+    my_theme + theme(legend.position = "bottom", legend.text = element_text(size = 11))
+}
+p_box <- production_plot(list(
+  geom_boxplot(aes(fill = fill_key), alpha = 0.45, width = 0.55, outlier.shape = NA, linewidth = 0.6),
+  geom_point(aes(fill = fill_key), shape = 21, size = 2.3, stroke = 0.4, colour = "grey15",
+             position = position_jitter(width = 0.12, height = 0, seed = 20261019))))
+p_pair <- production_plot(list(
+  geom_line(aes(group = mussel), colour = "grey55", linewidth = 0.45),
+  geom_point(aes(fill = fill_key), shape = 21, size = 2.3, stroke = 0.4, colour = "grey15")))
+p_box
+p_pair
+
+## check: the figures draw every mussel of the ANCOVA, both counts each
+warn_unless(nrow(fig_d) == 2 * nrow(tc$data) && setequal(unique(fig_d$mussel), tc$data$mussel),
+            "The figures do not draw the ANCOVA's mussels.")
+
+ggsave(file.path(out_dir, "FIG_thread_production_boxes.png"), plot = p_box, dpi = 600, width = 7.5, height = 7.8, units = "in")
+ggsave(file.path(out_dir, "FIG_thread_production_paired.png"), plot = p_pair, dpi = 600, width = 7.5, height = 7.8, units = "in")
+```
+
+### Provenance
+```{r}
+ts_inputs <- c(counts_xlsx, key_csv, here::here("01_code", "07_thread_production.Rmd"), here::here("01_code", "_ancova.R"),
+               file.path(repo_root, "tools", c("plot_style.R", "pipeline_checks.R")))
+arm_n <- function(d) paste(sprintf("%s %d", ANCOVA_ARMS, as.integer(table(factor(d, levels = ANCOVA_ARMS)))), collapse = ", ")
+writeLines(provenance_lines(c(paste0("generated       : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             paste0("mussels         : ", nrow(counts), " in the workbook; ANCOVA ", nrow(tc$data), " (", arm_n(tc$data$arm),
+                    "); lab reference ", sum(counts$set == "lab reference, day 0"), " and assigned, not exposed ",
+                    sum(counts$set == "assigned, not exposed"), " (baseline count only, described)"),
+             "model           : per-animal ANCOVA (_ancova.R fit_ancova), log(threads during the exposure) ~ arm + log(baseline threads)",
+             "sensitivity     : negative binomial GLM (MASS::glm.nb, log link), the same terms; likelihood-ratio tests",
+             paste0("multiplicity    : unadjusted and Dunnett (emmeans mvt, seed ", DUNNETT_SEED, ")"),
+             paste0("models agree    : ", if (models_agree) "yes" else "NO", " (direction and Dunnett p < 0.05, every arm)")),
+             ts_inputs, repo_root, packages = c("emmeans", "MASS", "broom", "ggplot2")),
+           file.path(out_dir, "RUN_provenance.txt"))
+cat(readLines(file.path(out_dir, "RUN_provenance.txt")), sep = "\n")
+if (length(.checks$failed)) stop("check failed: ", paste(.checks$failed, collapse = "; "))
+```
