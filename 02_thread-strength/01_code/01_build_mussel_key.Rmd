@@ -78,9 +78,9 @@ mussel_key <- mussels %>%
   transmute(
     mussel        = norm_id(mussel_ID),
     species       = trimws(as.character(species)),
-    mussel_trt    = trimws(as.character(mussel_trt)),   # the arm: OA / OW / DO / control / lab_control / desiccation
+    mussel_trt    = trimws(as.character(mussel_trt)),   # the arm: OA / OW / DO / control / lab_control
     group         = trimws(as.character(group)),        # cohort label from morphometrics - NOT a before/after axis
-    days_in_trt   = trimws(as.character(days_in_trt)),  # text: not all values are numeric (e.g. "24h")
+    days_in_trt   = trimws(as.character(days_in_trt)),  # 0 or 3, kept as text so a non-numeric value cannot break the key
     rna_sequenced = trimws(as.character(rna_sequenced))
   ) %>%
   arrange(mussel)
