@@ -1,0 +1,108 @@
+"mussel","species","group","mussel_trt","days_in_trt","set","threads_baseline","threads_exposure","in_ancova"
+"T001","mytilus trossulus","control","lab_control","0","lab reference, day 0",7,,FALSE
+"T002","mytilus trossulus","control","lab_control","0","lab reference, day 0",26,,FALSE
+"T003","mytilus trossulus","control","lab_control","0","lab reference, day 0",18,,FALSE
+"T004","mytilus trossulus","control","lab_control","0","lab reference, day 0",10,,FALSE
+"T005","mytilus trossulus","control","lab_control","0","lab reference, day 0",7,,FALSE
+"T006","mytilus trossulus","control","lab_control","0","lab reference, day 0",9,,FALSE
+"T007","mytilus trossulus","control","lab_control","0","lab reference, day 0",13,,FALSE
+"T008","mytilus trossulus","control","lab_control","0","lab reference, day 0",9,,FALSE
+"T009","mytilus trossulus","control","lab_control","0","lab reference, day 0",6,,FALSE
+"T010","mytilus trossulus","control","lab_control","0","lab reference, day 0",3,,FALSE
+"T011","mytilus trossulus","control","lab_control","0","lab reference, day 0",13,,FALSE
+"T012","mytilus trossulus","control","lab_control","0","lab reference, day 0",8,,FALSE
+"T013","mytilus trossulus","control","OA","0","assigned, not exposed",7,,FALSE
+"T018","mytilus trossulus","control","OA","0","assigned, not exposed",16,,FALSE
+"T020","mytilus trossulus","control","OA","0","assigned, not exposed",10,,FALSE
+"T022","mytilus trossulus","control","OA","0","assigned, not exposed",9,,FALSE
+"T024","mytilus trossulus","control","OA","0","assigned, not exposed",13,,FALSE
+"T059","mytilus trossulus","control","OA","0","assigned, not exposed",8,,FALSE
+"T060","mytilus trossulus","control","OA","0","assigned, not exposed",15,,FALSE
+"T061","mytilus trossulus","control","OA","0","assigned, not exposed",12,,FALSE
+"T062","mytilus trossulus","control","OA","0","assigned, not exposed",6,,FALSE
+"T063","mytilus trossulus","control","OA","0","assigned, not exposed",2,,FALSE
+"T028","mytilus trossulus","control","OW","0","assigned, not exposed",10,,FALSE
+"T032","mytilus trossulus","control","OW","0","assigned, not exposed",6,,FALSE
+"T064","mytilus trossulus","control","OW","0","assigned, not exposed",8,,FALSE
+"T065","mytilus trossulus","control","OW","0","assigned, not exposed",15,,FALSE
+"T066","mytilus trossulus","control","OW","0","assigned, not exposed",12,,FALSE
+"T067","mytilus trossulus","control","OW","0","assigned, not exposed",9,,FALSE
+"T068","mytilus trossulus","control","OW","0","assigned, not exposed",7,,FALSE
+"T043","mytilus trossulus","control","DO","0","assigned, not exposed",6,,FALSE
+"T044","mytilus trossulus","control","DO","0","assigned, not exposed",7,,FALSE
+"T045","mytilus trossulus","control","DO","0","assigned, not exposed",11,,FALSE
+"T048","mytilus trossulus","control","DO","0","assigned, not exposed",6,,FALSE
+"T050","mytilus trossulus","control","DO","0","assigned, not exposed",14,,FALSE
+"T053","mytilus trossulus","control","DO","0","assigned, not exposed",22,,FALSE
+"T054","mytilus trossulus","control","DO","0","assigned, not exposed",6,,FALSE
+"T069","mytilus trossulus","control","DO","0","assigned, not exposed",16,,FALSE
+"T070","mytilus trossulus","control","DO","0","assigned, not exposed",11,,FALSE
+"T071","mytilus trossulus","control","DO","0","assigned, not exposed",11,,FALSE
+"T072","mytilus trossulus","control","DO","0","assigned, not exposed",17,,FALSE
+"T073","mytilus trossulus","control","DO","0","assigned, not exposed",10,,FALSE
+"T126","mytilus trossulus","treatment","control","3","exposed, day 3",14,12,TRUE
+"T127","mytilus trossulus","treatment","control","3","exposed, day 3",6,2,TRUE
+"T128","mytilus trossulus","treatment","control","3","exposed, day 3",18,21,TRUE
+"T129","mytilus trossulus","treatment","control","3","exposed, day 3",14,7,TRUE
+"T130","mytilus trossulus","treatment","control","3","exposed, day 3",11,7,TRUE
+"T131","mytilus trossulus","treatment","control","3","exposed, day 3",5,6,TRUE
+"T132","mytilus trossulus","treatment","control","3","exposed, day 3",3,6,TRUE
+"T133","mytilus trossulus","treatment","control","3","exposed, day 3",7,8,TRUE
+"T134","mytilus trossulus","treatment","control","3","exposed, day 3",17,20,TRUE
+"T135","mytilus trossulus","treatment","control","3","exposed, day 3",12,5,TRUE
+"T136","mytilus trossulus","treatment","control","3","exposed, day 3",4,15,TRUE
+"T137","mytilus trossulus","treatment","control","3","exposed, day 3",8,7,TRUE
+"T014","mytilus trossulus","treatment","OA","3","exposed, day 3",9,8,TRUE
+"T015","mytilus trossulus","treatment","OA","3","exposed, day 3",10,12,TRUE
+"T016","mytilus trossulus","treatment","OA","3","exposed, day 3",8,26,TRUE
+"T017","mytilus trossulus","treatment","OA","3","exposed, day 3",13,19,TRUE
+"T019","mytilus trossulus","treatment","OA","3","exposed, day 3",7,7,TRUE
+"T021","mytilus trossulus","treatment","OA","3","exposed, day 3",15,9,TRUE
+"T023","mytilus trossulus","treatment","OA","3","exposed, day 3",6,14,TRUE
+"T025","mytilus trossulus","treatment","OA","3","exposed, day 3",19,15,TRUE
+"T026","mytilus trossulus","treatment","OA","3","exposed, day 3",15,15,TRUE
+"T027","mytilus trossulus","treatment","OA","3","exposed, day 3",12,30,TRUE
+"T118","mytilus trossulus","treatment","OA","3","exposed, day 3",15,9,TRUE
+"T119","mytilus trossulus","treatment","OA","3","exposed, day 3",6,7,TRUE
+"T120","mytilus trossulus","treatment","OA","3","exposed, day 3",4,9,TRUE
+"T029","mytilus trossulus","treatment","OW","3","exposed, day 3",7,5,TRUE
+"T030","mytilus trossulus","treatment","OW","3","exposed, day 3",20,5,TRUE
+"T031","mytilus trossulus","treatment","OW","3","exposed, day 3",21,15,TRUE
+"T033","mytilus trossulus","treatment","OW","3","exposed, day 3",9,12,TRUE
+"T034","mytilus trossulus","treatment","OW","3","exposed, day 3",7,13,TRUE
+"T035","mytilus trossulus","treatment","OW","3","exposed, day 3",23,13,TRUE
+"T036","mytilus trossulus","treatment","OW","3","exposed, day 3",9,14,TRUE
+"T037","mytilus trossulus","treatment","OW","3","exposed, day 3",6,10,TRUE
+"T038","mytilus trossulus","treatment","OW","3","exposed, day 3",4,12,TRUE
+"T039","mytilus trossulus","treatment","OW","3","exposed, day 3",4,13,TRUE
+"T040","mytilus trossulus","treatment","OW","3","exposed, day 3",13,3,TRUE
+"T041","mytilus trossulus","treatment","OW","3","exposed, day 3",16,5,TRUE
+"T042","mytilus trossulus","treatment","OW","3","exposed, day 3",10,16,TRUE
+"T089","mytilus trossulus","treatment","OW","3","exposed, day 3",15,9,TRUE
+"T090","mytilus trossulus","treatment","OW","3","exposed, day 3",8,6,TRUE
+"T091","mytilus trossulus","treatment","OW","3","exposed, day 3",14,24,TRUE
+"T092","mytilus trossulus","treatment","OW","3","exposed, day 3",11,26,TRUE
+"T093","mytilus trossulus","treatment","OW","3","exposed, day 3",10,12,TRUE
+"T121","mytilus trossulus","treatment","OW","3","exposed, day 3",14,14,TRUE
+"T122","mytilus trossulus","treatment","OW","3","exposed, day 3",5,3,TRUE
+"T123","mytilus trossulus","treatment","OW","3","exposed, day 3",12,6,TRUE
+"T124","mytilus trossulus","treatment","OW","3","exposed, day 3",3,7,TRUE
+"T046","mytilus trossulus","treatment","DO","3","exposed, day 3",20,3,TRUE
+"T047","mytilus trossulus","treatment","DO","3","exposed, day 3",12,4,TRUE
+"T049","mytilus trossulus","treatment","DO","3","exposed, day 3",8,1,TRUE
+"T051","mytilus trossulus","treatment","DO","3","exposed, day 3",6,5,TRUE
+"T052","mytilus trossulus","treatment","DO","3","exposed, day 3",5,7,TRUE
+"T055","mytilus trossulus","treatment","DO","3","exposed, day 3",13,4,TRUE
+"T056","mytilus trossulus","treatment","DO","3","exposed, day 3",12,6,TRUE
+"T057","mytilus trossulus","treatment","DO","3","exposed, day 3",10,18,TRUE
+"T058","mytilus trossulus","treatment","DO","3","exposed, day 3",23,6,TRUE
+"T094","mytilus trossulus","treatment","DO","3","exposed, day 3",11,8,TRUE
+"T110","mytilus trossulus","treatment","DO","3","exposed, day 3",9,4,TRUE
+"T111","mytilus trossulus","treatment","DO","3","exposed, day 3",28,5,TRUE
+"T112","mytilus trossulus","treatment","DO","3","exposed, day 3",17,7,TRUE
+"T113","mytilus trossulus","treatment","DO","3","exposed, day 3",12,3,TRUE
+"T114","mytilus trossulus","treatment","DO","3","exposed, day 3",10,4,TRUE
+"T115","mytilus trossulus","treatment","DO","3","exposed, day 3",5,3,TRUE
+"T116","mytilus trossulus","treatment","DO","3","exposed, day 3",18,9,TRUE
+"T117","mytilus trossulus","treatment","DO","3","exposed, day 3",13,3,TRUE
+"T125","mytilus trossulus","treatment","DO","3","exposed, day 3",14,6,TRUE

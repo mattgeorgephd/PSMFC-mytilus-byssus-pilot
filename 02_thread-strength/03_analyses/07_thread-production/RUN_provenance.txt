@@ -1,0 +1,18 @@
+generated       : 2026-10-19 03:46:02
+mussels         : 107 in the workbook; ANCOVA 66 (control 12, OA 13, OW 22, DO 19); lab reference 12 and assigned, not exposed 29 (baseline count only, described)
+model           : per-animal ANCOVA (_ancova.R fit_ancova), log(threads during the exposure) ~ arm + log(baseline threads)
+sensitivity     : negative binomial GLM (MASS::glm.nb, log link), the same terms; likelihood-ratio tests
+multiplicity    : unadjusted and Dunnett (emmeans mvt, seed 20260930)
+models agree    : yes (direction and Dunnett p < 0.05, every arm)
+checks               : 9 run, 0 failed
+code commit          : 9c46f77c550e
+uncommitted changes  : no
+R                    : R version 4.6.1 (2026-06-24)
+packages             : emmeans 2.0.4, MASS 7.3.66, broom 1.0.13, ggplot2 4.0.3
+inputs (md5, repo-relative path):
+  f57b4cc9464ca5d4c934d489e0177ea1  01_mussel-measurements/mussel-thread-production.xlsx
+  2fd5b1249669660efc8e0a5d47b67352  02_thread-strength/03_analyses/01_build-mussel-key/mussel-treatment-key.csv
+  4d46eb0f99454fd606b91ed9bc5678b7  02_thread-strength/01_code/07_thread_production.Rmd
+  95ad5e8b9d6029d12d4c8d407b79bc6e  02_thread-strength/01_code/_ancova.R
+  0180a0e135581c5bcd566c131554efcb  tools/plot_style.R
+  a0591028d5c3be67cb4d0daaa8562161  tools/pipeline_checks.R
