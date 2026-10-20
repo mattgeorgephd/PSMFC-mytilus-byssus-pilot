@@ -161,9 +161,9 @@ made during the exposure.
 **Condition.** `mussel-condition.xlsx` holds 60 mussels of their own: 15 day-0 lab-reference
 mussels (T074 to T088) and, at day 3, 15 controls (T150 to T164) and 10 per stressor arm (T165
 to T194). None is a thread or gene-expression mussel (script 08 checks this against the mussel
-key). The workbook does not say whether its masses are dry or wet; the manuscript's Methods
-describe dry masses. The indices are recomputed from the masses and the shell length, and agree
-with the workbook's rounded columns.
+key). Its masses are dry masses, the gonad and the rest of the tissue dried at 60 °C to constant
+mass (Matt, 2026-10-20), which the workbook does not label. The indices are recomputed from the
+masses and the shell length, and agree with the workbook's rounded columns.
 
 ## Force metrics and what is not measured
 

@@ -8,8 +8,9 @@ of these mussels is a thread or gene-expression mussel).
 Sixty mussels sampled for condition only: the day-0 lab reference T074 to T088 (15) and, at day
 3, the treatment control T150 to T164 (15; confirmed by Matt, 2026-10-20), OA T165 to T174, OW
 T175 to T184 and DO T185 to T194 (10 each). Each was measured (shell length, height and width, mm; volume) and dissected,
-and its gonad and remaining tissue weighed (g; dry masses according to the manuscript's Methods,
-which the workbook does not label). Two indices, recomputed from these columns:
+and its gonad and remaining tissue weighed (g; dry masses, dried at 60 °C to constant mass, as
+Matt confirmed on 2026-10-20; the workbook does not label them). Two indices, recomputed from
+these columns:
 
 - condition index CI = 1000 x tissue mass (g) / shell length (cm)^3, in mg cm^-3
 - gonad index GI = 100 x gonad mass / tissue mass, in % of the tissue mass (tissue mass is the

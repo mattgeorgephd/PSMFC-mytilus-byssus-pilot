@@ -318,9 +318,10 @@ the other sections use the new ones.
   control: no arm differs in either index under any of four analyses (lowest Dunnett p 0.38, OA
   gonad index). The manuscript draft's figures had compared each arm before and after the
   exposure without the day-3 control, and drew both species; the before-and-after comparison is
-  not repeated. The workbook does not say whether the condition masses are dry or wet (Blocked,
-  below). Matt confirmed T150 to T164 as the day-3 control of the control arm (2026-10-20), as the
-  workbook has them; the manuscript draft had described a laboratory group kept for 20 days.
+  not repeated. Matt confirmed (2026-10-20) T150 to T164 as the day-3 control of the control arm,
+  as the workbook has them (the manuscript draft had described a laboratory group kept for 20
+  days), and that the condition masses, which the workbook does not label, are dry masses (the
+  gonad and the rest of the tissue dried at 60 °C to constant mass).
 - **Untracked files in provenance** (2026-10-20, Matt's request). `git_state()`
   (`tools/pipeline_checks.R`) had looked at tracked files only, so a run that sourced or read a
   file missing from the commit (a new helper, an input not yet added) could still record
@@ -341,7 +342,6 @@ the other sections use the new ones.
 | Merge GO-db-2026 | the annotation of 2026 (Swiss-Prot 2026_03 search plus 45 byssal proteins, UniProt 2026_03 records, GO release 2026-01-23) and R 4.6.1 / Bioconductor 3.23 are on the stacked pull request; the DEGs are unchanged, 177 of the 296 TC GO terms of record remain among 285, and the ER stress terms weaken (`07` README). Merge, or keep the 2024 annotation | Matt |
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |
-| Condition masses: dry or wet | `01_mussel-measurements/mussel-condition.xlsx` gives tissue and gonad masses in g (0.39 to 3.1 g of tissue in mussels of 43 to 69 mm) with no note, comment or column name saying whether they are dry; the manuscript's Methods say the tissue was dried at 60 °C to constant mass. Only the lab records can settle it; the indices and their tests do not depend on it, the Methods' wording does | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
 | Foot contrasts and RNA isolation day | each foot arm's RNA was isolated on its own day, the controls 17 to 19 days before the stressors (Done, above); the checks that are possible find no sign of a shared effect, but only re-isolating a subset of foot samples across arms on one day (or qPCR of a few DEGs on such RNA) could measure it. Options: state it as a limitation; re-isolate; give the gill results more weight where the two tissues disagree | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |

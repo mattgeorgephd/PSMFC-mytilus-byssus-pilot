@@ -200,8 +200,9 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
     day-0 lab reference and the 29 mussels assigned to an arm they never entered have a baseline
     count only and are described, not tested.
   - Condition (`02` step 08): 60 mussels of their own (T074 to T088 at day 0, T150 to T194 at
-    day 3); condition index 1000 x tissue mass (g) / shell length (cm)^3 and gonad index
-    100 x gonad mass / tissue mass; a one-way linear model of the index, each arm against the
+    day 3); condition index 1000 x dry tissue mass (g) / shell length (cm)^3 and gonad index
+    100 x dry gonad mass / dry tissue mass (dried at 60 °C to constant mass; Matt,
+    2026-10-20); a one-way linear model of the index, each arm against the
     day-3 control, Dunnett; the log index, an allometric ANCOVA and a Kruskal-Wallis test are
     sensitivity analyses; the day-0 lab reference is described only.
 - **Samples.** `F` libraries are the phenol gland to the tip of the foot (every animal); `FX`
@@ -236,8 +237,8 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   the counter (prepDE's read-base estimates), less because the RefSeq gene models end before
   many Tag-seq 3' ends (`06` README, option B); five DO mussels (T113 to T117) have thread
   counts but no tensometer pull, so the DO arm of the thread-production analysis has 19 mussels
-  and that of the thread mechanics 14; the condition workbook does not say whether its masses
-  are dry or wet (the manuscript's Methods say dry), and its mussels are not the thread or
+  and that of the thread mechanics 14; the condition workbook does not label its masses,
+  which are dry masses (Matt, 2026-10-20), and its mussels are not the thread or
   gene-expression mussels.
 - **Secrets.** API keys go in environment variables (`ENTREZ_KEY` in `~/.Renviron`), never in
   a file in the repository.
