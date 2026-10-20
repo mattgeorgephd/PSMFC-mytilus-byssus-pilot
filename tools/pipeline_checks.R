@@ -48,17 +48,25 @@ rel_path <- function(path, repo_root) {
   if (length(out) == 0 || !is.null(attr(out, "status"))) NA_character_ else out
 }
 
-## Code commit that ran, and whether any tracked code or input differs from it. Output folders
-## (03_analyses) and knitted reports are excluded, since a run rewrites them.
+## Code commit that ran, and whether the working tree differs from it: tracked files changed
+## since the commit, and files git does not track (untracked and not git-ignored), since a script
+## can source or read a file the commit does not hold. Excluded, since a run writes them: output
+## folders (03_analyses), knitted reports (.html), knitr's figure and markdown intermediates
+## (<script>_files/figure-*/, .knit.md), which exist while a script knits, and R's default plot
+## file (Rplots.pdf).
 git_state <- function(repo_root) {
   head <- .git_out(repo_root, c("rev-parse", "--short=12", "HEAD"))
   if (is.na(head[1])) return(c(commit = "unavailable (git not found)", dirty = "unknown"))
-  changed <- .git_out(repo_root, c("status", "--porcelain", "--untracked-files=no"))
+  changed <- .git_out(repo_root, c("status", "--porcelain", "--untracked-files=all"))
   changed <- if (all(is.na(changed))) character(0) else changed
-  changed <- changed[!grepl("03_analyses/|\\.html$", changed)]
+  path    <- sub('^"(.*)"$', "\\1", substring(changed, 4))   # git quotes a path with spaces
+  changed <- changed[!grepl("03_analyses/|\\.html$|_files/figure-[^/]+/|\\.knit\\.md$|(^|/)Rplots\\.pdf$",
+                            path)]
+  untracked <- startsWith(changed, "??")
   c(commit = head[1],
     dirty  = if (length(changed) == 0) "no" else
-      paste0("YES, ", length(changed), " tracked file(s) differ from the commit: ",
+      paste0("YES, ", sum(!untracked), " tracked file(s) differ from the commit and ", sum(untracked),
+             " untracked file(s) are not in it: ",
              paste(trimws(utils::head(changed, 10)), collapse = "; "),
              if (length(changed) > 10) " ..." else ""))
 }

@@ -82,8 +82,10 @@ analysis folders; `tasks.md` tracks what is done, in progress and blocked.
   `08_gene-annotation` steps 02-03 (NCBI and OrthoDB; set `online: true`). Their committed
   outputs are what the pipeline reads.
 - **After a run:** check that every `run_log.csv` row is `TRUE`; that the `RUN_provenance*.txt`
-  files in `02`, `07` and `09` name the commit you ran and say `uncommitted changes : no`; and
-  that every `checks` line in `09`'s says `0 failed`.
+  files in `02`, `07` and `09` name the commit you ran and say `uncommitted changes : no` (a file
+  git does not track counts as a change unless it is git-ignored or a run wrote it, so commit,
+  delete or git-ignore stray files before a run); and that every `checks` line in `09`'s says
+  `0 failed`.
 
 ## Conventions
 

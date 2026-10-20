@@ -6,8 +6,8 @@ and script 01's mussel key (`../01_build-mussel-key/mussel-treatment-key.csv`, a
 of these mussels is a thread or gene-expression mussel).
 
 Sixty mussels sampled for condition only: the day-0 lab reference T074 to T088 (15) and, at day
-3, the treatment control T150 to T164 (15), OA T165 to T174, OW T175 to T184 and DO T185 to
-T194 (10 each). Each was measured (shell length, height and width, mm; volume) and dissected,
+3, the treatment control T150 to T164 (15; confirmed by Matt, 2026-10-20), OA T165 to T174, OW
+T175 to T184 and DO T185 to T194 (10 each). Each was measured (shell length, height and width, mm; volume) and dissected,
 and its gonad and remaining tissue weighed (g; dry masses according to the manuscript's Methods,
 which the workbook does not label). Two indices, recomputed from these columns:
 
