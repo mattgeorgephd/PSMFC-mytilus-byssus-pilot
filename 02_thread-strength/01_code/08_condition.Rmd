@@ -1,0 +1,276 @@
+---
+title: "08_condition"
+author: "PSMFC Mytilus byssus pilot"
+date: "2026-10-19"
+output: html_document
+---
+
+<!--
+PURPOSE
+  Physiological condition at the end of the exposure. Sixty mussels of their own, not those of
+  the thread and gene-expression analyses (T074 to T088 at day 0, T150 to T194 at day 3; a check
+  confirms that none is in script 01's mussel key), were measured (shell length, height, width)
+  and dissected, and their gonad and remaining tissue were dried and weighed
+  (mussel-condition.xlsx). Two indices, recomputed here from the masses and the shell length (a
+  check compares them with the workbook's rounded columns):
+
+    condition index  CI = 1000 x tissue mass (g) / shell length (cm)^3     mg cm^-3
+    gonad index      GI = 100 x gonad mass / tissue mass                   % of tissue mass
+
+  (Moeser and Carrington 2006, J Exp Biol 209:1996-2003; Carrington 2002, Limnol Oceanogr
+  47:1723-1733.) Tissue mass is the gonad and the rest of the tissue together. The masses are
+  dry masses according to the manuscript's Methods; the workbook does not label them.
+
+  Each stressor arm against the day-3 treatment control (15 mussels; 10 in each stressor arm): a
+  one-way linear model of the index, the comparisons unadjusted and Dunnett-adjusted over the
+  three (emmeans, multivariate t, seeded as in _ancova.R). The indices are analysed on their own
+  scale, as condition indices usually are, and their residuals are closer to normal there than
+  on the log scale (Shapiro-Wilk p in STATS_condition_tests.csv). In the same tables, as
+  sensitivity analyses: the log index (arm effects as ratios); the allometric ANCOVA, which does
+  not assume that tissue mass scales with the cube of shell length, nor gonad mass in proportion
+  to the rest of the tissue (log tissue mass ~ arm + log shell length; log gonad mass ~ arm +
+  log somatic mass; Packard and Boardman 1988, Physiol Zool 61:1-9; the fitted slopes are in the
+  tests table); and a Kruskal-Wallis test across the four day-3 arms. The day-0 lab reference
+  (15 mussels) is described and drawn, not tested: the day-3 treatment control is the only
+  control (AGENTS.md).
+
+INPUT
+  ../01_mussel-measurements/mussel-condition.xlsx, sheet "data"   condition measurements (raw
+                                       workbook, read only)
+  03_analyses/01_build-mussel-key/mussel-treatment-key.csv   script 01's key (a check that the
+                                       condition mussels are animals of their own)
+
+OUTPUT  03_analyses/08_condition/
+  DATA_condition.csv               every mussel: arm, day, shell dimensions, masses, CI and GI
+  DESC_condition.csv               n, mean, SD, median, quartiles and range of each measure, by
+                                   group (no tests)
+  STATS_condition_tests.csv        per index and model: F for arm (and the covariate, with its
+                                   slope), Shapiro-Wilk p of the residuals; Kruskal-Wallis
+  STATS_condition_vs_control.csv   per index and model, each arm vs control: difference or ratio,
+                                   95% CI, p unadjusted and Dunnett
+  DIAG_condition_residuals.png     Q-Q and residuals vs fitted of the two models of record
+  FIG_condition_index.png          CI by group, every mussel, Dunnett p vs control
+  FIG_gonad_index.png              GI by group, every mussel, Dunnett p vs control
+  RUN_provenance.txt
+-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Packages, theme, palette, inputs
+```{r message=FALSE, warning=FALSE}
+suppressPackageStartupMessages({ library(readxl); library(tidyverse); library(emmeans) })
+
+# Scripts 04 to 07's theme
+my_theme <- theme(line             = element_line(linewidth = 1.0),
+                  rect             = element_rect(linewidth = 1.0),
+                  text             = element_text(size = 13, color = "black"),
+                  panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text        = element_text(size = 12, color = "black"),
+                  panel.border     = element_rect(color = "black", fill = NA, linewidth = 1.0),
+                  strip.background = element_rect(fill = "grey92", color = "black"),
+                  strip.text       = element_text(size = 12, face = "bold"),
+                  legend.key       = element_blank(),
+                  legend.position  = "none")
+
+source(file.path(here::here(), "..", "tools", "plot_style.R"))       # colours
+source(file.path(here::here(), "..", "tools", "pipeline_checks.R"))  # warn_unless(), provenance_lines()
+source(here::here("01_code", "_ancova.R"), local = TRUE)             # ANCOVA_ARMS, DUNNETT_SEED, save_ancova_diagnostics()
+
+repo_root <- psmfc_repo_root(here::here())
+cond_xlsx <- file.path(repo_root, "01_mussel-measurements", "mussel-condition.xlsx")
+key_csv   <- here::here("03_analyses", "01_build-mussel-key", "mussel-treatment-key.csv")
+out_dir   <- here::here("03_analyses", "08_condition")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+if (!file.exists(cond_xlsx)) stop("Missing ", cond_xlsx, ".")
+if (!file.exists(key_csv)) stop("Missing ", key_csv, ": run script 01 first.")
+
+fmt_p <- function(p) ifelse(p < 0.001, "< 0.001", ifelse(p > 0.99, "> 0.99", formatC(p, digits = 2, format = "fg", flag = "#")))
+p_eq  <- function(p) { f <- fmt_p(p); ifelse(grepl("^[<>]", f), paste("p", f), paste("p =", f)) }   # "p = 0.38", "p > 0.99"
+GROUPS <- c("lab", ANCOVA_ARMS)   # "lab": the day-0 lab reference
+```
+
+### The measurements and the two indices
+```{r}
+raw <- read_excel(cond_xlsx, sheet = "data", na = c("", "NA"))
+need <- c("mussel_ID", "mussel_trt", "day", "L_mm", "H_mm", "W_mm", "V_cm3", "total_mass_g", "gonad_mass_g",
+          "condition_index", "gonad_index")
+if (length(setdiff(need, names(raw))))
+  stop("mussel-condition.xlsx lacks column(s) ", paste(setdiff(need, names(raw)), collapse = ", "))
+norm_id <- function(x) {                       # scripts 01 and 04 to 07's mussel ID normalisation
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
+}
+cond <- raw %>%
+  transmute(mussel = norm_id(mussel_ID), mussel_trt = trimws(mussel_trt), day = trimws(as.character(day)),
+            L_mm, H_mm, W_mm, V_cm3,
+            tissue_mass_g = total_mass_g, gonad_mass_g, somatic_mass_g = total_mass_g - gonad_mass_g,
+            CI = 1000 * total_mass_g / (L_mm / 10)^3,
+            GI = 100 * gonad_mass_g / total_mass_g,
+            CI_workbook = condition_index, GI_workbook = gonad_index) %>%
+  mutate(group = factor(if_else(mussel_trt == "lab_control", "lab", mussel_trt), levels = GROUPS)) %>%
+  arrange(group, mussel)
+if (anyNA(cond$mussel) || anyDuplicated(cond$mussel)) stop("A mussel ID does not parse or is duplicated.")
+if (anyNA(cond %>% select(L_mm, tissue_mass_g, gonad_mass_g)) || any(cond$L_mm <= 0) || any(cond$gonad_mass_g <= 0) ||
+    any(cond$somatic_mass_g <= 0))
+  stop("A shell length or mass is missing or not positive, or a gonad weighs as much as its tissue.")
+
+## checks: every mussel is the day-0 lab reference or in a day-3 arm; the indices are the workbook's
+## (its CI is rounded to 2 decimals, its GI to whole percent); the condition mussels are animals of
+## their own, none in script 01's key of the thread and gene-expression mussels
+warn_unless(!anyNA(cond$group) && all((cond$group == "lab") == (cond$day == "0")) && all(cond$day %in% c("0", "3")),
+            "A condition mussel is neither the day-0 lab reference nor in a day-3 arm.")
+warn_unless(max(abs(cond$CI - cond$CI_workbook)) <= 0.005 + 1e-9,
+            "The recomputed condition index differs from the workbook's beyond its rounding.")
+warn_unless(max(abs(cond$GI - cond$GI_workbook)) <= 0.5 + 1e-9,
+            "The recomputed gonad index differs from the workbook's beyond its rounding.")
+key <- read_csv(key_csv, col_types = cols(.default = "c"))
+warn_unless(!any(cond$mussel %in% key$mussel),
+            "Condition mussels also in script 01's mussel key: ", paste(intersect(cond$mussel, key$mussel), collapse = ", "))
+
+cond %>% count(group, day) %>% knitr::kable()
+write.csv(cond %>% select(mussel, group, mussel_trt, day, L_mm, H_mm, W_mm, V_cm3, tissue_mass_g, gonad_mass_g,
+                          somatic_mass_g, CI, GI),
+          file.path(out_dir, "DATA_condition.csv"), row.names = FALSE)
+```
+
+### Description by group (no tests)
+```{r}
+measures <- c(L_mm = "shell length (mm)", tissue_mass_g = "tissue mass (g)", gonad_mass_g = "gonad mass (g)",
+              CI = "condition index (mg cm-3)", GI = "gonad index (% of tissue mass)")
+desc <- cond %>%
+  pivot_longer(all_of(names(measures)), names_to = "measure", values_to = "value") %>%
+  group_by(measure = factor(measure, levels = names(measures)), group) %>%
+  summarise(n = n(), mean = mean(value), sd = sd(value), median = median(value),
+            q1 = unname(quantile(value, 0.25)), q3 = unname(quantile(value, 0.75)),
+            min = min(value), max = max(value), .groups = "drop") %>%
+  mutate(day = if_else(group == "lab", 0L, 3L), label = measures[as.character(measure)], .after = group)
+knitr::kable(desc, digits = 3)
+write.csv(desc, file.path(out_dir, "DESC_condition.csv"), row.names = FALSE)
+```
+
+### Statistics: each arm against the day-3 control
+```{r warning=FALSE}
+d3 <- cond %>% filter(group != "lab") %>% mutate(arm = factor(as.character(group), levels = ANCOVA_ARMS))
+
+## one model: F for each term (drop1), the Shapiro-Wilk p of its residuals, the covariate's slope,
+## and each arm vs control (difference, or ratio for a log response), unadjusted and Dunnett
+fit_vs_control <- function(index, model, form, is_log, primary) {
+  fit <- lm(form, data = d3)
+  covariate <- setdiff(attr(terms(fit), "term.labels"), "arm")
+  slope <- if (length(covariate)) coef(summary(fit))[covariate, ] else NULL
+  tests <- as.data.frame(drop1(fit, test = "F")) %>%
+    tibble::rownames_to_column("term") %>%
+    filter(term != "<none>") %>%
+    transmute(index, model, primary, response = deparse(form[[2]]), term, df = Df, statistic_type = "F",
+              statistic = `F value`, p = `Pr(>F)`, df_residual = fit$df.residual, n_animals = nrow(d3),
+              shapiro_p_residuals = shapiro.test(resid(fit))$p.value,
+              covariate_slope = if (is.null(slope)) NA_real_ else ifelse(term == "arm", NA_real_, slope[["Estimate"]]),
+              covariate_slope_se = if (is.null(slope)) NA_real_ else ifelse(term == "arm", NA_real_, slope[["Std. Error"]]))
+  emm <- emmeans(fit, ~ arm)
+  if (is_log) emm <- update(emm, tran = "log")
+  con <- contrast(emm, method = "trt.vs.ctrl", ref = 1)
+  un <- as.data.frame(summary(con, infer = c(TRUE, TRUE), adjust = "none", type = "response"))
+  set.seed(DUNNETT_SEED)
+  du <- as.data.frame(summary(con, infer = c(TRUE, TRUE), adjust = "mvt", type = "response"))
+  stopifnot(identical(as.character(un$contrast), as.character(du$contrast)))
+  est <- un[[if (is_log) "ratio" else "estimate"]]
+  vs <- tibble(index, model, primary, response = deparse(form[[2]]),
+               contrast = as.character(un$contrast), arm = sub(" .*$", "", as.character(un$contrast)),
+               estimate_type = if (is_log) "ratio arm / control" else "difference arm - control",
+               estimate = est, pct_change = if (is_log) 100 * (est - 1) else NA_real_,
+               SE = un$SE, df = un$df, t = un$t.ratio, ci_low = un$lower.CL, ci_high = un$upper.CL,
+               p_unadjusted = un$p.value, ci_low_dunnett = du$lower.CL, ci_high_dunnett = du$upper.CL,
+               p_dunnett = du$p.value)
+  list(index = index, model = model, fit = fit, tests = tests, vs = vs)
+}
+fits <- list(
+  fit_vs_control("CI", "index",              CI ~ arm,                                  FALSE, TRUE),
+  fit_vs_control("CI", "log index",          log(CI) ~ arm,                             TRUE,  FALSE),
+  fit_vs_control("CI", "allometric ANCOVA",  log(tissue_mass_g) ~ arm + log(L_mm),      TRUE,  FALSE),
+  fit_vs_control("GI", "index",              GI ~ arm,                                  FALSE, TRUE),
+  fit_vs_control("GI", "log index",          log(GI) ~ arm,                             TRUE,  FALSE),
+  fit_vs_control("GI", "allometric ANCOVA",  log(gonad_mass_g) ~ arm + log(somatic_mass_g), TRUE, FALSE))
+kw <- bind_rows(lapply(c("CI", "GI"), function(ix) {
+  k <- kruskal.test(d3[[ix]] ~ d3$arm)
+  tibble(index = ix, model = "Kruskal-Wallis (ranks)", primary = FALSE, response = ix, term = "arm",
+         df = unname(k$parameter), statistic_type = "chi-squared", statistic = unname(k$statistic), p = k$p.value,
+         df_residual = NA_real_, n_animals = nrow(d3))
+}))
+tests <- bind_rows(bind_rows(lapply(fits, `[[`, "tests")), kw) %>% arrange(index, desc(primary))
+vs_control <- bind_rows(lapply(fits, `[[`, "vs"))
+knitr::kable(tests, digits = 4)
+knitr::kable(vs_control %>% select(index, model, arm, estimate, pct_change, ci_low, ci_high, p_unadjusted, p_dunnett), digits = 4)
+write.csv(tests, file.path(out_dir, "STATS_condition_tests.csv"), row.names = FALSE)
+write.csv(vs_control, file.path(out_dir, "STATS_condition_vs_control.csv"), row.names = FALSE)
+
+## the models side by side: does any arm differ from control (Dunnett p < 0.05) in any of them?
+calls <- vs_control %>% group_by(index, arm) %>%
+  summarise(models = n(), below_005 = sum(p_dunnett < 0.05), min_p_dunnett = min(p_dunnett), .groups = "drop")
+knitr::kable(calls, digits = 4)
+models_agree <- all(calls$below_005 %in% c(0, calls$models))
+cat("The three models make the same call for every arm and index:", models_agree, "\n")
+
+primary <- Filter(function(f) f$model == "index", fits)
+save_ancova_diagnostics(lapply(primary, function(f) list(metric = f$index, scale = "raw", fit = f$fit)),
+                        file.path(out_dir, "DIAG_condition_residuals.png"))
+```
+
+### Figures: CI and GI by group
+```{r fig.width=6.5, fig.height=5, warning=FALSE}
+n_grp <- table(cond$group)
+grp_labels <- setNames(sprintf("%s\nn = %d", c("Lab reference,\nday 0", "Control,\nday 3", "OA,\nday 3", "OW,\nday 3", "DO,\nday 3"),
+                               as.integer(n_grp[GROUPS])), GROUPS)
+grp_colors <- c(lab = THREAD_TRT_COLORS[["lab_control"]], TREATMENT_COLORS)
+index_plot <- function(ix, ylab) {
+  y_top <- max(cond[[ix]]) * 1.18
+  ann <- vs_control %>%
+    filter(index == ix, model == "index") %>%
+    transmute(group = factor(arm, levels = GROUPS), label = paste0("Dunnett\n", p_eq(p_dunnett)))
+  ggplot(cond, aes(group, .data[[ix]])) +
+    geom_vline(xintercept = 1.5, linetype = "dashed", colour = "grey60", linewidth = 0.5) +
+    geom_boxplot(aes(fill = group), alpha = 0.45, width = 0.6, outlier.shape = NA, linewidth = 0.6) +
+    geom_point(aes(fill = group), shape = 21, size = 2.3, stroke = 0.4, colour = "grey15",
+               position = position_jitter(width = 0.12, height = 0, seed = 20261019)) +
+    geom_text(data = ann, aes(x = group, y = y_top, label = label), size = 3.6, vjust = 1, lineheight = 0.95) +
+    scale_fill_manual(values = grp_colors) +
+    scale_x_discrete(labels = grp_labels) +
+    scale_y_continuous(limits = c(0, y_top), expand = expansion(mult = c(0, 0.02))) +
+    labs(x = NULL, y = ylab) +
+    my_theme
+}
+p_ci <- index_plot("CI", expression(paste("Condition index (mg ", cm^-3, ")")))
+p_gi <- index_plot("GI", "Gonad index (% of tissue mass)")
+p_ci
+p_gi
+
+## check: the figures draw every mussel
+warn_unless(nrow(ggplot_build(p_ci)$data[[3]]) == nrow(cond) && nrow(ggplot_build(p_gi)$data[[3]]) == nrow(cond),
+            "The figures do not draw every condition mussel.")
+
+ggsave(file.path(out_dir, "FIG_condition_index.png"), plot = p_ci, dpi = 600, width = 6.5, height = 5, units = "in")
+ggsave(file.path(out_dir, "FIG_gonad_index.png"), plot = p_gi, dpi = 600, width = 6.5, height = 5, units = "in")
+```
+
+### Provenance
+```{r}
+ts_inputs <- c(cond_xlsx, key_csv, here::here("01_code", "08_condition.Rmd"), here::here("01_code", "_ancova.R"),
+               file.path(repo_root, "tools", c("plot_style.R", "pipeline_checks.R")))
+writeLines(provenance_lines(c(paste0("generated       : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             paste0("mussels         : ", nrow(cond), " (", paste(sprintf("%s %d", c("lab reference day 0", ANCOVA_ARMS),
+                    as.integer(n_grp[GROUPS])), collapse = ", "), "); none in the thread and gene-expression mussel key"),
+             "indices         : CI = 1000 x tissue mass (g) / shell length (cm)^3; GI = 100 x gonad mass / tissue mass",
+             "model of record : index ~ arm (lm), day-3 arms, each arm vs the day-3 control",
+             "sensitivity     : log index; allometric ANCOVA (log tissue mass ~ arm + log length; log gonad mass ~ arm + log somatic mass); Kruskal-Wallis",
+             paste0("multiplicity    : unadjusted and Dunnett (emmeans mvt, seed ", DUNNETT_SEED, ")"),
+             paste0("models agree    : ", if (models_agree) "yes" else "NO", " (Dunnett p < 0.05 or not, every arm and index)")),
+             ts_inputs, repo_root, packages = c("emmeans", "ggplot2")),
+           file.path(out_dir, "RUN_provenance.txt"))
+cat(readLines(file.path(out_dir, "RUN_provenance.txt")), sep = "\n")
+if (length(.checks$failed)) stop("check failed: ", paste(.checks$failed, collapse = "; "))
+```

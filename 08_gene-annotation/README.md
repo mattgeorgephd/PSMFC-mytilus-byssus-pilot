@@ -23,6 +23,10 @@ repository-level `00_run_pipeline.Rmd` do it, after 05).
 | 02 | `02_uniprot_summaries.Rmd` | `Top_gene_summaries/<code>_topgene_summs.csv`: NCBI gene summaries of the top-50 DEGs | NCBI Entrez (`rentrez`) |
 | 03 | `03_ortholog_lists.Rmd` | `Top_gene_summaries/<code>_topgene_summs_ortho.csv`, `ortho_species.tab.gz`: bivalve orthologs | OrthoDB |
 
+`01_code/_paths.R` holds the paths and stops unless `GO.db` holds GO release 2026-01-23
+(`check_go_release()`, `tools/pipeline_checks.R`). `01_code/_derive_goslim.R` is a one-off
+helper, not run by the runner: it wrote `02_data/goslim_generic.obo`.
+
 By default the runner runs step 01 only (`online: false`); steps 02 and 03 need network access,
 and their committed tables are kept. They were last run on 2026-10-02, from the current top-50
 lists (`03_analyses/Top_gene_summaries/README.md`). Step 02 finds each UniProt accession's NCBI
@@ -40,8 +44,15 @@ rmarkdown.
 
 Each TC DEG with a UniProt hit is mapped onto the generic GO slim: it belongs to a slim term
 when any of its GO IDs is that term or a descendant. The slim is pinned in
-`02_data/goslim_generic.obo` (GO release 2023-07-27, the release of the `GO.db` used here); the
-GO graph comes from `GO.db`. The earlier script (`06-get_GOSlims.Rmd`) lost most of the
+`02_data/goslim_generic.obo`, of GO release 2026-01-23, the release of the `GO.db` used here
+(3.23.1); the GO graph comes from `GO.db`, and step 01 stops if the two releases differ. The
+slim is derived by `01_code/_derive_goslim.R` from the GO editors' file at the last commit
+before the release, whose live terms are exactly `GO.db` 3.23.1's (the official release file is
+served only for the current release, and the release archive was not reachable from the
+environment the analysis ran in); the same script rebuilds the earlier slim of release
+2023-07-27, now in `02_data/_superseded/`, byte for byte. The two slims differ in one term:
+GO made "protein glycosylation" (GO:0006486) obsolete and replaced it in the slim with
+"glycoprotein biosynthetic process" (GO:0009101). The earlier script (`06-get_GOSlims.Rmd`) lost most of the
 annotation: GO IDs kept a leading space after splitting on ";", which `GSEABase::GOCollection()`
 silently drops, so each gene contributed only its first-listed GO ID, and genes were then looked
 up through only the first GO ID of each slim term. Its tables are kept in

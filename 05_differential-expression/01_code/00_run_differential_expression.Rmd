@@ -23,7 +23,7 @@ Knit this file from inside `differential-expression.Rproj`, or let the repositor
 |---|---|---|
 | 01 | `01_clean_count_matrix.Rmd` | clean counts, sample table, isolation-log crosswalk and the list of mitochondrial loci |
 | 02 | `02_define_contrasts.Rmd` | the 7 contrasts (6 TC of record, foot vs gill in the day-3 controls) and their samples |
-| 03 | `03_deseq_contrasts.Rmd` | one DESeq2 fit per contrast on the nuclear genes, saved to `03_analyses/dds/`; PCA plots |
+| 03 | `03_deseq_contrasts.Rmd` | one DESeq2 fit per contrast on the nuclear genes, saved to `03_analyses/dds/`; the original PCA plots |
 | 04 | `04_shrinkage_filtration.Rmd` | apeglm shrinkage, full tables, DEG lists, MA plots, DEG counts |
 | 05 | `05_fourlevel_sensitivity.Rmd` | one four-level model per tissue vs the pairwise lists |
 | 06 | `06_join_annotation.Rmd` | TC DEG lists joined to the BLAST / UniProt / GO annotation |
@@ -32,8 +32,9 @@ Knit this file from inside `differential-expression.Rproj`, or let the repositor
 | 11 | `11_deg_figures_all_contrasts.Rmd` | DEG counts and volcano plots for the TC and foot-vs-gill contrasts |
 | 12 | `12_deg_list_cleanup.Rmd` | DEG lists for Zenodo |
 | 13 | `13_mitochondrial_expression.Rmd` | the mitochondrial protein genes on their own: summed counts, DESeq2 per TC contrast, figure |
+| 14 | `14_pca.Rmd` | PCA of every sample set, each tissue on its own, without and with the lab control, with 95% ellipses; PERMANOVA and spread compared |
 
-Scripts 03 and 13 take a few minutes each; the rest a few minutes together. Step 08 installs
+Scripts 03, 13 and 14 take a few minutes each; the rest a few minutes together. Step 08 installs
 `ggvenn` from CRAN if it is missing.
 
 ```{r run}

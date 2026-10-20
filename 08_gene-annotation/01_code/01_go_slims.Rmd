@@ -18,8 +18,10 @@ Inputs:
   TC DEG with a UniProt hit, its log2 fold change and its GO IDs (05 script 06);
 - `05_differential-expression/03_analyses/count_matrix/mitochondrial_loci.csv`: the
   mitochondrial loci (05 script 01), checked to be absent from the DEG lists;
-- `02_data/goslim_generic.obo`: the generic GO slim of GO release 2023-07-27 (see the file's
-  header). The GO graph, the descendants of each slim term, comes from `GO.db`.
+- `02_data/goslim_generic.obo`: the generic GO slim of GO release 2026-01-23 (see the file's
+  header and `_derive_goslim.R`). The GO graph, the descendants of each slim term, comes from
+  `GO.db`, which must hold the same release (checked below): a slim term made obsolete in
+  `GO.db`'s release would have no descendants there and count no genes.
 
 A gene belongs to a slim term when any of its GO IDs is that term or one of its descendants.
 A gene can belong to several slim terms, so the counts do not add up to the number of DEGs.
@@ -68,10 +70,15 @@ mt_loci  <- read.csv(file.path(repo_root, "05_differential-expression", "03_anal
 # Slim terms and what each covers
 
 ```{r slim}
+## the slim and GO.db must be of one GO release
+slim_release <- sub("^data-version: go/releases/([0-9-]+).*$", "\\1", grep("^data-version:", readLines(slim_obo), value = TRUE))
+go_release   <- GO.db::GO_dbInfo()$value[GO.db::GO_dbInfo()$name == "GOSOURCEDATE"]
+if (!identical(slim_release, go_release))
+  stop("the slim is of GO release ", slim_release, " and GO.db of ", go_release, "; see 01_code/_derive_goslim.R")
 slim_ids <- ids(getOBOCollection(slim_obo))
 info <- suppressMessages(AnnotationDbi::select(GO.db, slim_ids, c("ONTOLOGY", "TERM"), "GOID"))
 missing_in_godb <- info$GOID[is.na(info$ONTOLOGY)]
-if (length(missing_in_godb)) message("slim terms not in this GO.db: ", paste(missing_in_godb, collapse = ", "))
+if (length(missing_in_godb)) stop("slim terms not in this GO.db: ", paste(missing_in_godb, collapse = ", "))
 bp <- info[!is.na(info$ONTOLOGY) & info$ONTOLOGY == "BP", c("GOID", "TERM")]
 bp <- bp[order(bp$GOID), ]
 ## each slim term covers itself and all its descendants
@@ -192,7 +199,7 @@ p <- ggplot(long, aes(contrast, Term)) +
          "Numbers are DEGs (apeglm padj < 0.05) with a UniProt GO annotation under the slim term; ",
          "a gene can count under several terms. ", nlevels(long$Term), " of the ", n_terms_hit,
          " slim terms with any DEG are shown (at least ", MIN_TOTAL, " DEGs over all contrasts). ",
-         "Generic GO slim, GO release 2023-07-27. Mitochondrial genes and their nuclear copies are ",
+         "Generic GO slim, GO release ", slim_release, ". Mitochondrial genes and their nuclear copies are ",
          "analysed separately (05 step 13)."), width = 120), collapse = "\n")) +
   theme_psmfc(10) +
   theme(panel.grid = element_blank(), axis.ticks = element_blank(),

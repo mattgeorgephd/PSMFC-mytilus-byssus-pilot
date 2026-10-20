@@ -25,7 +25,9 @@ contrast, exactly as the original analysis did:
 
 Writes `03_analyses/dds/<contrast>.rds` (the filtered `DESeqDataSet`; git-ignored, rebuilt by
 this script), `03_analyses/DEG_lists/filter_summary.csv`, and PCA plots of the variance-
-stabilised counts to `03_analyses/figures/`.
+stabilised counts to `03_analyses/figures/`. These are the original four PCA plots, kept as they
+were drawn; step 14 draws every sample set of the original analysis with 95% ellipses, each tissue
+on its own, without and with the lab control, and compares them.
 
 ```{r paths}
 source(here::here("01_code", "_paths.R"))
@@ -70,8 +72,8 @@ Blind variance-stabilising transform (`vst(blind = TRUE)`), top 500 most variabl
 genes, as `DESeq2::plotPCA`. The original analysis drew the day-3 panels. The all-sample panel shows
 how tissue dominates the variation, which is why every contrast stays within one tissue, and
 that the day-0 libraries of the rest of the foot (no phenol gland) separate from the
-phenol-gland-to-tip libraries of the same animals. It is the only place the day-0 libraries
-appear: they enter no contrast (scripts 01 and 02).
+phenol-gland-to-tip libraries of the same animals. With step 14's PCAs it is the only place the
+day-0 libraries appear: they enter no contrast (scripts 01 and 02).
 
 ```{r pca}
 pca_data <- function(samples) {

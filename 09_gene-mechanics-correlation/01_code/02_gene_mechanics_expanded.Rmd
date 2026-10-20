@@ -27,8 +27,8 @@ thread for `max_force`). The animal is the unit, so there is no pseudoreplicatio
 but every animal counts the same whether it built one plaque or five. This script keeps
 that test as the reported one and adds what a reader needs to trust or discount a hit:
 
-- **A. Module eigengenes** - collapse co-regulated pathways (HIF, oxidative, HSP,
-  tRNA-synthetase, byssal/collagen, and the byssal structural module) into one score each
+- **A. Module eigengenes** - collapse co-regulated pathways (HIF, oxidative, the chaperone
+  network, tRNA-synthetase, byssal/collagen, and the byssal structural module) into one score each
   and put the score through the same ANCOVA, cutting the multiple-testing burden from
   hundreds of genes to six modules.
 - **B. Diagnostics** - echoes the detection-floor flags, refits the reported ANCOVA for the
@@ -74,6 +74,7 @@ find_repo_root <- function(start = here::here()) {
 }
 repo_root <- find_repo_root()
 source(file.path(repo_root, "tools", "pipeline_checks.R"))   # warn_unless(), provenance
+source(file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "_chaperone_families.R"))  # chaperone_family()
 IN_DIR  <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "gene_mechanics")
 OUT_DIR <- IN_DIR                                  # 02 writes alongside 01's outputs
 need <- function(f) { p <- file.path(IN_DIR, f)
@@ -162,15 +163,19 @@ building, not strength" is its own row.
 modules <- list(
   HIF_hypoxia       = "hypoxia-inducible|Egl nine|prolyl 4-hydroxylase|prolyl hydroxylase|hypoxia up-regulated",
   oxidative_detox   = "superoxide|glutathione|catalase|peroxiredoxin|dual oxidase|peroxidase",
-  HSP_proteostasis  = "heat shock|Hsp|stress-70|chaperone|BiP|peptidyl-prolyl",
-  tRNA_translation  = "--tRNA|tRNA ligase|aminoacyl",
-  byssal_collagen   = "collagen|byss|foot protein|adhesive plaque|polyphenolic",
-  byssal_structural = "foot protein|adhesive plaque|polyphenolic|byssal protein-|preCol|precollagen|byssal EP|ACDC"
+  HSP_proteostasis  = NA,   # not a regex: the chaperone families of _chaperone_families.R, script 01's chaperone candidates (2026-10-18)
+  tRNA_translation  = "--tRNA|tRNA ligase|aminoacyl[- ]tRNA",   # as script 01's keywords: not aminoacylase-1 or acylaminoacyl-peptidase
+  byssal_collagen   = "collagen|byss|foot protein|adhesive plaque|polyphenolic|thread matrix protein|YGH-rich protein|protease inhibitor-like protein-1|C1q-domain-containing protein-1|TSP_1 domain containing protein-1",
+  byssal_structural = "foot protein|adhesive plaque|polyphenolic|byssal protein-|preCol|precollagen|byssal EP|ACDC|thread matrix protein|nongradient byssal|YGH-rich protein"
 )
 
 if (!"blast_ok" %in% names(annot)) annot$blast_ok <- TRUE   # older script-20 handoff
-module_score <- function(rx) {
-  locs <- annot %>% filter(blast_ok, grepl(rx, protein_name, ignore.case = TRUE)) %>% pull(LOC_ID)
+in_module <- function(nm) {
+  if (nm == "HSP_proteostasis") return(!is.na(chaperone_family(annot$protein_name)))
+  grepl(modules[[nm]], annot$protein_name, ignore.case = TRUE, perl = TRUE)
+}
+module_score <- function(nm) {
+  locs <- annot$LOC_ID[annot$blast_ok & in_module(nm)]
   locs <- intersect(locs, rownames(vp))
   if (length(locs) < 3) return(NULL)
   z <- t(scale(t(vp[locs, paired$sample, drop = FALSE])))   # standardise each gene
@@ -181,7 +186,11 @@ module_score <- function(rx) {
   list(score = sc, n_genes = length(locs), members = locs,
        var_expl = summary(pc)$importance[2, 1])
 }
-mod_scores <- purrr::compact(map(modules, module_score))
+mod_scores <- purrr::compact(map(set_names(names(modules)), module_score))
+## the chaperone module holds exactly script 01's chaperone candidates (floor-flagged ones included)
+warn_unless(setequal(mod_scores$HSP_proteostasis$members,
+                     candidates_all$LOC_ID[!is.na(candidates_all$chaperone_family)]),
+            "HSP_proteostasis members differ from script 01's chaperone candidates")
 write_csv(map_dfr(names(mod_scores), ~ tibble(module = .x, LOC_ID = mod_scores[[.x]]$members)) %>%
             left_join(annot, by = "LOC_ID"),
           file.path(OUT_DIR, sprintf("module_members_%s.csv", TISSUE)))
@@ -355,7 +364,8 @@ inputs <- file.path(IN_DIR, c(sprintf(c("metrics_config_%s.csv", "paired_sample_
                                         "candidate_genes_%s.csv", "detection_floor_flags_%s.csv",
                                         "vst_paired_%s.csv", "assoc_candidate_%s.csv",
                                         "assoc_DEGunion_%s.csv"), TISSUE), "annotation_map.csv"))
-inputs <- c(inputs, file.path(repo_root, "09_gene-mechanics-correlation", "01_code", "02_gene_mechanics_expanded.Rmd"))
+inputs <- c(inputs, file.path(repo_root, "09_gene-mechanics-correlation", "01_code",
+                              c("02_gene_mechanics_expanded.Rmd", "_chaperone_families.R")))
 writeLines(c(old, "", provenance_lines(settings, inputs, repo_root, packages = c("dplyr", "readr"))), prov)
 cat(readLines(prov), sep = "\n")
 ```

@@ -1,0 +1,46 @@
+accession	family	protein_name	organism	length	citation
+A5HKH7	thread matrix protein	Thread matrix protein 1A	Mytilus galloprovincialis	534	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKH8	thread matrix protein	Thread matrix protein 1B	Mytilus galloprovincialis	236	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKH9	thread matrix protein	Thread matrix protein 2A	Mytilus galloprovincialis	416	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI0	thread matrix protein	Thread matrix protein 2B	Mytilus galloprovincialis	117	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI1	thread matrix protein	Thread matrix protein 2C	Mytilus galloprovincialis	397	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI2	thread matrix protein	Thread matrix protein 2D	Mytilus galloprovincialis	214	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI3	thread matrix protein	Thread matrix protein 2E	Mytilus galloprovincialis	332	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI4	thread matrix protein	Thread matrix protein 2F	Mytilus galloprovincialis	429	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI5	thread matrix protein	Thread matrix protein 2G	Mytilus galloprovincialis	181	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI6	thread matrix protein	Thread matrix protein 2H	Mytilus galloprovincialis	228	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI7	thread matrix protein	Thread matrix protein C1	Mytilus galloprovincialis	156	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI8	thread matrix protein	Thread matrix protein C2	Mytilus galloprovincialis	155	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+A5HKI9	thread matrix protein	Thread matrix protein F3T7	Mytilus galloprovincialis	65	Sagert & Waite 2009, J Exp Biol 212:2224-36, doi:10.1242/jeb.029686
+Q8T5C2	proximal thread matrix protein 1	Proximal thread matrix protein 1	Mytilus galloprovincialis	453	Sun et al. 2002, Biomacromolecules 3:1240-8, doi:10.1021/bm0255903; Suhre et al. 2014, Nat Commun 5:3392, doi:10.1038/ncomms4392
+Q8T5C3	proximal thread matrix protein 1	Proximal thread matrix protein 1b	Mytilus edulis	444	Sun et al. 2002, Biomacromolecules 3:1240-8, doi:10.1021/bm0255903
+Q8T6U5	proximal thread matrix protein 1	Proximal thread matrix protein 1 variant a	Mytilus edulis	441	Sun et al. 2002, Biomacromolecules 3:1240-8, doi:10.1021/bm0255903
+O76271	precollagen (preCOL-D, -P, -NG)	Nongradient byssal	Mytilus edulis	904	Qin & Waite 1998, Proc Natl Acad Sci U S A 95:10517-22, doi:10.1073/pnas.95.18.10517
+Q8MW53	precollagen (preCOL-D, -P, -NG)	Precollagen-D	Mytilus galloprovincialis	922	Lucas et al. 2002, J Exp Biol 205:1807-17, doi:10.1242/jeb.205.12.1807
+Q8MW54	precollagen (preCOL-D, -P, -NG)	Precollagen-P	Mytilus galloprovincialis	894	Lucas et al. 2002, J Exp Biol 205:1807-17, doi:10.1242/jeb.205.12.1807
+Q8MW55	precollagen (preCOL-D, -P, -NG)	Precollagen-NG	Mytilus galloprovincialis	905	Lucas et al. 2002, J Exp Biol 205:1807-17, doi:10.1242/jeb.205.12.1807
+W5ZXC4	precollagen (preCOL-D, -P, -NG)	Precollagen NG	Mytilus galloprovincialis	902	Heim et al. 2013, Biomacromolecules 14:3238-45, doi:10.1021/bm400860y
+A9QLN2	precollagen (preCOL-D, -P, -NG)	Precollagen-D	Mytilus californianus	1000	Harrington & Waite 2007, J Exp Biol 210:4307-18, doi:10.1242/jeb.009753
+A9QLN3	precollagen (preCOL-D, -P, -NG)	Precollagen-NG	Mytilus californianus	960	Harrington & Waite 2007, J Exp Biol 210:4307-18, doi:10.1242/jeb.009753
+A9QLN4	precollagen (preCOL-D, -P, -NG)	Precollagen-P	Mytilus californianus	944	Harrington & Waite 2007, J Exp Biol 210:4307-18, doi:10.1242/jeb.009753
+Q8WTE8	mussel foot protein 5	Polyphenolic phosphoprotein mefp-5	Mytilus edulis	98	Waite & Qin 2001, Biochemistry 40:2887-93, doi:10.1021/bi002718x
+A0A0K2D811	Mytilus coruscus byssus proteome	C1q-domain-containing protein-1	Mytilus coruscus	162	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7V5	Mytilus coruscus byssus proteome	Collagen-like protein-5	Mytilus coruscus	1202	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7M3	Mytilus coruscus byssus proteome	Collagen-like protein-4	Mytilus coruscus	239	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7R0	Mytilus coruscus byssus proteome	Collagen-like protein-6	Mytilus coruscus	476	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D820	Mytilus coruscus byssus proteome	Collagen-like protein-7	Mytilus coruscus	364	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7Q5	Mytilus coruscus byssus proteome	Protease inhibitor-like protein-1	Mytilus coruscus	1448	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D876	Mytilus coruscus byssus proteome	Leu-rich protein-1	Mytilus coruscus	202	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7W0	Mytilus coruscus byssus proteome	YGH-rich protein-1	Mytilus coruscus	873	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7W4	Mytilus coruscus byssus proteome	YGH-rich protein-2	Mytilus coruscus	509	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7N2	Mytilus coruscus byssus proteome	YGH-rich protein-3	Mytilus coruscus	518	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7M8	Mytilus coruscus byssus proteome	TSP_1 domain containing protein-1	Mytilus coruscus	651	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A0K2D7R5	Mytilus coruscus byssus proteome	Tyrosinase-like protein-2	Mytilus coruscus	197	Qin et al. 2016, J Proteomics 144:87-98, doi:10.1016/j.jprot.2016.06.014 (the title of the GenBank records KP876468 to KP876481; the UniProt record cites no paper)
+A0A6B7E5P4	catechol oxidase (tyrosinase family)	Catechol oxidase (EC 1.10.3.1)	Mytilus galloprovincialis	561	unpublished: GenBank MG975894, direct submission by Suhre, Richter, Wang and Scheibel (2018)
+Q25534	mussel foot protein 1 (M. trossulus fragment)	Adhesive protein	Mytilus trossulus	40	Inoue et al. 1995, Biol Bull 189:370-5, doi:10.2307/1542155
+Q2TCK5	foot protein 1 (Perna)	Foot protein 1 variant 4	Perna canaliculus	388	Zhao & Waite 2005, Biochemistry 44:15915-23, doi:10.1021/bi051530g
+Q2TCK6	foot protein 1 (Perna)	Foot protein 1 variant 3	Perna canaliculus	404	Zhao & Waite 2005, Biochemistry 44:15915-23, doi:10.1021/bi051530g
+Q2TCK7	foot protein 1 (Perna)	Foot protein 1 variant 2	Perna canaliculus	432	Zhao & Waite 2005, Biochemistry 44:15915-23, doi:10.1021/bi051530g
+Q2TCK8	foot protein 1 (Perna)	Foot protein 1 variant 1	Perna canaliculus	436	Zhao & Waite 2005, Biochemistry 44:15915-23, doi:10.1021/bi051530g
+B2D080	foot protein 1 (Perna)	Foot protein 1	Perna perna	41	Clezar et al. 2008, Genet Mol Res 7:567-72, doi:10.4238/vol7-2gmr459
+Q9NB54	byssal protein Dpfp1 (Dreissena)	Byssal protein Dpfp1	Dreissena polymorpha	430	Anderson & Waite 2000, J Exp Biol 203:3065-76, doi:10.1242/jeb.203.20.3065

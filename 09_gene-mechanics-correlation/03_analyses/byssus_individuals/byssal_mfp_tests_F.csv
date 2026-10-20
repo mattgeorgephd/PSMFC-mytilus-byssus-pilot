@@ -1,0 +1,13 @@
+test,statistic,value,null_mean,null_95,p,n,slope,se
+animals in their arm's top third for >= 4 of 6 expressed mfp genes,count,16,5.395,8,4.997501249375312e-4,NA,NA,NA
+animals in their arm's top third for all 6 expressed mfp genes,count,10,0.0995,1,4.997501249375312e-4,NA,NA,NA
+two normals against one on mean mfp VST (delta BIC; above 10 very strong),delta BIC,20.19890509250513,NA,NA,NA,NA,NA,NA
+"animals expressing the mfp genes (posterior > 0.5): control 2 of 12, OA 2 of 12, OW 4 of 12, DO 3 of 10",count,11,NA,NA,NA,NA,NA,NA
+share of animals expressing the mfp genes differs between arms (Fisher exact test),Fisher p,NA,NA,NA,0.7324188582068771,NA,NA,NA
+mfp mean expression vs library size,Spearman rho,0.03694110391612704,NA,NA,NA,NA,NA,NA
+mfp mean expression vs genes detected,Spearman rho,0.016836262719703975,NA,NA,NA,NA,NA,NA
+mfp mean expression vs PC1 of the day-3 PCA (05 step 14),Spearman rho,0.923527597903176,NA,NA,NA,NA,NA,NA
+mfp score vs threads made in the 3 days (log 1 + n),partial r,-0.11998309655652967,NA,NA,0.4434547721171219,46,-0.06772789469552809,0.08751990196772984
+"mfp score vs day-3 mean peak force (log), baseline adjusted",partial r,0.14889368287197166,NA,NA,0.35284027253557126,45,0.06267676105222485,0.06665454946660498
+"mfp score vs day-3 plaque area (log), baseline adjusted",partial r,0.09892248515355899,NA,NA,0.538332384011355,45,0.028976684208777977,0.04667517684986528
+"mfp score vs RNA yield of the isolation (log ng), technical check",partial r,-0.05461491746503988,NA,NA,0.7279599051753236,46,-0.030455448000088512,0.08695871429308075

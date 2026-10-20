@@ -38,6 +38,10 @@ REGION_LABELS <- c("foot (phenol gland to tip)" = "Foot: phenol gland to tip",
 ## in one figure.
 DIRECTION_COLORS <- c(up = "#e34948", down = "#2a78d6", ns = "#bdbdbd")
 
+## Expression level (variance-stabilised counts) in heatmaps: one hue, light to dark, a brown
+## kept apart from the treatment, tissue and direction hues (09 step 07).
+EXPRESSION_COLORS <- c(low = "#f7f1e3", high = "#5c3d0e")
+
 theme_psmfc <- function(base_size = 11) {
   ggplot2::theme_bw(base_size = base_size) +
     ggplot2::theme(panel.grid.minor = ggplot2::element_blank(),

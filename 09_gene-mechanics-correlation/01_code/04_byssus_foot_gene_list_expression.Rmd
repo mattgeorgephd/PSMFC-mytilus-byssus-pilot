@@ -43,6 +43,7 @@ KEEP_CATEGORIES <- c("byssal_structural","byssal_accessory","collagen",
                      "crosslink_curing","collagen_biosynth","ecm_adhesion")
 USE_RAW_THREAD_SET <- FALSE        # FALSE = mussels in the thread summary; TRUE = any extracted trace (manifest)
 MIN_COUNT <- 5                     # gene kept if count > MIN_COUNT in >= 1/3 of thread-having samples
+KEEP_ALL_MFP <- TRUE               # TRUE = keep every mussel foot protein gene with reads, flagged when below MIN_COUNT
 
 ## ---- portable paths ----------------------------------------------------------------
 find_repo_root <- function(start = here::here()) {
@@ -60,7 +61,7 @@ COUNT_FILE   <- file.path(DE_DIR, "03_analyses", "count_matrix", "gene_count_mat
 THREAD_FILE  <- file.path(repo_root, "02_thread-strength", "03_analyses", "03_assemble-thread-summary",
                           "thread-summary.xlsx")
 EXPR_DIR     <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "expr_tables")  # script 03 outputs
-LOC_GO_FILE  <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot", "LOC_GO_list.txt")
+LOC_GO_FILE  <- file.path(repo_root, "03_blast", "03_analyses", "genome-foot-sprot2026_03-noseg", "LOC_GO_list.txt")
 OUT_DIR      <- file.path(repo_root, "09_gene-mechanics-correlation", "03_analyses", "byssus_genes")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 ```
@@ -81,12 +82,12 @@ PN <- replace_na(ann$`Protein.names`, "")
 g  <- function(rx, x = PN) grepl(rx, x, ignore.case = TRUE, perl = TRUE)
 
 category <- dplyr::case_when(
-  g("foot protein|adhesive plaque|polyphenolic|byssal protein-?\\d|\\bMGFP|\\bMCFP|Mefp|byssal EP|\\bACDC\\b|mussel byssus|mussel adhesive|preCol") ~ "byssal_structural",
+  g("foot protein|adhesive plaque|polyphenolic|byssal protein-?\\d|\\bMGFP|\\bMCFP|Mefp|byssal EP|\\bACDC\\b|mussel byssus|mussel adhesive|preCol|thread matrix protein|nongradient byssal|YGH-rich protein") ~ "byssal_structural",
   g("byssal peroxidase|peroxidasin|\\btyrosinase|catechol oxidase|lysyl oxidase|transglutaminase|gamma-glutamyltransferase|DOPA decarboxylase|aromatic-L-amino-acid decarboxylase|tyrosine decarboxylase") &
     !g("glutathione|thioredoxin|peroxiredoxin|monoamine|diamine|polyamine|spermine|histone demethylase|renalase|chloride intracellular|lysine-specific") ~ "crosslink_curing",
   g("prolyl 4-hydroxylase|prolyl 3-hydroxylase|lysyl hydroxylase|procollagen-lysine|procollagen-proline|protein disulfide-isomerase") ~ "collagen_biosynth",
   g("\\bcollagen\\b|procollagen") ~ "collagen",
-  g("byssal|byssus") ~ "byssal_accessory",
+  g("byssal|byssus|protease inhibitor-like protein-1|C1q-domain-containing protein-1|TSP_1 domain containing protein-1") ~ "byssal_accessory",
   g("\\bADAMTS|thrombospondin|fibrillin|\\blaminin|von Willebrand factor|fibronectin|matrilin|tenascin|nidogen|perlecan|basement membrane-specific") ~ "ecm_adhesion",
   TRUE ~ NA_character_)
 
@@ -183,16 +184,23 @@ genes <- byss
 if (HI_CONF_ONLY)       genes <- filter(genes, hi_conf)
 genes <- filter(genes, category %in% KEEP_CATEGORIES, LOC_ID %in% rownames(vmat))
 
-## keep genes actually expressed in the thread-having samples
+## keep genes actually expressed in the thread-having samples. Every mussel foot protein (mfp)
+## gene with reads in the tissue is kept even below that filter, flagged (`expressed` FALSE), so
+## that the table shows all of them (2026-10-06: mfp-6, two mfp-3 genes and others were left out
+## before); the category scores (section 5) use only the genes that pass the filter
 cmat <- counts_named[genes$LOC_ID, samples_have, drop = FALSE]
-expressed <- rowSums(cmat > MIN_COUNT) >= ceiling(length(samples_have)/3)
-genes <- genes[expressed, ]
-cat("Byssus genes expressed in", TISSUE, "across thread-having mussels:", nrow(genes), "\n")
+genes$n_samples_gt_min <- unname(rowSums(cmat > MIN_COUNT))
+genes$expressed <- genes$n_samples_gt_min >= ceiling(length(samples_have)/3)
+genes$mfp <- genes$category == "byssal_structural" &
+  g("foot protein|adhesive plaque matrix|polyphenolic|\\bmefp|\\bmgfp|\\bmcfp", replace_na(genes$`Protein.names`, ""))
+genes <- genes[genes$expressed | (KEEP_ALL_MFP & genes$mfp), ]
+cat("Byssus genes expressed in", TISSUE, "across thread-having mussels:", sum(genes$expressed),
+    "| mfp genes kept below the filter:", sum(!genes$expressed), "\n")
 
 expr_block <- as.data.frame(round(vmat[genes$LOC_ID, samples_have, drop = FALSE], 3))
 table_out <- genes %>%
   transmute(category, LOC_ID, protein_name = `Protein.names`, gene_name = `Gene.Names`,
-            pident = round(pident,1), evalue, hi_conf,
+            pident = round(pident,1), evalue, hi_conf, mfp, expressed, n_samples_gt_min,
             !!!set_names(map(grep("_log2FC$", names(genes), value = TRUE),
                              ~ genes[[.x]]), grep("_log2FC$", names(genes), value = TRUE)),
             n_DE) %>%
@@ -228,8 +236,9 @@ expression against thread mechanics (it could enter the script-20 ANCOVA with th
 category mean as the predictor).
 
 ```{r catscore}
-cat_score <- map_dfr(unique(genes$category), function(cc) {
-  locs <- genes$LOC_ID[genes$category == cc]
+scored <- genes[genes$expressed, ]           # the genes that pass the expression filter
+cat_score <- map_dfr(unique(scored$category), function(cc) {
+  locs <- scored$LOC_ID[scored$category == cc]
   if (length(locs) < 2) return(NULL)
   tibble(category = cc, sample = samples_have,
          mean_vst = colMeans(vmat[locs, samples_have, drop = FALSE]))
@@ -250,11 +259,15 @@ cat("
 **Outputs (", OUT_DIR, "):**
 
 - `byssus_gene_expression_<tissue>.csv` - the narrowed list: category, protein, blast
-  quality (pident/evalue/hi_conf), per-contrast log2FC, n_DE, then VST expression across
-  every thread-having mussel (columns like `T046F` = mussel `T046`).
+  quality (pident/evalue/hi_conf), `mfp` (a mussel foot protein gene), `expressed` (passes
+  the filter: count > MIN_COUNT in at least a third of the thread-having samples) and
+  `n_samples_gt_min`, per-contrast log2FC, n_DE, then VST expression across every
+  thread-having mussel (columns like `T046F` = mussel `T046`). Every mfp gene with reads is
+  listed; those below the filter have `expressed` FALSE.
 - `sample_metadata_<tissue>.csv` - per mussel: treatment and post-stress thread mechanics,
   to align against the expression columns.
-- `byssus_category_scores_<tissue>.csv` - mean VST per category per mussel + mechanics.
+- `byssus_category_scores_<tissue>.csv` - mean VST per category per mussel + mechanics, over
+  the genes that pass the expression filter.
 
 **Interpretation / caveats:**
 

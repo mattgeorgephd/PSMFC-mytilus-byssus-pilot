@@ -1,0 +1,19 @@
+generated       : 2026-10-19 03:46:08
+mussels         : 60 (lab reference day 0 15, control 15, OA 10, OW 10, DO 10); none in the thread and gene-expression mussel key
+indices         : CI = 1000 x tissue mass (g) / shell length (cm)^3; GI = 100 x gonad mass / tissue mass
+model of record : index ~ arm (lm), day-3 arms, each arm vs the day-3 control
+sensitivity     : log index; allometric ANCOVA (log tissue mass ~ arm + log length; log gonad mass ~ arm + log somatic mass); Kruskal-Wallis
+multiplicity    : unadjusted and Dunnett (emmeans mvt, seed 20260930)
+models agree    : yes (Dunnett p < 0.05 or not, every arm and index)
+checks               : 5 run, 0 failed
+code commit          : 9c46f77c550e
+uncommitted changes  : no
+R                    : R version 4.6.1 (2026-06-24)
+packages             : emmeans 2.0.4, ggplot2 4.0.3
+inputs (md5, repo-relative path):
+  6d9f8279d44b8d95203e242c9f8145e3  01_mussel-measurements/mussel-condition.xlsx
+  2fd5b1249669660efc8e0a5d47b67352  02_thread-strength/03_analyses/01_build-mussel-key/mussel-treatment-key.csv
+  ba52905d0e61c8657016b5fbd6f13129  02_thread-strength/01_code/08_condition.Rmd
+  95ad5e8b9d6029d12d4c8d407b79bc6e  02_thread-strength/01_code/_ancova.R
+  0180a0e135581c5bcd566c131554efcb  tools/plot_style.R
+  a0591028d5c3be67cb4d0daaa8562161  tools/pipeline_checks.R

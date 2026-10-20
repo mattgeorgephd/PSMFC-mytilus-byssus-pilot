@@ -1,0 +1,3 @@
+"metric","scale","term","df","sum_sq","F","p","df_residual","n_animals"
+"thread_count","log","arm",3,8.97453166364463,9.00078145057921,5.05416562529786e-05,61,66
+"thread_count","log","baseline",1,1.01231340341958,3.04582301734439,0.0859807740064679,61,66

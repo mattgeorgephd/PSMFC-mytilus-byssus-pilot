@@ -1,0 +1,11 @@
+"index","model","primary","response","term","df","statistic_type","statistic","p","df_residual","n_animals","shapiro_p_residuals","covariate_slope","covariate_slope_se"
+"CI","index",TRUE,"CI","arm",3,"F",0.403821081861869,0.751017086929819,41,45,0.188806732852858,NA,NA
+"CI","log index",FALSE,"log(CI)","arm",3,"F",0.596804141113611,0.620718008428375,41,45,0.0185376949297804,NA,NA
+"CI","allometric ANCOVA",FALSE,"log(tissue_mass_g)","arm",3,"F",0.620317138441835,0.605972580018542,40,45,0.00834811100585174,NA,NA
+"CI","allometric ANCOVA",FALSE,"log(tissue_mass_g)","log(L_mm)",1,"F",180.378809097072,2.07599493974334e-16,40,45,0.00834811100585174,3.37838464151602,0.251545374874861
+"CI","Kruskal-Wallis (ranks)",FALSE,"CI","arm",3,"chi-squared",0.207356655027783,0.976393034903717,NA,45,NA,NA,NA
+"GI","index",TRUE,"GI","arm",3,"F",0.999271344362131,0.402859014213359,41,45,0.0516006608357128,NA,NA
+"GI","log index",FALSE,"log(GI)","arm",3,"F",1.0322172339509,0.388382957139222,41,45,0.0243733921397375,NA,NA
+"GI","allometric ANCOVA",FALSE,"log(gonad_mass_g)","arm",3,"F",1.00131819482249,0.402209711145963,40,45,0.045459722032017,NA,NA
+"GI","allometric ANCOVA",FALSE,"log(gonad_mass_g)","log(somatic_mass_g)",1,"F",72.7751296404573,1.53012586253846e-10,40,45,0.045459722032017,0.962567649332309,0.112833943709129
+"GI","Kruskal-Wallis (ranks)",FALSE,"GI","arm",3,"chi-squared",2.8647342995169,0.412954062224573,NA,45,NA,NA,NA

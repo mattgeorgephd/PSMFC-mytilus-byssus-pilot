@@ -1,7 +1,7 @@
 # tasks.md
 
 Current sprint: make the analysis run end to end, from thread strength and Tag-seq counts
-to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-03.
+to GO enrichment across treatments and the gene-mechanics associations. Updated 2026-10-19.
 Conventions and how to run are in `AGENTS.md`.
 
 The analysis folders were renumbered on 2026-10-03 so that their numbers are the run order:
@@ -160,6 +160,176 @@ the other sections use the new ones.
   `g.spid.txt` and, in its `as_2024` mode, `LOC_GO_list.txt` byte for byte; its database was
   Swiss-Prot release 2024_04 (not 2024_01), and its search reproduces the 2024 hits on a
   100-CDS sample.
+- **Annotation and software of 2026** (2026-10-04, pull request GO-db-2026). A new genome
+  blastx against Swiss-Prot 2026_03 plus the 196 "(mytilus foot)" proteins and 45 byssal
+  proteins that query misses (`03_blast/02_data/byssal_additions_2026_03.tsv`), with the
+  UniProt 2026_03 records; GO release 2026-01-23 (`GO.db` 3.23.1) and its generic slim; R 4.6.1
+  and Bioconductor 3.23 (`renv.lock`, `tools/cloud_setup.sh`). Every consumer reads
+  `genome-foot-sprot2026_03/LOC_GO_list.txt`; `03_blast` step 04 (the 2024 hits with the 2026
+  records) is kept as a comparison. The byssal rules gained "thread matrix protein",
+  "nongradient byssal", "YGH-rich protein" and "protease inhibitor-like protein-1" so that no
+  gene leaves the byssal sets for a change of name, and (Matt's decision, 2026-10-04) the
+  *M. coruscus* byssus proteins "C1q-domain-containing protein-1" and "TSP_1 domain containing
+  protein-1" count as byssal accessory genes in `09`. Whole pipeline rerun from a clean commit:
+  every step TRUE, `09` checks 0 failed; mitochondrial loci and DEGs unchanged; 177 of the 296
+  TC GO terms of record remain among 285 (most of the change from the new UniProt records).
+- **Runner checks** (2026-10-05, pull request GO-db-2026). A run on R 4.2.2 with `GO.db`
+  3.16.0 stopped at stage `07` after 37 minutes, and its stage log only pointed to other logs.
+  `00_run_pipeline.Rmd` now checks R, Bioconductor and the GO release against `renv.lock`
+  before the first stage (`check_stack()`, parameter `check_versions`), and every runner's
+  error quotes the failed step's own error (`finish_run()`). Runner code only: no output
+  changes. Then (2026-10-05) the check also stops when a package the pipeline loads is not on
+  R's library path (a fresh R 4.6.1 whose `renv::restore()` library was not in `R_LIBS`), and the
+  tensometer QC plots are no longer committed (383 JPEGs rewritten by every run; about 8 MB of
+  history per run from another machine).
+- **Candidate keyword** (2026-10-05, pull request GO-db-2026). In `09` the tRNA-synthetase
+  keyword `aminoacyl` also matched aminoacylase-1 and acylaminoacyl-peptidase, enzymes of
+  N-acyl amino acids and peptides; scripts 01 and 02 now use `aminoacyl[- ]tRNA`. The two genes
+  leave both tissues' candidate sets (259 foot and 324 gill candidates tested) and the
+  `tRNA_translation` module. Slopes and p-values are unchanged; q-values move by up to 0.09 and
+  family q-values by up to 0.11 (BH over two fewer genes: glutathione peroxidase 7 with the
+  strongest thread in gill goes from family q 0.14 to 0.25), and the gill HSP70-family association with plaque area
+  keeps q 0.036 (family q 0.072). Aminoacylase-1 had been the gill's strongest adhesion
+  candidate (q 0.14). `Hsp` still matches abbreviations inside unrelated names (perlecan's
+  "HSPG", "HsPDE8B" and others: 6 foot and 9 gill candidates; DOC, caveats); whether to
+  tighten it is open.
+- **Byssal genes hidden by the low-complexity filter** (2026-10-06, pull request GO-db-2026).
+  blastx's SEG filter masked the low-complexity adhesive proteins mfp-3 and mfp-5, so their genes
+  had no hit in the 2026 search. `03_blast` step 05 searches every CDS against the 241 foot and
+  byssal proteins with the filter off and step 01's database size, and adopts a hit only for a
+  gene with no hit in step 01 and at 70% identity or more: three mfp-3 genes and mfp-5 (together
+  on NC_086378.1), foot protein 9 and thread matrix protein 2F (70.5 to 86.7%; the same best
+  protein and e-value in step 01's whole database). The analysis reads its table
+  (`genome-foot-sprot2026_03-noseg/`). `09` step 04 also keeps every mussel foot protein gene with
+  reads in its byssal table, flagged when below the expression filter (12 in foot, among them
+  mfp-6, one mfp-3 and three mfp-1 copies; 21 in gill, all with almost no reads). Stages 05 to 09
+  rerun from d60490e (02 and 04 do not read the annotation and keep their outputs of record):
+  the same DEGs in every contrast, Iso-Seq included; the Foot OA DEG LOC134721760 is now
+  annotated (foot protein 3 variant 4; reads from three controls and one OA animal, fold change
+  -0.05); none of the six genes has GO terms, so the topGO terms of record, clusterProfiler and
+  goseq term sets and the GO slims are unchanged; the foot byssal list has 140 expressed genes
+  (137 before) and the byssal structural module 22 (19); mefp-5 and two mfp-3 genes become foot
+  candidates (262 tested), none associated with thread mechanics (p 0.39 or more), and the other
+  candidates' q-values move by at most 0.01 (BH over three more genes); the gill and the GO-term
+  results are unchanged. Against the outputs of record from Windows, values differ by floating
+  point (DESeq2 fold changes within 3e-6, adjusted p within 1e-6), goseq p-values up to about
+  two-fold (its length-bias fit), and figures are re-rendered. Not adopted: 23 other genes without
+  a hit match through repeats at 45% identity or less (among them two that RefSeq names "adhesive
+  plaque matrix protein-like", LOC134723087 and LOC134723088, at 36 and 37% to mfp-1).
+- **Expression suites** (2026-10-06, pull request GO-db-2026). `09` step 06 asks whether
+  combinations of genes go with attachment, separating across arms (which includes the
+  treatment) from within arms. Its axes: script 05's DEG programs and GO terms, co-expression
+  modules of the 4,000 genes with the most within-arm variance (`dynamicTreeCut`) and the first
+  ten expression components; 108 in foot and 89 in gill, 10 to 13,017 genes each. Within arms
+  none tracks force or plaque area (lowest q 0.85 foot, 0.89 gill). The warming and hypoxia
+  programs follow the arms' force (between-arm r up to 0.92) and are flat within arms. An
+  elastic net (`glmnet`) predicts held-out animals: the six DEG programs predict force across
+  arms (Q2 0.18 foot, 0.12 gill; treatment alone 0.38) but not within; the large sets (hundreds
+  to 2,000 predictors) do not predict at all, and a power check (the treatment added to all the
+  axes, Q2 0.05 and 0.07) shows that 45 or 46 animals per tissue are too few for that many predictors. One
+  within-arm scenario beats its permutations, the gill candidates with plaque area (p 0.0099,
+  one of 32), in line with the HSP70-family gene of step 01. Exploratory; about 15 minutes on 4
+  workers, on a socket cluster that also runs on Windows; `glmnet` and `dynamicTreeCut` added to
+  `renv.lock` and to the runner's package check.
+- **Heat-shock keywords** (2026-10-17, pull request GO-db-2026, Matt's request). In `09` scripts 01
+  and 02 the keyword `Hsp` also matched abbreviations inside unrelated names (perlecan's "HSPG",
+  "HsPDE8B", PERK's "HsPEK", "hSPL", "hSPP1", "HSPK 21", "CRHSP-24", "HsPIP", "hSPE-39",
+  "HSP1BP-3") and `BiP` matched "Biphenyl hydrolase-like" and "CTNNBIP1". `Hsp` must now start a
+  word and be followed by a size (Hsp70, HSP 90), a family letter and number (HSPA5, HSPB1), BP
+  and a number (HspBP1), "-binding" or "-like"; `BiP` must be a whole word. 9 foot and 12 gill
+  genes leave the candidates (253 foot and 312 gill tested, from 262 and 324), every one of them
+  tested before and none near significance (lowest q 0.89). p-values are unchanged and q-values
+  move by at most 0.03: the gill HSP70-family gene with plaque area q 0.036 to 0.035 (family q
+  0.072 to 0.069), glutathione peroxidase 7 q 0.12, the lowest foot candidate q 0.47 (0.49). In
+  `09` step 06 only the candidate scenarios change: the gill candidates with plaque area within
+  arms Q2 0.034 to 0.026, p 0.0099 to 0.020. PERK left with "HsPEK"; name it if the
+  unfolded-protein-response sensors are wanted.
+- **mfp-1-like genes annotated** (2026-10-17, Matt's request). `03_blast` step 05 also adopts a
+  gene with no hit in step 01 whose RefSeq protein name names a byssal protein ("adhesive
+  plaque", "foot protein", "byssal", "byssus", "precollagen", "thread matrix"), at any identity:
+  LOC134723087 and LOC134723088 ("adhesive plaque matrix protein-like") take their mfp-1 hits (37
+  and 36%; mfp-1 is built from variable decapeptide repeats, Waite et al. 1985, so a low identity
+  does not argue against it). They join `09` step 04's byssal tables below the expression filter
+  (almost no reads at day 3); no test changes.
+- **PCA of every sample set** (2026-10-17, `05` step 14, Matt's request). Step 03 keeps drawing
+  its four original PCA plots (retired for a few hours, restored at Matt's request: keep the code
+  of the original version of every updated plot). Step 14 draws every sample set the original analysis
+  fitted (each arm, each stressor against the controls, the lab control against the controls,
+  both tissues, every library), each tissue on its own, without and with the lab control, with
+  95% ellipses, and compares them by PERMANOVA and the spread test. Foot arms barely separate
+  (R² 0.08, p 0.13 in the 500 most variable genes); foot PC1 (21%) is the byssal axis, which
+  follows the individual mussel, not the arm; gill arms separate (R² 0.10, p 0.001); the lab
+  control stands apart in both tissues, most in foot (R² 0.35), as its different dissection
+  predicts.
+- **Byssal expression by individual** (2026-10-17, `09` step 07, Matt's request). Within arms, the
+  mfp genes are on or off: 11 of 46 day-3 feet express them, two to four per arm (the same share
+  in every arm, Fisher p 0.73), about 30-fold above the rest, and those animals are high for all
+  six mfp genes (10 in the top third of their arm for all six, 0.1 by chance) and for the other
+  plaque and cuticle genes. Genome-wide only 21 genes follow the mfp score, 15 of them byssal and
+  5 with no BLAST hit. The state does not follow library size or RNA yield, nor threads made, peak
+  force or plaque area. Heatmaps of the byssal genes with the animals by mussel ID within each arm,
+  the same order in every panel, and by mfp expression (the order of the first heatmaps).
+- **RNA isolation day** (2026-10-17, found while reviewing the PCA). RNA was isolated arm by arm:
+  in foot each arm on its own day (the controls on 2021-12-23, beside the day-0 animals of
+  2021-12-22 and -23, eluted in 50 µL; DO, OA and OW on 2022-01-09, -10 and -11, in 100 µL), so
+  the foot contrasts cannot be told apart from isolation day. `05` step 14 tests what can be tested: in gill, isolation day
+  within the OA and OW arms (two days each) explains no more than chance (R² 0.042 against a
+  null median of 0.042, p 0.47), and the controls and DO, isolated on the same day, separate as
+  much as OA from the controls; in foot, a difference between the controls' day and the others'
+  would be shared by the three stressor contrasts, but they share fewer DEGs (7, against 21 in
+  gill) and agree less in fold change (r 0.18 to 0.50, against 0.29 to 0.62). Documented in
+  `AGENTS.md` (known data issues) and `05/03_analyses/pca/README.md`.
+- **Original versions of the updated plots kept** (2026-10-17, Matt's request: keep the code that
+  produces the original version of every updated plot). `05` step 03 draws its four original PCA
+  plots again (`figures/PCA_*.png`) beside step 14's. `02` step 05's figure of each animal's change
+  in force against plaque area stays as drawn; a new `02` step 06 draws it with a 95% ellipse
+  around each arm, on the log scale of the change (where an ellipse cannot cross -100%), and the
+  day-3 levels of the two per animal, without and with the day-0 lab reference (which has no
+  baseline, so no change). `09` step 07 keeps the talk's first two mfp heatmaps, drawn with the
+  talk's code (pixel for pixel the talk's figures on their own data), beside its heatmaps by mfp
+  expression and by mussel ID. `AGENTS.md` (Figures) records the rule. A figure that changes only
+  because its inputs changed (the `09` candidate scatter plots after the keyword fix, for example)
+  is redrawn in place, and its earlier versions stay in git history (Matt's choice, 2026-10-17).
+- **The stress proteins by chaperone family** (2026-10-18, Matt's choice, option d). The keyword
+  `chaperone` had brought in 18 foot and 21 gill candidates that no other keyword matched, most of
+  them not stress chaperones (tubulin-folding cofactors, histone, ribosome and proteasome assembly
+  chaperones, MESD, NACHO, a coenzyme Q kinase by its alias), while the name keywords missed most
+  DnaJ proteins, the chaperonin CCT, prefoldin, calnexin, calreticulin and the disulfide
+  isomerases. `09` scripts 01 and 02 now take the stress proteins from the chaperone families of
+  `01_code/_chaperone_families.R` (by the best hit's recommended name; Hsp70/Hsp110, Hsp90, small
+  HSPs, chaperonins, J-domain proteins, Hsp100/Clp, prefoldin, Hsp70 and Hsp90 co-chaperones, ER
+  folding factors, and the regulators of the heat-shock and unfolded-protein responses, each with
+  its source in the DOC). Script 02's `HSP_proteostasis` module is the same genes. Foot candidates
+  255 to 319 (137 chaperones; 316 tested), gill 314 to 378 (187; 375 tested); run 71a7f3e. The
+  genes in both runs keep their p-values. Gill HSP70-12A with plaque area stays the one candidate
+  association (q 0.035 to 0.041, family q 0.069 to 0.083); foot's lowest candidate q is now an
+  entering ER folding factor, FKBP2, with the strongest thread (exploratory, q 0.11); the module
+  has 137 and 187 genes and no association (p 0.69 or more); in step 06 the gill within-arm
+  plaque-area candidate scenario keeps p 0.020 (Q2 0.03 to 0.06). The definition was chosen after
+  the keyword results had been seen, so they are quoted beside it.
+- **Thread production and condition** (2026-10-19, Matt's request: no *M. galloprovincialis* in
+  the manuscript, and its thread production, condition and gonad index figures redrawn for
+  *M. trossulus* from the repository's workbooks). `02` step 07 fits the thread-strength ANCOVA
+  (`_ancova.R`) to the threads made in the 3 days of the exposure, adjusted for those made in the
+  3 days before it, with a negative binomial GLM as the sensitivity analysis: hypoxia 45% fewer
+  threads than the control (ratio 0.55, Dunnett p = 0.019; GLM 0.55, p = 0.009), OA +49% and OW
+  +14% (Dunnett p 0.20 and 0.84). `02` step 08 compares the condition index and gonad index of 60
+  mussels sampled for condition only (not the thread or gene-expression mussels) with the day-3
+  control: no arm differs in either index under any of four analyses (lowest Dunnett p 0.38, OA
+  gonad index). The manuscript draft's figures had compared each arm before and after the
+  exposure without the day-3 control, and drew both species; the before-and-after comparison is
+  not repeated. Matt confirmed (2026-10-20) T150 to T164 as the day-3 control of the control arm,
+  as the workbook has them (the manuscript draft had described a laboratory group kept for 20
+  days), and that the condition masses, which the workbook does not label, are dry masses (the
+  gonad and the rest of the tissue dried at 60 °C to constant mass).
+- **Untracked files in provenance** (2026-10-20, Matt's request). `git_state()`
+  (`tools/pipeline_checks.R`) had looked at tracked files only, so a run that sourced or read a
+  file missing from the commit (a new helper, an input not yet added) could still record
+  `uncommitted changes : no`. It now counts untracked files that are not git-ignored, leaving out
+  what a run writes: `03_analyses/`, knitted `.html` reports, knitr's `<script>_files/figure-*/`
+  and `.knit.md` intermediates (present while a script knits) and `Rplots.pdf`. The provenance
+  line names both kinds (`YES, 1 tracked file(s) differ from the commit and 2 untracked file(s)
+  are not in it: ...`). Earlier `RUN_provenance*.txt` files keep the line they were written with.
 
 ## In progress
 
@@ -169,34 +339,40 @@ the other sections use the new ones.
 
 | item | why it is blocked | who |
 |---|---|---|
-| UniProt annotation refresh | the UniProt records in `LOC_GO_list.txt` are those of 2024 (hits from Swiss-Prot 2024_04). Measured on 2026-10-03 with today's records (2026_03) and the pinned GO release: the mitochondrial loci and every DEG are unchanged, but 110 of the 296 TC GO terms of record drop out and 93 come in (of those dropping out, 34 sit just above p = 0.01, 52 further away and 24 are no longer tested), the Gill OA and Gill DO "response to endoplasmic reticulum stress" terms lose significance, 1 gene leaves each byssal list, and `09`'s two gene-level associations stay. A refresh would also need a newer GO.db (not reachable from the cloud environment) and the 05 step 06 entry-name check relaxed. Keep 2024 or refresh, as its own pull request | Matt |
+| Merge GO-db-2026 | the annotation of 2026 (Swiss-Prot 2026_03 search plus 45 byssal proteins, UniProt 2026_03 records, GO release 2026-01-23) and R 4.6.1 / Bioconductor 3.23 are on the stacked pull request; the DEGs are unchanged, 177 of the 296 TC GO terms of record remain among 285, and the ER stress terms weaken (`07` README). Merge, or keep the 2024 annotation | Matt |
 | Revoke the old NCBI API key | it was removed from the code but remains in the public history (commit 3bee414); only its owner can revoke it at NCBI | key owner |
 | Manuscript text | numbers and wording predate this pull request: the count matrix (now featureCounts on the Iso-Seq-extended annotation) and every DEG count, the GO results (Gill OA up's ATP synthase terms are no longer FDR-supported), LC contrasts, the mitochondrial method and result (mitogenome counts; COX1 and ND3 now among the significant proteins), thread metric names (`mean_force`, `max_force`), extension | Matt |
 | Manuscript GO figure | every option is drawn (`07_enrichment/03_analyses/02_topgo/` to `06_method-comparison/`); choose one | Matt |
+| Foot contrasts and RNA isolation day | each foot arm's RNA was isolated on its own day, the controls 17 to 19 days before the stressors (Done, above); the checks that are possible find no sign of a shared effect, but only re-isolating a subset of foot samples across arms on one day (or qPCR of a few DEGs on such RNA) could measure it. Options: state it as a limitation; re-isolate; give the gill results more weight where the two tissues disagree | Matt |
 | Library QC | three libraries carry most of DESeq2's outlier replacements: T040F (117 of 157 genes refit in Foot OW), T025G (55 of 96 in Gill OA; also the lowest alignment rate, 60.4% against a median of 67.2%) and T035G (56 of 98 in Gill OW). Check their RNA records; a sensitivity run without them would show whether any result rests on them | Matt |
 | Exploratory foot-region contrast | rest of foot vs phenol gland to tip in the 12 day-0 animals (3,022 of 7,367 genes differ); add as a DE family if useful for interpreting byssal genes | Matt |
-| `03_blast/` and `04` step 01 | HPC only (inputs and binaries not in the repository); committed outputs are used. `01_genome_blast.Rmd` runs again since 2026-10-03 (the 2024 version is in `01_code/_superseded/`) but needs BLAST+ and hours of CPU for the search | HPC user |
+| `03_blast/` and `04` step 01 | not pipeline stages; committed outputs are used. `04` step 01 is HPC only (inputs and binaries not in the repository). `01_genome_blast.Rmd` runs again since 2026-10-03 (the 2024 version is in `01_code/_superseded/`); its search of 2026 ran in the cloud environment (BLAST+ 2.15.0, about 31 hours on 4 threads, in resumable parts), and steps 02 and 03 still need the HPC | HPC user |
 
 ## Known limitations (documented, not blocking)
 
-- **No locked software environment.** The pipeline was tested with R 4.4.3 and Bioconductor
-  3.20 (versions recorded in each `RUN_provenance*.txt`), but the repository has no `renv.lock`
-  or conda environment file, so a new machine has to assemble the packages by hand. System
+- **What the mfp-on state is.** `09` step 07 cannot tell an animal secreting new plaque material
+  from a hand-cut foot piece that held more of the plaque and cuticle glands; RNA yield measures
+  the size of the piece, not its make-up, and the mfp-on animals made no more threads.
+
+- **Software environment only partly locked.** The pipeline was tested with R 4.6.1 and
+  Bioconductor 3.23; `renv.lock` (2026-10-03) records all 277 R packages of that library, and each
+  `RUN_provenance*.txt` the versions a step used, but the system libraries and the R build are not
+  locked (no container image). System
   libraries matter too: after the cloud container was rebuilt on 2026-10-01, every figure
   re-rendered with different fonts (same data, different bytes).
-- **Annotation provenance.** `LOC_GO_list.txt` comes from one blastx search
-  (`03_blast/01_code/01_genome_blast.Rmd`), whose hits match Swiss-Prot release 2024_04 plus the
-  committed "mytilus foot" proteins (not release 2024_01, as its file name said; and its `V11`
-  column is the e-value of the gene's first hit in that same search, not a second run, as this
-  file said until 2026-10-03). `g.spid.txt` keeps one transcript per gene and protein, so the
-  rows of a gene's other transcripts that hit the same protein carry no LOC key (16,796 of
-  41,464 rows); each gene keeps its first transcript's hits. The fixed script keeps that rule so
-  its tables match the committed ones; the CDS FASTA headers map every CDS to its LOC and would
-  let those rows be keyed. The UniProt records are those of 2024: on 2026-10-03 the GO terms of
-  13,667 of the 16,675 genes' best hits differed in the current release (2026_03). 42 of the
-  14,863 GO IDs are unknown to the pinned GO release and dropped.
-- **GO of record.** topGO `weight01` p < 0.01 is unadjusted; only three TC runs have terms
-  under FDR control. Headline GO claims are safest from `consensus_terms_TC_<ont>.csv`.
+- **Annotation provenance.** The analysis reads `LOC_GO_list.txt` of the genome blastx search of
+  2026 (`03_blast/01_code/01_genome_blast.Rmd`, `genome-foot-sprot2026_03/`: Swiss-Prot 2026_03
+  plus 241 foot and byssal proteins, UniProt 2026_03 records). The search of 2024 (Swiss-Prot
+  2024_04, not 2024_01 as its file name said; its `V11` column is the e-value of the gene's
+  first hit in that same search, not a second run) is kept in `genome-foot/`. `g.spid.txt`
+  keeps one transcript per gene and protein, so the rows of a gene's other transcripts that hit
+  the same protein carry no LOC key (16,842 of 41,588 rows in 2026); each gene keeps its first
+  transcript's hits. The script keeps that rule so its tables match the 2024 ones; the CDS
+  FASTA headers map every CDS to its LOC and would let those rows be keyed. 6 of the 14,855 GO
+  IDs are unknown to the pinned GO release and dropped.
+- **GO of record.** topGO `weight01` p < 0.01 is unadjusted; in BP only five TC runs have
+  terms under FDR control (clusterProfiler; four with goseq). Headline GO claims are safest from
+  `consensus_terms_TC_<ont>.csv`.
 - **Repository size.** `.git` is about 765 MB, mostly committed superseded tables and BLAST
   outputs; `vst_paired_<T>.csv` (7 to 11 MB each) is rewritten on every 09 run.
 - **No continuous integration.** Nothing runs the pipeline on a push; the checks are the
@@ -204,8 +380,7 @@ the other sections use the new ones.
 - **Numbers computed outside the pipeline.** The Iso-Seq vs genome correlation of the
   mitochondrial share (Spearman 0.91; `06` README) is computed by hand from committed files;
   no step writes it.
-- **Inputs no current step writes:** `LOC_GO_list.txt` (`03_blast`, HPC; the script no longer
-  runs as written), `04 .../hisat/t_data.ctab` (one sample's table from an older HPC run),
+- **Inputs no current step writes:** `04 .../hisat/t_data.ctab` (one sample's table from an older HPC run),
   `04 .../prepDE/transcript_count_matrix.csv` (HPC `prepDE.py`) and `04 .../fastqc/` (the
   earlier `byssus-exp-analysis` repository).
 
@@ -213,4 +388,3 @@ the other sections use the new ones.
 
 - Update the manuscript text.
 - Library QC sensitivity run (T025G, T035G, T040F).
-- Add an environment lockfile (renv or conda) for the R 4.4.3 / Bioconductor 3.20 set.

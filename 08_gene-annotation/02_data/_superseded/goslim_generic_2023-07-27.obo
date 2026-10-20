@@ -1,0 +1,851 @@
+format-version: 1.2
+data-version: go/releases/2023-07-27 (goslim_generic subset, derived)
+subsetdef: goslim_generic "Generic GO slim"
+ontology: go/subsets/goslim_generic
+remark: Terms tagged 'subset: goslim_generic' (not obsolete) in geneontology/go-ontology src/ontology/go-edit.obo at commit 17c29bbeb77e74a160c8a162806845af127631b9 (2023-07-27), the same GO release as GO.db 3.18.0. Only id, name and namespace are kept; the GO graph comes from GO.db. The official release file is https://current.geneontology.org/ontology/subsets/goslim_generic.obo.
+
+[Term]
+id: GO:0000228
+name: nuclear chromosome
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0000278
+name: mitotic cell cycle
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0000910
+name: cytokinesis
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0001618
+name: virus receptor activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0002181
+name: cytoplasmic translation
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0002376
+name: immune system process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0003012
+name: muscle system process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0003013
+name: circulatory system process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0003014
+name: renal system process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0003016
+name: respiratory system process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0003677
+name: DNA binding
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0003723
+name: RNA binding
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0003774
+name: cytoskeletal motor activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0003824
+name: catalytic activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0003924
+name: GTPase activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0005198
+name: structural molecule activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0005215
+name: transporter activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0005576
+name: extracellular region
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005615
+name: extracellular space
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005618
+name: cell wall
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005634
+name: nucleus
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005635
+name: nuclear envelope
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005654
+name: nucleoplasm
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005694
+name: chromosome
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005730
+name: nucleolus
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005739
+name: mitochondrion
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005764
+name: lysosome
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005768
+name: endosome
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005773
+name: vacuole
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005777
+name: peroxisome
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005783
+name: endoplasmic reticulum
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005794
+name: Golgi apparatus
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005811
+name: lipid droplet
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005815
+name: microtubule organizing center
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005829
+name: cytosol
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005840
+name: ribosome
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005856
+name: cytoskeleton
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005886
+name: plasma membrane
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005929
+name: cilium
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0005975
+name: carbohydrate metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006091
+name: generation of precursor metabolites and energy
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006260
+name: DNA replication
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006281
+name: DNA repair
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006310
+name: DNA recombination
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006325
+name: chromatin organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006351
+name: DNA-templated transcription
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006355
+name: regulation of DNA-templated transcription
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006399
+name: tRNA metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006457
+name: protein folding
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006486
+name: protein glycosylation
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006520
+name: amino acid metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006575
+name: cellular modified amino acid metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006629
+name: lipid metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006766
+name: vitamin metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006790
+name: sulfur compound metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006886
+name: intracellular protein transport
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006913
+name: nucleocytoplasmic transport
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006914
+name: autophagy
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0006954
+name: inflammatory response
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0007005
+name: mitochondrion organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0007010
+name: cytoskeleton organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0007018
+name: microtubule-based movement
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0007031
+name: peroxisome organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0007040
+name: lysosome organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0007059
+name: chromosome segregation
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0007155
+name: cell adhesion
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0007163
+name: establishment or maintenance of cell polarity
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0008092
+name: cytoskeletal protein binding
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0008289
+name: lipid binding
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0009536
+name: plastid
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0009579
+name: thylakoid
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0009975
+name: cyclase activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0012501
+name: programmed cell death
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0015979
+name: photosynthesis
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0016071
+name: mRNA metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0016073
+name: snRNA metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0016192
+name: vesicle-mediated transport
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0016209
+name: antioxidant activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0016491
+name: oxidoreductase activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0016740
+name: transferase activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0016787
+name: hydrolase activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0016829
+name: lyase activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0016853
+name: isomerase activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0016874
+name: ligase activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0022414
+name: reproductive process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0022600
+name: digestive system process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0023052
+name: signaling
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0030154
+name: cell differentiation
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0030163
+name: protein catabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0030198
+name: extracellular matrix organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0030312
+name: external encapsulating structure
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0031012
+name: extracellular matrix
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0031047
+name: regulatory ncRNA-mediated gene silencing
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0031386
+name: protein tag activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0031410
+name: cytoplasmic vesicle
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0032200
+name: telomere organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0034330
+name: cell junction organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0038024
+name: cargo receptor activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0042060
+name: wound healing
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0042254
+name: ribosome biogenesis
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0042393
+name: histone binding
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0043226
+name: organelle
+namespace: cellular_component
+subset: goslim_generic
+
+[Term]
+id: GO:0044183
+name: protein folding chaperone
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0044782
+name: cilium organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0045182
+name: translation regulator activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0045735
+name: nutrient reservoir activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0048018
+name: receptor ligand activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0048856
+name: anatomical structure development
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0048870
+name: cell motility
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0050877
+name: nervous system process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0050886
+name: endocrine process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0051604
+name: protein maturation
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0055085
+name: transmembrane transport
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0055086
+name: nucleobase-containing small molecule metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0060089
+name: molecular transducer activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0060090
+name: molecular adaptor activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0061007
+name: hepaticobiliary system process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0061024
+name: membrane organization
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0065003
+name: protein-containing complex assembly
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0071554
+name: cell wall organization or biogenesis
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0071941
+name: nitrogen cycle metabolic process
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0072659
+name: protein localization to plasma membrane
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0090729
+name: toxin activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0098542
+name: defense response to other organism
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0098631
+name: cell adhesion mediator activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0098754
+name: detoxification
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0098772
+name: molecular function regulator activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0120274
+name: virus coreceptor activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140013
+name: meiotic nuclear division
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0140014
+name: mitotic nuclear division
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0140053
+name: mitochondrial gene expression
+namespace: biological_process
+subset: goslim_generic
+
+[Term]
+id: GO:0140096
+name: catalytic activity, acting on a protein
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140097
+name: catalytic activity, acting on DNA
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140098
+name: catalytic activity, acting on RNA
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140104
+name: molecular carrier activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140110
+name: transcription regulator activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140223
+name: general transcription initiation factor activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140299
+name: small molecule sensor activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140313
+name: molecular sequestering activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:0140657
+name: ATP-dependent activity
+namespace: molecular_function
+subset: goslim_generic
+
+[Term]
+id: GO:1901135
+name: carbohydrate derivative metabolic process
+namespace: biological_process
+subset: goslim_generic

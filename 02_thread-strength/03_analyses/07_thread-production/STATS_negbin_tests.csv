@@ -1,0 +1,3 @@
+"model","theta","theta_SE","poisson_dispersion","n_animals","term","df","LR","p"
+"negative binomial GLM, log link: threads ~ arm + log(baseline threads)",5.96072906295765,1.66899454428811,3.0852306978788,66,"arm",3,23.0229568506188,3.99405144500082e-05
+"negative binomial GLM, log link: threads ~ arm + log(baseline threads)",5.96072906295765,1.66899454428811,3.0852306978788,66,"baseline",1,3.41690174481977,0.064532018856752

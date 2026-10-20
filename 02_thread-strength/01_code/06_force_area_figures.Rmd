@@ -1,0 +1,223 @@
+---
+title: "06_force_area_figures"
+author: "PSMFC Mytilus byssus pilot"
+date: "2026-10-17"
+output: html_document
+---
+
+<!--
+PURPOSE
+  Script 05 draws every paired animal's change in mean peak force against its change in plaque
+  area (FIG_animal_response_force_vs_area.png); that figure is kept as drawn there. This script
+  draws it again with a 95% ellipse around each arm, and draws the animals' day-3 levels of the
+  two, each arm with its ellipse, without and with the day-0 lab reference animals. The lab
+  reference was pulled once, at day 0, so it has no change and cannot be in the first figure.
+  Descriptive: the arm comparisons of record are the baseline-adjusted ANCOVAs of scripts 04
+  and 05.
+
+  Ellipses: 95%, from a multivariate t distribution fitted to each group's points
+  (ggplot2::stat_ellipse(type = "t"), which uses MASS::cov.trob; Venables and Ripley 2002,
+  Modern Applied Statistics with S, 4th ed.), as in 05_differential-expression step 14's PCA.
+  Both figures are drawn on the log scale, the scale of the ANCOVAs, so that the ellipses are
+  fitted there: the change figure puts the ratio day 3 / baseline on log axes labelled as %
+  change (script 05 draws the same animals on linear % axes, where an ellipse can cross -100%),
+  and the levels figure puts force and plaque area on log axes. Each animal is the mean peak force
+  and the mean plaque area of its threads, as scripts 04 and 05 summarise animals (a check
+  compares the lab reference and the day-3 controls with script 04's table).
+
+INPUT
+  03_analyses/05_decompose-adhesion/mussel_response_classification.csv   per-animal day-3 levels
+                                       and changes (script 05)
+  03_analyses/03_assemble-thread-summary/thread-summary.xlsx, sheet "data"   the lab reference's
+                                       threads (script 03)
+  03_analyses/04_analyze-thread-strength/DESC_lab_reference.csv   script 04's summary of the lab
+                                       reference and the day-3 controls (the check)
+
+OUTPUT  03_analyses/06_force-area-figures/
+  FIG_force_vs_area_change_ellipses.png   script 05's figure with a 95% ellipse around each arm
+  FIG_force_vs_area_day3_levels.png       day-3 mean peak force against plaque area, one point
+                                          per animal, each arm with its ellipse; without (left)
+                                          and with (right) the day-0 lab reference
+  RUN_provenance.txt
+-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Packages, theme, palette, inputs
+```{r message=FALSE, warning=FALSE}
+suppressPackageStartupMessages({ library(readxl); library(tidyverse); library(patchwork) })
+
+# Script 05's theme, so that the change figure is script 05's figure with ellipses added
+my_theme <- theme(line             = element_line(linewidth = 1.0),
+                  rect             = element_rect(linewidth = 1.0),
+                  text             = element_text(size = 13, color = "black"),
+                  panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text        = element_text(size = 12, color = "black"),
+                  panel.border     = element_rect(color = "black", fill = NA, linewidth = 1.0),
+                  strip.background = element_rect(fill = "grey92", color = "black"),
+                  strip.text       = element_text(size = 12, face = "bold"),
+                  legend.key       = element_blank(),
+                  legend.position  = "none")
+
+source(file.path(here::here(), "..", "tools", "plot_style.R"))       # colours
+source(file.path(here::here(), "..", "tools", "pipeline_checks.R"))  # warn_unless(), provenance_lines()
+ARMS <- c("control", "OA", "OW", "DO")
+
+out_dir <- here::here("03_analyses", "06_force-area-figures")
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+resp_csv    <- here::here("03_analyses", "05_decompose-adhesion", "mussel_response_classification.csv")
+thread_xlsx <- here::here("03_analyses", "03_assemble-thread-summary", "thread-summary.xlsx")
+desc_csv    <- here::here("03_analyses", "04_analyze-thread-strength", "DESC_lab_reference.csv")
+for (f in c(resp_csv, thread_xlsx, desc_csv)) if (!file.exists(f)) stop("Missing ", f, ": run scripts 03 to 05 first.")
+
+resp <- read_csv(resp_csv, show_col_types = FALSE) %>% mutate(mussel_trt = factor(mussel_trt, levels = ARMS))
+stopifnot(!anyNA(resp$mussel_trt), !anyDuplicated(resp$mussel))
+```
+
+### The lab reference, summarised as scripts 04 and 05 summarise every animal
+```{r}
+threads <- read_excel(thread_xlsx, sheet = "data", col_names = TRUE)
+ren <- c(mussel_ID = "mussel", thread_num = "thread", treatment = "thread_trt")   # as scripts 04 and 05
+for (from in names(ren)) {
+  to <- ren[[from]]
+  if (from %in% names(threads) && !to %in% names(threads)) names(threads)[names(threads) == from] <- to
+}
+norm_id <- function(x) {                       # scripts 04 and 05's mussel ID normalisation
+  x   <- trimws(as.character(x))
+  pre <- sub("^([A-Za-z]+).*$", "\\1", x)
+  num <- suppressWarnings(as.integer(sub("^[A-Za-z]+0*([0-9]+).*$", "\\1", x)))
+  ifelse(is.na(num) | pre == x, NA_character_, sprintf("%s%03d", pre, num))
+}
+lab <- threads %>%
+  filter(thread_trt == "lab_control") %>%
+  mutate(mussel = norm_id(mussel), adhesion_kpa = max_force / pad_area * 1000) %>%
+  filter(!is.na(adhesion_kpa)) %>%
+  group_by(mussel) %>%
+  summarise(n_threads = n(), mean_force = mean(max_force), pad_area = mean(pad_area), .groups = "drop")
+
+## check: the lab reference and the day-3 controls are script 04's (DESC_lab_reference.csv)
+desc <- read_csv(desc_csv, show_col_types = FALSE)
+ref_of <- function(metric, group) desc$mean[desc$metric == metric & desc$reference_group == group]
+n_of   <- function(group) desc$n[desc$metric == "mean_force" & desc$reference_group == group]
+ctl <- resp %>% filter(mussel_trt == "control")
+warn_unless(nrow(lab) == n_of("lab_day0") &&
+              abs(mean(lab$mean_force) - ref_of("mean_force", "lab_day0")) < 1e-9 &&
+              abs(mean(lab$pad_area) - ref_of("pad_area", "lab_day0")) < 1e-9,
+            "The lab reference's per-animal means differ from script 04's DESC_lab_reference.csv.")
+warn_unless(nrow(ctl) == n_of("control_day3") &&
+              abs(mean(ctl$mean_force_post) - ref_of("mean_force", "control_day3")) < 1e-9 &&
+              abs(mean(ctl$pad_area_post) - ref_of("pad_area", "control_day3")) < 1e-9,
+            "The day-3 controls' per-animal means differ from script 04's DESC_lab_reference.csv.")
+## check: the plotted change is script 05's % change
+pr <- resp %>% filter(paired)
+warn_unless(max(abs(100 * (exp(pr$mean_force_change) - 1) - pr$mean_force_pct_change),
+                abs(100 * (exp(pr$pad_area_change) - 1) - pr$pad_area_pct_change)) < 1e-8,
+            "The change on the axes differs from script 05's % change.")
+cat(sprintf("Lab reference: %d animals, %d threads. Day-3 animals: %d (%s); paired: %d\n", nrow(lab), sum(lab$n_threads),
+            nrow(resp), paste(sprintf("%s %d", ARMS, as.integer(table(resp$mussel_trt))), collapse = ", "), nrow(pr)))
+```
+
+### Figure: script 05's figure with a 95% ellipse around each arm
+```{r fig.width=7.5, fig.height=6.8, warning=FALSE}
+resp_p <- pr %>% mutate(x = 100 * (exp(pad_area_change) - 1), y = 100 * (exp(mean_force_change) - 1))
+
+## axes on the log scale of the ratio day 3 / baseline (the ANCOVAs' scale), labelled as % change:
+## the ellipses are fitted there, so they are ellipses and none crosses -100%
+pct_log <- scales::new_transform("pct_log", transform = function(x) log1p(x / 100),
+                                 inverse = function(y) 100 * expm1(y))
+p_change <- ggplot(resp_p, aes(x = x, y = y)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  stat_ellipse(aes(fill = mussel_trt, colour = mussel_trt), geom = "polygon", type = "t", level = 0.95,
+               alpha = 0.08, linewidth = 0.7, show.legend = FALSE) +
+  geom_point(aes(fill = mussel_trt, shape = response_class), size = 3.6, stroke = 0.7, color = "black") +
+  geom_text(aes(label = mussel), size = 2.4, vjust = -1.1, check_overlap = TRUE) +
+  scale_x_continuous(transform = pct_log, breaks = c(-75, -50, -25, 0, 25, 50, 100, 200)) +
+  scale_y_continuous(transform = pct_log, breaks = c(-75, -50, -25, 0, 25, 50, 100)) +
+  scale_fill_manual(values = TREATMENT_COLORS, name = "Arm", guide = guide_legend(override.aes = list(shape = 21))) +
+  scale_colour_manual(values = TREATMENT_COLORS, guide = "none") +
+  scale_shape_manual(values = c(weaker = 25, stronger = 24, mixed = 21), name = "Response") +
+  labs(x = "Plaque area, day 3 vs baseline (%, log scale)",
+       y = "Mean peak force, day 3 vs baseline (%, log scale)",
+       caption = paste("Every animal with baseline and day-3 threads. Axes: the ratio day 3 / baseline on a log scale",
+                       "(the ANCOVAs' scale), labelled as % change; ellipses 95% (multivariate t) around each arm.",
+                       "The day-0 lab reference has no baseline, so it has no change to show. Descriptive: the arm",
+                       "comparisons are the baseline-adjusted ANCOVAs of scripts 04 and 05. Script 05 draws the",
+                       "same animals on linear % axes (FIG_animal_response_force_vs_area.png).", sep = "\n")) +
+  my_theme + theme(legend.position = "right", plot.caption = element_text(size = 9, hjust = 0))
+p_change
+## check: the ellipses are those of the log ratios themselves
+e_log <- ggplot_build(ggplot(resp_p, aes(pad_area_change, mean_force_change, group = mussel_trt)) +
+                        stat_ellipse(type = "t", level = 0.95))$data[[1]]
+e_fig <- ggplot_build(p_change)$data[[3]]
+warn_unless(nrow(e_log) == nrow(e_fig) && max(abs(e_log$x - e_fig$x), abs(e_log$y - e_fig$y)) < 1e-9,
+            "The figure's ellipses are not those of the log ratios.")
+
+ggsave(file.path(out_dir, "FIG_force_vs_area_change_ellipses.png"), plot = p_change,
+       dpi = 600, width = 7.5, height = 6.8, units = "in")
+```
+
+### Figure: day-3 levels, without and with the day-0 lab reference
+```{r fig.width=11, fig.height=6.2, warning=FALSE}
+lev <- bind_rows(resp %>% transmute(mussel, group = as.character(mussel_trt), mean_force = mean_force_post, pad_area = pad_area_post),
+                 lab %>% transmute(mussel, group = "LC", mean_force, pad_area)) %>%
+  mutate(group = factor(group, levels = c("LC", ARMS)))
+n_grp <- table(lev$group)
+GROUP_COLORS <- c(LC = THREAD_TRT_COLORS[["lab_control"]], TREATMENT_COLORS)
+GROUP_SHAPES <- c(LC = 21, control = 21, OA = 22, OW = 24, DO = 23)   # filled shapes; LC and control differ by fill and ellipse line
+GROUP_LABELS <- setNames(sprintf("%s (n %d)", c("Lab reference, day 0", "Control, day 3", "OA, day 3", "OW, day 3", "DO, day 3"),
+                                 as.integer(n_grp[c("LC", ARMS)])), c("LC", ARMS))
+scales_groups <- list(
+  scale_fill_manual(values = GROUP_COLORS, labels = GROUP_LABELS, limits = names(GROUP_LABELS), drop = FALSE, name = NULL),
+  scale_colour_manual(values = GROUP_COLORS, labels = GROUP_LABELS, limits = names(GROUP_LABELS), drop = FALSE, name = NULL),
+  scale_shape_manual(values = GROUP_SHAPES, labels = GROUP_LABELS, limits = names(GROUP_LABELS), drop = FALSE, name = NULL),
+  scale_linetype_manual(values = c(LC = "dashed", control = "solid", OA = "solid", OW = "solid", DO = "solid"),
+                        limits = names(GROUP_LABELS), guide = "none"))
+levels_panel <- function(d, title) {
+  ggplot(d, aes(pad_area, mean_force)) +
+    ## show.legend = TRUE: both panels draw a key for every group, so their legends are identical and merge
+    stat_ellipse(aes(fill = group, colour = group, linetype = group), geom = "polygon", type = "t", level = 0.95,
+                 alpha = 0.10, linewidth = 0.6, show.legend = TRUE) +
+    geom_point(aes(fill = group, shape = group), colour = "grey15", size = 2.6, stroke = 0.4, show.legend = TRUE) +
+    scale_x_log10() + scale_y_log10() + scales_groups +
+    labs(x = expression(paste("Plaque area (", mm^2, ", log scale)")), y = "Mean peak force (N, log scale)", title = title) +
+    my_theme + theme(legend.position = "bottom", plot.title = element_text(size = 13, face = "bold"), aspect.ratio = 1)
+}
+p_with    <- levels_panel(lev, "Day 3 and the day-0 lab reference")
+p_without <- levels_panel(lev %>% filter(group != "LC"), "Day 3, every arm")
+## the same axes in both panels, wide enough for every ellipse of the panel with the lab reference
+rng <- ggplot_build(p_with)$layout$panel_params[[1]]
+lims <- coord_cartesian(xlim = 10^rng$x.range, ylim = 10^rng$y.range, expand = FALSE)
+p_levels <- ((p_without + lims) | (p_with + lims)) +
+  plot_layout(guides = "collect") +
+  plot_annotation(caption = paste("One point per animal: the mean peak force and the mean plaque area of its day-3 threads (the lab reference: its day-0 threads),",
+                                  "as scripts 04 and 05 summarise animals; every animal with day-3 threads, with or without baseline threads.",
+                                  "Ellipses 95% (multivariate t) on the log scale. Descriptive: the arm comparisons of record are the baseline-adjusted ANCOVAs (scripts 04 and 05).",
+                                  sep = "\n"),
+                  theme = theme(plot.caption = element_text(size = 9, hjust = 0))) &
+  theme(legend.position = "bottom")
+p_levels
+
+ggsave(file.path(out_dir, "FIG_force_vs_area_day3_levels.png"), plot = p_levels,
+       dpi = 600, width = 11, height = 6.2, units = "in")
+```
+
+### Provenance
+```{r}
+ts_repo_root <- psmfc_repo_root(here::here())
+ts_inputs <- c(resp_csv, thread_xlsx, desc_csv, here::here("01_code", "06_force_area_figures.Rmd"),
+               file.path(ts_repo_root, "tools", c("plot_style.R", "pipeline_checks.R")))
+writeLines(provenance_lines(c(paste0("generated : ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+             paste0("animals   : day 3 ", nrow(resp), " (", paste(sprintf("%s %d", ARMS, as.integer(table(resp$mussel_trt))), collapse = ", "),
+                    "), paired ", nrow(pr), "; lab reference ", nrow(lab), " (", sum(lab$n_threads), " threads)"),
+             "ellipses  : 95%, multivariate t (stat_ellipse type t), on the log scale: log ratios for the change, log levels",
+             paste0("R / ggplot2 : ", R.version.string, " / ", as.character(packageVersion("ggplot2")))),
+             ts_inputs, ts_repo_root, packages = c("ggplot2", "patchwork")),
+           file.path(out_dir, "RUN_provenance.txt"))
+cat(readLines(file.path(out_dir, "RUN_provenance.txt")), sep = "\n")
+if (length(.checks$failed)) stop("check failed: ", paste(.checks$failed, collapse = "; "))
+```

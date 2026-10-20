@@ -1,0 +1,50 @@
+group_a,group_b,rho
+Thread core,Thread core,1
+Thread core,Other byssal structural,0.06348288621646624
+Thread core,Byssal accessory,-0.02162349676225717
+Thread core,Cross-linking and curing,0.09192876965772434
+Thread core,Collagen,0.12870027752081406
+Thread core,Collagen biosynthesis,-0.05654486586493987
+Thread core,ECM and adhesion,0.09643848288621647
+Other byssal structural,Thread core,0.06348288621646624
+Other byssal structural,Other byssal structural,1
+Other byssal structural,Byssal accessory,0.24387141535615173
+Other byssal structural,Cross-linking and curing,0.2526595744680851
+Other byssal structural,Collagen,0.37696577243293244
+Other byssal structural,Collagen biosynthesis,0.19518963922294175
+Other byssal structural,ECM and adhesion,0.06290471785383904
+Byssal accessory,Thread core,-0.02162349676225717
+Byssal accessory,Other byssal structural,0.24387141535615173
+Byssal accessory,Byssal accessory,1
+Byssal accessory,Cross-linking and curing,0.10834875115633673
+Byssal accessory,Collagen,0.028098982423681775
+Byssal accessory,Collagen biosynthesis,0.08256244218316373
+Byssal accessory,ECM and adhesion,0.16882516188714153
+Cross-linking and curing,Thread core,0.09192876965772434
+Cross-linking and curing,Other byssal structural,0.2526595744680851
+Cross-linking and curing,Byssal accessory,0.10834875115633673
+Cross-linking and curing,Cross-linking and curing,1
+Cross-linking and curing,Collagen,0.15356151711378355
+Cross-linking and curing,Collagen biosynthesis,0.03850601295097132
+Cross-linking and curing,ECM and adhesion,0.15032377428307123
+Collagen,Thread core,0.12870027752081406
+Collagen,Other byssal structural,0.37696577243293244
+Collagen,Byssal accessory,0.028098982423681775
+Collagen,Cross-linking and curing,0.15356151711378355
+Collagen,Collagen,1
+Collagen,Collagen biosynthesis,0.026711378353376503
+Collagen,ECM and adhesion,0.32203977798334876
+Collagen biosynthesis,Thread core,-0.05654486586493987
+Collagen biosynthesis,Other byssal structural,0.19518963922294175
+Collagen biosynthesis,Byssal accessory,0.08256244218316373
+Collagen biosynthesis,Cross-linking and curing,0.03850601295097132
+Collagen biosynthesis,Collagen,0.026711378353376503
+Collagen biosynthesis,Collagen biosynthesis,1
+Collagen biosynthesis,ECM and adhesion,0.12349676225716928
+ECM and adhesion,Thread core,0.09643848288621647
+ECM and adhesion,Other byssal structural,0.06290471785383904
+ECM and adhesion,Byssal accessory,0.16882516188714153
+ECM and adhesion,Cross-linking and curing,0.15032377428307123
+ECM and adhesion,Collagen,0.32203977798334876
+ECM and adhesion,Collagen biosynthesis,0.12349676225716928
+ECM and adhesion,ECM and adhesion,1

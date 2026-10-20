@@ -43,7 +43,7 @@ differ strongly in expression, byssal genes included.
 isolation log); the day-3 feet were sampled as one (`F_PG` only). The part of the foot behind a
 day-0 library is therefore not the part behind a day-3 library, and the experimenter confirms
 the day-0 animals are not true lab controls. No contrast uses the day-0 libraries; they stay in
-the count matrix and appear only in the all-sample PCA (step 03).
+the count matrix and appear only in the PCAs of every library (steps 03 and 14).
 
 **Mitochondrial loci.** The reference holds the female-type mitochondrial genome
 (NC_007687.1: 12 protein genes and their tRNAs), and 293 loci on unplaced scaffolds are copies
@@ -138,7 +138,7 @@ knitr::kable(table(region = xw$region, isolation_log_tissue = xw$isolation_log_t
 
 One row per matrix row that is mitochondrial: on the mitogenome (`source = mitogenome`,
 from the StringTie table of `04_sequence-alignment`), or a copy (`source = nuclear copy`): a
-LOC whose best BLAST hit (highest bitscore, `03_blast/03_analyses/genome-foot/LOC_GO_list.txt`)
+LOC whose best BLAST hit (highest bitscore, `03_blast/03_analyses/genome-foot-sprot2026_03-noseg/LOC_GO_list.txt`)
 is a mitochondrially encoded protein, or a locus NCBI names after one
 (`04_sequence-alignment/02_data/annotation_mt_like_loci.csv`; this catches the pseudogene
 copies, which have no CDS to BLAST). The two routes agree on every coding copy, protein

@@ -1,0 +1,143 @@
+---
+title: "04 - The genome BLAST hits with current UniProt records"
+output: html_document
+params:
+  online: false          # true: fetch the records of the hit proteins from UniProt (current release only)
+  release: "2026_03"     # the UniProt release the records are, and the output folder is named after
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# What this does
+
+Gives the genome BLAST hits of step 01 (the 2024 search: every CDS of RefSeq `GCF_036588685.1`
+against Swiss-Prot release 2024_04 plus the "mytilus foot" proteins) the UniProt records of a
+later release, without searching again. The hits keep their 2024 alignments; the protein
+names, gene names, GO terms and the other record fields are those of `release`. Writes, in
+`03_analyses/genome-foot-uniprot<release>/`:
+
+- `LOC_GO_list.txt`: the 2024 hits with the newer records, with the columns of step 01's (same names,
+  same order): one row per blastx hit (HSP) of `../genome-foot/genome_n_foot_blastx.tab`
+  (41,432; step 01's 2024 table lost the first hit and repeated 33, see its "Reproducing the
+  2024 tables"), joined to the record of its protein and, through `../genome-foot/g.spid.txt`,
+  to its gene. `geneID` and `species` are the two parts of the record's entry name (UniProt
+  renames some entries between releases; the hit's 2024 subject ID stays in `V2.x`);
+- `uniprot_records_<release>.tsv`: the records of the 10,740 hit proteins, as UniProt's REST
+  service returned them (`online: true`), with the fields step 01 requested;
+- `RUN_provenance.txt`: the release, the input MD5s and the record counts.
+
+A comparison, read by nothing downstream: the analysis reads step 01's search of 2026
+(Swiss-Prot 2026_03 plus 241 foot and byssal proteins, with the records of 2026_03,
+`03_analyses/genome-foot-sprot2026_03/`). Against that table, this one shows what the new
+records changed with the 2024 hits held fixed, and so separates the effect of the new search
+from that of the new records. Until 2026-10-04 the analysis read this table.
+
+With `online: false` (the default) it rebuilds the table from the committed records. UniProt's
+REST service serves only the current release, so `online: true` stops unless the release it
+reports is `release`; to move to a newer release, set `release` to it and rerun, which writes a
+new folder and leaves this one as the record of its release. Two hit proteins' records can
+change between releases in ways this step cannot repair: a sequence update (the 2024 alignment
+then refers to the older sequence; `Length` shows the new one) and a merge or deletion (the
+record is then missing; the step stops if any is).
+
+```{r paths}
+suppressPackageStartupMessages(library(data.table))
+repo_root <- normalizePath(file.path(here::here(), ".."))
+source(file.path(repo_root, "tools", "pipeline_checks.R"))  # provenance_lines()
+foot_dir <- here::here("03_analyses", "genome-foot")
+blastx   <- file.path(foot_dir, "genome_n_foot_blastx.tab")          # the 2024 search (gannet copy, 2024-08-06)
+gspid    <- file.path(foot_dir, "g.spid.txt")                        # CDS -> gene, step 01
+loc2024  <- file.path(foot_dir, "LOC_GO_list.txt")                   # step 01's table: column names and order
+out_dir  <- here::here("03_analyses", paste0("genome-foot-uniprot", params$release))
+records  <- file.path(out_dir, paste0("uniprot_records_", params$release, ".tsv"))
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+stopifnot(file.exists(blastx), file.exists(gspid), file.exists(loc2024))
+```
+
+# The records (online)
+
+The fields of step 01's record tables, for the hit proteins only, from UniProt's accessions
+endpoint in batches of 400. The release is UniProt's `X-UniProt-Release` response header.
+
+```{r fetch, eval = isTRUE(params$online)}
+fields <- paste("accession,reviewed,id,protein_name,gene_names,organism_name,length,go_id,go_p,go_f,go_c",
+                "go,gene_oln,cc_induction,xref_pathwaycommons,xref_reactome,xref_unipathway,cc_interaction", sep = ",")
+acc <- sort(unique(sub("^[^|]*[|]([^|]*)[|].*$", "\\1", fread(blastx, header = FALSE)$V2)))
+get_batch <- function(a) {
+  url <- paste0("https://rest.uniprot.org/uniprotkb/accessions?accessions=", paste(a, collapse = ","),
+                "&fields=", fields, "&format=tsv&size=500")
+  for (i in 1:5) {
+    con <- url(url); res <- tryCatch(readLines(con, warn = FALSE), error = function(e) NULL); close(con)
+    if (!is.null(res)) return(res)
+    Sys.sleep(2^i)
+  }
+  stop("UniProt did not answer for a batch starting ", a[1])
+}
+rel_now <- curlGetHeaders("https://rest.uniprot.org/uniprotkb/search?query=accession:P69905&size=1")
+rel_now <- trimws(sub("^[^:]*:", "", grep("^x-uniprot-release:", rel_now, ignore.case = TRUE, value = TRUE)[1]))
+if (!identical(rel_now, params$release))
+  stop("UniProt serves release ", rel_now, ", not ", params$release, "; set release: \"", rel_now, "\" to fetch it")
+batches <- split(acc, ceiling(seq_along(acc) / 400))
+lines <- unlist(lapply(seq_along(batches), function(i) { b <- get_batch(batches[[i]]); if (i == 1) b else b[-1] }))
+writeLines(lines, records)
+cat("records fetched:", length(lines) - 1, "of", length(acc), "hit proteins; UniProt release", rel_now, "\n")
+```
+
+# The table
+
+```{r table}
+b   <- fread(blastx, header = FALSE)
+rec <- read.delim(records, stringsAsFactors = FALSE)                      # read as step 01 reads its tables
+rec$Gene.Ontology..GO. <- NULL                                            # step 01 drops the combined GO column
+cols2024 <- names(read.delim(loc2024, nrows = 1))
+ann_cols <- setdiff(names(rec), "Entry")
+stopifnot(!anyDuplicated(rec$Entry), all(ann_cols %in% cols2024))
+
+master <- data.table(transcript = b$V1, sp = sub("[|].*$", "", b$V2),
+                     uniprot_accession.x = sub("^[^|]*[|]([^|]*)[|].*$", "\\1", b$V2),
+                     pident = b$V3, length = b$V4, mismatch = b$V5, gapopen = b$V6, qstart = b$V7,
+                     qend = b$V8, sstart = b$V9, send = b$V10, evalue = b$V11, bitscore = b$V12)
+missing <- setdiff(master$uniprot_accession.x, rec$Entry)
+if (length(missing)) stop(length(missing), " hit proteins have no record in ", params$release, ": ",
+                          paste(head(missing, 10), collapse = ", "))
+r <- as.data.table(rec)[match(master$uniprot_accession.x, rec$Entry)]
+## the hit's label: the record's entry name (geneID_species)
+master[, `:=`(geneID = sub("_.*$", "", r$Entry.Name), species = sub("^[^_]*_", "", r$Entry.Name))]
+
+## the gene of each CDS, from step 01's g.spid.txt (one row per gene and protein, the first CDS;
+## each CDS once), joined by CDS in the order of the hits
+g <- fread(gspid)
+stopifnot(identical(names(g), c("gene", "V11", "V2.x", "transcript", "uniprot_accession")), !anyDuplicated(g$transcript))
+gi <- match(master$transcript, g$transcript)
+loc <- cbind(master, r[, ..ann_cols],
+             g[gi, .(gene, V11, V2.x, uniprot_accession.y = uniprot_accession)])
+setcolorder(loc, cols2024)
+stopifnot(identical(names(loc), cols2024), nrow(loc) == nrow(b))
+write.table(loc, file.path(out_dir, "LOC_GO_list.txt"), sep = "\t", row.names = FALSE, quote = TRUE)
+
+old <- fread(loc2024, select = c("uniprot_accession.x", "Entry.Name", "Protein.names", "Gene.Ontology.IDs"))
+old <- old[!duplicated(uniprot_accession.x)]
+o <- old[match(rec$Entry, old$uniprot_accession.x)]
+knitr::kable(data.frame(
+  measure = c("blastx hits (rows)", "rows with a gene (LOC) key", "hit proteins", "entry name changed since 2024",
+              "protein name changed since 2024", "GO IDs changed since 2024"),
+  n = c(nrow(loc), sum(!is.na(loc$gene) & loc$gene != ""), nrow(rec), sum(o$Entry.Name != rec$Entry.Name, na.rm = TRUE),
+        sum(o$Protein.names != rec$Protein.names, na.rm = TRUE),
+        sum(mapply(function(x, y) !setequal(strsplit(x, "; ")[[1]], strsplit(y, "; ")[[1]]),
+                   ifelse(is.na(o$Gene.Ontology.IDs), "", o$Gene.Ontology.IDs),
+                   ifelse(is.na(rec$Gene.Ontology.IDs), "", rec$Gene.Ontology.IDs))))))
+```
+
+# Provenance
+
+```{r provenance}
+writeLines(provenance_lines(
+  c("03 step 04: genome BLAST hits with current UniProt records",
+    paste0("run                  : ", format(Sys.time(), "%Y-%m-%d %H:%M %Z")),
+    paste0("UniProt release      : ", params$release, " (records of the hit proteins, REST accessions endpoint)"),
+    "hits                 : the 2024 blastx search (Swiss-Prot 2024_04 plus the mytilus foot proteins), one row per HSP"),
+  c(here::here("01_code", "04_refresh_uniprot_records.Rmd"), blastx, gspid, loc2024, records), repo_root,
+  packages = "data.table"), file.path(out_dir, "RUN_provenance.txt"))
+```

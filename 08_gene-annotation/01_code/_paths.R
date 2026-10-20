@@ -5,6 +5,8 @@
 library(here)
 
 repo_root <- normalizePath(file.path(here::here(), ".."))
+source(file.path(repo_root, "tools", "pipeline_checks.R"))
+check_go_release()                 # GO release 2026-01-23 (GO.db 3.23.1), or stop
 dat       <- here::here("02_data")
 
 # Read from 05_differential-expression (never written here)

@@ -51,3 +51,9 @@ Thumbs.db
 04_sequence-alignment/03_analyses/genome-recount/libraries/
 04_sequence-alignment/03_analyses/mitogenome/libraries/
 06_iso-seq-transcriptome/02_data/Mtros-hq_transcripts.fasta
+
+# Per-trace tensometer QC plots written by 02_thread-strength/01_code/02_extract_tensometer_data.Rmd:
+# regenerated on every run and byte-different on every machine (383 JPEGs, about 8 MB), so not
+# committed. Tracked files stay tracked: the folders' READMEs and the five plots left from an
+# earlier run, which no script writes (named in each subfolder's README).
+02_thread-strength/03_analyses/02_extract-tensometer-data/QC_plots/*/*.jpg

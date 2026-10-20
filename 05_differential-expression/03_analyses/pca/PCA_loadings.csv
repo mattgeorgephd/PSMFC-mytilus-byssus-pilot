@@ -1,0 +1,1001 @@
+"set","component","rank","LOC_ID","loading","byssal_name","protein_name"
+"F | every arm","PC1",1,"LOC134711495",0.1895,TRUE,"Foot protein 12"
+"F | every arm","PC1",2,"LOC134710785",0.189,TRUE,"YGH-rich protein-3"
+"F | every arm","PC1",3,"LOC134719757",0.1823,TRUE,"Foot protein 2"
+"F | every arm","PC1",4,"LOC134711497",0.1708,TRUE,"YGH-rich protein-1"
+"F | every arm","PC1",5,"LOC134718731",0.1707,TRUE,"Collagen-like protein-6"
+"F | every arm","PC1",6,"LOC134711496",0.1589,TRUE,"Foot protein 10"
+"F | every arm","PC1",7,"LOC134680982",0.1551,FALSE,NA
+"F | every arm","PC1",8,"LOC134718725",0.1543,TRUE,"Collagen-like protein-7"
+"F | every arm","PC1",9,"LOC134709435",0.1542,TRUE,"Foot protein 10"
+"F | every arm","PC1",10,"LOC134710788",0.1498,TRUE,"Foot protein 10"
+"F | every arm","PC1",11,"LOC134719452",0.1493,TRUE,"Foot protein 15"
+"F | every arm","PC1",12,"LOC134717816",0.1471,TRUE,"Collagen-like protein-5"
+"F | every arm","PC1",13,"LOC134706002",0.1454,TRUE,"Foot protein 11"
+"F | every arm","PC1",14,"LOC134723629",0.1452,FALSE,NA
+"F | every arm","PC1",15,"LOC134709805",0.1408,TRUE,"Foot protein-4 variant-1"
+"F | every arm","PC1",16,"LOC134721757",0.1402,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | every arm","PC1",17,"LOC134705410",0.1384,TRUE,"Foot protein 9 variant 2"
+"F | every arm","PC1",18,"LOC134709802",0.1316,FALSE,NA
+"F | every arm","PC1",19,"LOC134709803",0.1294,FALSE,NA
+"F | every arm","PC1",20,"LOC134722885",0.1284,FALSE,NA
+"F | every arm","PC1",21,"LOC134695533",0.1282,FALSE,"Tyrosinase 3"
+"F | every arm","PC1",22,"LOC134718719",0.1248,TRUE,"Collagen-like protein-5"
+"F | every arm","PC1",23,"LOC134710563",0.1239,TRUE,"TSP_1 domain containing protein-1"
+"F | every arm","PC1",24,"LOC134721760",0.1186,TRUE,"Foot protein 3 variant 4"
+"F | every arm","PC1",25,"LOC134721759",0.1139,TRUE,"Foot protein-3"
+"F | every arm","PC2",1,"LOC134696546",-0.1734,FALSE,NA
+"F | every arm","PC2",2,"LOC134717636",-0.1549,FALSE,NA
+"F | every arm","PC2",3,"LOC134716025",0.1518,FALSE,NA
+"F | every arm","PC2",4,"LOC134695924",-0.1502,FALSE,NA
+"F | every arm","PC2",5,"LOC134697184",-0.1387,FALSE,NA
+"F | every arm","PC2",6,"LOC134696942",-0.1385,TRUE,"Collagen-like protein 2"
+"F | every arm","PC2",7,"LOC134709535",0.132,FALSE,NA
+"F | every arm","PC2",8,"LOC134711167",-0.1233,FALSE,"Plasminogen [Cleaved into: Plasmin (EC 3.4.21.7); Plasmin heavy chain A; Plasmin light chain B; Angiostatin]"
+"F | every arm","PC2",9,"LOC134711173",-0.1195,FALSE,NA
+"F | every arm","PC2",10,"LOC134711172",-0.1189,FALSE,NA
+"F | every arm","PC2",11,"LOC134690368",-0.1184,FALSE,NA
+"F | every arm","PC2",12,"LOC134711166",-0.117,FALSE,"Zonadhesin"
+"F | every arm","PC2",13,"LOC134724464",0.1168,FALSE,NA
+"F | every arm","PC2",14,"LOC134693521",-0.1165,FALSE,NA
+"F | every arm","PC2",15,"LOC134719782",-0.1146,FALSE,NA
+"F | every arm","PC2",16,"LOC134710626",-0.1124,FALSE,"Zonadhesin"
+"F | every arm","PC2",17,"LOC134693986",0.1112,FALSE,NA
+"F | every arm","PC2",18,"LOC134696244",0.1106,FALSE,"Dendritic arbor reduction protein 1"
+"F | every arm","PC2",19,"LOC134687336",0.108,FALSE,NA
+"F | every arm","PC2",20,"LOC134713959",-0.1054,FALSE,"Fibrinogen C domain-containing protein 1"
+"F | every arm","PC2",21,"LOC134711188",-0.1039,FALSE,NA
+"F | every arm","PC2",22,"LOC134707464",0.1035,FALSE,NA
+"F | every arm","PC2",23,"LOC134710625",-0.102,FALSE,"Zonadhesin"
+"F | every arm","PC2",24,"LOC134686697",0.0999,FALSE,NA
+"F | every arm","PC2",25,"LOC134687397",0.0989,FALSE,"Protein henna (EC 1.14.16.1) (EC 1.14.16.4) (Phe-4-monooxygenase) (Phenylalanine-4-hydroxylase) (PAH) (Tryptophan 5-hydroxylase) (TRH) (Tryptophan 5-monooxygenase)"
+"F | every arm | with lab control","PC1",1,"LOC134710785",0.1485,TRUE,"YGH-rich protein-3"
+"F | every arm | with lab control","PC1",2,"LOC134711495",0.1463,TRUE,"Foot protein 12"
+"F | every arm | with lab control","PC1",3,"LOC134711497",0.1432,TRUE,"YGH-rich protein-1"
+"F | every arm | with lab control","PC1",4,"LOC134719757",0.137,TRUE,"Foot protein 2"
+"F | every arm | with lab control","PC1",5,"LOC134718731",0.1368,TRUE,"Collagen-like protein-6"
+"F | every arm | with lab control","PC1",6,"LOC134718725",0.1358,TRUE,"Collagen-like protein-7"
+"F | every arm | with lab control","PC1",7,"LOC134710788",0.1306,TRUE,"Foot protein 10"
+"F | every arm | with lab control","PC1",8,"LOC134711496",0.1266,TRUE,"Foot protein 10"
+"F | every arm | with lab control","PC1",9,"LOC134706002",0.1262,TRUE,"Foot protein 11"
+"F | every arm | with lab control","PC1",10,"LOC134680982",0.125,FALSE,NA
+"F | every arm | with lab control","PC1",11,"LOC134721757",0.1249,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | every arm | with lab control","PC1",12,"LOC134705410",0.1244,TRUE,"Foot protein 9 variant 2"
+"F | every arm | with lab control","PC1",13,"LOC134719452",0.1238,TRUE,"Foot protein 15"
+"F | every arm | with lab control","PC1",14,"LOC134709435",0.1222,TRUE,"Foot protein 10"
+"F | every arm | with lab control","PC1",15,"LOC134709805",0.1212,TRUE,"Foot protein-4 variant-1"
+"F | every arm | with lab control","PC1",16,"LOC134721760",0.1208,TRUE,"Foot protein 3 variant 4"
+"F | every arm | with lab control","PC1",17,"LOC134718845",0.1204,TRUE,"Precollagen D"
+"F | every arm | with lab control","PC1",18,"LOC134722885",0.1174,FALSE,NA
+"F | every arm | with lab control","PC1",19,"LOC134717816",0.1172,TRUE,"Collagen-like protein-5"
+"F | every arm | with lab control","PC1",20,"LOC134723629",0.1151,FALSE,NA
+"F | every arm | with lab control","PC1",21,"LOC134709802",0.1144,FALSE,NA
+"F | every arm | with lab control","PC1",22,"LOC134721759",0.1117,TRUE,"Foot protein-3"
+"F | every arm | with lab control","PC1",23,"LOC134710563",0.1107,TRUE,"TSP_1 domain containing protein-1"
+"F | every arm | with lab control","PC1",24,"LOC134709803",0.1086,FALSE,NA
+"F | every arm | with lab control","PC1",25,"LOC134695533",0.1085,FALSE,"Tyrosinase 3"
+"F | every arm | with lab control","PC2",1,"LOC134719118",-0.1498,TRUE,"Collagen-like protein-5"
+"F | every arm | with lab control","PC2",2,"LOC134723467",0.145,FALSE,"Fibrinogen C domain-containing protein 1"
+"F | every arm | with lab control","PC2",3,"LOC134709324",-0.1383,TRUE,"Thread matrix protein 2F"
+"F | every arm | with lab control","PC2",4,"LOC134709224",-0.1348,FALSE,NA
+"F | every arm | with lab control","PC2",5,"LOC134723620",0.1285,FALSE,NA
+"F | every arm | with lab control","PC2",6,"LOC134715434",-0.1284,TRUE,"Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1)"
+"F | every arm | with lab control","PC2",7,"LOC134710584",-0.1274,FALSE,NA
+"F | every arm | with lab control","PC2",8,"LOC134710586",-0.1262,FALSE,NA
+"F | every arm | with lab control","PC2",9,"LOC134707657",-0.1252,TRUE,"Byssal tyrosinase-like protein 2"
+"F | every arm | with lab control","PC2",10,"LOC134722878",0.1172,FALSE,NA
+"F | every arm | with lab control","PC2",11,"LOC134706080",-0.116,FALSE,"Papilin"
+"F | every arm | with lab control","PC2",12,"LOC134718559",-0.1157,FALSE,NA
+"F | every arm | with lab control","PC2",13,"LOC134714938",-0.1156,TRUE,"Byssal tyrosinase-like protein 2"
+"F | every arm | with lab control","PC2",14,"LOC134705438",-0.1147,FALSE,NA
+"F | every arm | with lab control","PC2",15,"LOC134718847",-0.1143,TRUE,"Nongradient byssal"
+"F | every arm | with lab control","PC2",16,"LOC134718845",-0.1104,TRUE,"Precollagen D"
+"F | every arm | with lab control","PC2",17,"LOC134705437",-0.1039,FALSE,NA
+"F | every arm | with lab control","PC2",18,"LOC134707663",-0.1015,TRUE,"Byssal tyrosinase-like protein 2"
+"F | every arm | with lab control","PC2",19,"LOC134711929",-0.1009,FALSE,"Tyrosinase 3"
+"F | every arm | with lab control","PC2",20,"LOC134711495",0.098,TRUE,"Foot protein 12"
+"F | every arm | with lab control","PC2",21,"LOC134717998",-0.0949,FALSE,"Inter-alpha-trypsin inhibitor (ITI) (EI-14) (HI-14) (Inhibitory fragment of ITI)"
+"F | every arm | with lab control","PC2",22,"LOC134709803",0.0945,FALSE,NA
+"F | every arm | with lab control","PC2",23,"LOC134719757",0.0933,TRUE,"Foot protein 2"
+"F | every arm | with lab control","PC2",24,"LOC134705410",0.093,TRUE,"Foot protein 9 variant 2"
+"F | every arm | with lab control","PC2",25,"LOC134705150",0.0905,FALSE,NA
+"F | OA vs control","PC1",1,"LOC134711495",0.172,TRUE,"Foot protein 12"
+"F | OA vs control","PC1",2,"LOC134710785",0.1688,TRUE,"YGH-rich protein-3"
+"F | OA vs control","PC1",3,"LOC134719757",0.1638,TRUE,"Foot protein 2"
+"F | OA vs control","PC1",4,"LOC134706002",0.1617,TRUE,"Foot protein 11"
+"F | OA vs control","PC1",5,"LOC134711497",0.1585,TRUE,"YGH-rich protein-1"
+"F | OA vs control","PC1",6,"LOC134717816",0.155,TRUE,"Collagen-like protein-5"
+"F | OA vs control","PC1",7,"LOC134718731",0.1546,TRUE,"Collagen-like protein-6"
+"F | OA vs control","PC1",8,"LOC134705410",0.1477,TRUE,"Foot protein 9 variant 2"
+"F | OA vs control","PC1",9,"LOC134719452",0.1415,TRUE,"Foot protein 15"
+"F | OA vs control","PC1",10,"LOC134680982",0.1413,FALSE,NA
+"F | OA vs control","PC1",11,"LOC134721757",0.1403,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | OA vs control","PC1",12,"LOC134722885",0.1386,FALSE,NA
+"F | OA vs control","PC1",13,"LOC134718725",0.1378,TRUE,"Collagen-like protein-7"
+"F | OA vs control","PC1",14,"LOC134709435",0.1366,TRUE,"Foot protein 10"
+"F | OA vs control","PC1",15,"LOC134711496",0.1361,TRUE,"Foot protein 10"
+"F | OA vs control","PC1",16,"LOC134709803",0.1347,FALSE,NA
+"F | OA vs control","PC1",17,"LOC134709802",0.1317,FALSE,NA
+"F | OA vs control","PC1",18,"LOC134695997",0.13,FALSE,NA
+"F | OA vs control","PC1",19,"LOC134723629",0.1297,FALSE,NA
+"F | OA vs control","PC1",20,"LOC134718719",0.1273,TRUE,"Collagen-like protein-5"
+"F | OA vs control","PC1",21,"LOC134711106",0.1257,TRUE,"Foot protein-4 variant-1"
+"F | OA vs control","PC1",22,"LOC134710788",0.1243,TRUE,"Foot protein 10"
+"F | OA vs control","PC1",23,"LOC134695533",0.1227,FALSE,"Tyrosinase 3"
+"F | OA vs control","PC1",24,"LOC134709805",0.1225,TRUE,"Foot protein-4 variant-1"
+"F | OA vs control","PC1",25,"LOC134711103",0.1215,FALSE,NA
+"F | OA vs control","PC2",1,"LOC134723841",-0.153,FALSE,NA
+"F | OA vs control","PC2",2,"LOC134696942",-0.1403,TRUE,"Collagen-like protein 2"
+"F | OA vs control","PC2",3,"LOC134711173",-0.1394,FALSE,NA
+"F | OA vs control","PC2",4,"LOC134711178",-0.1306,FALSE,NA
+"F | OA vs control","PC2",5,"LOC134711167",-0.1245,FALSE,"Plasminogen [Cleaved into: Plasmin (EC 3.4.21.7); Plasmin heavy chain A; Plasmin light chain B; Angiostatin]"
+"F | OA vs control","PC2",6,"LOC134711172",-0.1239,FALSE,NA
+"F | OA vs control","PC2",7,"LOC134699282",-0.1199,FALSE,NA
+"F | OA vs control","PC2",8,"LOC134716025",0.1195,FALSE,NA
+"F | OA vs control","PC2",9,"LOC134696546",-0.1173,FALSE,NA
+"F | OA vs control","PC2",10,"LOC134695924",-0.1171,FALSE,NA
+"F | OA vs control","PC2",11,"LOC134720932",0.1165,TRUE,"Byssal peroxidase-like protein 2"
+"F | OA vs control","PC2",12,"LOC134709535",0.1161,FALSE,NA
+"F | OA vs control","PC2",13,"LOC134710625",-0.1149,FALSE,"Zonadhesin"
+"F | OA vs control","PC2",14,"LOC134712446",0.114,FALSE,NA
+"F | OA vs control","PC2",15,"LOC134712425",0.114,FALSE,NA
+"F | OA vs control","PC2",16,"LOC134711166",-0.1133,FALSE,"Zonadhesin"
+"F | OA vs control","PC2",17,"LOC134723467",0.1126,FALSE,"Fibrinogen C domain-containing protein 1"
+"F | OA vs control","PC2",18,"LOC134713959",-0.1118,FALSE,"Fibrinogen C domain-containing protein 1"
+"F | OA vs control","PC2",19,"LOC134711191",-0.1115,FALSE,NA
+"F | OA vs control","PC2",20,"LOC134711174",-0.1106,FALSE,NA
+"F | OA vs control","PC2",21,"LOC134710626",-0.1103,FALSE,"Zonadhesin"
+"F | OA vs control","PC2",22,"LOC134707464",0.1049,FALSE,NA
+"F | OA vs control","PC2",23,"LOC134711188",-0.1026,FALSE,NA
+"F | OA vs control","PC2",24,"LOC134696244",0.1004,FALSE,"Dendritic arbor reduction protein 1"
+"F | OA vs control","PC2",25,"LOC134687397",0.0996,FALSE,"Protein henna (EC 1.14.16.1) (EC 1.14.16.4) (Phe-4-monooxygenase) (Phenylalanine-4-hydroxylase) (PAH) (Tryptophan 5-hydroxylase) (TRH) (Tryptophan 5-monooxygenase)"
+"F | OA vs control | with lab control","PC1",1,"LOC134710785",0.1422,TRUE,"YGH-rich protein-3"
+"F | OA vs control | with lab control","PC1",2,"LOC134711495",0.1397,TRUE,"Foot protein 12"
+"F | OA vs control | with lab control","PC1",3,"LOC134711497",0.1384,TRUE,"YGH-rich protein-1"
+"F | OA vs control | with lab control","PC1",4,"LOC134718731",0.1318,TRUE,"Collagen-like protein-6"
+"F | OA vs control | with lab control","PC1",5,"LOC134718725",0.1304,TRUE,"Collagen-like protein-7"
+"F | OA vs control | with lab control","PC1",6,"LOC134718845",0.13,TRUE,"Precollagen D"
+"F | OA vs control | with lab control","PC1",7,"LOC134719757",0.1295,TRUE,"Foot protein 2"
+"F | OA vs control | with lab control","PC1",8,"LOC134710788",0.1231,TRUE,"Foot protein 10"
+"F | OA vs control | with lab control","PC1",9,"LOC134706002",0.1229,TRUE,"Foot protein 11"
+"F | OA vs control | with lab control","PC1",10,"LOC134711496",0.1208,TRUE,"Foot protein 10"
+"F | OA vs control | with lab control","PC1",11,"LOC134680982",0.1195,FALSE,NA
+"F | OA vs control | with lab control","PC1",12,"LOC134721757",0.1189,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | OA vs control | with lab control","PC1",13,"LOC134705410",0.1178,TRUE,"Foot protein 9 variant 2"
+"F | OA vs control | with lab control","PC1",14,"LOC134719452",0.117,TRUE,"Foot protein 15"
+"F | OA vs control | with lab control","PC1",15,"LOC134709805",0.1145,TRUE,"Foot protein-4 variant-1"
+"F | OA vs control | with lab control","PC1",16,"LOC134717816",0.1145,TRUE,"Collagen-like protein-5"
+"F | OA vs control | with lab control","PC1",17,"LOC134721760",0.1144,TRUE,"Foot protein 3 variant 4"
+"F | OA vs control | with lab control","PC1",18,"LOC134709435",0.1143,TRUE,"Foot protein 10"
+"F | OA vs control | with lab control","PC1",19,"LOC134722885",0.1123,FALSE,NA
+"F | OA vs control | with lab control","PC1",20,"LOC134718847",0.1116,TRUE,"Nongradient byssal"
+"F | OA vs control | with lab control","PC1",21,"LOC134710563",0.1075,TRUE,"TSP_1 domain containing protein-1"
+"F | OA vs control | with lab control","PC1",22,"LOC134709802",0.1074,FALSE,NA
+"F | OA vs control | with lab control","PC1",23,"LOC134705437",0.1072,FALSE,NA
+"F | OA vs control | with lab control","PC1",24,"LOC134721759",0.1069,TRUE,"Foot protein-3"
+"F | OA vs control | with lab control","PC1",25,"LOC134723629",0.1058,FALSE,NA
+"F | OA vs control | with lab control","PC2",1,"LOC134709324",0.1476,TRUE,"Thread matrix protein 2F"
+"F | OA vs control | with lab control","PC2",2,"LOC134719118",0.1452,TRUE,"Collagen-like protein-5"
+"F | OA vs control | with lab control","PC2",3,"LOC134709224",0.1447,FALSE,NA
+"F | OA vs control | with lab control","PC2",4,"LOC134710584",0.1387,FALSE,NA
+"F | OA vs control | with lab control","PC2",5,"LOC134710586",0.1315,FALSE,NA
+"F | OA vs control | with lab control","PC2",6,"LOC134706002",-0.1278,TRUE,"Foot protein 11"
+"F | OA vs control | with lab control","PC2",7,"LOC134705410",-0.1211,TRUE,"Foot protein 9 variant 2"
+"F | OA vs control | with lab control","PC2",8,"LOC134709803",-0.1196,FALSE,NA
+"F | OA vs control | with lab control","PC2",9,"LOC134723620",-0.1176,FALSE,NA
+"F | OA vs control | with lab control","PC2",10,"LOC134701144",-0.1174,FALSE,"Trypsin-2 (EC 3.4.21.4) (Antryp2)"
+"F | OA vs control | with lab control","PC2",11,"LOC134711106",-0.1158,TRUE,"Foot protein-4 variant-1"
+"F | OA vs control | with lab control","PC2",12,"LOC134706080",0.1126,FALSE,"Papilin"
+"F | OA vs control | with lab control","PC2",13,"LOC134718559",0.1118,FALSE,NA
+"F | OA vs control | with lab control","PC2",14,"LOC134722878",-0.1077,FALSE,NA
+"F | OA vs control | with lab control","PC2",15,"LOC134723637",-0.106,FALSE,NA
+"F | OA vs control | with lab control","PC2",16,"LOC134709802",-0.1053,FALSE,NA
+"F | OA vs control | with lab control","PC2",17,"LOC134695997",-0.1034,FALSE,NA
+"F | OA vs control | with lab control","PC2",18,"LOC134714938",0.1028,TRUE,"Byssal tyrosinase-like protein 2"
+"F | OA vs control | with lab control","PC2",19,"LOC134722885",-0.1025,FALSE,NA
+"F | OA vs control | with lab control","PC2",20,"LOC134708000",-0.1011,TRUE,"Foot protein 13"
+"F | OA vs control | with lab control","PC2",21,"LOC134707657",0.1007,TRUE,"Byssal tyrosinase-like protein 2"
+"F | OA vs control | with lab control","PC2",22,"LOC134705400",-0.0997,FALSE,NA
+"F | OA vs control | with lab control","PC2",23,"LOC134711929",0.0988,FALSE,"Tyrosinase 3"
+"F | OA vs control | with lab control","PC2",24,"LOC134711103",-0.0978,FALSE,NA
+"F | OA vs control | with lab control","PC2",25,"LOC134715434",0.0942,TRUE,"Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1)"
+"F | OW vs control","PC1",1,"LOC134711495",-0.1622,TRUE,"Foot protein 12"
+"F | OW vs control","PC1",2,"LOC134710785",-0.1611,TRUE,"YGH-rich protein-3"
+"F | OW vs control","PC1",3,"LOC134719757",-0.1597,TRUE,"Foot protein 2"
+"F | OW vs control","PC1",4,"LOC134718731",-0.1551,TRUE,"Collagen-like protein-6"
+"F | OW vs control","PC1",5,"LOC134711497",-0.1508,TRUE,"YGH-rich protein-1"
+"F | OW vs control","PC1",6,"LOC134706002",-0.1427,TRUE,"Foot protein 11"
+"F | OW vs control","PC1",7,"LOC134718725",-0.1422,TRUE,"Collagen-like protein-7"
+"F | OW vs control","PC1",8,"LOC134709435",-0.14,TRUE,"Foot protein 10"
+"F | OW vs control","PC1",9,"LOC134680982",-0.1388,FALSE,NA
+"F | OW vs control","PC1",10,"LOC134719452",-0.1378,TRUE,"Foot protein 15"
+"F | OW vs control","PC1",11,"LOC134711496",-0.1373,TRUE,"Foot protein 10"
+"F | OW vs control","PC1",12,"LOC134710788",-0.1354,TRUE,"Foot protein 10"
+"F | OW vs control","PC1",13,"LOC134705410",-0.1347,TRUE,"Foot protein 9 variant 2"
+"F | OW vs control","PC1",14,"LOC134723629",-0.1333,FALSE,NA
+"F | OW vs control","PC1",15,"LOC134709805",-0.1331,TRUE,"Foot protein-4 variant-1"
+"F | OW vs control","PC1",16,"LOC134721757",-0.1287,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | OW vs control","PC1",17,"LOC134717816",-0.1269,TRUE,"Collagen-like protein-5"
+"F | OW vs control","PC1",18,"LOC134722885",-0.1241,FALSE,NA
+"F | OW vs control","PC1",19,"LOC134709803",-0.124,FALSE,NA
+"F | OW vs control","PC1",20,"LOC134709802",-0.1237,FALSE,NA
+"F | OW vs control","PC1",21,"LOC134721760",-0.1197,TRUE,"Foot protein 3 variant 4"
+"F | OW vs control","PC1",22,"LOC134695533",-0.116,FALSE,"Tyrosinase 3"
+"F | OW vs control","PC1",23,"LOC134718719",-0.1158,TRUE,"Collagen-like protein-5"
+"F | OW vs control","PC1",24,"LOC134723631",-0.1125,FALSE,NA
+"F | OW vs control","PC1",25,"LOC134721759",-0.1106,TRUE,"Foot protein-3"
+"F | OW vs control","PC2",1,"LOC134684230",-0.157,FALSE,"Lysozyme (EC 3.2.1.17) (1,4-beta-N-acetylmuramidase)"
+"F | OW vs control","PC2",2,"LOC134721557",0.1457,FALSE,"Polyketide synthase PksN (EC 2.3.1.-)"
+"F | OW vs control","PC2",3,"LOC134696546",-0.1416,FALSE,NA
+"F | OW vs control","PC2",4,"LOC134717636",-0.1378,FALSE,NA
+"F | OW vs control","PC2",5,"LOC134693521",-0.1304,FALSE,NA
+"F | OW vs control","PC2",6,"LOC134724657",-0.1263,FALSE,NA
+"F | OW vs control","PC2",7,"LOC134697184",-0.1229,FALSE,NA
+"F | OW vs control","PC2",8,"LOC134722829",0.1224,FALSE,"Mycosubtilin synthase subunit B (EC 2.3.1.-) [Includes: ATP-dependent tyrosine adenylase (TyrA) (Tyrosine activase); ATP-dependent asparagine adenylase 2 (AsnA 2) (Asparagine activase 2); ATP-dependent glutamine adenylase (GlnA) (Glutamine activase); ATP-dependent proline adenylase (ProA) (Proline activase)]"
+"F | OW vs control","PC2",9,"LOC134690368",-0.1189,FALSE,NA
+"F | OW vs control","PC2",10,"LOC134716025",0.1157,FALSE,NA
+"F | OW vs control","PC2",11,"LOC134705150",-0.1091,FALSE,NA
+"F | OW vs control","PC2",12,"LOC134723563",0.104,FALSE,NA
+"F | OW vs control","PC2",13,"LOC134693986",0.1032,FALSE,NA
+"F | OW vs control","PC2",14,"LOC134695924",-0.1023,FALSE,NA
+"F | OW vs control","PC2",15,"LOC134709535",0.102,FALSE,NA
+"F | OW vs control","PC2",16,"LOC134723841",0.102,FALSE,NA
+"F | OW vs control","PC2",17,"LOC134723620",-0.1015,FALSE,NA
+"F | OW vs control","PC2",18,"LOC134687336",0.0969,FALSE,NA
+"F | OW vs control","PC2",19,"LOC134696244",0.0954,FALSE,"Dendritic arbor reduction protein 1"
+"F | OW vs control","PC2",20,"LOC134686697",0.0936,FALSE,NA
+"F | OW vs control","PC2",21,"LOC134697351",0.0935,FALSE,NA
+"F | OW vs control","PC2",22,"LOC134685284",0.0935,FALSE,NA
+"F | OW vs control","PC2",23,"LOC134684035",-0.0932,FALSE,"Beta-1,4-mannosylglycolipid beta-1,3-N-acetylglucosaminyltransferase brn (EC 2.4.1.-) (Glycolipid-specific beta-1,3-N-Acetylglucosaminyltransferase brn) (Neurogenic secreted-signaling protein brn) (Protein brainiac) (UDP-GlcNAc:beta-Man/beta-Gal beta-1,3GlcNAc transferase) (beta3GlcNAc-transferase)"
+"F | OW vs control","PC2",24,"LOC134690197",0.0928,FALSE,NA
+"F | OW vs control","PC2",25,"LOC134707464",0.0901,FALSE,NA
+"F | OW vs control | with lab control","PC1",1,"LOC134710785",-0.1357,TRUE,"YGH-rich protein-3"
+"F | OW vs control | with lab control","PC1",2,"LOC134711495",-0.1339,TRUE,"Foot protein 12"
+"F | OW vs control | with lab control","PC1",3,"LOC134711497",-0.1326,TRUE,"YGH-rich protein-1"
+"F | OW vs control | with lab control","PC1",4,"LOC134718731",-0.1257,TRUE,"Collagen-like protein-6"
+"F | OW vs control | with lab control","PC1",5,"LOC134718725",-0.1254,TRUE,"Collagen-like protein-7"
+"F | OW vs control | with lab control","PC1",6,"LOC134719757",-0.1253,TRUE,"Foot protein 2"
+"F | OW vs control | with lab control","PC1",7,"LOC134706002",-0.1245,TRUE,"Foot protein 11"
+"F | OW vs control | with lab control","PC1",8,"LOC134718845",-0.1231,TRUE,"Precollagen D"
+"F | OW vs control | with lab control","PC1",9,"LOC134710788",-0.1208,TRUE,"Foot protein 10"
+"F | OW vs control | with lab control","PC1",10,"LOC134721760",-0.1197,TRUE,"Foot protein 3 variant 4"
+"F | OW vs control | with lab control","PC1",11,"LOC134705410",-0.119,TRUE,"Foot protein 9 variant 2"
+"F | OW vs control | with lab control","PC1",12,"LOC134721757",-0.1175,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | OW vs control | with lab control","PC1",13,"LOC134711496",-0.1165,TRUE,"Foot protein 10"
+"F | OW vs control | with lab control","PC1",14,"LOC134719452",-0.1151,TRUE,"Foot protein 15"
+"F | OW vs control | with lab control","PC1",15,"LOC134709805",-0.1137,TRUE,"Foot protein-4 variant-1"
+"F | OW vs control | with lab control","PC1",16,"LOC134680982",-0.1123,FALSE,NA
+"F | OW vs control | with lab control","PC1",17,"LOC134722885",-0.1119,FALSE,NA
+"F | OW vs control | with lab control","PC1",18,"LOC134709435",-0.1112,TRUE,"Foot protein 10"
+"F | OW vs control | with lab control","PC1",19,"LOC134721759",-0.1102,TRUE,"Foot protein-3"
+"F | OW vs control | with lab control","PC1",20,"LOC134709802",-0.1089,FALSE,NA
+"F | OW vs control | with lab control","PC1",21,"LOC134709436",-0.106,FALSE,NA
+"F | OW vs control | with lab control","PC1",22,"LOC134723629",-0.1055,FALSE,NA
+"F | OW vs control | with lab control","PC1",23,"LOC134718847",-0.1043,TRUE,"Nongradient byssal"
+"F | OW vs control | with lab control","PC1",24,"LOC134709803",-0.1043,FALSE,NA
+"F | OW vs control | with lab control","PC1",25,"LOC134705437",-0.1042,FALSE,NA
+"F | OW vs control | with lab control","PC2",1,"LOC134709324",-0.1607,TRUE,"Thread matrix protein 2F"
+"F | OW vs control | with lab control","PC2",2,"LOC134709224",-0.1509,FALSE,NA
+"F | OW vs control | with lab control","PC2",3,"LOC134719118",-0.1503,TRUE,"Collagen-like protein-5"
+"F | OW vs control | with lab control","PC2",4,"LOC134710584",-0.1456,FALSE,NA
+"F | OW vs control | with lab control","PC2",5,"LOC134710586",-0.1413,FALSE,NA
+"F | OW vs control | with lab control","PC2",6,"LOC134706080",-0.1269,FALSE,"Papilin"
+"F | OW vs control | with lab control","PC2",7,"LOC134707657",-0.1252,TRUE,"Byssal tyrosinase-like protein 2"
+"F | OW vs control | with lab control","PC2",8,"LOC134718559",-0.1236,FALSE,NA
+"F | OW vs control | with lab control","PC2",9,"LOC134684230",0.1143,FALSE,"Lysozyme (EC 3.2.1.17) (1,4-beta-N-acetylmuramidase)"
+"F | OW vs control | with lab control","PC2",10,"LOC134723620",0.1104,FALSE,NA
+"F | OW vs control | with lab control","PC2",11,"LOC134718847",-0.1102,TRUE,"Nongradient byssal"
+"F | OW vs control | with lab control","PC2",12,"LOC134714938",-0.1093,TRUE,"Byssal tyrosinase-like protein 2"
+"F | OW vs control | with lab control","PC2",13,"LOC134715434",-0.1089,TRUE,"Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1)"
+"F | OW vs control | with lab control","PC2",14,"LOC134686697",0.1087,FALSE,NA
+"F | OW vs control | with lab control","PC2",15,"LOC134711929",-0.1082,FALSE,"Tyrosinase 3"
+"F | OW vs control | with lab control","PC2",16,"LOC134706002",0.1065,TRUE,"Foot protein 11"
+"F | OW vs control | with lab control","PC2",17,"LOC134705438",-0.105,FALSE,NA
+"F | OW vs control | with lab control","PC2",18,"LOC134716025",0.1039,FALSE,NA
+"F | OW vs control | with lab control","PC2",19,"LOC134709803",0.1008,FALSE,NA
+"F | OW vs control | with lab control","PC2",20,"LOC134705410",0.0998,TRUE,"Foot protein 9 variant 2"
+"F | OW vs control | with lab control","PC2",21,"LOC134718845",-0.0974,TRUE,"Precollagen D"
+"F | OW vs control | with lab control","PC2",22,"LOC134717998",-0.0949,FALSE,"Inter-alpha-trypsin inhibitor (ITI) (EI-14) (HI-14) (Inhibitory fragment of ITI)"
+"F | OW vs control | with lab control","PC2",23,"LOC134683866",-0.0933,TRUE,"Byssal protein-1"
+"F | OW vs control | with lab control","PC2",24,"LOC134723467",0.0932,FALSE,"Fibrinogen C domain-containing protein 1"
+"F | OW vs control | with lab control","PC2",25,"LOC134722878",0.0922,FALSE,NA
+"F | DO vs control","PC1",1,"LOC134710785",0.1826,TRUE,"YGH-rich protein-3"
+"F | DO vs control","PC1",2,"LOC134719757",0.1796,TRUE,"Foot protein 2"
+"F | DO vs control","PC1",3,"LOC134711495",0.1787,TRUE,"Foot protein 12"
+"F | DO vs control","PC1",4,"LOC134718731",0.1646,TRUE,"Collagen-like protein-6"
+"F | DO vs control","PC1",5,"LOC134711497",0.1541,TRUE,"YGH-rich protein-1"
+"F | DO vs control","PC1",6,"LOC134680982",0.1515,FALSE,NA
+"F | DO vs control","PC1",7,"LOC134711496",0.1488,TRUE,"Foot protein 10"
+"F | DO vs control","PC1",8,"LOC134717816",0.1482,TRUE,"Collagen-like protein-5"
+"F | DO vs control","PC1",9,"LOC134718725",0.1418,TRUE,"Collagen-like protein-7"
+"F | DO vs control","PC1",10,"LOC134709805",0.136,TRUE,"Foot protein-4 variant-1"
+"F | DO vs control","PC1",11,"LOC134719452",0.1357,TRUE,"Foot protein 15"
+"F | DO vs control","PC1",12,"LOC134706002",0.1342,TRUE,"Foot protein 11"
+"F | DO vs control","PC1",13,"LOC134723629",0.1332,FALSE,NA
+"F | DO vs control","PC1",14,"LOC134709435",0.1312,TRUE,"Foot protein 10"
+"F | DO vs control","PC1",15,"LOC134721757",0.1312,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | DO vs control","PC1",16,"LOC134721760",0.13,TRUE,"Foot protein 3 variant 4"
+"F | DO vs control","PC1",17,"LOC134710788",0.1286,TRUE,"Foot protein 10"
+"F | DO vs control","PC1",18,"LOC134705410",0.1249,TRUE,"Foot protein 9 variant 2"
+"F | DO vs control","PC1",19,"LOC134695533",0.1229,FALSE,"Tyrosinase 3"
+"F | DO vs control","PC1",20,"LOC134709803",0.1228,FALSE,NA
+"F | DO vs control","PC1",21,"LOC134709802",0.1204,FALSE,NA
+"F | DO vs control","PC1",22,"LOC134722885",0.1176,FALSE,NA
+"F | DO vs control","PC1",23,"LOC134721759",0.1167,TRUE,"Foot protein-3"
+"F | DO vs control","PC1",24,"LOC134710563",0.1165,TRUE,"TSP_1 domain containing protein-1"
+"F | DO vs control","PC1",25,"LOC134695997",0.1157,FALSE,NA
+"F | DO vs control","PC2",1,"LOC134697184",-0.2283,FALSE,NA
+"F | DO vs control","PC2",2,"LOC134684562",0.1984,FALSE,"Trypsin (EC 3.4.21.4)"
+"F | DO vs control","PC2",3,"LOC134724657",-0.1689,FALSE,NA
+"F | DO vs control","PC2",4,"LOC134686515",0.1291,FALSE,NA
+"F | DO vs control","PC2",5,"LOC134683666",-0.1233,FALSE,"Chymotrypsinogen B (EC 3.4.21.1) [Cleaved into: Chymotrypsin B chain A; Chymotrypsin B chain B; Chymotrypsin B chain C]"
+"F | DO vs control","PC2",6,"LOC134683202",0.119,FALSE,"Basic phospholipase A2 1 (svPLA2) (EC 3.1.1.4) (Phosphatidylcholine 2-acylhydrolase)"
+"F | DO vs control","PC2",7,"LOC134687868",-0.1163,FALSE,NA
+"F | DO vs control","PC2",8,"LOC134701144",0.1143,FALSE,"Trypsin-2 (EC 3.4.21.4) (Antryp2)"
+"F | DO vs control","PC2",9,"LOC134722680",0.1125,FALSE,NA
+"F | DO vs control","PC2",10,"LOC134691244",0.1121,FALSE,NA
+"F | DO vs control","PC2",11,"LOC134697458",-0.1108,FALSE,"Blastula protease 10 (EC 3.4.24.-)"
+"F | DO vs control","PC2",12,"LOC134711178",-0.11,FALSE,NA
+"F | DO vs control","PC2",13,"LOC134693521",-0.1083,FALSE,NA
+"F | DO vs control","PC2",14,"LOC134696387",0.1042,FALSE,"Alpha-crystallin A chain"
+"F | DO vs control","PC2",15,"LOC134701505",-0.1,FALSE,NA
+"F | DO vs control","PC2",16,"LOC134697323",-0.098,FALSE,NA
+"F | DO vs control","PC2",17,"LOC134684035",-0.0973,FALSE,"Beta-1,4-mannosylglycolipid beta-1,3-N-acetylglucosaminyltransferase brn (EC 2.4.1.-) (Glycolipid-specific beta-1,3-N-Acetylglucosaminyltransferase brn) (Neurogenic secreted-signaling protein brn) (Protein brainiac) (UDP-GlcNAc:beta-Man/beta-Gal beta-1,3GlcNAc transferase) (beta3GlcNAc-transferase)"
+"F | DO vs control","PC2",18,"LOC134727408",0.0957,FALSE,"Glucose dehydrogenase [FAD, quinone] (EC 1.1.5.9) [Cleaved into: Glucose dehydrogenase [FAD, quinone] short protein]"
+"F | DO vs control","PC2",19,"LOC134697300",0.0953,TRUE,"Byssal HSP-like protein 1"
+"F | DO vs control","PC2",20,"LOC134708263",0.0951,FALSE,NA
+"F | DO vs control","PC2",21,"LOC134694733",0.0948,FALSE,"Alpha-galactosidase A (EC 3.2.1.22) (Alpha-D-galactosidase A) (Alpha-D-galactoside galactohydrolase) (Galactosylgalactosylglucosylceramidase GLA) (Melibiase) (Agalsidase)"
+"F | DO vs control","PC2",22,"LOC134723620",-0.0922,FALSE,NA
+"F | DO vs control","PC2",23,"LOC134681726",-0.0921,FALSE,NA
+"F | DO vs control","PC2",24,"LOC134689803",0.0911,FALSE,"Hemicentin-1 (Fibulin-6) (FIBL-6)"
+"F | DO vs control","PC2",25,"LOC134720609",-0.0903,FALSE,NA
+"F | DO vs control | with lab control","PC1",1,"LOC134718845",0.1374,TRUE,"Precollagen D"
+"F | DO vs control | with lab control","PC1",2,"LOC134710785",0.1357,TRUE,"YGH-rich protein-3"
+"F | DO vs control | with lab control","PC1",3,"LOC134711495",0.1335,TRUE,"Foot protein 12"
+"F | DO vs control | with lab control","PC1",4,"LOC134711497",0.1322,TRUE,"YGH-rich protein-1"
+"F | DO vs control | with lab control","PC1",5,"LOC134718725",0.1278,TRUE,"Collagen-like protein-7"
+"F | DO vs control | with lab control","PC1",6,"LOC134719757",0.125,TRUE,"Foot protein 2"
+"F | DO vs control | with lab control","PC1",7,"LOC134718731",0.1246,TRUE,"Collagen-like protein-6"
+"F | DO vs control | with lab control","PC1",8,"LOC134706002",0.1223,TRUE,"Foot protein 11"
+"F | DO vs control | with lab control","PC1",9,"LOC134710788",0.1189,TRUE,"Foot protein 10"
+"F | DO vs control | with lab control","PC1",10,"LOC134721757",0.1189,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | DO vs control | with lab control","PC1",11,"LOC134705410",0.1188,TRUE,"Foot protein 9 variant 2"
+"F | DO vs control | with lab control","PC1",12,"LOC134711496",0.118,TRUE,"Foot protein 10"
+"F | DO vs control | with lab control","PC1",13,"LOC134718847",0.1178,TRUE,"Nongradient byssal"
+"F | DO vs control | with lab control","PC1",14,"LOC134721760",0.117,TRUE,"Foot protein 3 variant 4"
+"F | DO vs control | with lab control","PC1",15,"LOC134680982",0.1146,FALSE,NA
+"F | DO vs control | with lab control","PC1",16,"LOC134709805",0.1128,TRUE,"Foot protein-4 variant-1"
+"F | DO vs control | with lab control","PC1",17,"LOC134722885",0.1122,FALSE,NA
+"F | DO vs control | with lab control","PC1",18,"LOC134719452",0.1115,TRUE,"Foot protein 15"
+"F | DO vs control | with lab control","PC1",19,"LOC134717816",0.1099,TRUE,"Collagen-like protein-5"
+"F | DO vs control | with lab control","PC1",20,"LOC134705437",0.1092,FALSE,NA
+"F | DO vs control | with lab control","PC1",21,"LOC134715434",0.1091,TRUE,"Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1)"
+"F | DO vs control | with lab control","PC1",22,"LOC134721759",0.1081,TRUE,"Foot protein-3"
+"F | DO vs control | with lab control","PC1",23,"LOC134709435",0.1074,TRUE,"Foot protein 10"
+"F | DO vs control | with lab control","PC1",24,"LOC134709802",0.1072,FALSE,NA
+"F | DO vs control | with lab control","PC1",25,"LOC134709436",0.1065,FALSE,NA
+"F | DO vs control | with lab control","PC2",1,"LOC134723620",0.1562,FALSE,NA
+"F | DO vs control | with lab control","PC2",2,"LOC134719118",-0.1496,TRUE,"Collagen-like protein-5"
+"F | DO vs control | with lab control","PC2",3,"LOC134709324",-0.1476,TRUE,"Thread matrix protein 2F"
+"F | DO vs control | with lab control","PC2",4,"LOC134709224",-0.1452,FALSE,NA
+"F | DO vs control | with lab control","PC2",5,"LOC134722878",0.139,FALSE,NA
+"F | DO vs control | with lab control","PC2",6,"LOC134710584",-0.1354,FALSE,NA
+"F | DO vs control | with lab control","PC2",7,"LOC134710586",-0.1316,FALSE,NA
+"F | DO vs control | with lab control","PC2",8,"LOC134706002",0.1215,TRUE,"Foot protein 11"
+"F | DO vs control | with lab control","PC2",9,"LOC134709803",0.1196,FALSE,NA
+"F | DO vs control | with lab control","PC2",10,"LOC134717636",0.1165,FALSE,NA
+"F | DO vs control | with lab control","PC2",11,"LOC134695042",0.1165,FALSE,NA
+"F | DO vs control | with lab control","PC2",12,"LOC134723467",0.1111,FALSE,"Fibrinogen C domain-containing protein 1"
+"F | DO vs control | with lab control","PC2",13,"LOC134705410",0.11,TRUE,"Foot protein 9 variant 2"
+"F | DO vs control | with lab control","PC2",14,"LOC134711106",0.1081,TRUE,"Foot protein-4 variant-1"
+"F | DO vs control | with lab control","PC2",15,"LOC134718559",-0.1069,FALSE,NA
+"F | DO vs control | with lab control","PC2",16,"LOC134709802",0.1039,FALSE,NA
+"F | DO vs control | with lab control","PC2",17,"LOC134695997",0.1035,FALSE,NA
+"F | DO vs control | with lab control","PC2",18,"LOC134706080",-0.1025,FALSE,"Papilin"
+"F | DO vs control | with lab control","PC2",19,"LOC134723637",0.1005,FALSE,NA
+"F | DO vs control | with lab control","PC2",20,"LOC134722885",0.1004,FALSE,NA
+"F | DO vs control | with lab control","PC2",21,"LOC134707657",-0.0978,TRUE,"Byssal tyrosinase-like protein 2"
+"F | DO vs control | with lab control","PC2",22,"LOC134714938",-0.0966,TRUE,"Byssal tyrosinase-like protein 2"
+"F | DO vs control | with lab control","PC2",23,"LOC134715434",-0.0963,TRUE,"Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1)"
+"F | DO vs control | with lab control","PC2",24,"LOC134711103",0.0946,FALSE,NA
+"F | DO vs control | with lab control","PC2",25,"LOC134708000",0.0942,TRUE,"Foot protein 13"
+"F | lab control vs control | with lab control","PC1",1,"LOC134718845",-0.1453,TRUE,"Precollagen D"
+"F | lab control vs control | with lab control","PC1",2,"LOC134710785",-0.1384,TRUE,"YGH-rich protein-3"
+"F | lab control vs control | with lab control","PC1",3,"LOC134711495",-0.1356,TRUE,"Foot protein 12"
+"F | lab control vs control | with lab control","PC1",4,"LOC134711497",-0.1329,TRUE,"YGH-rich protein-1"
+"F | lab control vs control | with lab control","PC1",5,"LOC134719757",-0.1257,TRUE,"Foot protein 2"
+"F | lab control vs control | with lab control","PC1",6,"LOC134718731",-0.1255,TRUE,"Collagen-like protein-6"
+"F | lab control vs control | with lab control","PC1",7,"LOC134718725",-0.1254,TRUE,"Collagen-like protein-7"
+"F | lab control vs control | with lab control","PC1",8,"LOC134706002",-0.1241,TRUE,"Foot protein 11"
+"F | lab control vs control | with lab control","PC1",9,"LOC134718847",-0.1233,TRUE,"Nongradient byssal"
+"F | lab control vs control | with lab control","PC1",10,"LOC134711496",-0.1197,TRUE,"Foot protein 10"
+"F | lab control vs control | with lab control","PC1",11,"LOC134710788",-0.117,TRUE,"Foot protein 10"
+"F | lab control vs control | with lab control","PC1",12,"LOC134715434",-0.1156,TRUE,"Adhesive plaque matrix protein (Foot protein 1) (MGFP-1) (MGFP1)"
+"F | lab control vs control | with lab control","PC1",13,"LOC134721757",-0.115,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F | lab control vs control | with lab control","PC1",14,"LOC134721760",-0.1149,TRUE,"Foot protein 3 variant 4"
+"F | lab control vs control | with lab control","PC1",15,"LOC134705437",-0.1129,FALSE,NA
+"F | lab control vs control | with lab control","PC1",16,"LOC134705410",-0.1122,TRUE,"Foot protein 9 variant 2"
+"F | lab control vs control | with lab control","PC1",17,"LOC134680982",-0.1109,FALSE,NA
+"F | lab control vs control | with lab control","PC1",18,"LOC134709805",-0.1098,TRUE,"Foot protein-4 variant-1"
+"F | lab control vs control | with lab control","PC1",19,"LOC134719452",-0.1087,TRUE,"Foot protein 15"
+"F | lab control vs control | with lab control","PC1",20,"LOC134709436",-0.1083,FALSE,NA
+"F | lab control vs control | with lab control","PC1",21,"LOC134721759",-0.1073,TRUE,"Foot protein-3"
+"F | lab control vs control | with lab control","PC1",22,"LOC134722885",-0.1064,FALSE,NA
+"F | lab control vs control | with lab control","PC1",23,"LOC134717816",-0.1047,TRUE,"Collagen-like protein-5"
+"F | lab control vs control | with lab control","PC1",24,"LOC134709435",-0.1038,TRUE,"Foot protein 10"
+"F | lab control vs control | with lab control","PC1",25,"LOC134710563",-0.1033,TRUE,"TSP_1 domain containing protein-1"
+"F | lab control vs control | with lab control","PC2",1,"LOC134709324",0.1665,TRUE,"Thread matrix protein 2F"
+"F | lab control vs control | with lab control","PC2",2,"LOC134709224",0.1646,FALSE,NA
+"F | lab control vs control | with lab control","PC2",3,"LOC134706002",-0.1585,TRUE,"Foot protein 11"
+"F | lab control vs control | with lab control","PC2",4,"LOC134719118",0.1542,TRUE,"Collagen-like protein-5"
+"F | lab control vs control | with lab control","PC2",5,"LOC134710584",0.1536,FALSE,NA
+"F | lab control vs control | with lab control","PC2",6,"LOC134710586",0.1415,FALSE,NA
+"F | lab control vs control | with lab control","PC2",7,"LOC134709803",-0.1375,FALSE,NA
+"F | lab control vs control | with lab control","PC2",8,"LOC134705410",-0.135,TRUE,"Foot protein 9 variant 2"
+"F | lab control vs control | with lab control","PC2",9,"LOC134695997",-0.1313,FALSE,NA
+"F | lab control vs control | with lab control","PC2",10,"LOC134695042",-0.1285,FALSE,NA
+"F | lab control vs control | with lab control","PC2",11,"LOC134723620",-0.1221,FALSE,NA
+"F | lab control vs control | with lab control","PC2",12,"LOC134711106",-0.1219,TRUE,"Foot protein-4 variant-1"
+"F | lab control vs control | with lab control","PC2",13,"LOC134708000",-0.119,TRUE,"Foot protein 13"
+"F | lab control vs control | with lab control","PC2",14,"LOC134722885",-0.1185,FALSE,NA
+"F | lab control vs control | with lab control","PC2",15,"LOC134709802",-0.1182,FALSE,NA
+"F | lab control vs control | with lab control","PC2",16,"LOC134705400",-0.1156,FALSE,NA
+"F | lab control vs control | with lab control","PC2",17,"LOC134684230",-0.1127,FALSE,"Lysozyme (EC 3.2.1.17) (1,4-beta-N-acetylmuramidase)"
+"F | lab control vs control | with lab control","PC2",18,"LOC134723637",-0.1124,FALSE,NA
+"F | lab control vs control | with lab control","PC2",19,"LOC134717636",-0.1081,FALSE,NA
+"F | lab control vs control | with lab control","PC2",20,"LOC134718559",0.1054,FALSE,NA
+"F | lab control vs control | with lab control","PC2",21,"LOC134722878",-0.1047,FALSE,NA
+"F | lab control vs control | with lab control","PC2",22,"LOC134711103",-0.1042,FALSE,NA
+"F | lab control vs control | with lab control","PC2",23,"LOC134683830",-0.1037,FALSE,"Chymotrypsin-like protease CTRL-1 (EC 3.4.21.-)"
+"F | lab control vs control | with lab control","PC2",24,"LOC134706080",0.1001,FALSE,"Papilin"
+"F | lab control vs control | with lab control","PC2",25,"LOC134684566",-0.0986,FALSE,"Chymotrypsinogen A (EC 3.4.21.1) [Cleaved into: Chymotrypsin A chain A; Chymotrypsin A chain B; Chymotrypsin A chain C]"
+"G | every arm","PC1",1,"LOC134690921",0.1972,FALSE,NA
+"G | every arm","PC1",2,"LOC134690919",0.1945,FALSE,NA
+"G | every arm","PC1",3,"LOC134690920",0.1756,FALSE,NA
+"G | every arm","PC1",4,"LOC134690922",0.1604,FALSE,NA
+"G | every arm","PC1",5,"LOC134689598",0.1553,FALSE,NA
+"G | every arm","PC1",6,"LOC134690918",0.1515,FALSE,NA
+"G | every arm","PC1",7,"LOC134696788",-0.13,FALSE,NA
+"G | every arm","PC1",8,"LOC134724803",-0.1269,FALSE,NA
+"G | every arm","PC1",9,"LOC134689599",0.1098,FALSE,NA
+"G | every arm","PC1",10,"LOC134720932",0.1091,TRUE,"Byssal peroxidase-like protein 2"
+"G | every arm","PC1",11,"LOC134716385",-0.1066,TRUE,"Byssal EP-like protein 1 (EP-protein-1)"
+"G | every arm","PC1",12,"LOC134690398",0.1056,FALSE,NA
+"G | every arm","PC1",13,"LOC134727038",-0.1015,FALSE,NA
+"G | every arm","PC1",14,"LOC134686824",0.1001,FALSE,NA
+"G | every arm","PC1",15,"LOC134687067",-0.0998,FALSE,NA
+"G | every arm","PC1",16,"LOC134726965",-0.0985,FALSE,NA
+"G | every arm","PC1",17,"LOC134721691",0.0957,FALSE,NA
+"G | every arm","PC1",18,"LOC134712233",-0.0951,FALSE,NA
+"G | every arm","PC1",19,"LOC134690474",-0.0945,FALSE,NA
+"G | every arm","PC1",20,"LOC134683717",-0.0943,FALSE,NA
+"G | every arm","PC1",21,"LOC134707467",0.0911,FALSE,"Dual oxidase 1 (EC 1.-.-.-) (EC 1.11.1.-) (EC 1.6.3.1)"
+"G | every arm","PC1",22,"LOC134692814",-0.088,FALSE,NA
+"G | every arm","PC1",23,"LOC134721557",0.0876,FALSE,"Polyketide synthase PksN (EC 2.3.1.-)"
+"G | every arm","PC1",24,"LOC134690915",-0.0872,FALSE,NA
+"G | every arm","PC1",25,"LOC134693421",-0.0866,FALSE,NA
+"G | every arm","PC2",1,"LOC134686131",-0.2358,TRUE,"Mussel byssus collagen-like protein 3"
+"G | every arm","PC2",2,"LOC134686081",-0.1732,TRUE,"Mussel byssus collagen-like protein 3"
+"G | every arm","PC2",3,"LOC134718805",-0.1727,FALSE,NA
+"G | every arm","PC2",4,"LOC134718803",-0.1561,FALSE,NA
+"G | every arm","PC2",5,"LOC134691264",-0.1464,FALSE,NA
+"G | every arm","PC2",6,"LOC134686824",-0.1396,FALSE,NA
+"G | every arm","PC2",7,"LOC134697351",-0.1357,FALSE,NA
+"G | every arm","PC2",8,"LOC134692318",-0.1272,FALSE,NA
+"G | every arm","PC2",9,"LOC134686357",0.1269,FALSE,NA
+"G | every arm","PC2",10,"LOC134693199",-0.121,FALSE,NA
+"G | every arm","PC2",11,"LOC134707464",-0.1209,FALSE,NA
+"G | every arm","PC2",12,"LOC134705287",-0.1185,FALSE,NA
+"G | every arm","PC2",13,"LOC134719829",-0.1174,FALSE,NA
+"G | every arm","PC2",14,"LOC134718804",-0.1161,FALSE,NA
+"G | every arm","PC2",15,"LOC134716025",-0.1098,FALSE,NA
+"G | every arm","PC2",16,"LOC134687336",-0.1075,FALSE,NA
+"G | every arm","PC2",17,"LOC134696996",-0.1075,FALSE,NA
+"G | every arm","PC2",18,"LOC134728158",-0.1071,FALSE,NA
+"G | every arm","PC2",19,"LOC134681720",0.0973,FALSE,NA
+"G | every arm","PC2",20,"LOC134721850",-0.0973,FALSE,"Phosphoenolpyruvate carboxykinase, cytosolic [GTP] (PEPCK-C) (EC 4.1.1.32) (Serine-protein kinase PCK1) (EC 2.7.11.-)"
+"G | every arm","PC2",21,"LOC134696314",0.0962,FALSE,NA
+"G | every arm","PC2",22,"LOC134707304",-0.0953,FALSE,"Galaxin"
+"G | every arm","PC2",23,"LOC134697640",-0.0919,FALSE,"Multicopper oxidase 3 (AgMCO3) (EC 1.10.3.2) (Laccase-3)"
+"G | every arm","PC2",24,"LOC134726965",-0.0912,FALSE,NA
+"G | every arm","PC2",25,"LOC134690533",0.0895,FALSE,NA
+"G | every arm | with lab control","PC1",1,"LOC134690921",0.2383,FALSE,NA
+"G | every arm | with lab control","PC1",2,"LOC134690919",0.2174,FALSE,NA
+"G | every arm | with lab control","PC1",3,"LOC134690920",0.1971,FALSE,NA
+"G | every arm | with lab control","PC1",4,"LOC134690922",0.1853,FALSE,NA
+"G | every arm | with lab control","PC1",5,"LOC134720932",0.1755,TRUE,"Byssal peroxidase-like protein 2"
+"G | every arm | with lab control","PC1",6,"LOC134690918",0.17,FALSE,NA
+"G | every arm | with lab control","PC1",7,"LOC134689598",0.159,FALSE,NA
+"G | every arm | with lab control","PC1",8,"LOC134696788",-0.1341,FALSE,NA
+"G | every arm | with lab control","PC1",9,"LOC134690916",-0.118,FALSE,NA
+"G | every arm | with lab control","PC1",10,"LOC134690432",0.1154,FALSE,NA
+"G | every arm | with lab control","PC1",11,"LOC134721691",0.1152,FALSE,NA
+"G | every arm | with lab control","PC1",12,"LOC134716385",-0.1148,TRUE,"Byssal EP-like protein 1 (EP-protein-1)"
+"G | every arm | with lab control","PC1",13,"LOC134711044",-0.1111,FALSE,NA
+"G | every arm | with lab control","PC1",14,"LOC134716025",0.1108,FALSE,NA
+"G | every arm | with lab control","PC1",15,"LOC134689599",0.1073,FALSE,NA
+"G | every arm | with lab control","PC1",16,"LOC134690434",0.1033,FALSE,NA
+"G | every arm | with lab control","PC1",17,"LOC134691441",0.1019,FALSE,NA
+"G | every arm | with lab control","PC1",18,"LOC134720570",-0.1017,FALSE,NA
+"G | every arm | with lab control","PC1",19,"LOC134693957",-0.0998,FALSE,NA
+"G | every arm | with lab control","PC1",20,"LOC134707467",0.0991,FALSE,"Dual oxidase 1 (EC 1.-.-.-) (EC 1.11.1.-) (EC 1.6.3.1)"
+"G | every arm | with lab control","PC1",21,"LOC134725578",-0.099,FALSE,NA
+"G | every arm | with lab control","PC1",22,"LOC134724803",-0.0953,FALSE,NA
+"G | every arm | with lab control","PC1",23,"LOC134707468",0.0938,FALSE,"Dual oxidase maturation factor 1 (Dual oxidase activator 1) (Numb-interacting protein)"
+"G | every arm | with lab control","PC1",24,"LOC134693698",-0.0938,FALSE,NA
+"G | every arm | with lab control","PC1",25,"LOC134683717",-0.0923,FALSE,NA
+"G | every arm | with lab control","PC2",1,"LOC134690398",-0.1584,FALSE,NA
+"G | every arm | with lab control","PC2",2,"LOC134709431",-0.1321,FALSE,"Serum amyloid A-3 protein"
+"G | every arm | with lab control","PC2",3,"LOC134716025",0.1252,FALSE,NA
+"G | every arm | with lab control","PC2",4,"LOC134686131",0.1247,TRUE,"Mussel byssus collagen-like protein 3"
+"G | every arm | with lab control","PC2",5,"LOC134723595",0.121,FALSE,NA
+"G | every arm | with lab control","PC2",6,"LOC134705288",0.1128,FALSE,NA
+"G | every arm | with lab control","PC2",7,"LOC134690434",0.111,FALSE,NA
+"G | every arm | with lab control","PC2",8,"LOC134693957",-0.1025,FALSE,NA
+"G | every arm | with lab control","PC2",9,"LOC134686357",-0.0997,FALSE,NA
+"G | every arm | with lab control","PC2",10,"LOC134723092",0.0993,FALSE,NA
+"G | every arm | with lab control","PC2",11,"LOC134691263",0.0974,FALSE,NA
+"G | every arm | with lab control","PC2",12,"LOC134680747",0.0969,FALSE,NA
+"G | every arm | with lab control","PC2",13,"LOC134713776",0.0969,FALSE,NA
+"G | every arm | with lab control","PC2",14,"LOC134693780",0.0956,FALSE,NA
+"G | every arm | with lab control","PC2",15,"LOC134684069",0.0939,FALSE,NA
+"G | every arm | with lab control","PC2",16,"LOC134709411",0.0939,FALSE,NA
+"G | every arm | with lab control","PC2",17,"LOC134686408",0.0939,FALSE,NA
+"G | every arm | with lab control","PC2",18,"LOC134727011",0.0923,FALSE,"Metallothionein 10-IV (MT-10-IV)"
+"G | every arm | with lab control","PC2",19,"LOC134696679",0.0921,FALSE,"Ficolin-1 (Ficolin-A) (Ficolin-alpha)"
+"G | every arm | with lab control","PC2",20,"LOC134705375",0.0912,FALSE,"Techylectin-5B"
+"G | every arm | with lab control","PC2",21,"LOC134723522",0.0898,FALSE,"Zonadhesin"
+"G | every arm | with lab control","PC2",22,"LOC134690433",0.0898,FALSE,NA
+"G | every arm | with lab control","PC2",23,"LOC134719607",0.0891,FALSE,"Perlucin-like protein"
+"G | every arm | with lab control","PC2",24,"LOC134705287",-0.0878,FALSE,NA
+"G | every arm | with lab control","PC2",25,"LOC134711044",-0.0871,FALSE,NA
+"G | OA vs control","PC1",1,"LOC134690921",0.1879,FALSE,NA
+"G | OA vs control","PC1",2,"LOC134690920",0.1614,FALSE,NA
+"G | OA vs control","PC1",3,"LOC134689598",0.1603,FALSE,NA
+"G | OA vs control","PC1",4,"LOC134724803",-0.1554,FALSE,NA
+"G | OA vs control","PC1",5,"LOC134690919",0.1439,FALSE,NA
+"G | OA vs control","PC1",6,"LOC134690922",0.127,FALSE,NA
+"G | OA vs control","PC1",7,"LOC134690918",0.125,FALSE,NA
+"G | OA vs control","PC1",8,"LOC134727038",-0.117,FALSE,NA
+"G | OA vs control","PC1",9,"LOC134687067",-0.111,FALSE,NA
+"G | OA vs control","PC1",10,"LOC134691263",-0.107,FALSE,NA
+"G | OA vs control","PC1",11,"LOC134689599",0.1063,FALSE,NA
+"G | OA vs control","PC1",12,"LOC134682107",0.1051,FALSE,NA
+"G | OA vs control","PC1",13,"LOC134692814",-0.1021,FALSE,NA
+"G | OA vs control","PC1",14,"LOC134723389",-0.0975,FALSE,"Perlucin-like protein"
+"G | OA vs control","PC1",15,"LOC134707067",0.0972,FALSE,NA
+"G | OA vs control","PC1",16,"LOC134725578",-0.097,FALSE,NA
+"G | OA vs control","PC1",17,"LOC134690398",0.0962,FALSE,NA
+"G | OA vs control","PC1",18,"LOC134683717",-0.0951,FALSE,NA
+"G | OA vs control","PC1",19,"LOC134696788",-0.0945,FALSE,NA
+"G | OA vs control","PC1",20,"LOC134697554",0.0945,FALSE,"Protein mono-ADP-ribosyltransferase PARP14 (EC 2.4.2.-) (ADP-ribosyltransferase diphtheria toxin-like 8) (ARTD8) (B aggressive lymphoma protein 2) (Poly [ADP-ribose] polymerase 14) (PARP-14)"
+"G | OA vs control","PC1",21,"LOC134712233",-0.0937,FALSE,NA
+"G | OA vs control","PC1",22,"LOC134690824",-0.0908,FALSE,NA
+"G | OA vs control","PC1",23,"LOC134725577",-0.0885,FALSE,NA
+"G | OA vs control","PC1",24,"LOC134716385",-0.0883,TRUE,"Byssal EP-like protein 1 (EP-protein-1)"
+"G | OA vs control","PC1",25,"LOC134684199",-0.0864,FALSE,NA
+"G | OA vs control","PC2",1,"LOC134692318",-0.1984,FALSE,NA
+"G | OA vs control","PC2",2,"LOC134707067",-0.1875,FALSE,NA
+"G | OA vs control","PC2",3,"LOC134686131",-0.168,TRUE,"Mussel byssus collagen-like protein 3"
+"G | OA vs control","PC2",4,"LOC134709431",-0.1662,FALSE,"Serum amyloid A-3 protein"
+"G | OA vs control","PC2",5,"LOC134705287",-0.1597,FALSE,NA
+"G | OA vs control","PC2",6,"LOC134701218",-0.1529,FALSE,NA
+"G | OA vs control","PC2",7,"LOC134697098",-0.1509,FALSE,NA
+"G | OA vs control","PC2",8,"LOC134686357",-0.1412,FALSE,NA
+"G | OA vs control","PC2",9,"LOC134693199",-0.1354,FALSE,NA
+"G | OA vs control","PC2",10,"LOC134696996",-0.126,FALSE,NA
+"G | OA vs control","PC2",11,"LOC134697184",0.1209,FALSE,NA
+"G | OA vs control","PC2",12,"LOC134697041",-0.1149,FALSE,NA
+"G | OA vs control","PC2",13,"LOC134686081",-0.1112,TRUE,"Mussel byssus collagen-like protein 3"
+"G | OA vs control","PC2",14,"LOC134707304",-0.1007,FALSE,"Galaxin"
+"G | OA vs control","PC2",15,"LOC134690398",-0.1,FALSE,NA
+"G | OA vs control","PC2",16,"LOC134709380",-0.0992,FALSE,NA
+"G | OA vs control","PC2",17,"LOC134687175",-0.0989,FALSE,NA
+"G | OA vs control","PC2",18,"LOC134681721",-0.0971,FALSE,NA
+"G | OA vs control","PC2",19,"LOC134719829",-0.0958,FALSE,NA
+"G | OA vs control","PC2",20,"LOC134687067",0.0955,FALSE,NA
+"G | OA vs control","PC2",21,"LOC134695508",0.0947,FALSE,NA
+"G | OA vs control","PC2",22,"LOC134709411",-0.0927,FALSE,NA
+"G | OA vs control","PC2",23,"LOC134691122",0.0886,FALSE,NA
+"G | OA vs control","PC2",24,"LOC134719805",-0.0885,FALSE,NA
+"G | OA vs control","PC2",25,"LOC134714800",-0.088,FALSE,NA
+"G | OA vs control | with lab control","PC1",1,"LOC134690921",-0.2307,FALSE,NA
+"G | OA vs control | with lab control","PC1",2,"LOC134690920",-0.1996,FALSE,NA
+"G | OA vs control | with lab control","PC1",3,"LOC134690919",-0.1722,FALSE,NA
+"G | OA vs control | with lab control","PC1",4,"LOC134689598",-0.1624,FALSE,NA
+"G | OA vs control | with lab control","PC1",5,"LOC134720932",-0.1607,TRUE,"Byssal peroxidase-like protein 2"
+"G | OA vs control | with lab control","PC1",6,"LOC134690918",-0.159,FALSE,NA
+"G | OA vs control | with lab control","PC1",7,"LOC134690922",-0.1568,FALSE,NA
+"G | OA vs control | with lab control","PC1",8,"LOC134724803",0.1226,FALSE,NA
+"G | OA vs control | with lab control","PC1",9,"LOC134711044",0.12,FALSE,NA
+"G | OA vs control | with lab control","PC1",10,"LOC134693957",0.1196,FALSE,NA
+"G | OA vs control | with lab control","PC1",11,"LOC134689599",-0.1178,FALSE,NA
+"G | OA vs control | with lab control","PC1",12,"LOC134721691",-0.1149,FALSE,NA
+"G | OA vs control | with lab control","PC1",13,"LOC134697554",-0.1129,FALSE,"Protein mono-ADP-ribosyltransferase PARP14 (EC 2.4.2.-) (ADP-ribosyltransferase diphtheria toxin-like 8) (ARTD8) (B aggressive lymphoma protein 2) (Poly [ADP-ribose] polymerase 14) (PARP-14)"
+"G | OA vs control | with lab control","PC1",14,"LOC134723389",0.1118,FALSE,"Perlucin-like protein"
+"G | OA vs control | with lab control","PC1",15,"LOC134707067",-0.1068,FALSE,NA
+"G | OA vs control | with lab control","PC1",16,"LOC134690916",0.1068,FALSE,NA
+"G | OA vs control | with lab control","PC1",17,"LOC134716025",-0.1023,FALSE,NA
+"G | OA vs control | with lab control","PC1",18,"LOC134720570",0.1011,FALSE,NA
+"G | OA vs control | with lab control","PC1",19,"LOC134689618",-0.0987,FALSE,NA
+"G | OA vs control | with lab control","PC1",20,"LOC134690434",-0.0981,FALSE,NA
+"G | OA vs control | with lab control","PC1",21,"LOC134690432",-0.0981,FALSE,NA
+"G | OA vs control | with lab control","PC1",22,"LOC134683717",0.0977,FALSE,NA
+"G | OA vs control | with lab control","PC1",23,"LOC134686740",0.0965,FALSE,NA
+"G | OA vs control | with lab control","PC1",24,"LOC134687067",0.0923,FALSE,NA
+"G | OA vs control | with lab control","PC1",25,"LOC134696361",-0.0883,FALSE,NA
+"G | OA vs control | with lab control","PC2",1,"LOC134693957",-0.1683,FALSE,NA
+"G | OA vs control | with lab control","PC2",2,"LOC134690398",-0.1539,FALSE,NA
+"G | OA vs control | with lab control","PC2",3,"LOC134684069",0.124,FALSE,NA
+"G | OA vs control | with lab control","PC2",4,"LOC134693421",0.1189,FALSE,NA
+"G | OA vs control | with lab control","PC2",5,"LOC134691263",0.1176,FALSE,NA
+"G | OA vs control | with lab control","PC2",6,"LOC134686824",-0.1128,FALSE,NA
+"G | OA vs control | with lab control","PC2",7,"LOC134690223",0.1061,FALSE,NA
+"G | OA vs control | with lab control","PC2",8,"LOC134682107",-0.1054,FALSE,NA
+"G | OA vs control | with lab control","PC2",9,"LOC134683688",0.1043,FALSE,NA
+"G | OA vs control | with lab control","PC2",10,"LOC134696679",0.1012,FALSE,"Ficolin-1 (Ficolin-A) (Ficolin-alpha)"
+"G | OA vs control | with lab control","PC2",11,"LOC134686408",0.1003,FALSE,NA
+"G | OA vs control | with lab control","PC2",12,"LOC134712233",0.0997,FALSE,NA
+"G | OA vs control | with lab control","PC2",13,"LOC134709431",-0.0995,FALSE,"Serum amyloid A-3 protein"
+"G | OA vs control | with lab control","PC2",14,"LOC134690434",0.0966,FALSE,NA
+"G | OA vs control | with lab control","PC2",15,"LOC134705287",-0.0966,FALSE,NA
+"G | OA vs control | with lab control","PC2",16,"LOC134720703",0.0957,FALSE,NA
+"G | OA vs control | with lab control","PC2",17,"LOC134723595",0.0951,FALSE,NA
+"G | OA vs control | with lab control","PC2",18,"LOC134696936",0.0949,FALSE,NA
+"G | OA vs control | with lab control","PC2",19,"LOC134713776",0.0942,FALSE,NA
+"G | OA vs control | with lab control","PC2",20,"LOC134709535",0.093,FALSE,NA
+"G | OA vs control | with lab control","PC2",21,"LOC134723331",0.0925,FALSE,NA
+"G | OA vs control | with lab control","PC2",22,"LOC134727038",0.0924,FALSE,NA
+"G | OA vs control | with lab control","PC2",23,"LOC134723522",0.0921,FALSE,"Zonadhesin"
+"G | OA vs control | with lab control","PC2",24,"LOC134714116",0.0918,FALSE,NA
+"G | OA vs control | with lab control","PC2",25,"LOC134687067",0.0905,FALSE,NA
+"G | OW vs control","PC1",1,"LOC134690398",0.1743,FALSE,NA
+"G | OW vs control","PC1",2,"LOC134686131",0.1395,TRUE,"Mussel byssus collagen-like protein 3"
+"G | OW vs control","PC1",3,"LOC134707067",0.1363,FALSE,NA
+"G | OW vs control","PC1",4,"LOC134691122",-0.1326,FALSE,NA
+"G | OW vs control","PC1",5,"LOC134681720",-0.1289,FALSE,NA
+"G | OW vs control","PC1",6,"LOC134725419",0.1253,FALSE,NA
+"G | OW vs control","PC1",7,"LOC134686824",0.1195,FALSE,NA
+"G | OW vs control","PC1",8,"LOC134728158",0.1191,FALSE,NA
+"G | OW vs control","PC1",9,"LOC134718803",0.1181,FALSE,NA
+"G | OW vs control","PC1",10,"LOC134697351",0.1172,FALSE,NA
+"G | OW vs control","PC1",11,"LOC134691263",-0.1167,FALSE,NA
+"G | OW vs control","PC1",12,"LOC134718805",0.1149,FALSE,NA
+"G | OW vs control","PC1",13,"LOC134686357",-0.1123,FALSE,NA
+"G | OW vs control","PC1",14,"LOC134690474",-0.1083,FALSE,NA
+"G | OW vs control","PC1",15,"LOC134707464",0.1074,FALSE,NA
+"G | OW vs control","PC1",16,"LOC134723595",-0.1071,FALSE,NA
+"G | OW vs control","PC1",17,"LOC134721850",0.106,FALSE,"Phosphoenolpyruvate carboxykinase, cytosolic [GTP] (PEPCK-C) (EC 4.1.1.32) (Serine-protein kinase PCK1) (EC 2.7.11.-)"
+"G | OW vs control","PC1",18,"LOC134723389",-0.1041,FALSE,"Perlucin-like protein"
+"G | OW vs control","PC1",19,"LOC134695109",-0.1032,FALSE,NA
+"G | OW vs control","PC1",20,"LOC134695777",0.1003,FALSE,NA
+"G | OW vs control","PC1",21,"LOC134705287",0.0967,FALSE,NA
+"G | OW vs control","PC1",22,"LOC134696387",0.0958,FALSE,"Alpha-crystallin A chain"
+"G | OW vs control","PC1",23,"LOC134695226",-0.0934,FALSE,NA
+"G | OW vs control","PC1",24,"LOC134691264",0.0919,FALSE,NA
+"G | OW vs control","PC1",25,"LOC134718804",0.0915,FALSE,NA
+"G | OW vs control","PC2",1,"LOC134697184",0.1968,FALSE,NA
+"G | OW vs control","PC2",2,"LOC134701218",-0.1826,FALSE,NA
+"G | OW vs control","PC2",3,"LOC134686357",-0.1724,FALSE,NA
+"G | OW vs control","PC2",4,"LOC134686617",-0.1385,FALSE,NA
+"G | OW vs control","PC2",5,"LOC134697041",-0.1295,FALSE,NA
+"G | OW vs control","PC2",6,"LOC134709161",0.1255,FALSE,NA
+"G | OW vs control","PC2",7,"LOC134724803",0.1246,FALSE,NA
+"G | OW vs control","PC2",8,"LOC134709431",-0.1187,FALSE,"Serum amyloid A-3 protein"
+"G | OW vs control","PC2",9,"LOC134687715",0.1024,FALSE,"E3 ubiquitin-protein ligase rnf213-alpha (EC 2.3.2.27) (EC 3.6.4.-) (E3 ubiquitin-lipopolysaccharide ligase rnf213-alpha) (EC 2.3.2.-) (Mysterin-A) (Mysterin-alpha) (RING finger protein 213-A) (RING finger protein 213-alpha)"
+"G | OW vs control","PC2",10,"LOC134697098",-0.1017,FALSE,NA
+"G | OW vs control","PC2",11,"LOC134715901",0.1007,FALSE,NA
+"G | OW vs control","PC2",12,"LOC134707067",-0.0997,FALSE,NA
+"G | OW vs control","PC2",13,"LOC134692318",-0.0989,FALSE,NA
+"G | OW vs control","PC2",14,"LOC134711470",0.0979,FALSE,NA
+"G | OW vs control","PC2",15,"LOC134686131",-0.0974,TRUE,"Mussel byssus collagen-like protein 3"
+"G | OW vs control","PC2",16,"LOC134683566",-0.0973,FALSE,NA
+"G | OW vs control","PC2",17,"LOC134705287",-0.0949,FALSE,NA
+"G | OW vs control","PC2",18,"LOC134687067",0.0946,FALSE,NA
+"G | OW vs control","PC2",19,"LOC134719805",-0.0932,FALSE,NA
+"G | OW vs control","PC2",20,"LOC134709380",-0.0928,FALSE,NA
+"G | OW vs control","PC2",21,"LOC134687175",-0.0927,FALSE,NA
+"G | OW vs control","PC2",22,"LOC134690398",-0.0904,FALSE,NA
+"G | OW vs control","PC2",23,"LOC134680827",-0.0891,TRUE,"Mussel byssus cycteine-rich protein"
+"G | OW vs control","PC2",24,"LOC134718501",0.0891,FALSE,NA
+"G | OW vs control","PC2",25,"LOC134709411",-0.089,FALSE,NA
+"G | OW vs control | with lab control","PC1",1,"LOC134690398",0.1865,FALSE,NA
+"G | OW vs control | with lab control","PC1",2,"LOC134723595",-0.1247,FALSE,NA
+"G | OW vs control | with lab control","PC1",3,"LOC134693957",0.1191,FALSE,NA
+"G | OW vs control | with lab control","PC1",4,"LOC134716025",-0.1187,FALSE,NA
+"G | OW vs control | with lab control","PC1",5,"LOC134709431",0.1081,FALSE,"Serum amyloid A-3 protein"
+"G | OW vs control | with lab control","PC1",6,"LOC134690434",-0.1066,FALSE,NA
+"G | OW vs control | with lab control","PC1",7,"LOC134686824",0.1056,FALSE,NA
+"G | OW vs control | with lab control","PC1",8,"LOC134705288",-0.1054,FALSE,NA
+"G | OW vs control | with lab control","PC1",9,"LOC134691263",-0.1049,FALSE,NA
+"G | OW vs control | with lab control","PC1",10,"LOC134705287",0.1002,FALSE,NA
+"G | OW vs control | with lab control","PC1",11,"LOC134693421",-0.1,FALSE,NA
+"G | OW vs control | with lab control","PC1",12,"LOC134720703",-0.0997,FALSE,NA
+"G | OW vs control | with lab control","PC1",13,"LOC134711044",0.099,FALSE,NA
+"G | OW vs control | with lab control","PC1",14,"LOC134684069",-0.0983,FALSE,NA
+"G | OW vs control | with lab control","PC1",15,"LOC134686131",-0.0959,TRUE,"Mussel byssus collagen-like protein 3"
+"G | OW vs control | with lab control","PC1",16,"LOC134705375",-0.0956,FALSE,"Techylectin-5B"
+"G | OW vs control | with lab control","PC1",17,"LOC134720932",-0.0947,TRUE,"Byssal peroxidase-like protein 2"
+"G | OW vs control | with lab control","PC1",18,"LOC134686408",-0.0945,FALSE,NA
+"G | OW vs control | with lab control","PC1",19,"LOC134695091",-0.0932,FALSE,NA
+"G | OW vs control | with lab control","PC1",20,"LOC134690433",-0.0925,FALSE,NA
+"G | OW vs control | with lab control","PC1",21,"LOC134721510",-0.0925,FALSE,NA
+"G | OW vs control | with lab control","PC1",22,"LOC134723092",-0.0898,FALSE,NA
+"G | OW vs control | with lab control","PC1",23,"LOC134696679",-0.0892,FALSE,"Ficolin-1 (Ficolin-A) (Ficolin-alpha)"
+"G | OW vs control | with lab control","PC1",24,"LOC134713776",-0.0861,FALSE,NA
+"G | OW vs control | with lab control","PC1",25,"LOC134690223",-0.0857,FALSE,NA
+"G | OW vs control | with lab control","PC2",1,"LOC134718805",-0.1987,FALSE,NA
+"G | OW vs control | with lab control","PC2",2,"LOC134718803",-0.1842,FALSE,NA
+"G | OW vs control | with lab control","PC2",3,"LOC134686131",-0.1775,TRUE,"Mussel byssus collagen-like protein 3"
+"G | OW vs control | with lab control","PC2",4,"LOC134691122",0.1564,FALSE,NA
+"G | OW vs control | with lab control","PC2",5,"LOC134690398",-0.1515,FALSE,NA
+"G | OW vs control | with lab control","PC2",6,"LOC134707067",-0.1505,FALSE,NA
+"G | OW vs control | with lab control","PC2",7,"LOC134692318",-0.1435,FALSE,NA
+"G | OW vs control | with lab control","PC2",8,"LOC134718804",-0.1386,FALSE,NA
+"G | OW vs control | with lab control","PC2",9,"LOC134728158",-0.128,FALSE,NA
+"G | OW vs control | with lab control","PC2",10,"LOC134695109",0.1158,FALSE,NA
+"G | OW vs control | with lab control","PC2",11,"LOC134723389",0.1154,FALSE,"Perlucin-like protein"
+"G | OW vs control | with lab control","PC2",12,"LOC134709431",-0.1152,FALSE,"Serum amyloid A-3 protein"
+"G | OW vs control | with lab control","PC2",13,"LOC134690474",0.1109,FALSE,NA
+"G | OW vs control | with lab control","PC2",14,"LOC134697041",-0.1098,FALSE,NA
+"G | OW vs control | with lab control","PC2",15,"LOC134687067",0.108,FALSE,NA
+"G | OW vs control | with lab control","PC2",16,"LOC134695239",-0.1054,FALSE,NA
+"G | OW vs control | with lab control","PC2",17,"LOC134721557",-0.1051,FALSE,"Polyketide synthase PksN (EC 2.3.1.-)"
+"G | OW vs control | with lab control","PC2",18,"LOC134693957",0.1023,FALSE,NA
+"G | OW vs control | with lab control","PC2",19,"LOC134682107",-0.1022,FALSE,NA
+"G | OW vs control | with lab control","PC2",20,"LOC134690432",-0.1021,FALSE,NA
+"G | OW vs control | with lab control","PC2",21,"LOC134726882",0.0933,FALSE,NA
+"G | OW vs control | with lab control","PC2",22,"LOC134695226",0.0924,FALSE,NA
+"G | OW vs control | with lab control","PC2",23,"LOC134709732",0.0923,FALSE,NA
+"G | OW vs control | with lab control","PC2",24,"LOC134722829",-0.0915,FALSE,"Mycosubtilin synthase subunit B (EC 2.3.1.-) [Includes: ATP-dependent tyrosine adenylase (TyrA) (Tyrosine activase); ATP-dependent asparagine adenylase 2 (AsnA 2) (Asparagine activase 2); ATP-dependent glutamine adenylase (GlnA) (Glutamine activase); ATP-dependent proline adenylase (ProA) (Proline activase)]"
+"G | OW vs control | with lab control","PC2",25,"LOC134681720",0.0902,FALSE,NA
+"G | DO vs control","PC1",1,"LOC134690919",-0.1635,FALSE,NA
+"G | DO vs control","PC1",2,"LOC134690921",-0.159,FALSE,NA
+"G | DO vs control","PC1",3,"LOC134724803",0.148,FALSE,NA
+"G | DO vs control","PC1",4,"LOC134696788",0.1474,FALSE,NA
+"G | DO vs control","PC1",5,"LOC134693421",0.1328,FALSE,NA
+"G | DO vs control","PC1",6,"LOC134695777",-0.1312,FALSE,NA
+"G | DO vs control","PC1",7,"LOC134690920",-0.1276,FALSE,NA
+"G | DO vs control","PC1",8,"LOC134707464",-0.1251,FALSE,NA
+"G | DO vs control","PC1",9,"LOC134686824",-0.1205,FALSE,NA
+"G | DO vs control","PC1",10,"LOC134690918",-0.1187,FALSE,NA
+"G | DO vs control","PC1",11,"LOC134690922",-0.118,FALSE,NA
+"G | DO vs control","PC1",12,"LOC134716385",0.1159,TRUE,"Byssal EP-like protein 1 (EP-protein-1)"
+"G | DO vs control","PC1",13,"LOC134691441",-0.1042,FALSE,NA
+"G | DO vs control","PC1",14,"LOC134726882",0.1042,FALSE,NA
+"G | DO vs control","PC1",15,"LOC134727038",0.1016,FALSE,NA
+"G | DO vs control","PC1",16,"LOC134723595",0.0994,FALSE,NA
+"G | DO vs control","PC1",17,"LOC134707067",-0.0978,FALSE,NA
+"G | DO vs control","PC1",18,"LOC134684199",0.0958,FALSE,NA
+"G | DO vs control","PC1",19,"LOC134704886",-0.0955,FALSE,"Tenascin-X (TN-X) (Hexabrachion-like protein)"
+"G | DO vs control","PC1",20,"LOC134690474",0.0954,FALSE,NA
+"G | DO vs control","PC1",21,"LOC134728158",-0.092,FALSE,NA
+"G | DO vs control","PC1",22,"LOC134714116",0.0919,FALSE,NA
+"G | DO vs control","PC1",23,"LOC134721557",-0.0915,FALSE,"Polyketide synthase PksN (EC 2.3.1.-)"
+"G | DO vs control","PC1",24,"LOC134689598",-0.091,FALSE,NA
+"G | DO vs control","PC1",25,"LOC134696387",-0.0906,FALSE,"Alpha-crystallin A chain"
+"G | DO vs control","PC2",1,"LOC134692318",-0.2088,FALSE,NA
+"G | DO vs control","PC2",2,"LOC134686131",-0.2016,TRUE,"Mussel byssus collagen-like protein 3"
+"G | DO vs control","PC2",3,"LOC134681720",0.1853,FALSE,NA
+"G | DO vs control","PC2",4,"LOC134697184",0.1767,FALSE,NA
+"G | DO vs control","PC2",5,"LOC134718805",-0.1536,FALSE,NA
+"G | DO vs control","PC2",6,"LOC134718803",-0.1482,FALSE,NA
+"G | DO vs control","PC2",7,"LOC134697041",-0.1387,FALSE,NA
+"G | DO vs control","PC2",8,"LOC134724803",0.1348,FALSE,NA
+"G | DO vs control","PC2",9,"LOC134709431",-0.1332,FALSE,"Serum amyloid A-3 protein"
+"G | DO vs control","PC2",10,"LOC134707067",-0.1311,FALSE,NA
+"G | DO vs control","PC2",11,"LOC134697098",-0.13,FALSE,NA
+"G | DO vs control","PC2",12,"LOC134719805",-0.1273,FALSE,NA
+"G | DO vs control","PC2",13,"LOC134690919",0.1234,FALSE,NA
+"G | DO vs control","PC2",14,"LOC134686617",-0.112,FALSE,NA
+"G | DO vs control","PC2",15,"LOC134701218",-0.112,FALSE,NA
+"G | DO vs control","PC2",16,"LOC134689598",0.1081,FALSE,NA
+"G | DO vs control","PC2",17,"LOC134718804",-0.107,FALSE,NA
+"G | DO vs control","PC2",18,"LOC134691122",0.1054,FALSE,NA
+"G | DO vs control","PC2",19,"LOC134692795",-0.1015,FALSE,NA
+"G | DO vs control","PC2",20,"LOC134705287",-0.0987,FALSE,NA
+"G | DO vs control","PC2",21,"LOC134720932",0.0968,TRUE,"Byssal peroxidase-like protein 2"
+"G | DO vs control","PC2",22,"LOC134690398",-0.0968,FALSE,NA
+"G | DO vs control","PC2",23,"LOC134699275",0.095,FALSE,"Millepora cytotoxin-1 (MCTx-1)"
+"G | DO vs control","PC2",24,"LOC134691263",0.0931,FALSE,NA
+"G | DO vs control","PC2",25,"LOC134696771",-0.0877,FALSE,NA
+"G | DO vs control | with lab control","PC1",1,"LOC134693957",-0.1691,FALSE,NA
+"G | DO vs control | with lab control","PC1",2,"LOC134720932",0.1666,TRUE,"Byssal peroxidase-like protein 2"
+"G | DO vs control | with lab control","PC1",3,"LOC134690921",0.1664,FALSE,NA
+"G | DO vs control | with lab control","PC1",4,"LOC134690919",0.152,FALSE,NA
+"G | DO vs control | with lab control","PC1",5,"LOC134690434",0.1503,FALSE,NA
+"G | DO vs control | with lab control","PC1",6,"LOC134716025",0.1475,FALSE,NA
+"G | DO vs control | with lab control","PC1",7,"LOC134711044",-0.1366,FALSE,NA
+"G | DO vs control | with lab control","PC1",8,"LOC134690920",0.1304,FALSE,NA
+"G | DO vs control | with lab control","PC1",9,"LOC134705375",0.1239,FALSE,"Techylectin-5B"
+"G | DO vs control | with lab control","PC1",10,"LOC134690922",0.1232,FALSE,NA
+"G | DO vs control | with lab control","PC1",11,"LOC134690916",-0.1227,FALSE,NA
+"G | DO vs control | with lab control","PC1",12,"LOC134689598",0.1178,FALSE,NA
+"G | DO vs control | with lab control","PC1",13,"LOC134681721",0.1172,FALSE,NA
+"G | DO vs control | with lab control","PC1",14,"LOC134690432",0.117,FALSE,NA
+"G | DO vs control | with lab control","PC1",15,"LOC134690918",0.1123,FALSE,NA
+"G | DO vs control | with lab control","PC1",16,"LOC134690435",0.1107,FALSE,NA
+"G | DO vs control | with lab control","PC1",17,"LOC134686131",0.1096,TRUE,"Mussel byssus collagen-like protein 3"
+"G | DO vs control | with lab control","PC1",18,"LOC134720642",0.0985,FALSE,NA
+"G | DO vs control | with lab control","PC1",19,"LOC134693780",0.0978,FALSE,NA
+"G | DO vs control | with lab control","PC1",20,"LOC134696788",-0.0977,FALSE,NA
+"G | DO vs control | with lab control","PC1",21,"LOC134720570",-0.0976,FALSE,NA
+"G | DO vs control | with lab control","PC1",22,"LOC134686357",-0.0943,FALSE,NA
+"G | DO vs control | with lab control","PC1",23,"LOC134712792",0.091,FALSE,NA
+"G | DO vs control | with lab control","PC1",24,"LOC134694650",-0.0892,FALSE,"Nucleolar protein 58 (Nucleolar protein 5)"
+"G | DO vs control | with lab control","PC1",25,"LOC134681433",0.0878,FALSE,"VWFA and cache domain-containing protein 1"
+"G | DO vs control | with lab control","PC2",1,"LOC134693421",0.1533,FALSE,NA
+"G | DO vs control | with lab control","PC2",2,"LOC134695777",-0.1272,FALSE,NA
+"G | DO vs control | with lab control","PC2",3,"LOC134686824",-0.1236,FALSE,NA
+"G | DO vs control | with lab control","PC2",4,"LOC134696788",0.1158,FALSE,NA
+"G | DO vs control | with lab control","PC2",5,"LOC134723595",0.1142,FALSE,NA
+"G | DO vs control | with lab control","PC2",6,"LOC134690223",0.1134,FALSE,NA
+"G | DO vs control | with lab control","PC2",7,"LOC134707464",-0.1132,FALSE,NA
+"G | DO vs control | with lab control","PC2",8,"LOC134727038",0.108,FALSE,NA
+"G | DO vs control | with lab control","PC2",9,"LOC134714116",0.1079,FALSE,NA
+"G | DO vs control | with lab control","PC2",10,"LOC134682107",-0.1067,FALSE,NA
+"G | DO vs control | with lab control","PC2",11,"LOC134726882",0.1046,FALSE,NA
+"G | DO vs control | with lab control","PC2",12,"LOC134724803",0.1036,FALSE,NA
+"G | DO vs control | with lab control","PC2",13,"LOC134684069",0.1034,FALSE,NA
+"G | DO vs control | with lab control","PC2",14,"LOC134712233",0.1022,FALSE,NA
+"G | DO vs control | with lab control","PC2",15,"LOC134690398",-0.1015,FALSE,NA
+"G | DO vs control | with lab control","PC2",16,"LOC134691263",0.101,FALSE,NA
+"G | DO vs control | with lab control","PC2",17,"LOC134690474",0.1008,FALSE,NA
+"G | DO vs control | with lab control","PC2",18,"LOC134690919",-0.0993,FALSE,NA
+"G | DO vs control | with lab control","PC2",19,"LOC134709732",0.0989,FALSE,NA
+"G | DO vs control | with lab control","PC2",20,"LOC134686408",0.0968,FALSE,NA
+"G | DO vs control | with lab control","PC2",21,"LOC134705288",0.0934,FALSE,NA
+"G | DO vs control | with lab control","PC2",22,"LOC134722162",0.0933,FALSE,NA
+"G | DO vs control | with lab control","PC2",23,"LOC134690921",-0.0923,FALSE,NA
+"G | DO vs control | with lab control","PC2",24,"LOC134695239",-0.092,FALSE,NA
+"G | DO vs control | with lab control","PC2",25,"LOC134683588",0.0905,FALSE,NA
+"G | lab control vs control | with lab control","PC1",1,"LOC134693957",0.17,FALSE,NA
+"G | lab control vs control | with lab control","PC1",2,"LOC134690398",0.1398,FALSE,NA
+"G | lab control vs control | with lab control","PC1",3,"LOC134691263",-0.1188,FALSE,NA
+"G | lab control vs control | with lab control","PC1",4,"LOC134690434",-0.1164,FALSE,NA
+"G | lab control vs control | with lab control","PC1",5,"LOC134709535",-0.1115,FALSE,NA
+"G | lab control vs control | with lab control","PC1",6,"LOC134723595",-0.1113,FALSE,NA
+"G | lab control vs control | with lab control","PC1",7,"LOC134725643",0.1049,FALSE,NA
+"G | lab control vs control | with lab control","PC1",8,"LOC134684069",-0.1027,FALSE,NA
+"G | lab control vs control | with lab control","PC1",9,"LOC134693421",-0.1009,FALSE,NA
+"G | lab control vs control | with lab control","PC1",10,"LOC134686824",0.0966,FALSE,NA
+"G | lab control vs control | with lab control","PC1",11,"LOC134720703",-0.0956,FALSE,NA
+"G | lab control vs control | with lab control","PC1",12,"LOC134711044",0.0934,FALSE,NA
+"G | lab control vs control | with lab control","PC1",13,"LOC134694650",0.0933,FALSE,"Nucleolar protein 58 (Nucleolar protein 5)"
+"G | lab control vs control | with lab control","PC1",14,"LOC134695777",0.0932,FALSE,NA
+"G | lab control vs control | with lab control","PC1",15,"LOC134705375",-0.0928,FALSE,"Techylectin-5B"
+"G | lab control vs control | with lab control","PC1",16,"LOC134716146",0.0924,FALSE,"Spermine oxidase (EC 1.5.3.16) (Polyamine oxidase 1) (PAO-1) (PAOh1)"
+"G | lab control vs control | with lab control","PC1",17,"LOC134693780",-0.0906,FALSE,NA
+"G | lab control vs control | with lab control","PC1",18,"LOC134720932",-0.0903,TRUE,"Byssal peroxidase-like protein 2"
+"G | lab control vs control | with lab control","PC1",19,"LOC134690223",-0.09,FALSE,NA
+"G | lab control vs control | with lab control","PC1",20,"LOC134687952",0.0899,FALSE,"Midasin (Dynein-related AAA-ATPase MDN1) (MIDAS-containing protein)"
+"G | lab control vs control | with lab control","PC1",21,"LOC134682107",0.0892,FALSE,NA
+"G | lab control vs control | with lab control","PC1",22,"LOC134686408",-0.0887,FALSE,NA
+"G | lab control vs control | with lab control","PC1",23,"LOC134696679",-0.0877,FALSE,"Ficolin-1 (Ficolin-A) (Ficolin-alpha)"
+"G | lab control vs control | with lab control","PC1",24,"LOC134683394",-0.0877,FALSE,NA
+"G | lab control vs control | with lab control","PC1",25,"LOC134690433",-0.0876,FALSE,NA
+"G | lab control vs control | with lab control","PC2",1,"LOC134707067",-0.1771,FALSE,NA
+"G | lab control vs control | with lab control","PC2",2,"LOC134697041",-0.1669,FALSE,NA
+"G | lab control vs control | with lab control","PC2",3,"LOC134686131",-0.1614,TRUE,"Mussel byssus collagen-like protein 3"
+"G | lab control vs control | with lab control","PC2",4,"LOC134690398",-0.1593,FALSE,NA
+"G | lab control vs control | with lab control","PC2",5,"LOC134692318",-0.1557,FALSE,NA
+"G | lab control vs control | with lab control","PC2",6,"LOC134724803",0.1528,FALSE,NA
+"G | lab control vs control | with lab control","PC2",7,"LOC134709431",-0.1482,FALSE,"Serum amyloid A-3 protein"
+"G | lab control vs control | with lab control","PC2",8,"LOC134718805",-0.1376,FALSE,NA
+"G | lab control vs control | with lab control","PC2",9,"LOC134701218",-0.1352,FALSE,NA
+"G | lab control vs control | with lab control","PC2",10,"LOC134718803",-0.1312,FALSE,NA
+"G | lab control vs control | with lab control","PC2",11,"LOC134691122",0.1278,FALSE,NA
+"G | lab control vs control | with lab control","PC2",12,"LOC134695109",0.1244,FALSE,NA
+"G | lab control vs control | with lab control","PC2",13,"LOC134695226",0.1189,FALSE,NA
+"G | lab control vs control | with lab control","PC2",14,"LOC134695239",-0.115,FALSE,NA
+"G | lab control vs control | with lab control","PC2",15,"LOC134719805",-0.1116,FALSE,NA
+"G | lab control vs control | with lab control","PC2",16,"LOC134687067",0.1103,FALSE,NA
+"G | lab control vs control | with lab control","PC2",17,"LOC134681721",-0.1099,FALSE,NA
+"G | lab control vs control | with lab control","PC2",18,"LOC134705287",-0.1098,FALSE,NA
+"G | lab control vs control | with lab control","PC2",19,"LOC134709380",-0.1061,FALSE,NA
+"G | lab control vs control | with lab control","PC2",20,"LOC134719110",-0.1002,FALSE,NA
+"G | lab control vs control | with lab control","PC2",21,"LOC134693957",0.0935,FALSE,NA
+"G | lab control vs control | with lab control","PC2",22,"LOC134722162",0.09,FALSE,NA
+"G | lab control vs control | with lab control","PC2",23,"LOC134728158",-0.0874,FALSE,NA
+"G | lab control vs control | with lab control","PC2",24,"LOC134714800",-0.0871,FALSE,NA
+"G | lab control vs control | with lab control","PC2",25,"LOC134690474",0.0858,FALSE,NA
+"F+G | both tissues","PC1",1,"LOC134690469",-0.0712,FALSE,NA
+"F+G | both tissues","PC1",2,"LOC134719453",-0.071,TRUE,"Foot protein 15"
+"F+G | both tissues","PC1",3,"LOC134717830",-0.071,FALSE,NA
+"F+G | both tissues","PC1",4,"LOC134705647",-0.0709,FALSE,NA
+"F+G | both tissues","PC1",5,"LOC134723625",-0.0705,FALSE,NA
+"F+G | both tissues","PC1",6,"LOC134717831",-0.0705,TRUE,"Collagen-like protein 2"
+"F+G | both tissues","PC1",7,"LOC134686370",-0.0703,FALSE,NA
+"F+G | both tissues","PC1",8,"LOC134717829",-0.0703,FALSE,NA
+"F+G | both tissues","PC1",9,"LOC134723523",-0.0702,FALSE,NA
+"F+G | both tissues","PC1",10,"LOC134723621",-0.07,FALSE,NA
+"F+G | both tissues","PC1",11,"LOC134718224",-0.0699,FALSE,"Aminopeptidase N (AP-N) (rAPN) (EC 3.4.11.2) (Alanyl aminopeptidase) (Aminopeptidase M) (AP-M) (Kidney Zn peptidase) (KZP) (Microsomal aminopeptidase) (CD antigen CD13)"
+"F+G | both tissues","PC1",12,"LOC134705108",-0.0692,FALSE,NA
+"F+G | both tissues","PC1",13,"LOC134713910",-0.0691,FALSE,NA
+"F+G | both tissues","PC1",14,"LOC134683828",-0.0691,FALSE,"Trypsin (EC 3.4.21.4)"
+"F+G | both tissues","PC1",15,"LOC134686373",-0.0691,FALSE,NA
+"F+G | both tissues","PC1",16,"LOC134721338",-0.0691,FALSE,"Catechol oxidase (EC 1.10.3.1)"
+"F+G | both tissues","PC1",17,"LOC134714207",-0.0687,FALSE,NA
+"F+G | both tissues","PC1",18,"LOC134717828",-0.0685,FALSE,NA
+"F+G | both tissues","PC1",19,"LOC134723624",-0.0682,FALSE,NA
+"F+G | both tissues","PC1",20,"LOC134683831",-0.0682,TRUE,"Byssal protein-1"
+"F+G | both tissues","PC1",21,"LOC134723642",-0.0681,FALSE,NA
+"F+G | both tissues","PC1",22,"LOC134710932",-0.0679,FALSE,NA
+"F+G | both tissues","PC1",23,"LOC134718739",-0.0678,TRUE,"Collagen-like protein 2"
+"F+G | both tissues","PC1",24,"LOC134682152",-0.0678,FALSE,NA
+"F+G | both tissues","PC1",25,"LOC134705151",-0.0676,FALSE,NA
+"F+G | both tissues","PC2",1,"LOC134711497",-0.2143,TRUE,"YGH-rich protein-1"
+"F+G | both tissues","PC2",2,"LOC134711495",-0.2071,TRUE,"Foot protein 12"
+"F+G | both tissues","PC2",3,"LOC134718731",-0.2057,TRUE,"Collagen-like protein-6"
+"F+G | both tissues","PC2",4,"LOC134709435",-0.2055,TRUE,"Foot protein 10"
+"F+G | both tissues","PC2",5,"LOC134680982",-0.2047,FALSE,NA
+"F+G | both tissues","PC2",6,"LOC134710788",-0.2022,TRUE,"Foot protein 10"
+"F+G | both tissues","PC2",7,"LOC134718725",-0.2015,TRUE,"Collagen-like protein-7"
+"F+G | both tissues","PC2",8,"LOC134710785",-0.2009,TRUE,"YGH-rich protein-3"
+"F+G | both tissues","PC2",9,"LOC134719757",-0.2009,TRUE,"Foot protein 2"
+"F+G | both tissues","PC2",10,"LOC134719452",-0.1999,TRUE,"Foot protein 15"
+"F+G | both tissues","PC2",11,"LOC134723629",-0.1994,FALSE,NA
+"F+G | both tissues","PC2",12,"LOC134717816",-0.1956,TRUE,"Collagen-like protein-5"
+"F+G | both tissues","PC2",13,"LOC134709805",-0.1956,TRUE,"Foot protein-4 variant-1"
+"F+G | both tissues","PC2",14,"LOC134721757",-0.1882,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F+G | both tissues","PC2",15,"LOC134711496",-0.1806,TRUE,"Foot protein 10"
+"F+G | both tissues","PC2",16,"LOC134705410",-0.1794,TRUE,"Foot protein 9 variant 2"
+"F+G | both tissues","PC2",17,"LOC134695533",-0.1786,FALSE,"Tyrosinase 3"
+"F+G | both tissues","PC2",18,"LOC134709802",-0.1768,FALSE,NA
+"F+G | both tissues","PC2",19,"LOC134709803",-0.1713,FALSE,NA
+"F+G | both tissues","PC2",20,"LOC134722885",-0.1692,FALSE,NA
+"F+G | both tissues","PC2",21,"LOC134706002",-0.1665,TRUE,"Foot protein 11"
+"F+G | both tissues","PC2",22,"LOC134718719",-0.1654,TRUE,"Collagen-like protein-5"
+"F+G | both tissues","PC2",23,"LOC134721760",-0.1636,TRUE,"Foot protein 3 variant 4"
+"F+G | both tissues","PC2",24,"LOC134709436",-0.1389,FALSE,NA
+"F+G | both tissues","PC2",25,"LOC134697184",-0.0945,FALSE,NA
+"F+G | both tissues | with lab control","PC1",1,"LOC134705647",-0.0694,FALSE,NA
+"F+G | both tissues | with lab control","PC1",2,"LOC134690469",-0.0693,FALSE,NA
+"F+G | both tissues | with lab control","PC1",3,"LOC134686370",-0.0686,FALSE,NA
+"F+G | both tissues | with lab control","PC1",4,"LOC134717829",-0.0685,FALSE,NA
+"F+G | both tissues | with lab control","PC1",5,"LOC134717830",-0.0685,FALSE,NA
+"F+G | both tissues | with lab control","PC1",6,"LOC134719453",-0.068,TRUE,"Foot protein 15"
+"F+G | both tissues | with lab control","PC1",7,"LOC134723625",-0.0679,FALSE,NA
+"F+G | both tissues | with lab control","PC1",8,"LOC134717831",-0.0677,TRUE,"Collagen-like protein 2"
+"F+G | both tissues | with lab control","PC1",9,"LOC134721338",-0.0673,FALSE,"Catechol oxidase (EC 1.10.3.1)"
+"F+G | both tissues | with lab control","PC1",10,"LOC134705108",-0.0673,FALSE,NA
+"F+G | both tissues | with lab control","PC1",11,"LOC134682152",-0.0672,FALSE,NA
+"F+G | both tissues | with lab control","PC1",12,"LOC134718224",-0.0669,FALSE,"Aminopeptidase N (AP-N) (rAPN) (EC 3.4.11.2) (Alanyl aminopeptidase) (Aminopeptidase M) (AP-M) (Kidney Zn peptidase) (KZP) (Microsomal aminopeptidase) (CD antigen CD13)"
+"F+G | both tissues | with lab control","PC1",13,"LOC134723642",-0.0668,FALSE,NA
+"F+G | both tissues | with lab control","PC1",14,"LOC134713910",-0.0667,FALSE,NA
+"F+G | both tissues | with lab control","PC1",15,"LOC134683828",-0.0666,FALSE,"Trypsin (EC 3.4.21.4)"
+"F+G | both tissues | with lab control","PC1",16,"LOC134726773",-0.0664,FALSE,NA
+"F+G | both tissues | with lab control","PC1",17,"LOC134723523",-0.0663,FALSE,NA
+"F+G | both tissues | with lab control","PC1",18,"LOC134710932",-0.0662,FALSE,NA
+"F+G | both tissues | with lab control","PC1",19,"LOC134686373",-0.0661,FALSE,NA
+"F+G | both tissues | with lab control","PC1",20,"LOC134723643",-0.0661,FALSE,NA
+"F+G | both tissues | with lab control","PC1",21,"LOC134717555",-0.066,FALSE,NA
+"F+G | both tissues | with lab control","PC1",22,"LOC134723621",-0.066,FALSE,NA
+"F+G | both tissues | with lab control","PC1",23,"LOC134697002",-0.0658,FALSE,NA
+"F+G | both tissues | with lab control","PC1",24,"LOC134714263",-0.0658,FALSE,"Temptin"
+"F+G | both tissues | with lab control","PC1",25,"LOC134697116",-0.0658,FALSE,"Carboxypeptidase B (EC 3.4.17.2)"
+"F+G | both tissues | with lab control","PC2",1,"LOC134705410",-0.157,TRUE,"Foot protein 9 variant 2"
+"F+G | both tissues | with lab control","PC2",2,"LOC134711497",-0.1558,TRUE,"YGH-rich protein-1"
+"F+G | both tissues | with lab control","PC2",3,"LOC134710788",-0.1544,TRUE,"Foot protein 10"
+"F+G | both tissues | with lab control","PC2",4,"LOC134719452",-0.1543,TRUE,"Foot protein 15"
+"F+G | both tissues | with lab control","PC2",5,"LOC134709805",-0.152,TRUE,"Foot protein-4 variant-1"
+"F+G | both tissues | with lab control","PC2",6,"LOC134722885",-0.1508,FALSE,NA
+"F+G | both tissues | with lab control","PC2",7,"LOC134709435",-0.1504,TRUE,"Foot protein 10"
+"F+G | both tissues | with lab control","PC2",8,"LOC134680982",-0.1496,FALSE,NA
+"F+G | both tissues | with lab control","PC2",9,"LOC134709802",-0.1489,FALSE,NA
+"F+G | both tissues | with lab control","PC2",10,"LOC134718725",-0.1488,TRUE,"Collagen-like protein-7"
+"F+G | both tissues | with lab control","PC2",11,"LOC134721757",-0.1486,TRUE,"Polyphenolic phosphoprotein mefp-5"
+"F+G | both tissues | with lab control","PC2",12,"LOC134723629",-0.1471,FALSE,NA
+"F+G | both tissues | with lab control","PC2",13,"LOC134709803",-0.1427,FALSE,NA
+"F+G | both tissues | with lab control","PC2",14,"LOC134695533",-0.1426,FALSE,"Tyrosinase 3"
+"F+G | both tissues | with lab control","PC2",15,"LOC134718731",-0.1406,TRUE,"Collagen-like protein-6"
+"F+G | both tissues | with lab control","PC2",16,"LOC134721756",-0.1398,FALSE,NA
+"F+G | both tissues | with lab control","PC2",17,"LOC134717816",-0.1397,TRUE,"Collagen-like protein-5"
+"F+G | both tissues | with lab control","PC2",18,"LOC134721760",-0.1384,TRUE,"Foot protein 3 variant 4"
+"F+G | both tissues | with lab control","PC2",19,"LOC134721759",-0.1378,TRUE,"Foot protein-3"
+"F+G | both tissues | with lab control","PC2",20,"LOC134711103",-0.1371,FALSE,NA
+"F+G | both tissues | with lab control","PC2",21,"LOC134706002",-0.1362,TRUE,"Foot protein 11"
+"F+G | both tissues | with lab control","PC2",22,"LOC134711495",-0.1355,TRUE,"Foot protein 12"
+"F+G | both tissues | with lab control","PC2",23,"LOC134686938",-0.1337,TRUE,"Byssal tyrosinase-like protein-1"
+"F+G | both tissues | with lab control","PC2",24,"LOC134711106",-0.1334,TRUE,"Foot protein-4 variant-1"
+"F+G | both tissues | with lab control","PC2",25,"LOC134683864",-0.1333,TRUE,"Byssal protein-1"

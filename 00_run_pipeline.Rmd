@@ -6,8 +6,9 @@ output: html_document
 params:
   stages: "all"              # "all", or folder numbers, e.g. ["05", "07"]
   stop_on_fail: true         # stop at the first failed stage
-  cores: 4                   # parallel GO runs in 07 (1 on Windows)
+  cores: 4                   # parallel workers: GO runs in 07 (1 on Windows) and 09 step 06's prediction test
   online_annotation: false   # true also refreshes 08's NCBI and OrthoDB tables
+  check_versions: true       # stop before the first stage unless R, Bioconductor and GO.db match renv.lock
 ---
 
 ```{r setup, include=FALSE}
@@ -26,11 +27,11 @@ its folder's `03_analyses/knit_html/`; this file leaves one per stage, and `run_
 |---|---|---|---|
 | 02 | `02_thread-strength/01_code/00_run_thread_strength.Rmd` | `01_mussel-measurements/` | 1 min |
 | 04 | `04_sequence-alignment/01_code/00_run_sequence_alignment.Rmd` | committed StringTie and FastQC tables, its committed featureCounts and mitogenome counts | 1 min |
-| 05 | `05_differential-expression/01_code/00_run_differential_expression.Rmd` | 04, `03_blast/` | 10 min |
-| 06 | `06_iso-seq-transcriptome/01_code/00_run_isoseq.Rmd` | 05, committed Iso-Seq and recount gene counts | 12 min |
-| 07 | `07_enrichment/01_code/00_run_enrichment.Rmd` | 05, 04, `03_blast/` | 8 min |
+| 05 | `05_differential-expression/01_code/00_run_differential_expression.Rmd` | 04, `03_blast/` | 14 min |
+| 06 | `06_iso-seq-transcriptome/01_code/00_run_isoseq.Rmd` | 05, committed Iso-Seq and recount gene counts | 9 min |
+| 07 | `07_enrichment/01_code/00_run_enrichment.Rmd` | 05, 04, `03_blast/` | 7 min |
 | 08 | `08_gene-annotation/01_code/00_run_gene_annotation.Rmd` | 05 | 1 min |
-| 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 05, 07, `03_blast/` | 4 min |
+| 09 | `09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd` | 02, 05, 07, `03_blast/`, `01_mussel-measurements/` | 19 min (14 of them step 06's prediction test) |
 
 The stages run in folder order: every folder reads only lower-numbered folders.
 
@@ -53,7 +54,15 @@ counts); 04 step 03's recipe check (its own `online: true`); the Iso-Seq steps 0
 stages above read.
 
 Knit this file from the repository root (`PSMFC-mytilus-byssus-pilot.Rproj`). The packages
-each stage needs are listed in its folder's README.
+each stage needs are listed in its folder's README; `renv.lock` records the library of the
+runs of record. Before the first stage, `check_stack()` (`tools/run_steps.R`) compares this R
+with `renv.lock` and stops within seconds, listing what differs, if R's minor version or
+Bioconductor's is another, if a package the pipeline loads is not installed in any library on
+R's path (it then prints `.libPaths()`), or, when stage 07 or 08 is to run, if `GO.db` does not
+hold GO release 2026-01-23; without it a run on another R would stop only at stage 07, after half an
+hour. It also reports `renv.lock` packages that are missing or at another version, without
+stopping. `check_versions: false` skips it (outputs are then not of record). When a stage
+fails, the error quotes the failed step's own error from its log.
 
 ```{r run}
 suppressPackageStartupMessages(library(here))
@@ -70,10 +79,14 @@ stages <- data.frame(
              "07_enrichment/01_code/00_run_enrichment.Rmd",
              "08_gene-annotation/01_code/00_run_gene_annotation.Rmd",
              "09_gene-mechanics-correlation/01_code/00_run_gene_mechanics_by_tissue.Rmd"))
-stage_params <- list(`07` = list(cores = params$cores),
+stage_params <- list(`07` = list(cores = params$cores), `09` = list(cores = params$cores),
                      `08` = list(online = isTRUE(params$online_annotation)))
 want <- if (identical(params$stages, "all")) stages$stage else sprintf("%02d", as.integer(unlist(params$stages)))
 stopifnot(all(want %in% stages$stage))
+if (isTRUE(params$check_versions)) {
+  source(file.path(repo_root, "tools", "pipeline_checks.R"))   # GO_RELEASE_OF_RECORD
+  check_stack(file.path(repo_root, "renv.lock"), need_go = any(c("07", "08") %in% want))
+}
 
 log <- list()
 for (i in which(stages$stage %in% want)) {
@@ -85,7 +98,8 @@ for (i in which(stages$stage %in% want)) {
   if (!ok) message("FAILED; see ", file.path(html_dir, sub("[.]html$", ".log", out)),
                    " and the logs in that folder's 03_analyses/knit_html/")
   log[[length(log) + 1]] <- data.frame(stage = s$stage, runner = s$runner, ok = ok,
-                                       minutes = round(as.numeric(difftime(Sys.time(), t0, units = "mins")), 1))
+                                       minutes = round(as.numeric(difftime(Sys.time(), t0, units = "mins")), 1),
+                                       log = sub("[.]html$", ".log", out))
   if (!ok && isTRUE(params$stop_on_fail)) { message("Stopping (stop_on_fail = TRUE)."); break }
 }
 run_log <- do.call(rbind, log)
@@ -96,7 +110,8 @@ finish_run(run_log, html_dir, "Pipeline")
 # Where the results are
 
 - Thread strength: `02_thread-strength/03_analyses/04_analyze-thread-strength/` and
-  `05_decompose-adhesion/`.
+  `05_decompose-adhesion/`; thread production and condition: `07_thread-production/` and
+  `08_condition/` there.
 - Differential expression: `05_differential-expression/03_analyses/DEG_lists/DEG_counts.csv`
   and `figures/`.
 - Iso-Seq reference (sensitivity): `06_iso-seq-transcriptome/03_analyses/03_isoseq-de/`

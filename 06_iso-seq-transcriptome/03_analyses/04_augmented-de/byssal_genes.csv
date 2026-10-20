@@ -1,9 +1,10 @@
 feature,code,featurecounts ext3,featurecounts full,featurecounts refseq,previous record,stringtie ext3,stringtie full,stringtie refseq,protein
-LOC134692100,GDO_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134692100,GOA_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134692100,GDO_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,Byssal EP-like protein 1 (EP-protein-1)
+LOC134692100,GOA_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,Byssal EP-like protein 1 (EP-protein-1)
 LOC134706002,FDO_TC,TRUE,TRUE,TRUE,,,FALSE,,Foot protein 11
 LOC134708000,FDO_TC,,TRUE,,,,FALSE,,Foot protein 13
-LOC134716384,GDO_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134716384,GOA_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134716385,GDO_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,ACDC (Byssal EP-like protein 1) (EP-protein-1)
-LOC134716385,GOA_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,ACDC (Byssal EP-like protein 1) (EP-protein-1)
+LOC134716384,GDO_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,Byssal EP-like protein 1 (EP-protein-1)
+LOC134716384,GOA_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,Byssal EP-like protein 1 (EP-protein-1)
+LOC134716385,GDO_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,Byssal EP-like protein 1 (EP-protein-1)
+LOC134716385,GOA_TC,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,Byssal EP-like protein 1 (EP-protein-1)
+LOC134721760,FOA_TC,TRUE,TRUE,TRUE,,,TRUE,,Foot protein 3 variant 4
